@@ -200,6 +200,7 @@ import config from '../../../app.config';
             onImgClick={handleImgClick}
             onLinkClick={handleLinkClick}
             transformer={transformer}
+            iframeWhiteList={['bilibili', 'youku', 'iqiyi', 'music.163.com', 'qq.com']}
           />
           {imageVisible && (
             <ImagePreviewer
