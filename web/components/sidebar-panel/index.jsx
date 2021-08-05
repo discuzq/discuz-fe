@@ -48,7 +48,7 @@ const WrapperContent = (props) => {
       [styles.bottom]: isNeedBottom,
       [styles['clear-padding']]: messageMode,
     })}>
-      {header || <SectionTitle bigSize={platform === 'pc'} titleStyle={messageMode ? { margin: '0 16px' } : {}} {...props} />}
+      {header || <SectionTitle bigSize={type === 'small' ? false : platform === 'pc'} titleStyle={messageMode ? { margin: '0 16px' } : {}} {...props} />}
       {(!isLoading && !isNoData) ? children : <BottomView isError={isError} errorText={errorText} noMore={!isLoading && isNoData} loadingText='正在加载' />}
       {footer}
     </div>
@@ -80,7 +80,7 @@ const PlaneContent = (props) => {
   return (
     <div className={className}>
       <div className={`${pcStyle} ${styles.containerPlane} ${titleWrapper}`}>
-        {header || <SectionTitle bigSize={platform === 'pc'} {...props} />}
+        {header || <SectionTitle bigSize={type === 'small' ? false : platform === 'pc'} {...props} />}
       </div>
       {(!isLoading && !isNoData) ? children : <BottomView className={styles.bottomView} isError={isError} errorText={errorText} noMore={!isLoading && isNoData} loadingText='正在加载' />}
     </div>
