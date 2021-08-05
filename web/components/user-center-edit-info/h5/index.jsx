@@ -207,14 +207,10 @@ class index extends Component {
                   <div className={styles.userCenterEditWeChat}>
                     <Avatar size="small" image={this.user.wxHeadImgUrl} name={this.user.wxNickname} />
                     <span>{this.user.wxNickname}</span>
-                    {
-                      site.isDomainWhiteList
-                      && user.isWhiteLsit
-                      && <div className={styles.linkText} onClick={() => {
-                        Router.push({ url: '/user/rebind' });
-                      }}
-                      >换绑</div>
-                    }
+                    <div className={styles.linkText} onClick={() => {
+                      Router.push({ url: '/user/rebind' });
+                    }}
+                    >换绑</div>
                   </div>
                 </div>
               </div>

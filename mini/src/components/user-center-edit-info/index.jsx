@@ -215,14 +215,10 @@ class index extends Component {
                 <View className={styles.userCenterEditWeChat}>
                   <Avatar size="small" image={this.user.wxHeadImgUrl} name={this.user.wxNickname} />
                   <Text className={styles.wxNickname}>{this.user.wxNickname}</Text>
-                  {
-                    site.isDomainWhiteList
-                    && user.isWhiteLsit
-                    && <Text className={styles.linkText} onClick={() => {
-                      Taro.navigateTo({ url: '/subPages/user/rebind/index' });
-                    }}
-                    >换绑</Text>
-                  }
+                  <Text className={styles.linkText} onClick={() => {
+                    Taro.navigateTo({ url: '/subPages/user/rebind/index' });
+                  }}
+                  >换绑</Text>
                 </View>
               </View>
             </View>
