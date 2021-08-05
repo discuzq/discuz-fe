@@ -34,21 +34,18 @@ class Index extends React.Component {
 
   constructor(props) {
     super(props);
-    const { serverSearch, search } = this.props;
+    const { serverSearch, search, router } = this.props;
+    const { keyword = '' } = router?.query;
     // 初始化数据到store中
     const { platform } = this.props.site || {};
 
-    if (platform === 'pc') {
-      search.resetIndexData();
-    } else {
-      serverSearch && serverSearch.indexTopics && search.setIndexTopics(serverSearch.indexTopics);
-      serverSearch && serverSearch.indexUsers && search.setIndexUsers(serverSearch.indexUsers);
-      serverSearch && serverSearch.indexThreads && search.setIndexThreads(serverSearch.indexThreads);
-    }
+    search.currentKeyword = keyword;
+    serverSearch && serverSearch.indexTopics && search.setIndexTopics(serverSearch.indexTopics);
+    serverSearch && serverSearch.indexUsers && search.setIndexUsers(serverSearch.indexUsers);
+    serverSearch && serverSearch.indexThreads && search.setIndexThreads(serverSearch.indexThreads);
 
     this.state = {
-      stepIndex: 0,
-      searchNoData: false
+      stepIndex: 0
     }
   }
 
@@ -58,10 +55,11 @@ class Index extends React.Component {
 
     const { platform } = this.props.site || {};
 
-    if (platform === 'pc') {
-      this.setState({ searchNoData: false })
+    if (search.currentKeyword !== keyword) {
+      search.searchNoData = false;
       await search.getSearchData({ hasTopics: false, hasUsers: false, hasThreads: false, search: keyword });
       this.requestAgain()
+      search.currentKeyword = keyword;
     } else {
       const hasIndexTopics = !!search.indexTopics;
       const hasIndexUsers = !!search.indexUsers;
@@ -102,7 +100,7 @@ class Index extends React.Component {
       if (site.platform === 'pc') {
         search.resetIndexData()
       }
-      this.setState({ searchNoData: false })
+      search.searchNoData = false;
       await search.getSearchData({ search: data });
       this.requestAgain()
     } else if (type === 'update-step-index') {
@@ -116,7 +114,7 @@ class Index extends React.Component {
 
     // 若搜索数据为空，在发起一次请求
     if (platform === 'pc' && isNoData) {
-      this.setState({ searchNoData: true })
+      this.props.search.searchNoData = true;
       await this.props.search.getSearchData({ hasTopics: false, hasUsers: false, hasThreads: false });
     }
 
@@ -127,7 +125,7 @@ class Index extends React.Component {
     return (
       <ViewAdapter
         h5={<IndexH5Page dispatch={this.dispatch} />}
-        pc={ <IndexPCPage dispatch={this.dispatch} stepIndex={this.state.stepIndex} searchNoData={this.state.searchNoData} />}
+        pc={ <IndexPCPage dispatch={this.dispatch} stepIndex={this.state.stepIndex} searchNoData={this.props.search.searchNoData} />}
         title='发现'
       />
     );

@@ -27,6 +27,10 @@ class SearchStore {
   @observable topicsError = { isError: false, errorText: '' }
   @observable usersError = { isError: false, errorText: '' }
   @observable threadsError = { isError: false, errorText: '' }
+  
+  @observable currentKeyword = null
+
+  @observable searchNoData = false
 }
 
 export default SearchStore;

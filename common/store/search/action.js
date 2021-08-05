@@ -99,6 +99,8 @@ class SearchAction extends SearchStore {
     this.indexTopicsError = { isError: false, errorText: '' }
     this.indexUsersError = { isError: false, errorText: '' }
     this.indexThreadsError = { isError: false, errorText: '' }
+
+    this.currentKeyword = null
     
     this.setIndexTopics(null)
     this.setIndexUsers(null)
