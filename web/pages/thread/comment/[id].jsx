@@ -107,7 +107,9 @@ class CommentDetail extends React.Component {
       );
     }
 
-    return <ViewAdapter h5={<CommentH5Page />} pc={<CommentPCPage />} />;
+    return <ViewAdapter
+    h5={<CommentH5Page canPublish={this.props.canPublish}/>}
+    pc={<CommentPCPage canPublish={this.props.canPublish}/>} />;
   }
 }
 

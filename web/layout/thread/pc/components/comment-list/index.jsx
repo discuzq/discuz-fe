@@ -58,7 +58,7 @@ class CommentList extends React.Component {
   // 点击评论回复
   replyClick() {
     const userName = this.props.data?.user?.nickname || this.props.data?.user?.userName;
-
+   
     this.setState({
       isShowInput: !this.state.isShowInput,
       replyId: null,
@@ -299,6 +299,7 @@ class CommentList extends React.Component {
                         toCommentDetail={() => this.toCommentDetail()}
                         onSubmit={(value, imageList) => this.onSubmit(value, imageList)}
                         isShowInput={this.state.replyId && this.state.replyId === this.needReply[0].id}
+                        canPublish={this.props.canPublish}
                       ></ReplyList>
                     ) : (
                       (this.needReply || []).map((val, index) => (
@@ -314,6 +315,7 @@ class CommentList extends React.Component {
                             onSubmit={(value, imageList) => this.onSubmit(value, imageList)}
                             isShowInput={this.state.replyId && this.state.replyId === val.id}
                             active={this.props.postId === val.id}
+                            canPublish={this.props.canPublish}
                           ></ReplyList>
                         </div>
                       ))

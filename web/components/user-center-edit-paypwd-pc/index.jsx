@@ -183,6 +183,7 @@ class index extends Component {
   handleClose = () => {
     this.initState();
     this.props.onClose();
+    this.props.payBox.clearPayPassword();
   };
 
   renderContent = () => {

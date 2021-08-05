@@ -645,6 +645,7 @@ class UserAction extends SiteStore {
     });
 
     if (updateUserInfoRes.code === 0) {
+      this.userInfo.username = this.editUserName;
       return updateUserInfoRes.data;
     }
 

@@ -247,7 +247,7 @@ class CommentH5Page extends React.Component {
       goToLoginPage({ url: '/user/login' });
       return;
     }
-
+    if (!this.props.canPublish()) return ;
     this.commentData = comment;
     this.replyData = null;
     this.setState({
@@ -263,7 +263,7 @@ class CommentH5Page extends React.Component {
       goToLoginPage({ url: '/user/login' });
       return;
     }
-
+    if (!this.props.canPublish()) return ;
     this.commentData = null;
     this.replyData = reply;
     this.replyData.commentId = comment.id;

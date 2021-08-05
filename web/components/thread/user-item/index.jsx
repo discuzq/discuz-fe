@@ -69,7 +69,7 @@ const Index = ({
             <Icon className={styles.rightIcon} name="RightOutlined" size={12} />
           </div>
         ) : (
-          <Button type="primary" className={styles.button} onClick={handleClick}>查看主页</Button>
+          <Button type="primary" className={styles.button} onClick={handleClick}><span>查看主页</span></Button>
         )
       }
     </div>

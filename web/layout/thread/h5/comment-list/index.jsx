@@ -186,14 +186,14 @@ class RenderCommentList extends React.Component {
     });
   }
 
-  //删除回复评论
+  // 删除回复评论
   async replyDeleteComment() {
     if (!this.replyData.id) return;
 
     const params = {};
     if (this.replyData && this.commentData) {
-      params.replyData = this.replyData; //本条回复信息
-      params.commentData = this.commentData; //回复对应的评论信息
+      params.replyData = this.replyData; // 本条回复信息
+      params.commentData = this.commentData; // 回复对应的评论信息
     }
     const { success, msg } = await this.props.comment.deleteReplyComment(
       params,
@@ -220,7 +220,7 @@ class RenderCommentList extends React.Component {
       goToLoginPage({ url: '/user/login' });
       return;
     }
-
+    if (!this.props.canPublish()) return ;
     this.commentData = comment;
     this.replyData = null;
     const userName = comment?.user?.nickname || comment?.user?.userName;
@@ -237,7 +237,7 @@ class RenderCommentList extends React.Component {
       goToLoginPage({ url: '/user/login' });
       return;
     }
-
+    if (!this.props.canPublish()) return ;
     this.commentData = null;
     this.replyData = reply;
     this.replyData.commentId = comment.id;
@@ -282,7 +282,7 @@ class RenderCommentList extends React.Component {
 
     if (imageList?.length) {
       params.attachments = imageList
-        .filter((item) => item.status === 'success' && item.response)
+        .filter(item => item.status === 'success' && item.response)
         .map((item) => {
           const { id } = item.response;
           return {
@@ -401,8 +401,7 @@ class RenderCommentList extends React.Component {
     }
 
     // 是否作者自己
-    const isSelf =
-      this.props.user?.userInfo?.id && this.props.user?.userInfo?.id === this.props.thread?.threadData?.userId;
+    const isSelf =      this.props.user?.userInfo?.id && this.props.user?.userInfo?.id === this.props.thread?.threadData?.userId;
 
     const isReward = this.props.thread?.threadData?.displayTag?.isReward;
 
@@ -438,9 +437,9 @@ class RenderCommentList extends React.Component {
                 deleteClick={() => this.deleteClick(val)}
                 editClick={() => this.editClick(val)}
                 replyAvatarClick={(reply, floor) => this.replyAvatarClick(reply, val, floor)}
-                replyLikeClick={debounce((reply) => this.replyLikeClick(reply, val), 500)}
-                replyReplyClick={(reply) => this.replyReplyClick(reply, val)}
-                replyDeleteClick={(reply) => this.replyDeleteClick(reply, val)}
+                replyLikeClick={debounce(reply => this.replyLikeClick(reply, val), 500)}
+                replyReplyClick={reply => this.replyReplyClick(reply, val)}
+                replyDeleteClick={reply => this.replyDeleteClick(reply, val)}
                 onCommentClick={() => this.onCommentClick(val)}
                 onAboptClick={() => this.onAboptClick(val)}
                 isShowOne={true}
@@ -483,7 +482,7 @@ class RenderCommentList extends React.Component {
             remainMoney={Number(parseContent.REWARD.remainMoney)} // 需要传入剩余悬赏金额
             visible={this.state.showAboptPopup}
             onCancel={() => this.onAboptCancel()}
-            onOkClick={(data) => this.onAboptOk(data)}
+            onOkClick={data => this.onAboptOk(data)}
           ></AboptPopup>
         )}
       </Fragment>

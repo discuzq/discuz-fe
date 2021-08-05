@@ -24,6 +24,7 @@ class SiteError extends Component {
   render() {
     const { site: { errPageType = '' } } = this.props;
     return (
+      <Page>
       <View className={styles.page}>
         <Image className={styles.img} src={imgError}/>
         <Text className={styles.text}>{ (errPageType && ERROR_PAGE_TIPS[errPageType]) || '未知错误'}</Text>
@@ -31,6 +32,7 @@ class SiteError extends Component {
           <Button onClick={() => {Router.redirect({url: '/indexPages/home/index'});}} size='large' className={styles.btn} type='primary'>回到首页</Button>
         </View>
       </View>
+      </Page>
     );
   }
 }

@@ -21,7 +21,7 @@ export default class index extends Component {
     this.state = {
       isLoading: true,
       isPreviewBgVisible: false, // 是否预览背景图片
-      isNormalTitle: false, // 是否显示不透明 title 
+      isNormalTitle: false, // 是否显示不透明 title
     };
   }
 
@@ -34,6 +34,17 @@ export default class index extends Component {
     // 监听
     eventCenter.on(onShowEventId, this.onShow);
   }
+
+  componentDidMount() {
+    this.setNavigationBarStyle();
+  }
+
+  setNavigationBarStyle = () => {
+    Taro.setNavigationBarColor({
+      frontColor: '#ffffff',
+      backgroundColor: '#ffffff',
+    });
+  };
 
   fetchUserThreads = async () => {
     try {
@@ -120,7 +131,7 @@ export default class index extends Component {
         justifyContent: 'center',
         alignItems: 'center',
         paddingTop: `${this.getStatusBarHeight() - 8}px`,
-      }
+      };
     }
 
     return {
@@ -177,16 +188,16 @@ export default class index extends Component {
     const formattedUserThreads = this.formatUserThreadsData(userThreads);
     return (
       <BaseLayout
-        onScroll={e => {
+        onScroll={(e) => {
           const currentScrollTop = e.detail.scrollTop;
           if (currentScrollTop > 170) {
             this.setState({
-              isNormalTitle: true
-            })
+              isNormalTitle: true,
+            });
           } else {
             this.setState({
-              isNormalTitle: false
-            })
+              isNormalTitle: false,
+            });
           }
         }}
         showHeader={false}

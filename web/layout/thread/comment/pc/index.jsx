@@ -171,14 +171,14 @@ class CommentPCPage extends React.Component {
     });
   }
 
-  //删除回复
+  // 删除回复
   async replyDeleteComment() {
     if (!this.replyData.id) return;
 
     const params = {};
     if (this.replyData && this.commentData) {
-      params.replyData = this.replyData; //本条回复信息
-      params.commentData = this.commentData; //回复对应的评论信息
+      params.replyData = this.replyData; // 本条回复信息
+      params.commentData = this.commentData; // 回复对应的评论信息
     }
     const { success, msg } = await this.props.comment.deleteReplyComment(params, this.props.thread);
     this.setState({
@@ -202,7 +202,7 @@ class CommentPCPage extends React.Component {
       goToLoginPage({ url: '/user/login' });
       return;
     }
-
+    if (!this.props.canPublish()) return ;
     this.commentData = comment;
     this.replyData = null;
     this.setState({
@@ -217,7 +217,7 @@ class CommentPCPage extends React.Component {
       goToLoginPage({ url: '/user/login' });
       return;
     }
-
+    if (!this.props.canPublish()) return ;
     this.commentData = null;
     this.replyData = reply;
     this.replyData.commentId = comment.id;
@@ -266,7 +266,7 @@ class CommentPCPage extends React.Component {
 
     if (imageList?.length) {
       params.attachments = imageList
-        .filter((item) => item.status === 'success' && item.response)
+        .filter(item => item.status === 'success' && item.response)
         .map((item) => {
           const { id } = item.response;
           return {
@@ -366,10 +366,10 @@ class CommentPCPage extends React.Component {
                   data={commentData}
                   likeClick={() => this.likeClick(commentData)}
                   replyClick={() => this.replyClick(commentData)}
-                  replyLikeClick={(reply) => this.replyLikeClick(reply, commentData)}
-                  replyReplyClick={(reply) => this.replyReplyClick(reply, commentData)}
-                  replyDeleteClick={(reply) => this.replyDeleteClick(reply, commentData)}
-                  avatarClick={(userId) => this.onUserClick(userId)}
+                  replyLikeClick={reply => this.replyLikeClick(reply, commentData)}
+                  replyReplyClick={reply => this.replyReplyClick(reply, commentData)}
+                  replyDeleteClick={reply => this.replyDeleteClick(reply, commentData)}
+                  avatarClick={userId => this.onUserClick(userId)}
                   isHideEdit={true}
                   isFirstDivider={true}
                   isShowInput={this.state.commentId === commentData.id}

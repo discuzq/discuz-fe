@@ -176,14 +176,13 @@ class HomeHeader extends React.Component {
             <span className={styles.shareText}>分享</span>
           </li>
         </ul>}
-        {this.state.show
-        && <MorePopop
-        show={this.state.show}
-        onClose={this.onCancel}
-        handleH5Share={this.handleH5Share}
-        handleWxShare={this.handleWxShare}
-        createCard={this.createCard}
-        ></MorePopop>}
+        <MorePopop
+          show={this.state.show}
+          onClose={this.onCancel}
+          handleH5Share={this.handleH5Share}
+          handleWxShare={this.handleWxShare}
+          createCard={this.createCard}
+        ></MorePopop>
         {
           mode === 'join' && <ul className={`${styles.siteInfo} ${styles.joinInfo}`}>
             <li className={styles.item}>

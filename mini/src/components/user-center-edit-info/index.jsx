@@ -27,6 +27,13 @@ class index extends Component {
     Taro.hideShareMenu();
   }
 
+  setNavigationBarStyle = () => {
+    Taro.setNavigationBarColor({
+      frontColor: '#ffffff',
+      backgroundColor: '#ffffff',
+    });
+  };
+
   initState = () => {
     this.setState({
       isClickNickName: false,
@@ -35,6 +42,7 @@ class index extends Component {
   };
 
   async componentDidMount() {
+    this.setNavigationBarStyle();
     this.initState();
     const id = this.props.user?.id;
     await this.props.user.updateUserInfo(id);

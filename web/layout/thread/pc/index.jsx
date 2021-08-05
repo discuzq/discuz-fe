@@ -406,7 +406,7 @@ class ThreadPCPage extends React.Component {
 
     if (imageList?.length) {
       params.attachments = imageList
-        .filter((item) => item.status === 'success' && item.response)
+        .filter(item => item.status === 'success' && item.response)
         .map((item) => {
           const { id } = item.response;
           return {
@@ -466,7 +466,7 @@ class ThreadPCPage extends React.Component {
 
     if (imageList?.length) {
       params.attachments = imageList
-        .filter((item) => item.status === 'success' && item.response)
+        .filter(item => item.status === 'success' && item.response)
         .map((item) => {
           const { id } = item.response;
           return {
@@ -738,7 +738,7 @@ class ThreadPCPage extends React.Component {
   }
 
   renderContent() {
-    const { thread: threadStore } = this.props;
+    const { thread: threadStore, canPublish } = this.props;
     const { isReady, isCommentReady, isNoMore, totalCount, isCommentListError } = threadStore;
     // 是否审核通过
     const isApproved = (threadStore?.threadData?.isApproved || 0) === 1;
@@ -753,7 +753,7 @@ class ThreadPCPage extends React.Component {
         {isReady ? (
           <RenderThreadContent
             store={threadStore}
-            onOperClick={(type) => this.onOperClick(type)}
+            onOperClick={type => this.onOperClick(type)}
             onLikeClick={() => this.onLikeClick()}
             onCollectionClick={() => this.onCollectionClick()}
             onShareClick={() => this.onShareClick()}
@@ -797,13 +797,14 @@ class ThreadPCPage extends React.Component {
               )}
 
               <RenderCommentList
+                canPublish={canPublish}
                 positionRef={this.positionRef}
                 showHeader={!isShowCommentList}
                 router={this.props.router}
-                sort={(flag) => this.onSortChange(flag)}
-                onEditClick={(comment) => this.onEditClick(comment)}
+                sort={flag => this.onSortChange(flag)}
+                onEditClick={comment => this.onEditClick(comment)}
                 onPublishClick={(value, imageList) => this.onPublishClick(value, imageList)}
-                onReportClick={(comment) => this.onReportClick(comment)}
+                onReportClick={comment => this.onReportClick(comment)}
               ></RenderCommentList>
               {/* {this.state.isCommentLoading && <LoadingTips></LoadingTips>} */}
             </Fragment>
@@ -916,7 +917,7 @@ class ThreadPCPage extends React.Component {
             </div>
             <CommentInput
               height="middle"
-              onSubmit={(value) => this.onPublishClick(value)}
+              onSubmit={value => this.onPublishClick(value)}
               initValue={this.state.inputValue}
             ></CommentInput>
           </div>
@@ -936,14 +937,14 @@ class ThreadPCPage extends React.Component {
           inputText={this.inputText}
           visible={this.state.showReportPopup}
           onCancel={() => this.onReportCancel()}
-          onOkClick={(data) => this.onReportOk(data)}
+          onOkClick={data => this.onReportOk(data)}
         ></ReportPopup>
 
         {/* 打赏弹窗 */}
         <RewardPopup
           visible={this.state.showRewardPopup}
           onCancel={() => this.setState({ showRewardPopup: false })}
-          onOkClick={(value) => this.onRewardSubmit(value)}
+          onOkClick={value => this.onRewardSubmit(value)}
         ></RewardPopup>
       </div>
     );
