@@ -30,10 +30,6 @@ class Index extends React.Component {
     const { serverSearch, search } = this.props;
     // 初始化数据到store中
     search.setThreads(null);
-
-    this.state = {
-      repeatedIds: [],
-    };
   }
 
   async componentDidMount() {
@@ -43,46 +39,21 @@ class Index extends React.Component {
     const hasThreads = !!search.threads;
 
     this.page = 1;
-    const res = await search.getThreadList({ search: keyword });
-
-    this.handleFirstRequest(res);
+    await search.getThreadList({ search: keyword, scope: '2' });
   }
 
-  dispatch = async (type, keyword, params) => {
+  dispatch = async (type, keyword) => {
     const { search } = this.props;
-    let { repeatedIds = [] } = params || this.state || {};
-
-    let sort = '3';
+   
     if (type === 'refresh') {
       this.page = 1;
-      search.setThreads(null);
-      repeatedIds = [];
-      this.setState({ repeatedIds: [] });
     } else if (type === 'moreData') {
       this.page += 1;
-      sort = '4';
-    } else if (type === 'repeated') {
-      this.page = 1;
-      sort = '4';
     }
 
-    const res = await search.getThreadList({ search: keyword, repeatedIds, sort, perPage: this.perPage, page: this.page });
-
-    if (sort === '3') {
-      this.handleFirstRequest(res, keyword);
-    }
+    await search.getThreadList({ search: keyword, perPage: this.perPage, page: this.page, scope: '2' });
 
     return;
-  }
-
-  handleFirstRequest = (res, keyword = '') => {
-    if (!res) {
-      return;
-    }
-
-    const ids = res.pageData?.map(item => item.threadId);
-    this.setState({ repeatedIds: ids });
-    this.dispatch('repeated', keyword, { repeatedIds: ids });
   }
 
   render() {

@@ -47,7 +47,8 @@ class Index extends React.Component {
     }
 
     this.state = {
-      stepIndex: 0
+      stepIndex: 0,
+      searchNoData: false
     }
   }
 
@@ -58,8 +59,9 @@ class Index extends React.Component {
     const { platform } = this.props.site || {};
 
     if (platform === 'pc') {
+      this.setState({ searchNoData: false })
       await search.getSearchData({ hasTopics: false, hasUsers: false, hasThreads: false, search: keyword });
-      this.setStepIndex()
+      this.requestAgain()
     } else {
       const hasIndexTopics = !!search.indexTopics;
       const hasIndexUsers = !!search.indexUsers;
@@ -70,10 +72,10 @@ class Index extends React.Component {
 
   // 获取数据状态
   setStepIndex = () => {
-    const { hasTopics, hasUsers, hasThreads, isShowAll } = this.props.search.dataIndexStatus
+    const { hasTopics, hasUsers, hasThreads, isShowAll, isNoData } = this.props.search.dataIndexStatus
 
     let stepIndex = 0
-    if (!hasTopics && !hasUsers && !hasThreads) {
+    if (isNoData) {
       stepIndex = this.state.stepIndex
     } else if (isShowAll) {
       stepIndex = 0
@@ -91,23 +93,41 @@ class Index extends React.Component {
   }
 
   dispatch = async (type, data = '') => {
-    const { search } = this.props;
+    const { search, site } = this.props;
 
     if (type === 'refresh') {
       search.getSearchData({ hasTopics: false, hasUsers: false, hasThreads: false });
     } else if (type === 'search') {
+      // 判断，如果是PC端，先执行清除数据操作
+      if (site.platform === 'pc') {
+        search.resetIndexData()
+      }
+      this.setState({ searchNoData: false })
       await search.getSearchData({ search: data });
-      this.setStepIndex()
+      this.requestAgain()
     } else if (type === 'update-step-index') {
       this.setState({ stepIndex: data || 0 })
     }
+  }
+
+  requestAgain = async () => {
+    const { platform } = this.props.site || {};
+    const { isNoData } = this.props.search.dataIndexStatus
+
+    // 若搜索数据为空，在发起一次请求
+    if (platform === 'pc' && isNoData) {
+      this.setState({ searchNoData: true })
+      await this.props.search.getSearchData({ hasTopics: false, hasUsers: false, hasThreads: false });
+    }
+
+    this.setStepIndex()
   }
 
   render() {
     return (
       <ViewAdapter
         h5={<IndexH5Page dispatch={this.dispatch} />}
-        pc={ <IndexPCPage dispatch={this.dispatch} stepIndex={this.state.stepIndex} />}
+        pc={ <IndexPCPage dispatch={this.dispatch} stepIndex={this.state.stepIndex} searchNoData={this.state.searchNoData} />}
         title='发现'
       />
     );

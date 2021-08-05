@@ -30,19 +30,40 @@ class SearchPCPage extends React.Component {
     this.activeUsersRef = React.createRef();
     this.hotTopicRef = React.createRef();
 
+    // 是否点击step
     this.isClick = false
+
+    this.noDataViewH = 120
   }
 
   redirectToSearchResultPost = () => {
-    this.props.router.push(`/search/result-post?keyword=${this.state.value || ''}`);
+    const { site, searchNoData } = this.props;
+
+    if (searchNoData && site.platform === 'pc') {
+      this.props.router.push('/search/result-post');
+    } else {
+      this.props.router.push(`/search/result-post?keyword=${this.state.value || ''}`);
+    }
   };
 
   redirectToSearchResultUser = () => {
-    this.props.router.push(`/search/result-user?keyword=${this.state.value || ''}`);
+    const { site, searchNoData } = this.props;
+
+    if (searchNoData && site.platform === 'pc') {
+      this.props.router.push('/search/result-user');
+    } else {
+      this.props.router.push(`/search/result-user?keyword=${this.state.value || ''}`);
+    }
   };
 
   redirectToSearchResultTopic = () => {
-    this.props.router.push(`/search/result-topic?keyword=${this.state.value || ''}`);
+    const { site, searchNoData } = this.props;
+
+    if (searchNoData && site.platform === 'pc') {
+      this.props.router.push('/search/result-topic');
+    } else {
+      this.props.router.push(`/search/result-topic?keyword=${this.state.value || ''}`);
+    }
   };
 
   onUserClick = ({ userId } = {}) => {
@@ -135,13 +156,16 @@ class SearchPCPage extends React.Component {
     }
 
     const { topicHeight, userHeight, threadHeight, totalHeight } = this.getDivHeight()
+    const { searchNoData = false } = this.props
+
+    const otherHeight = searchNoData ? this.noDataViewH + 12 : 12
 
     let stepIndex = 0
-    if (topicHeight !== 0 && scrollTop < topicHeight + 12) {
+    if (topicHeight !== 0 && scrollTop < topicHeight + otherHeight) {
       stepIndex = 0
-    } else if (userHeight !== 0 && scrollTop < topicHeight + userHeight + 12) {
+    } else if (userHeight !== 0 && scrollTop < topicHeight + userHeight + otherHeight) {
       stepIndex = 1
-    } else if (threadHeight !== 0 && scrollTop < totalHeight + 12) {
+    } else if (threadHeight !== 0 && scrollTop < totalHeight + otherHeight) {
       stepIndex = 2
     }
 
@@ -240,9 +264,11 @@ class SearchPCPage extends React.Component {
 
   renderContent = () => {
     const { hasTopics, hasUsers, hasThreads, isShowAll } = this.props.search.dataIndexStatus
+    const { searchNoData = false } = this.props
 
     return (
       <div className={styles.searchContent}>
+        { searchNoData && <div className={styles.noDataView}>暂无相关内容</div> }
         { (isShowAll || hasTopics) && this.renderContentPopTopic() }
         { (isShowAll || hasUsers) && this.renderContentActiveUser() }
         { (isShowAll || hasThreads) && this.renderContentHotThread() }
@@ -262,16 +288,27 @@ class SearchPCPage extends React.Component {
   }
 
   render() {
+    const { isNoData } = this.props.search.dataIndexStatus
+
+    const { indexTopics, indexUsers, indexThreads, indexTopicsError, indexUsersError, indexThreadsError } = this.props.search;
+    const { pageData: topicsPageData } = indexTopics || {};
+    const { pageData: usersPageData } = indexUsers || {};
+    const { pageData: threadsPageData } = indexThreads || {};
+
+    const noMore = !!topicsPageData && !!usersPageData && !!threadsPageData
+
     return (
         <BaseLayout
-          allowRefresh={false}
           onSearch={this.onSearch}
           right={ this.renderRight }
           onScroll={ this.handleScroll }
           jumpTo={this.state.position}
           pageName="search"
-          showRefresh={false}
           className="search-page"
+          onRefresh={() => {}}
+          isShowLayoutRefresh={isNoData && !noMore}
+          loadingText='正在加载'
+          showRefresh={false}
         >
           { this.renderContent() }
         </BaseLayout>

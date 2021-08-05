@@ -48,33 +48,18 @@ class PartnerInviteHot extends React.Component {
   async initThreadList() {
     const { forum, search } = this.props;
 
-    // 1.获取后台设置的付费推荐内容，最多10条。pay===1时，后台默认返回10条，无法修改
+    const INVITE_THREADLIST_SCOPE = 3;
     const threadList = await search.getThreadList({
-      site: 1, // 后台设置的热门推荐
-      params: {
-        pay: 1,
-      },
+      scope: INVITE_THREADLIST_SCOPE,
     });
-
-    // 2.推荐内容数量大于0则title为精彩内容预览，否则为热门内容预览
-    this.setState({
-      isHot: !(threadList?.pageData?.length > 0),
-    });
-
-    // 3.如果付费推荐少于MAX_THREAD_COUNT条，取热门推荐，凑齐MAX_THREAD_COUNT条
-    if (threadList?.pageData?.length < MAX_THREAD_COUNT) {
-      const repeatedIds = threadList?.pageData?.map(item => item.threadId);
-      const hotThreads = await search.getThreadList({
-        repeatedIds,
-        params: {
-          pay: 1,
-        },
-      });
-
-      threadList?.pageData?.push(...hotThreads?.pageData?.slice(0, MAX_THREAD_COUNT - threadList?.pageData?.length));
-    }
 
     forum.setThreadsPageData(threadList);
+
+    // 推荐内容数量大于0则title为精彩内容预览，否则为热门内容预览
+    const isHot = !threadList?.pageData?.some(item => item.isSite);
+    this.setState({
+      isHot,
+    });
   }
 
   render() {

@@ -53,7 +53,7 @@ const BaseLayout = forwardRef((props, ref) => {
   const { onSearch } = props;
 
   // 自定义加载视图 & 报错视图
-  const { requestError = false, errorText = '', isShowLayoutRefresh = true } = props;
+  const { requestError = false, errorText = '', isShowLayoutRefresh = true, loadingText = '加载更多...' } = props;
 
   // 页面滑动位置缓存相关
   const { pageName = '' } = props;
@@ -120,7 +120,7 @@ const BaseLayout = forwardRef((props, ref) => {
 
       <div className={styles.center}>
         {typeof children === 'function' ? children({ ...props }) : children}
-        {isShowLayoutRefresh && onRefresh && <BottomView onRefreshPlaceholder={onRefreshPlaceholder} isError={isError} errorText={isErrorText} noMore={noMore} />}
+        {isShowLayoutRefresh && onRefresh && <BottomView onRefreshPlaceholder={onRefreshPlaceholder} isError={isError} errorText={isErrorText} noMore={noMore} loadingText={loadingText} />}
       </div>
 
       {(pageName === 'home' || right) && (
