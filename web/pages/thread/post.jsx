@@ -18,6 +18,7 @@ import { plus } from '@common/utils/calculate';
 import { defaultOperation } from '@common/constants/const';
 import ViewAdapter from '@components/view-adapter';
 import { formatDate } from '@common/utils/format-date';
+import { attachmentUploadMultiple } from '@common/utils/attachment-upload';
 
 @inject('site')
 @inject('threadPost')
@@ -672,6 +673,81 @@ class PostPage extends React.Component {
 
   async createThread(isDraft, isAutoSave = false) {
     const { threadPost, thread } = this.props;
+
+    // 图文混排：第三方图片转存
+    const errorTips = '帖子内容中，有部分图片转存失败，请先替换相关图片再重新发布';
+    const vditorEl = document.getElementById('dzq-vditor');
+    if (vditorEl) {
+      const errorImg = vditorEl.querySelectorAll('.editor-upload-error');
+      if (errorImg.length) {
+        Toast.error({
+          content: errorTips,
+          hasMask: true,
+          duration: 3000,
+        });
+        return;
+      }
+    }
+
+    let contentText = threadPost.postData.contentText;
+    const images = contentText.match(/<img.*?\/>/g)?.filter(image => (!image.match('alt="attachmentId-') && !image.includes('emoji')));
+    if (images) {
+      const fileurls = images.map(img => {
+        const src = img.match(/\"(.*?)\"/);
+        if (src) return src[1];
+        return false;
+      });
+
+      const toastInstance = Toast.loading({
+        content: `图片转存中...`,
+        hasMask: true,
+        duration: 0,
+      });
+      const res = await attachmentUploadMultiple(fileurls);
+      const sensitiveArr = [];
+      const uploadError = [];
+      res.forEach((ret, index) => {
+        const { code, data = {} } = ret;
+        if (code === 0) {
+          const { url, id } = data;
+          contentText = contentText.replace(images[index], `<img src=\"${url}\" alt=\"attachmentId-${id}\" />`);
+        } else if (code === -7075) {
+          sensitiveArr.push('');
+          contentText = contentText.replace(images[index], images[index].replace('alt=\"\"', 'alt=\"uploadError\"'));
+        } else {
+          uploadError.push('');
+        }
+      });
+      threadPost.setPostData({ contentText });
+      this.vditor.setValue(this.vditor.html2md(contentText));
+      toastInstance.destroy();
+
+      const uploadErrorImages = document.querySelectorAll('img[alt=uploadError]');
+      for (let i = 0; i < uploadErrorImages.length; i++) {
+        const element = uploadErrorImages[i];
+        element.setAttribute('class', 'editor-upload-error');
+      }
+
+      if (sensitiveArr.length) {
+        Toast.error({
+          content: '帖子内容中含有敏感图片，请先处理相关图片再重新发布',
+          hasMask: true,
+          duration: 4000,
+        });
+        return;
+      }
+
+      if (uploadError.length) {
+        Toast.error({
+          content: '帖子内容中，有部分图片转存失败，请先处理相关图片再重新发布',
+          hasMask: true,
+          duration: 4000,
+        });
+        return;
+      }
+    }
+
+    // 提交帖子数据
     let ret = {};
     if (!isAutoSave) this.toastInstance = Toast.loading({ content: '发布中...', hasMask: true });
     if (threadPost.postData.threadId) ret = await threadPost.updateThread(threadPost.postData.threadId);
