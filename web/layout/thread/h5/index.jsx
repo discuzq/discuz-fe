@@ -63,6 +63,7 @@ class ThreadH5Page extends React.Component {
       showContent: '',
       // inputValue: '', // 评论内容
       show: false, // 分享海报弹窗
+      stateFlag: true,
     };
 
     this.perPage = 20;
@@ -137,6 +138,7 @@ class ThreadH5Page extends React.Component {
   onMessageClick() {
     const position = this.flag ? this.position : this.nextPosition;
     this.flag = !this.flag;
+    this.setState({ stateFlag: this.flag });
     this.threadBodyRef.current.scrollTo(0, position);
   }
 
@@ -722,7 +724,6 @@ class ThreadH5Page extends React.Component {
 
     // 是否审核通过
     const isApproved = (threadStore?.threadData?.isApproved || 0) === 1;
-
     return (
       <div className={layout.container}>
         <div className={layout.header}>
@@ -794,12 +795,14 @@ class ThreadH5Page extends React.Component {
               {/* 操作区 */}
               <div className={footer.operate}>
                 <div className={footer.icon} onClick={() => this.onMessageClick()}>
-                  {totalCount > 0 ? (
+                  {totalCount > 0 && this.state.stateFlag ? (
                     <div className={classNames(footer.badge, totalCount < 10 && footer.isCricle)}>
                       {totalCount > 99 ? '99+' : `${totalCount || '0'}`}
                     </div>
                   ) : (
-                    ''
+                    <div className={footer.content}>
+                      {'正文'}
+                    </div>
                   )}
                   <Icon size="20" name="MessageOutlined"></Icon>
                 </div>

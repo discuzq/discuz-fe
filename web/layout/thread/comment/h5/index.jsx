@@ -3,16 +3,17 @@ import { inject, observer } from 'mobx-react';
 import { withRouter } from 'next/router';
 import Router from '@discuzq/sdk/dist/router';
 import styles from './index.module.scss';
-import comment from './index.module.scss';
 import CommentList from '../../h5/components/comment-list/index';
 import MorePopup from '../../h5/components/more-popup';
 // import DeletePopup from '../../h5/components/delete-popup';
 import DeletePopup from '@components/thread-detail-pc/delete-popup';
 import Header from '@components/header';
-import { Toast } from '@discuzq/design';
+import { Toast, Icon, Input } from '@discuzq/design';
 import InputPopup from '../../h5/components/input-popup';
 import ReportPopup from '../../h5/components/report-popup';
 import goToLoginPage from '@common/utils/go-to-login-page';
+import footer from './footer.module.scss';
+
 
 @inject('site')
 @inject('user')
@@ -29,8 +30,11 @@ class CommentH5Page extends React.Component {
       showCommentInput: false, // 是否弹出评论框
       commentSort: true, // ture 评论从旧到新 false 评论从新到旧
       showDeletePopup: false, // 是否弹出删除弹框
-      showReplyDeletePopup:false, // 是否弹出回复删除弹框
+      showReplyDeletePopup: false, // 是否弹出回复删除弹框
       inputText: '请输入内容', // 默认回复框placeholder内容
+      showEmojis: false,
+      showPicture: false,
+      isDisabled: true, // input框发布是否可用
     };
 
     this.commentData = null;
@@ -194,7 +198,7 @@ class CommentH5Page extends React.Component {
   }
 
   // 点击回复的删除
-  async replyDeleteClick(reply,comment) {
+  async replyDeleteClick(reply, comment) {
     this.commentData = comment;
     this.replyData = reply;
     this.setState({
@@ -202,14 +206,14 @@ class CommentH5Page extends React.Component {
     });
   }
 
-  //删除回复评论
+  // 删除回复评论
   async replyDeleteComment() {
     if (!this.replyData.id) return;
 
-    const params = {}
+    const params = {};
     if (this.replyData && this.commentData) {
-      params.replyData = this.replyData;//本条回复信息
-      params.commentData = this.commentData;//回复对应的评论信息
+      params.replyData = this.replyData;// 本条回复信息
+      params.commentData = this.commentData;// 回复对应的评论信息
     }
     const { success, msg } = await this.props.comment.deleteReplyComment(params, this.props.thread);
     this.setState({
@@ -293,7 +297,7 @@ class CommentH5Page extends React.Component {
 
     if (imageList?.length) {
       params.attachments = imageList
-        .filter((item) => item.status === 'success' && item.response)
+        .filter(item => item.status === 'success' && item.response)
         .map((item) => {
           const { id } = item.response;
           return {
@@ -356,23 +360,33 @@ class CommentH5Page extends React.Component {
 
   avatarClick(commentData) {
     const { userId } = commentData;
-    if(!userId) return;
+    if (!userId) return;
     this.props.router.push(`/user/${userId}`);
   }
 
   replyAvatarClick(reply, comment, floor) {
     if (floor === 2) {
       const { userId } = reply;
-      if(!userId) return;
-      this.props.router.push(`/user/${userId}`)
+      if (!userId) return;
+      this.props.router.push(`/user/${userId}`);
     }
     if (floor === 3) {
       const { commentUserId } = reply;
-      if(!commentUserId) return;
-      this.props.router.push(`/user/${commentUserId}`)
+      if (!commentUserId) return;
+      this.props.router.push(`/user/${commentUserId}`);
     }
   }
-
+  onInputClick = () => {
+    this.setState({ showCommentInput: true });
+  }
+  onEmojiIconClick = () => {
+    this.setState({ showCommentInput: true });
+    this.setState({ showEmojis: true });
+  }
+  onPcitureIconClick = () => {
+    this.setState({ showCommentInput: true });
+    this.setState({ showPicture: true });
+  }
   render() {
     const { commentDetail: commentData, isReady } = this.props.comment;
 
@@ -427,19 +441,50 @@ class CommentH5Page extends React.Component {
               replyClick={() => this.replyClick(commentData)}
               avatarClick={() => this.avatarClick(commentData)}
               deleteClick={() => this.deleteClick(commentData)}
-              replyLikeClick={(reply) => this.replyLikeClick(reply, commentData)}
-              replyReplyClick={(reply) => this.replyReplyClick(reply, commentData)}
-              replyAvatarClick={(reply,floor) =>this.replyAvatarClick(reply,commentData,floor)}
-              replyDeleteClick={(reply) => this.replyDeleteClick(reply, commentData)}
+              replyLikeClick={reply => this.replyLikeClick(reply, commentData)}
+              replyReplyClick={reply => this.replyReplyClick(reply, commentData)}
+              replyAvatarClick={(reply, floor) => this.replyAvatarClick(reply, commentData, floor)}
+              replyDeleteClick={reply => this.replyDeleteClick(reply, commentData)}
               onMoreClick={() => this.onMoreClick()}
               isHideEdit={true}
             ></CommentList>
           )}
         </div>
+        {isReady && (
+          <div className={styles.inputooterContainer}>
+            <div className={styles.inputFooter}>
+              {/* 评论区触发 */}
+              <div className={footer.inputClick} onClick={() => this.onInputClick()}>
+                <Input className={footer.input} placeholder="写评论" disabled={true} prefixIcon="EditOutlined"></Input>
+              </div>
 
+              {/* 操作区 */}
+              <div className={footer.operate}>
+                <Icon
+                  className={footer.icon}
+                  onClick={this.onEmojiIconClick}
+                  size="20"
+                  name="SmilingFaceOutlined"
+                ></Icon>
+                <Icon
+                  className={footer.icon}
+                  onClick={this.onPcitureIconClick}
+                  size="20"
+                  name="PictureOutlinedBig"
+                ></Icon>
+              </div>
+            </div>
+          </div>
+        )}
         <div className={styles.footer}>
           {/* 评论弹层 */}
           <InputPopup
+            showEmojis={this.state.showEmojis}
+            cancleEmojie={() => {this.setState({ showEmojis: false });}}
+            showPicture={this.state.showPicture}
+            canclePicture={() => {this.setState({ showPicture: false });}}
+            isDisabled={this.state.isDisabled}
+            setDisabled={(state) => {this.setState({isDisabled: state})}}
             visible={this.state.showCommentInput}
             inputText={this.state.inputText}
             onClose={() => this.setState({ showCommentInput: false })}
@@ -454,7 +499,7 @@ class CommentH5Page extends React.Component {
             visible={this.state.showMorePopup}
             onClose={() => this.setState({ showMorePopup: false })}
             onSubmit={() => this.setState({ showMorePopup: false })}
-            onOperClick={(type) => this.onOperClick(type)}
+            onOperClick={type => this.onOperClick(type)}
           />
 
           {/* 删除弹层 */}
@@ -477,7 +522,7 @@ class CommentH5Page extends React.Component {
             inputText={this.inputText}
             visible={this.state.showReportPopup}
             onCancel={() => this.setState({ showReportPopup: false })}
-            onOkClick={(data) => this.onReportOk(data)}
+            onOkClick={data => this.onReportOk(data)}
           ></ReportPopup>
         </div>
       </div>
