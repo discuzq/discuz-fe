@@ -82,12 +82,8 @@ class ForumH5Page extends React.Component {
             <View className={layout.label}>站长</View>
             <View className={layout.right}>
               <View className={layout.forum_agent}>
-                {siteAuthor.avatar ? (
-                  <Avatar size="small" className={layout.forum_agent_img} image={siteAuthor.avatar} />
-                ) : (
-                  <></>
-                )}
-                <View className={layout.forum_agent_name}>{siteAuthor.username}</View>
+                <Avatar size="small" className={layout.forum_agent_img} image={siteAuthor.avatar} text={siteAuthor?.nickname?.substring(0, 1)?.toUpperCase()}/>
+                <View className={layout.forum_agent_name}>{siteAuthor.nickname}</View>
               </View>
             </View>
           </View>

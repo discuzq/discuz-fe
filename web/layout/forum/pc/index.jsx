@@ -1,7 +1,8 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'next/router';
-import { Icon, Avatar, ScrollView } from '@discuzq/design';
+import { Icon, ScrollView } from '@discuzq/design';
+import Avatar from '@components/avatar';
 import '@discuzq/design/dist/styles/index.scss';
 import layout from './index.module.scss';
 import BaseLayout from '@components/user-center-base-laout-pc';
@@ -101,16 +102,13 @@ class ForumPCPage extends React.Component {
             </div>
             <div className={layout.user_info_value}>
               <div className={layout.user_value_item}>
-                {
-                  siteAuthor.avatar
-                    ? <Avatar
-                        size='small'
-                        className={layout.user_value_avatar}
-                        image={siteAuthor.avatar}
-                      />
-                    : <></>
-                }
-                <div className={layout.user_value_name} title={siteAuthor.username}>{siteAuthor.username}</div>
+                <Avatar
+                  size='small'
+                  className={layout.user_value_avatar}
+                  image={siteAuthor.avatar}
+                  name={siteAuthor.nickname}
+                />
+                <div className={layout.user_value_name} title={siteAuthor.nickname}>{siteAuthor.nickname}</div>
               </div>
               <div className={layout.user_value_item} title={numberFormat(userTotal)}>{numberFormat(userTotal)}</div>
               <div
@@ -159,7 +157,7 @@ class ForumPCPage extends React.Component {
               <div className={layout.user_value_item}>
                 <Avatar
                   size='small'
-                  text={myGroup?.nickname}
+                  name={myGroup?.nickname}
                   className={layout.user_value_avatar}
                   image={myGroup?.avatar}
                 />

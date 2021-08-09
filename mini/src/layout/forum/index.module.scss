@@ -1,10 +1,12 @@
 @import '@common/styles/index.scss';
 
 @mixin img {
-  width: rem(18);
-  height: rem(18);
+  width: rem(20);
+  height: rem(20);
+  line-height: $font-line-height-xs;
   border-radius: $border-radius-circle;
   border: rem(1) solid $white;
+  box-sizing: border-box;
   background: $text-color-secondary;
   display: inline-block;
 }
@@ -57,7 +59,6 @@
     align-items: center;
     .forum_member_img{
       @include img;
-      line-height: $font-line-height-xs;
     }
     .forum_member_img:nth-child(2){
       position: relative;
