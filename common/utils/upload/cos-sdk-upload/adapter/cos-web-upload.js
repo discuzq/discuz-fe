@@ -12,8 +12,8 @@ export default (options) => {
       qcloudCosBucketArea: Region,
       qcloudCosSignUrl: isOpenSign,
     } = options;
-    debugger;
-    if (!qcloudCos) {
+
+    if (!qcloudCos || typeof file === 'string') {
       reject('error');
       return;
     }
