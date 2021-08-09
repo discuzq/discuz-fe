@@ -711,7 +711,7 @@ class PostPage extends React.Component {
         duration: 0,
       });
       const res = await upload({
-        fileurls,
+        files: fileurls,
         type: 1,
         supportImgExt,
         supportMaxSize,
