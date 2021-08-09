@@ -30,10 +30,10 @@ const SearchInput = ({
     const val = e.target.value;
     setValue(val);
     if (val.length > 0) {
-      setIsShow(true)
+      setIsShow(true);
     }
-    if(searchWhileTyping && val.length >= searchWhileTypingStartsAt) {
-      if(timeoutID !== null) { // 做一个防抖Debounce
+    if (searchWhileTyping && val.length >= searchWhileTypingStartsAt) {
+      if (timeoutID !== null) { // 做一个防抖Debounce
         clearTimeout(timeoutID);
         setTimeoutID(null);
       }
@@ -41,22 +41,22 @@ const SearchInput = ({
         onSearch(val);
       }, searchWhileTyping ? 1000 : 0));
     }
-  }
+  };
 
   const onEnter = (e) => {
-    if(timeoutID !== null) {
+    if (timeoutID !== null) {
       clearTimeout(timeoutID);
       setTimeoutID(null);
     }
     setTimeoutID(setTimeout(() => {
       onSearch(e.target.value);
     }, 500));
-  }
+  };
 
   const clearInput = () => {
     setValue('');
-    setIsShow(false)
-  }
+    setIsShow(false);
+  };
 
   return (
     <div className={`${styles.container} ${!isShowBottom && styles.hiddenBottom}`}>
@@ -68,6 +68,7 @@ const SearchInput = ({
           onEnter={e => onEnter(e)}
           onChange={e => inputChange(e)}
           className={styles.input}
+          autoComplete={'off'}
         />
         {
           isShow && (

@@ -28,7 +28,7 @@ class ThreadAction extends ThreadStore {
 
   @action
   updateViewCount(viewCount) {
-    this.threadData.viewCount = viewCount;
+    this.threadData && (this.threadData.viewCount = viewCount);
   }
 
   @action
@@ -47,6 +47,11 @@ class ThreadAction extends ThreadStore {
     }
 
     return userRes;
+  }
+
+  @action
+  setCommentListPage(page) {
+    this.page = page;
   }
 
   /**
@@ -88,7 +93,17 @@ class ThreadAction extends ThreadStore {
     if (code === 0) this.setThreadData(data);
     return ret;
   }
-
+  /**
+   * 图片加载完成后数量加一
+   */
+  @action
+  setContentImgLength() {
+    this.contentImgLength += 1;
+  }
+  @action
+  clearContentImgState() {
+    this.contentImgLength = 0;
+  }
   /**
    * 获取帖子内的附件url
    * @param {number} id 帖子id
@@ -516,11 +531,15 @@ class ThreadAction extends ThreadStore {
 
     if (res.code === 0 && res?.data?.pageData) {
       let { commentList } = this;
+      if (!commentList) {
+        commentList = [];
+      }
 
       page === 1 ? (commentList = res?.data?.pageData || []) : commentList.push(...(res?.data?.pageData || []));
 
       this.setCommentList(this.commentListAdapter(commentList));
       this.setTotalCount(res?.data?.totalCount || 0);
+      this.totalPage = res?.data.totalPage;
 
       return {
         msg: '操作成功',

@@ -62,12 +62,11 @@ class Index extends Component {
   // 渲染草稿单项
   renderItem = ({ item, isLast }) => {
     return (
-      <View
-        className={classNames(styles.item, { [styles['border-none']]: isLast })}
-        onClick={() => this.handleEdit(item)}
-      >
+      <View className={classNames(styles.item, { [styles['border-none']]: isLast })}>
         <ThreadCenterView data={item} onClick={() => this.handleEdit(item)} />
-        <View className={styles['item-time']}>编辑于&nbsp;{item.updatedAt}</View>
+        <View className={styles['item-time']} onClick={() => this.handleEdit(item)}>
+          编辑于&nbsp;{item.updatedAt}
+        </View>
       </View>
     );
   };

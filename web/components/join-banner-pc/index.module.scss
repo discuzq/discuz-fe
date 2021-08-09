@@ -8,10 +8,15 @@
   background-repeat: no-repeat;
   background-size: 100%;
   background-position: center;
+  justify-content: center;
+  align-items: center;
   .logo {
-    width: 432px;
-    margin: 0 auto;
-    margin-top: $margin-4n * 2;
+    max-height: 88px;
+    position: relative;
+    object-fit: contain;
+    place-self: flex-start;
+    left: 50%;
+    transform: translateX(-50%);
   }
 }
 .joinInfo {
@@ -38,12 +43,5 @@
   }
   .content {
     padding-left: rem($padding-2n);
-  }
-}
-.showData {
-  display: flex;
-  justify-content: center;
-  .logo {
-    margin: 0 calc(50% - 216px);
   }
 }

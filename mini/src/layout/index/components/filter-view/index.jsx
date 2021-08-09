@@ -56,7 +56,10 @@ const Index = ({ permissions = {}, visible, data: tmpData = [], current, onSubmi
   const handleCategoryIds = (arr) => {
     if (arr?.length) {
       const pid = arr[0]
-      if (arr.length > 1) { // 若是大于1，则说明点击的是一级分类
+      const isBool = arr.length === 1 && (arr[0] === 'all' || arr[0] === 'default')
+
+      // 若是大于1，或者等于1且为'all'/'default'，则说明点击的是一级分类
+      if (arr.length > 1 || isBool) { 
         setFirst(pid)
         setTwo(pid, tmpData)
       } else { // 若是等于1，则说明点击的是没有二级分类的一级分类或者是二级分类

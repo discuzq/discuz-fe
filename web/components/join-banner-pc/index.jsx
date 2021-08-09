@@ -14,7 +14,7 @@ import { numberFormat } from '@common/utils/number-format';
  @observer
 class JoinBanner extends React.Component {
   static defaultProps = {
-    isShowData: true
+    isShowData: false
   }
 
   getBgHeaderStyle() {
@@ -38,14 +38,14 @@ class JoinBanner extends React.Component {
     const createDays = numberFormat(parseInt(Math.abs(startDate  -  endDate) / 1000 / 60 / 60 / 24, 10));
 
     return (
-      <div className={`${styles.content_header} ${isShowData && styles.showData}`} style={{...this.getBgHeaderStyle()}}>
+      <div className={styles.content_header} style={{...this.getBgHeaderStyle()}}>
         <img
             className={styles.logo}
             mode="aspectFit"
             src={siteHeaderLogo || '/dzq-img/join-banner-bg.png'}
         />
         {
-          !isShowData
+          isShowData
           && <ul className={styles.joinInfo}>
               <li className={styles.item}>
                 <span className={styles.text}>站长</span>

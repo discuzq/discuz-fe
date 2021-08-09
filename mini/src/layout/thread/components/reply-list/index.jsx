@@ -105,8 +105,8 @@ export default class ReplyList extends React.Component {
   };
 
   toCommentDetail = () => {
-    typeof this.props.toCommentDetail === 'function' && this.props.toCommentDetail()
-  }
+    typeof this.props.toCommentDetail === 'function' && this.props.toCommentDetail();
+  };
 
   render() {
     const { canLike, canDelete, canHide } = this.generatePermissions(this.props.data);
@@ -116,7 +116,7 @@ export default class ReplyList extends React.Component {
     const isApproved = this.props?.data?.isApproved === 1;
 
     return (
-      <View className={styles.replyList}>
+      <View className={styles.replyList} id={`position${this.props.data?.id}`}>
         <View
           className={styles.replyListAvatar}
           onClick={() => {
@@ -133,21 +133,20 @@ export default class ReplyList extends React.Component {
           ></Avatar>
         </View>
         <View className={styles.replyListContent}>
-          <View className={styles.replyListContentText}>
+          <View className={`${styles.replyListContentText} ${this.props.active && styles.active}`}>
             <View className={styles.replyListName}>
               <View className={styles.userInfo}>
-                <View className={styles.replyListName} onClick={() => {this.avatarClick(2)}}>
-                    {this.props.data?.user?.nickname || this.props.data?.user?.userName || '用户异常'}
+                <View
+                  className={styles.replyListName}
+                  onClick={() => {
+                    this.avatarClick(2);
+                  }}
+                >
+                  {this.props.data?.user?.nickname || this.props.data?.user?.userName || '用户异常'}
                 </View>
-                {!!groups?.isDisplay  && (
-                  <View className={styles.groups}>{groups?.name || groups?.groupName}</View>
-                )}
+                {!!groups?.isDisplay && <View className={styles.groups}>{groups?.name || groups?.groupName}</View>}
               </View>
-                {!isApproved ? (
-                  <View className={styles.isApproved}>审核中</View>
-                ) : (
-                  <View></View>
-                )}
+              {!isApproved ? <View className={styles.isApproved}>审核中</View> : <View></View>}
             </View>
             <View className={styles.replyListText}>
               {/* 回复内容 */}

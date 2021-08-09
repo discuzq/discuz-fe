@@ -123,7 +123,7 @@ const Index = ({ message, user, site: { webConfig, envConfig }, dialogId: _dialo
         'authorization': `Bearer ${token}`
       },
       formData: {
-        type: 1,
+        type: 4,
         dialogMessageId: file.dialogMessageId,
       },
       success(res) {

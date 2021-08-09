@@ -29,7 +29,7 @@
   "license": "MIT",
   "dependencies": {
     "@babel/runtime": "7.7.7",
-    "@discuzq/design": "^1.0.61",
+    "@discuzq/design": "^1.0.62",
     "@discuzq/discuz-babel-plugin-import": "0.0.1",
     "@discuzq/plugin": "^1.0.31",
     "@discuzq/sdk": "^1.0.34",

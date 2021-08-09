@@ -225,7 +225,7 @@ const Index = (props) => {
     }
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('type', 1);
+    formData.append('type', 4);
     formData.append('dialogMessageId', file.dialogMessageId);
     const ret = await createAttachment(formData);
     if (ret.code !== 0) file.isImageFail = true;

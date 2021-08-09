@@ -92,18 +92,7 @@ class Index extends React.Component {
     const { router, index, site } = this.props;
     let { categoryId = '', sequence = '0' } = router.query || {}
 
-    if (site.platform === 'pc') {
-      // 设置PC端左边栏
-      if (categoryId === '') {
-        categoryId = 'all'
-      }
-
-      // 设置PC端顶部
-      if (sequence !== '0') {
-        index.topMenuIndex = `${sequence}`
-      }
-    }
-
+    // 路由中带值
     if (categoryId || sequence !== '0') {
       let ids = categoryId.split('_').map(item => {
         // 判断categoryId是否是数字。可能是all/default
@@ -112,18 +101,30 @@ class Index extends React.Component {
         return id
       }).filter(item => item)
 
-      if (sequence === '1' && !ids?.length) {
+      // H5处理方案
+      if (sequence === '1' && !ids?.length && site.platform === 'h5') {
         ids = ['default']
       }
 
-      if (ids.indexOf('default') !== -1 && sequence === '0') {
+      if (ids.indexOf('default') !== -1 && sequence === '0' && site.platform === 'h5') {
         sequence = '1'
+      }
+
+      // PC处理方案
+      if (!ids?.length && site.platform === 'pc') {
+        ids = ['all']
+      }
+
+      // 设置PC端顶部
+      if (sequence !== '0' && site.platform === 'pc') {
+        index.topMenuIndex = `${sequence}`
       }
 
       const newFilter = { ...index.filter, categoryids: ids, sequence };
 
       index.setFilter(newFilter);
     } else {
+      // 路由中不带值，从store中获取
       const { categoryids, sequence: seq } = index.filter || {}
       this.setUrl(categoryids, seq)
     }

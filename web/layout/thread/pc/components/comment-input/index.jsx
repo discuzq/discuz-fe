@@ -28,6 +28,7 @@ const CommentInput = inject('site')((props) => {
   const [showPicture, setShowPicture] = useState(false);
   const [imageList, setImageList] = useState([]);
   const [imageUploading, setImageUploading] = useState(false);
+  const [cursorPos, setCursorPos] = useState(0);
 
   useEffect(() => {
     setPlaceholder(placeholder);
@@ -52,6 +53,7 @@ const CommentInput = inject('site')((props) => {
       // setShowEmojis(!showEmojis);
       return;
     }
+    setCursorPos(0);
     setShowEmojis(false);
   }, []);
 
@@ -78,6 +80,7 @@ const CommentInput = inject('site')((props) => {
       return;
     }
 
+    setCursorPos(0);
     setShowEmojis(!showEmojis);
     setShowAt(false);
 
@@ -97,6 +100,7 @@ const CommentInput = inject('site')((props) => {
     }
 
     setShowAt(!showAt);
+    setCursorPos(0);
     setShowEmojis(false);
   };
 
@@ -106,6 +110,7 @@ const CommentInput = inject('site')((props) => {
     }
 
     setShowPicture(!showPicture);
+    setCursorPos(0);
     setShowEmojis(false);
     setShowAt(false);
   };
@@ -113,11 +118,17 @@ const CommentInput = inject('site')((props) => {
   // 完成选择表情
   const onEmojiClick = (emoji) => {
     // 在光标位置插入
-    const insertPosition = textareaRef?.current?.selectionStart || 0;
+    let insertPosition = 0;
+    if (cursorPos === 0) {
+      insertPosition = textareaRef?.current?.selectionStart || 0;
+    } else {
+      insertPosition = cursorPos;
+    }
     const newValue = value.substr(0, insertPosition) + (emoji.code || '') + value.substr(insertPosition);
     setValue(newValue);
+    setCursorPos(insertPosition + emoji.code.length);
 
-    setShowEmojis(false);
+    // setShowEmojis(false);
   };
 
   // 完成选择@人员
@@ -128,6 +139,7 @@ const CommentInput = inject('site')((props) => {
     const newValue = value.substr(0, insertPosition) + (atListStr || '') + value.substr(insertPosition);
     setValue(newValue);
 
+    setCursorPos(0);
     setShowEmojis(false);
   };
 

@@ -2,22 +2,22 @@ import React from 'react'
 import { View, Button, Text } from '@tarojs/components'
 import styles from './index.module.scss'
 import Icon from '@discuzq/design/dist/components/icon/index';
-import Taro, { useDidHide, useDidShow } from '@tarojs/taro'
+import Taro, { useEffect, useDidShow } from '@tarojs/taro'
 import classNames from 'classnames';
 import Popup from '@discuzq/design/dist/components/popup/index';
 
-const index = ({show, setShow, tipData, data, getShareData, shareNickname, shareAvatar, shareThreadid}) => {
-    const {threadId} = tipData
+const Index = ({show, setShow, data = '', getShareData, shareNickname, shareAvatar, shareThreadid, index}) => {
     let threadTitle = ''
     const thread = data
-    threadTitle = thread.title
+    threadTitle = thread?.title
+    const {threadId} = thread || ''
     const shareData = {
         comeFrom:'thread',
         threadId,
         title:threadTitle,
         path: `/indexPages/thread/index?id=${threadId}`,
         isAnonymous: thread.isAnonymous,
-        isPrice: thread.displayTag.isPrice,
+        isPrice: thread?.displayTag?.isPrice,
     }
     const handleClick = () => {
         setShow(false)
@@ -90,4 +90,4 @@ const index = ({show, setShow, tipData, data, getShareData, shareNickname, share
     )
 }
 
-export default React.memo(index)
+export default React.memo(Index)

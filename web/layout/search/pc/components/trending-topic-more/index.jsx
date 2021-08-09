@@ -42,15 +42,6 @@ const Topic = ({ data, onClick = noop, index, footer }) => {
     imageData = []
   } = handleAttachmentData(data?.threads[0]?.content);
 
-  
-  const filterContent = useMemo(() => {
-    let newContent = replaceSearchResultContent(text);
-    newContent = s9e.parse(newContent);
-    newContent = xss(newContent);
-
-    return newContent;
-  }, [threads]);
-
   return (
     <div className={styles.item} onClick={click}>
       <div className={styles.imgBox}>

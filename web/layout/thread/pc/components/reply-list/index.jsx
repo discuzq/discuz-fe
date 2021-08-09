@@ -120,7 +120,7 @@ export default class ReplyList extends React.Component {
         </div>
 
         <div className={styles.replyListContent}>
-          <div className={styles.replyListContentText}>
+        <div className={`${styles.replyListContentText} ${this.props.active && styles.active}`}>
             <div className={styles.replyHeader}>
               <div className={styles.userInfo}>
                 <div className={styles.replyListName} onClick={() => this.avatarClick(2)}>

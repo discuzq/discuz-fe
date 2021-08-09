@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState , useMemo } from 'react';
 import { arrTrans, getWindowHeight } from './utils';
 import List from './List';
 import { inject, observer } from 'mobx-react';
-import { useMemo } from 'react';
+
 
 /**
  * 列表组件，集成上拉刷新能力
@@ -16,7 +16,7 @@ const VirtualList = ({
   data,
   isClickTab,
   wholePageIndex,
-  index: indexStore
+  index: indexStore,
 }) => {
   const [dataSource, setDataSource] = useState([]);
   const windowHeight = useRef(null)
@@ -38,7 +38,7 @@ const VirtualList = ({
 
           indexStore.changeInfo = null
         } else {
-          const length = arr.length
+          const {length} = arr
           if (length && data.length > arrLength) {
             if (arrLength === 0) {
               setDataSource(arr)
@@ -56,7 +56,7 @@ const VirtualList = ({
   const getThreadInfo = (threadId) => {
     let pIndex = -1
     let sIndex = -1
-    let newArr = [ ...dataSource ];
+    const newArr = [ ...dataSource ];
     newArr.forEach((subArr, index) => {
       for(let i = 0; i < subArr.length; i++) {
         if(subArr[i].threadId === threadId) {

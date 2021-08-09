@@ -15,6 +15,9 @@ import { toTCaptcha } from '@common/utils/to-tcaptcha'
 import PayBox from '@components/payBox/index';
 import { ORDER_TRADE_TYPE } from '@common/constants/payBoxStoreConstants';
 import { get } from '@common/utils/get';
+import { formatDate } from '@common/utils/format-date';
+import * as localData from '@common/utils/thread-post-localdata';
+import TagLocalData from '@components/thread-post/tag-localdata';
 
 @inject('payBox')
 @inject('index')
@@ -62,8 +65,9 @@ class Index extends Component {
     } else {
       this.props.threadPost.setThreadStatus(THREAD_STATUS.create);
       this.setCategory();
-      // this.openSaveDraft(); // 现阶段，自动保存功能关闭
     }
+    this.openSaveDraft();
+    if (this.getPostDataFromLocal()) this.props.threadPost.setLocalDataStatus(true);
     // 监听腾讯验证码事件
     Taro.eventCenter.on('captchaResult', this.handleCaptchaResult);
     Taro.eventCenter.on('closeChaReault', this.handleCloseChaReault);
@@ -77,7 +81,7 @@ class Index extends Component {
     // 卸载发帖页时清理定时器、事件监听、重置发帖数据
     const { resetPostData } = this.props.threadPost;
     resetPostData();
-    clearInterval(this.timer);
+    if (this.timer) clearInterval(this.timer);
     Taro.eventCenter.off('captchaResult', this.handleCaptchaResult);
     Taro.eventCenter.off('closeChaReault', this.handleCloseChaReault);
     this.props.thread.reset();
@@ -167,18 +171,37 @@ class Index extends Component {
     this.props.threadPost.setCategorySelected(categorySelected);
   }
 
+  saveDataLocal = () => {
+    const { threadPost, user } = this.props;
+    localData.setThreadPostDataLocal({ postData: threadPost.postData, userId: user.userInfo.id });
+  };
+
+  // 从本地缓存中获取数据
+  getPostDataFromLocal = () => localData.getThreadPostDataLocal(
+    this.props.user.userInfo.id,
+    this.inst.router.params.id,
+  );
+
+  removeLocalData = () => {
+    localData.removeThreadPostDataLocal();
+  }
+
   openSaveDraft = () => {
-    clearInterval(this.timer);
+    if (this.timer) clearInterval(this.timer);
     this.timer = setInterval(() => {
       this.autoSaveDraft();
-    }, 120000)
+    }, 30000)
   }
 
   autoSaveDraft = async () => {
-    const { postData, setPostData } = this.props.threadPost;
-    if (postData.contentText.length === 0) return;
-    !postData.draft && setPostData({ draft: 1 });
-    this.handleSubmit(true);
+    const { setPostData } = this.props.threadPost;
+    if (this.isHaveContent()) {
+      // !postData.draft && setPostData({ draft: 1 });
+      this.saveDataLocal();
+      // this.createThread(true, false, true);
+      const now = formatDate(new Date(), 'hh:mm');
+      setPostData({ autoSaveTime: now });
+    }
   }
 
   // 监听title输入
@@ -441,12 +464,21 @@ class Index extends Component {
     return true;
   }
 
+  isHaveContent() {
+    const { postData } = this.props.threadPost;
+    const { images, video, files, audio } = postData;
+    if (!(postData.contentText || video.id || audio.id || Object.values(images).length
+      || Object.values(files).length)) {
+      return false;
+    }
+    return true;
+  }
+
   handleSubmit = async (isDraft) => {
     // 1 校验
     const { contentTextLength } = this.state;
     const { threadPost, site } = this.props;
     const { postData, redpacketTotalAmount } = threadPost;
-    const { images, video, files, audio } = postData;
     if (contentTextLength <= 0) {
       this.postToast(`最多输入${MAX_COUNT}字`);
       return;
@@ -455,8 +487,7 @@ class Index extends Component {
     // 判断录音状态
     if (!this.checkAudioRecordStatus()) return;
 
-    if (!(postData.contentText || video.id || audio.id || Object.values(images).length
-      || Object.values(files).length)) {
+    if (!this.isHaveContent()) {
       this.postToast('请至少填写您要发布的内容或者上传图片、附件、视频、语音');
       return;
     }
@@ -525,6 +556,7 @@ class Index extends Component {
         },
         success: async () => {
           this.setIndexPageData();
+          this.removeLocalData(); // 支付成功删除本地缓存
           if (this.state.threadId)
             Taro.redirectTo({ url: `/indexPages/thread/index?id=${this.state.threadId}` });
         },
@@ -534,12 +566,12 @@ class Index extends Component {
     return this.createThread(isDraft);
   }
 
-  async createThread(isDraft, isPay) {
+  async createThread(isDraft, isPay, isAutoSave = false) {
     const { threadId } = this.state;
     const { threadPost } = this.props;
     const { setPostData } = threadPost;
     // 5 loading
-    Taro.showLoading({
+    !isAutoSave && Taro.showLoading({
       title: isDraft && !isPay ? '保存草稿中...' : '发布中...',
       mask: true
     });
@@ -564,7 +596,7 @@ class Index extends Component {
       Taro.hideLoading();
 
       // 未支付的订单
-      if (isDraft && threadPost.postData.orderInfo.orderSn
+      if (isDraft && !isAutoSave && threadPost.postData.orderInfo.orderSn
         && !threadPost.postData.orderInfo.status
         && !threadPost.postData.draft) {
         this.props.payBox.show();
@@ -573,8 +605,9 @@ class Index extends Component {
 
       if (!isDraft) {
         this.setIndexPageData();
+        this.removeLocalData(); // 支付成功删除本地缓存
       }
-      this.postToast('发布成功', 'success');
+      !isAutoSave && this.postToast('发布成功', 'success');
       if (!isDraft) Taro.redirectTo({ url: `/indexPages/thread/index?id=${data.threadId}` });
       // }
       return true;
@@ -794,9 +827,12 @@ class Index extends Component {
           >
             {/* 插入内容tag展示区 */}
             <View className={styles.tags} style={{ display: bottomHeight ? 'none' : 'block' }}>
-              {(permissions?.insertPosition?.enable) &&
+              {this.props.threadPost.isHaveLocalData && (<View className={styles['post-localdata']}>
+                <TagLocalData pid={this.inst.router.params.id} />
+              </View>)}
+              {(permissions?.insertPosition?.enable || postData.autoSaveTime) &&
                 <View className={styles['location-bar']}>
-                  <Position
+                  {permissions?.insertPosition?.enable && (<Position
                     currentPosition={position}
                     positionChange={(position) => {
                       setPostData({ position });
@@ -804,7 +840,11 @@ class Index extends Component {
                     canJumpToChoose={() => {
                       return this.checkAudioRecordStatus();
                     }}
-                  />
+                  />)}
+                  {/* 自动保存提示 */}
+                  {postData.autoSaveTime && (
+                    <View className={styles['post-autosave']}>最近保存{postData.autoSaveTime}</View>
+                  )}
                 </View>
               }
               {(Boolean(postData.price || postData.attachmentPrice) || redpacket.price || rewardQa.value) && (

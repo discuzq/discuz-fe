@@ -20,5 +20,7 @@ export const initPostData = {
   randstr: '', // 腾讯云验证码返回随机字符串
   isDraft: false, // 是否是编辑的草稿
   orderInfo: {}, // 订单信息
-  threadId: '',
+  threadId: '', // 文章id
+  autoSaveTime: '', // 自动保存时间
+  isResetContentText: false, // 是否重置编辑器中的值
 };

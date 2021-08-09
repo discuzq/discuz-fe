@@ -11,7 +11,7 @@ import { inject, observer } from 'mobx-react';
 import { withRouter } from 'next/router';
 
 const ClassifyPopup = (props) => {
-  const { pc, show, onVisibleChange, onClick = () => {} } = props;
+  const { pc, show, onVisibleChange, onClick = () => {}, categoryId } = props;
   const [categoryChildren, setCategoryChildren] = useState([]);
   const [selected, setSelected] = useState({});
   const [selectedChild, setSelectedChild] = useState({});
@@ -71,8 +71,8 @@ const ClassifyPopup = (props) => {
   }, [props.threadPost.categories.length, props.router.query.id]);
 
   useEffect(() => {
-    setSeletedCategory(props?.threadPost?.postData?.categoryId);
-  }, [props?.threadPost?.postData?.categoryId]);
+    setSeletedCategory(categoryId);
+  }, [categoryId]);
 
   // useEffect(() => {
   //   setChildren(selected);

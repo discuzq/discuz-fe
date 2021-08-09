@@ -150,6 +150,7 @@ class index extends Component {
         maxLength={6}
         value={this.props.payBox?.password}
         onChange={this.handleSetPwd}
+        autoComplete={'new-password'}
         placeholder="请设置您的支付密码"
         mode="password"
       />
@@ -166,6 +167,7 @@ class index extends Component {
           maxLength={6}
           value={this.props.payBox?.oldPayPwd}
           mode="password"
+          autoComplete={'new-password'}
           placeholder="请输入旧密码"
           onChange={this.handleChangeOldPwd}
         />
@@ -181,6 +183,7 @@ class index extends Component {
   handleClose = () => {
     this.initState();
     this.props.onClose();
+    this.props.payBox.clearPayPassword();
   };
 
   renderContent = () => {

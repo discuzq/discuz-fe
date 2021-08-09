@@ -59,6 +59,10 @@
         border-radius: rem($border-radius-small);
         background: $body-bg-color;
 
+        &.active {
+          background: $primary-color10;
+        }
+
         .commentHeader {
           display: flex;
           justify-content: space-between;
@@ -100,7 +104,7 @@
               height: rem(22);
             }
 
-            .dzq-p  {
+            .dzq-p {
               margin-bottom: 0;
             }
           }

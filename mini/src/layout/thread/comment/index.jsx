@@ -1,6 +1,6 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import { View } from '@tarojs/components';
+import { View, ScrollView } from '@tarojs/components';
 import Router from '@discuzq/sdk/dist/router';
 import styles from './index.module.scss';
 import CommentList from '../components/comment-list/index';
@@ -30,10 +30,11 @@ class CommentH5Page extends React.Component {
       showMorePopup: false, // 是否弹出更多弹框
       showCommentInput: false, // 是否弹出评论框
       showDeletePopup: false, // 是否弹出删除弹框
-      showReplyDeletePopup:false, // 是否弹出回复删除弹框
+      showReplyDeletePopup: false, // 是否弹出回复删除弹框
       inputText: '请输入内容', // 默认回复框placeholder内容
       showEmojis: false,
       showPicture: false,
+      toView: '',
     };
 
     this.commentData = null;
@@ -52,6 +53,23 @@ class CommentH5Page extends React.Component {
     // 举报内容选项
     this.reportContent = ['广告垃圾', '违规内容', '恶意灌水', '重复发帖'];
     this.inputText = '其他理由...';
+
+    this.positionRef = React.createRef();
+    this.isPositioned = false;
+  }
+
+  componentDidUpdate() {
+    // 滚动到指定的评论定位位置
+    if (this.props.comment?.postId && !this.isPositioned && this.positionRef?.current) {
+      this.isPositioned = true;
+      const { postId } = this.props.comment;
+
+      setTimeout(() => {
+        this.setState({
+          toView: `position${postId}`,
+        });
+      }, 1000);
+    }
   }
 
   componentWillUnmount() {
@@ -118,7 +136,7 @@ class CommentH5Page extends React.Component {
   }
 
   // 点击回复的删除
-  async replyDeleteClick(reply,comment) {
+  async replyDeleteClick(reply, comment) {
     this.commentData = comment;
     this.replyData = reply;
     this.setState({
@@ -130,10 +148,10 @@ class CommentH5Page extends React.Component {
   async replyDeleteComment() {
     if (!this.replyData.id) return;
 
-    const params = {}
+    const params = {};
     if (this.replyData && this.commentData) {
-      params.replyData = this.replyData;// 本条回复信息
-      params.commentData = this.commentData;// 回复对应的评论信息
+      params.replyData = this.replyData; // 本条回复信息
+      params.commentData = this.commentData; // 回复对应的评论信息
     }
     const { success, msg } = await this.props.comment.deleteReplyComment(params, this.props.thread);
     this.setState({
@@ -150,23 +168,23 @@ class CommentH5Page extends React.Component {
     });
   }
 
-  replyAvatarClick(reply,commentData,floor) {
+  replyAvatarClick(reply, commentData, floor) {
     if (floor === 2) {
       const { userId } = reply;
-      if(!userId) return;
-      Router.push({url: `/subPages/user/index?id=${userId}`});
+      if (!userId) return;
+      Router.push({ url: `/subPages/user/index?id=${userId}` });
     }
     if (floor === 3) {
       const { commentUserId } = reply;
-      if(!commentUserId) return;
-      Router.push({url: `/subPages/user/index?id=${commentUserId}`});
+      if (!commentUserId) return;
+      Router.push({ url: `/subPages/user/index?id=${commentUserId}` });
     }
   }
 
   avatarClick(commentData) {
     const { userId } = commentData;
-    if(!userId) return;
-    Router.push({url: `/subPages/user/index?id=${userId}`});
+    if (!userId) return;
+    Router.push({ url: `/subPages/user/index?id=${userId}` });
   }
 
   // 点击评论的赞
@@ -438,23 +456,27 @@ class CommentH5Page extends React.Component {
           </View> */}
 
         {/* 内容 */}
-        <View className={styles.content}>
-          {isReady && (
-            <CommentList
-              data={commentData}
-              likeClick={() => this.likeClick(commentData)}
-              replyClick={() => this.replyClick(commentData)}
-              deleteClick={() => this.deleteClick(commentData)}
-              avatarClick={() => this.avatarClick(commentData)}
-              replyLikeClick={(reploy) => this.replyLikeClick(reploy, commentData)}
-              replyReplyClick={(reploy) => this.replyReplyClick(reploy, commentData)}
-              replyDeleteClick={(reply) => this.replyDeleteClick(reply, commentData)}
-              replyAvatarClick={(reply,floor) =>this.replyAvatarClick(reply,commentData,floor)}
-              onMoreClick={() => this.onMoreClick()}
-              isHideEdit
-            ></CommentList>
-          )}
-        </View>
+        <ScrollView className={styles.body} scrollY scrollIntoView={this.state.toView}>
+          <View className={styles.content}>
+            {isReady && (
+              <CommentList
+                data={commentData}
+                likeClick={() => this.likeClick(commentData)}
+                replyClick={() => this.replyClick(commentData)}
+                deleteClick={() => this.deleteClick(commentData)}
+                avatarClick={() => this.avatarClick(commentData)}
+                replyLikeClick={(reploy) => this.replyLikeClick(reploy, commentData)}
+                replyReplyClick={(reploy) => this.replyReplyClick(reploy, commentData)}
+                replyDeleteClick={(reply) => this.replyDeleteClick(reply, commentData)}
+                replyAvatarClick={(reply,floor) =>this.replyAvatarClick(reply,commentData,floor)}
+                onMoreClick={() => this.onMoreClick()}
+                isHideEdit
+                postId={this.props.comment.postId}
+                positionRef={this.positionRef}
+              ></CommentList>
+            )}
+          </View>
+        </ScrollView>
         {isReady && (
           <View className={classNames(styles.inputFooterContainer, this.state.showCommentInput && styles.zindex)}>
           <View className={classNames(styles.inputFooter, this.state.showCommentInput && styles.zindex)}>
@@ -536,7 +558,7 @@ class CommentH5Page extends React.Component {
             onOkClick={(data) => this.onReportOk(data)}
           ></ReportPopup>
         </View>
-      </View>
+        </View>
       </View>
     );
   }

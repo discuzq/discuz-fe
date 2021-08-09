@@ -47,7 +47,7 @@ class CommentDetail extends React.Component {
   }
 
   async componentDidMount() {
-    const { id, threadId } = this.props.router.query;
+    const { id, threadId, postId } = this.props.router.query;
 
     // 判断缓存
     const oldId = this.props?.comment?.commentDetail?.id;
@@ -58,6 +58,10 @@ class CommentDetail extends React.Component {
 
     if (threadId) {
       this.props.comment.setThreadId(threadId);
+    }
+
+    if (postId) {
+      this.props.comment.setPostId(Number(postId));
     }
 
     if (!this.props.serverData && id) {
@@ -103,7 +107,9 @@ class CommentDetail extends React.Component {
       );
     }
 
-    return <ViewAdapter h5={<CommentH5Page />} pc={<CommentPCPage />} />;
+    return <ViewAdapter
+    h5={<CommentH5Page canPublish={this.props.canPublish}/>}
+    pc={<CommentPCPage canPublish={this.props.canPublish}/>} />;
   }
 }
 

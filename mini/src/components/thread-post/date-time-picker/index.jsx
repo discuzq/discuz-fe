@@ -1,16 +1,10 @@
 import React, { Component } from 'react';
-import { View, PickerView, PickerViewColumn, } from '@tarojs/components';
+import { View, PickerView, PickerViewColumn } from '@tarojs/components';
 import Button from '@discuzq/design/dist/components/button/index';
 import styles from './index.module.scss';
 import classNames from 'classnames';
 
-import {
-  getPickerViewList,
-  getDate,
-  getArrWithTime,
-  formatDate,
-  getDayList,
-} from './utils';
+import { getPickerViewList, getDate, getArrWithTime, formatDate, getDayList } from './utils';
 
 import PropTypes from 'prop-types';
 
@@ -18,17 +12,17 @@ class DateTimePicker extends Component {
   constructor() {
     super();
     this.state = {
-      visible: false, //是否可见
-      current: '', //当前选择的数据
-      dtpInitValue: '', //初始值
-      hasChange: false, //是否更改
+      visible: false, // 是否可见
+      current: '', // 当前选择的数据
+      dtpInitValue: '', // 初始值
+      hasChange: false, // 是否更改
       yearList: [], // 时间选择列表
       monthList: [],
       dayList: [],
       hourList: [],
       minuteList: [],
       selectIndexList: [1, 1, 1, 1, 1], // PickerViewColumn的选择索引
-      year: '',  //时间值
+      year: '', // 时间值
       month: '',
       day: '',
       hour: '',
@@ -36,14 +30,16 @@ class DateTimePicker extends Component {
     };
   }
 
-  componentDidMount() { // 初始化默认时间
+  componentDidMount() {
+    // 初始化默认时间
     const { initValue } = this.props;
     if (!initValue) return;
     const dtpInitValue = getDate(initValue);
     this.setState({ dtpInitValue });
   }
 
-  openModal = (time) => {  // 根据当前时间初始化时间列表数据
+  openModal = (time) => {
+    // 根据当前时间初始化时间列表数据
     const { current, dtpInitValue } = this.state;
 
     const showTime = time ? getDate(time) : dtpInitValue;
@@ -55,11 +51,11 @@ class DateTimePicker extends Component {
     const selectIndexList = [];
 
     // 获取当前各列表显示索引
-    selectIndexList[0] = yearList.indexOf(year + '年');
-    selectIndexList[1] = monthList.indexOf(month + '月');
-    selectIndexList[2] = dayList.indexOf(day + '日');
-    selectIndexList[3] = hourList.indexOf(hour + '点');
-    selectIndexList[4] = minuteList.indexOf(minute + '分');
+    selectIndexList[0] = yearList.indexOf(`${year}年`);
+    selectIndexList[1] = monthList.indexOf(`${month}月`);
+    selectIndexList[2] = dayList.indexOf(`${day}日`);
+    selectIndexList[3] = hourList.indexOf(`${hour}点`);
+    selectIndexList[4] = minuteList.indexOf(`${minute}分`);
 
     // 更新状态
     this.setState({
@@ -147,45 +143,51 @@ class DateTimePicker extends Component {
     const { visible, current, yearList, monthList, dayList, hourList, minuteList, selectIndexList } = this.state;
 
     return (
-      <View className={styles.wrapper}>
-        {visible &&
+      visible && (
+        <View className={styles.wrapper}>
           <View>
             {/* 背景 */}
-            <View className={styles['model-bg']}></View>
+            <View className={styles['model-bg']} catchMove></View>
             <View className={styles['model-box']}>
               {/* content */}
               <PickerView
-                className={classNames(styles['pick-view'], { 
-                  [styles['pick-view-wallet']]: this.props.type === 'wallet' 
+                className={classNames(styles['pick-view'], {
+                  [styles['pick-view-wallet']]: this.props.type === 'wallet',
                 })}
                 indicatorStyle="height: 46px"
                 value={selectIndexList}
                 onChange={this.handelChange}
               >
-                {/*年*/}
+                {/* 年*/}
                 <PickerViewColumn className="picker-view-column">
-                  {
-                    yearList.length && yearList.map((item, index) =>
-                      <View key={String(index)} className="pick-view-column-item">{item}</View>)
-                  }
+                  {yearList.length &&
+                    yearList.map((item, index) => (
+                      <View key={String(index)} className="pick-view-column-item">
+                        {item}
+                      </View>
+                    ))}
                 </PickerViewColumn>
-                {/*月*/}
+                {/* 月*/}
                 <PickerViewColumn className="picker-view-column">
-                  {
-                    monthList.length && monthList.map((item, index) =>
-                      <View key={String(index)} className="pick-view-column-item">{item}</View>)
-                  }
+                  {monthList.length &&
+                    monthList.map((item, index) => (
+                      <View key={String(index)} className="pick-view-column-item">
+                        {item}
+                      </View>
+                    ))}
                 </PickerViewColumn>
-                {/*日*/}
+                {/* 日*/}
                 {!this.props.disabledTime && (
-                <PickerViewColumn className="picker-view-column">
-                  {
-                    dayList.length && dayList.map((item, index) =>
-                      <View key={String(index)} className="pick-view-column-item">{item}</View>)
-                  }
-                </PickerViewColumn>
+                  <PickerViewColumn className="picker-view-column">
+                    {dayList.length &&
+                      dayList.map((item, index) => (
+                        <View key={String(index)} className="pick-view-column-item">
+                          {item}
+                        </View>
+                      ))}
+                  </PickerViewColumn>
                 )}
-                {/*时*/}
+                {/* 时*/}
                 {!this.props.disabledTime && (
                   <PickerViewColumn className="picker-view-column">
                     {hourList.length &&
@@ -196,7 +198,7 @@ class DateTimePicker extends Component {
                       ))}
                   </PickerViewColumn>
                 )}
-                {/*分*/}
+                {/* 分*/}
                 {!this.props.disabledTime && (
                   <PickerViewColumn className="picker-view-column">
                     {minuteList.length &&
@@ -216,8 +218,9 @@ class DateTimePicker extends Component {
                 </Button>
               </View>
             </View>
-          </View>}
-      </View>
+          </View>
+        </View>
+      )
     );
   }
 }
@@ -228,8 +231,7 @@ DateTimePicker.propTypes = {
 };
 
 DateTimePicker.defaultProps = {
-  onConfirm: () => { },
-}
+  onConfirm: () => {},
+};
 
 export default DateTimePicker;
-

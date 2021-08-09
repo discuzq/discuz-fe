@@ -40,6 +40,13 @@ class H5OthersPage extends React.Component {
     eventCenter.on(onShowEventId, this.onShow);
   }
 
+  setNavigationBarStyle = () => {
+    Taro.setNavigationBarColor({
+      frontColor: '#ffffff',
+      backgroundColor: '#ffffff',
+    });
+  };
+
   updatePreviewImageStatus = (bol) => {
     this.isPreivewImage = bol;
   };
@@ -87,6 +94,7 @@ class H5OthersPage extends React.Component {
   };
 
   componentDidMount = async () => {
+    this.setNavigationBarStyle();
     const { id = '' } = getCurrentInstance().router.params;
     const myId = this.props.user?.id;
     if (String(myId) === id) {

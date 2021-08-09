@@ -43,6 +43,11 @@ class SiteStore {
   @computed get isMiniProgramOpen() {
     return Boolean(get(this.webConfig, 'passport.miniprogramOpen', true));
   }
+  // 发布帖子时是否需要绑定手机
+  @computed get publishNeedBindPhone() {
+    return Boolean(get(this.webConfig, 'other.publishNeedBindPhone', false));
+  }
+
   // 公众平台是否开启
   @computed get isOffiaccountOpen() {
     return Boolean(get(this.webConfig, 'passport.offiaccountOpen', true));

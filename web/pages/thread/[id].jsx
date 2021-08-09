@@ -17,6 +17,7 @@ import { updateViewCountInStorage } from '@common/utils/viewcount-in-storage';
 
 @inject('site')
 @inject('thread')
+@inject('commentPosition')
 @inject('user')
 @inject('index')
 @inject('topic')
@@ -83,16 +84,21 @@ class Detail extends React.Component {
       this.props.thread.reset();
       this.getPageDate(this.props.router.query.id);
     }
+
+    if (this.props.router?.query?.postId && this.props.router.query.postId !== prevProps.router.query.postId) {
+      this.getPositionComment(this.props.router?.query?.id, this.props.router.query.postId);
+    }
   }
 
   async componentDidMount() {
-    const { id } = this.props.router.query;
+    const { id, postId } = this.props.router.query;
 
     if (id) {
-      await this.getPageDate(id);
+      await this.getPageDate(id, postId);
       this.updateViewCount(id);
     }
   }
+
 
   updateViewCount = async (id) => {
     const { site } = this.props;
@@ -133,7 +139,7 @@ class Detail extends React.Component {
           const contentStr = htmlToString(text);
           if (contentStr) {
             return contentStr.length > 28 ? `${contentStr.substr(0, 28)}...` : contentStr;
-          };
+          }
         }
 
         const arr = [];
@@ -198,7 +204,7 @@ class Detail extends React.Component {
     }
   };
 
-  async getPageDate(id) {
+  async getPageDate(id, postId) {
     // 获取帖子数据
     if (!this.props?.thread?.threadData || !this.hasMaybeCache()) {
       // TODO:这里可以做精细化重置
@@ -242,10 +248,14 @@ class Detail extends React.Component {
     // 设置详情分享
     isWeiXin() && this.handleWeiXinShare();
 
+    await this.getPositionComment(id, postId);
+
     // 获取评论列表
     if (!this.props?.thread?.commentList || !this.hasMaybeCache()) {
+      this.props.thread.setCommentListPage(this.props.commentPosition?.postsPositionPage || 1);
       const params = {
         id,
+        page: this.props.thread.page,
       };
       this.props.thread.loadCommentList(params);
     }
@@ -261,6 +271,27 @@ class Detail extends React.Component {
     }
   }
 
+  // 获取指定评论位置的相关信息
+  async getPositionComment(id, postId) {
+    // 获取评论所在的页面位置
+    if (id && postId) {
+      this.props.commentPosition.setPostId(Number(postId));
+      const params = {
+        threadId: id,
+        postId,
+        pageSize: 20,
+      };
+      await this.props.commentPosition.fetchPositionPosts(params);
+      // 请求第一页的列表数据
+      if (this.props.commentPosition.isShowCommentList) {
+        const params = {
+          id,
+        };
+        this.props.commentPosition.loadCommentList(params);
+      }
+    }
+  }
+
   // 判断是否可能存在缓存
   hasMaybeCache() {
     const { id } = this.props.router.query;
@@ -270,7 +301,7 @@ class Detail extends React.Component {
   }
 
   render() {
-    const { site } = this.props;
+    const { site, canPublish } = this.props;
     const { platform } = site;
     let showSiteName = true;
     if (this.props?.thread?.threadData?.title || this.props?.thread?.threadData?.content?.text) {
@@ -287,7 +318,7 @@ class Detail extends React.Component {
     return (
       <ViewAdapter
         h5={<ThreadH5Page />}
-        pc={<ThreadPCPage />}
+        pc={<ThreadPCPage canPublish={canPublish}/>}
         title={this.props?.thread?.title || ''}
         showSiteName={showSiteName}
       />

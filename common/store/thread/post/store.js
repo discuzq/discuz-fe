@@ -80,6 +80,8 @@ class ThreadPostStore {
   @observable categories = [];
 
   @observable threadStatus = THREAD_STATUS.create;
+
+  @observable isHaveLocalData = false; // 是否有本地缓存数据
 }
 
 export default ThreadPostStore;

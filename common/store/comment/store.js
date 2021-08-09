@@ -4,6 +4,7 @@ class CommentStore {
   constructor(props) {
     this.commentDetail = props?.comment;
   }
+  @observable postId = null; // 回复id
   @observable commentDetail = null; // 评论信息
   @observable threadId = null; // 评论信息
   @observable authorInfo = null; // 作者信息

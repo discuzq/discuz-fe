@@ -13,6 +13,10 @@
       border-radius: $border-radius-small;
       background: $body-bg-color;
 
+      &.active {
+        background: $primary-color10;
+      }
+
       .replyListName {
         display: flex;
         justify-content: space-between;

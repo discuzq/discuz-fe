@@ -6,7 +6,7 @@ import IndexPCPage from '@layout/thread/post/pc';
 import HOCTencentCaptcha from '@middleware/HOCTencentCaptcha';
 import HOCFetchSiteData from '@middleware/HOCFetchSiteData';
 import HOCWithLogin from '@middleware/HOCWithLogin';
-import * as localData from '@layout/thread/post/common';
+import * as localData from '@common/utils/thread-post-localdata';
 import { Toast } from '@discuzq/design';
 import { THREAD_TYPE, MAX_COUNT, THREAD_STATUS } from '@common/constants/thread-post';
 import Router from '@discuzq/sdk/dist/router';
@@ -17,6 +17,8 @@ import { tencentVodUpload } from '@common/utils/tencent-vod';
 import { plus } from '@common/utils/calculate';
 import { defaultOperation } from '@common/constants/const';
 import ViewAdapter from '@components/view-adapter';
+import { attachmentUploadMultiple } from '@common/utils/attachment-upload';
+import { formatDate } from '@common/utils/format-date';
 
 @inject('site')
 @inject('threadPost')
@@ -63,6 +65,7 @@ class PostPage extends React.Component {
     this.isVideoUploadDone = true;
     this.imageList = [];
     this.fileList = [];
+    this.autoSaveInterval = null; // 自动保存计时器
   }
 
   componentDidMount() {
@@ -70,24 +73,14 @@ class PostPage extends React.Component {
     this.redirectToHome();
     this.props.router.events.on('routeChangeStart', this.handleRouteChange);
     this.fetchPermissions();
-    // 如果本地缓存有数据，这个目前主要用于定位跳出的情况
-    // const postData = this.getPostDataFromLocal();
-    // const { category, emoji } = localData.getCategoryEmoji() || {};
-    // if (postData) {
-    //   this.props.index.setCategories(category);
-    //   this.props.threadPost.setEmoji(emoji);
-    //   localData.removeCategoryEmoji();
-    //   if (postData.categoryId) this.setCategory(postData.categoryId);
-    //   this.setPostData({ ...postData, position: this.props.threadPost.postData.position });
-    // } else {
     const { fetchEmoji, emojis } = this.props.threadPost;
     if (emojis.length === 0) fetchEmoji();
     this.fetchDetail();
-    // }
   }
 
   componentWillUnmount() {
     this.captcha = '';
+    if (this.autoSaveInterval) clearInterval(this.autoSaveInterval);
     this.props.router.events.off('routeChangeStart', this.handleRouteChange);
   }
 
@@ -115,16 +108,18 @@ class PostPage extends React.Component {
   }
 
   saveDataLocal = () => {
-    const { index, threadPost } = this.props;
-    // localData.setThreadPostDataLocal(threadPost.postData);
-    localData.setCategoryEmoji({ category: index.categoriesNoAll, emoji: threadPost.emojis });
+    const { threadPost, user } = this.props;
+    localData.setThreadPostDataLocal({ postData: threadPost.postData, userId: user.userInfo.id });
   };
 
   // 从本地缓存中获取数据
-  getPostDataFromLocal() {
-    const postData = localData.getThreadPostDataLocal();
+  getPostDataFromLocal = () => localData.getThreadPostDataLocal(
+    this.props.user.userInfo.id,
+    this.props.router.query.id,
+  );
+
+  removeLocalData = () => {
     localData.removeThreadPostDataLocal();
-    return postData;
   }
 
   fetchPermissions() {
@@ -173,6 +168,8 @@ class PostPage extends React.Component {
         Toast.error({ content: ret.msg });
       }
     }
+    if (this.getPostDataFromLocal()) this.props.threadPost.setLocalDataStatus(true);
+    this.autoSaveData();
   }
 
   setPostData(data) {
@@ -204,12 +201,14 @@ class PostPage extends React.Component {
   };
 
   // 上传视频之前判断是否已经有了视频，如果有了视频提示只能上传一个视频
-  handleVideoUpload = () => {
-    this.isVideoUploadDone = false;
+  handleVideoUpload = (isStart) => {
     const { postData } = this.props.threadPost;
     if (postData.video && postData.video.id) {
       Toast.info({ content: '只能上传一个视频' });
       return false;
+    }
+    if (isStart) { // 视频选择完毕，即将上传
+      this.isVideoUploadDone = false;
     }
     return true;
   };
@@ -493,7 +492,7 @@ class PostPage extends React.Component {
     if (vditor) {
       this.vditor = vditor;
       const htmlString = vditor.getHTML();
-      this.setPostData({ contentText: htmlString });
+      this.setPostData({ contentText: htmlString, isResetContentText: false });
       if (!this.props.threadPost.postData.title) {
         if (!this.state.isTitleShow || this.props.site.platform === 'pc' || !event) return;
         this.setState({ isTitleShow: false });
@@ -541,6 +540,17 @@ class PostPage extends React.Component {
     return true;
   }
 
+  // 是否有内容
+  isHaveContent() {
+    const { postData } = this.props.threadPost;
+    const { images, video, files, audio } = postData;
+    if (!(postData.contentText || video.id || audio.id || Object.values(images).length
+      || Object.values(files).length)) {
+      return false;
+    }
+    return true;
+  }
+
   // 发布提交
   handleSubmit = async (isDraft) => {
     if (!isDraft) this.setPostData({ draft: 0 });
@@ -548,7 +558,6 @@ class PostPage extends React.Component {
       this.postToast(`不能超过${MAX_COUNT}字`);
       return;
     }
-    const { postData } = this.props.threadPost;
     if (!this.props.user.threadExtendPermissions.createThread) {
       Toast.info({ content: '您没有发帖权限' });
       this.postToast('您没有发帖权限');
@@ -573,9 +582,7 @@ class PostPage extends React.Component {
 
     if (!this.checkAudioRecordStatus()) return;
 
-    const { images, video, files, audio } = postData;
-    if (!(postData.contentText || video.id || audio.id || Object.values(images).length
-      || Object.values(files).length) && !isDraft) {
+    if (!this.isHaveContent()) {
       this.postToast('请至少填写您要发布的内容或者上传图片、附件、视频、语音');
       return;
     }
@@ -588,6 +595,8 @@ class PostPage extends React.Component {
     //   return;
     // }
 
+    // 在提交之前也保存一下本地数据
+    this.saveDataLocal();
     const { threadPost } = this.props;
 
     // 2 验证码
@@ -638,6 +647,7 @@ class PostPage extends React.Component {
         },
         success: async () => {
           this.setIndexPageData();
+          this.removeLocalData(); // 支付成功删除本地缓存
           const { threadId } = this.props.threadPost.postData;
           if (threadId) this.props.router.replace(`/thread/${threadId}`);
         }, // 支付成功回调
@@ -648,22 +658,112 @@ class PostPage extends React.Component {
     return false;
   };
 
-  async createThread(isDraft) {
+  // 自动保存
+  autoSaveData() {
+    if (this.autoSaveInterval) clearInterval(this.autoSaveInterval);
+    this.autoSaveInterval = setInterval(() => {
+      // 7.28 已发布的帖子也可以保存草稿
+      if (this.isHaveContent()) {
+        // this.setPostData({ draft: 1 });
+        this.saveDataLocal();
+        // this.createThread(true, true);
+        const now = formatDate(new Date(), 'hh:mm');
+        this.setPostData({ autoSaveTime: now });
+      }
+    }, 30000);
+  }
+
+  async createThread(isDraft, isAutoSave = false) {
     const { threadPost, thread } = this.props;
+
+    // 图文混排：第三方图片转存
+    const errorTips = '帖子内容中，有部分图片转存失败，请先替换相关图片再重新发布';
+    const vditorEl = document.getElementById('dzq-vditor');
+    if (vditorEl) {
+      const errorImg = vditorEl.querySelectorAll('.editor-upload-error');
+      if (errorImg.length) {
+        Toast.error({
+          content: errorTips,
+          hasMask: true,
+          duration: 3000,
+        });
+        return;
+      }
+    }
+
+    let contentText = threadPost.postData.contentText;
+    const images = contentText.match(/<img.*?\/>/g)?.filter(image => (!image.match('alt="attachmentId-') && !image.includes('emoji')));
+    if (images) {
+      const fileurls = images.map(img => {
+        const src = img.match(/\"(.*?)\"/);
+        if (src) return src[1];
+        return false;
+      });
+
+      const toastInstance = Toast.loading({
+        content: `图片转存中...`,
+        hasMask: true,
+        duration: 0,
+      });
+      const res = await attachmentUploadMultiple(fileurls);
+      const sensitiveArr = [];
+      const uploadError = [];
+      res.forEach((ret, index) => {
+        const { code, data = {} } = ret;
+        if (code === 0) {
+          const { url, id } = data;
+          contentText = contentText.replace(images[index], `<img src=\"${url}\" alt=\"attachmentId-${id}\" />`);
+        } else if (code === -7075) {
+          sensitiveArr.push('');
+          contentText = contentText.replace(images[index], images[index].replace('alt=\"\"', 'alt=\"uploadError\"'));
+        } else {
+          uploadError.push('');
+        }
+      });
+      threadPost.setPostData({ contentText });
+      this.vditor.setValue(this.vditor.html2md(contentText));
+      toastInstance.destroy();
+
+      const uploadErrorImages = document.querySelectorAll('img[alt=uploadError]');
+      for (let i = 0; i < uploadErrorImages.length; i++) {
+        const element = uploadErrorImages[i];
+        element.setAttribute('class', 'editor-upload-error');
+      }
+
+      if (sensitiveArr.length) {
+        Toast.error({
+          content: '帖子内容中含有敏感图片，请先处理相关图片再重新发布',
+          hasMask: true,
+          duration: 4000,
+        });
+        return;
+      }
+
+      if (uploadError.length) {
+        Toast.error({
+          content: '帖子内容中，有部分图片转存失败，请先处理相关图片再重新发布',
+          hasMask: true,
+          duration: 4000,
+        });
+        return;
+      }
+    }
+
+    // 提交帖子数据
     let ret = {};
-    this.toastInstance = Toast.loading({ content: '发布中...', hasMask: true });
+    if (!isAutoSave) this.toastInstance = Toast.loading({ content: '发布中...', hasMask: true });
     if (threadPost.postData.threadId) ret = await threadPost.updateThread(threadPost.postData.threadId);
     else ret = await threadPost.createThread();
     const { code, data, msg } = ret;
     if (code === 0) {
       this.setState({ data });
       thread.reset({});
-      this.toastInstance?.destroy();
+      this.toastInstance && this.toastInstance?.destroy();
       this.setPostData({ threadId: data.threadId });
       // 防止被清除
 
       // 未支付的订单
-      if (isDraft
+      if (isDraft && !isAutoSave
         && threadPost.postData.orderInfo.orderSn
         && !threadPost.postData.orderInfo.status
         && !threadPost.postData.draft
@@ -674,16 +774,19 @@ class PostPage extends React.Component {
 
       if (!isDraft) {
         this.setIndexPageData();
+        this.removeLocalData(); // 非草稿删除本地缓存
         this.props.router.replace(`/thread/${data.threadId}`);
       } else {
         const { jumpLink } = this.state;
-        Toast.info({ content: '保存草稿成功' });
-        if (!this.props.site.isPC) {
+        !isAutoSave && Toast.info({ content: '保存草稿成功' });
+        // 移动端非自动保存
+        if (!this.props.site.isPC && !isAutoSave) {
           jumpLink ? Router.push({ url: jumpLink }) : Router.back();
         }
       }
       return true;
     }
+    this.saveDataLocal();
     Toast.error({ content: msg });
   }
 

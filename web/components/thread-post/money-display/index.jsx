@@ -19,8 +19,8 @@ function MoneyDisplay(props) {
   } = props;
   const clsName = props.pc ? styles.pc : styles.h5;
 
-  return (
-    <div id="dzq-money-box" className={`${styles['money-box']} ${clsName}`} onClick={e => e.stopPropagation()}>
+  const tags = (
+    <>
       {/* 付费 */}
       {!!(postData.price || postData.attachmentPrice) && (
         <Tag
@@ -56,7 +56,7 @@ function MoneyDisplay(props) {
       {/* 悬赏问答内容标识 */}
       {(postData.rewardQa.value && postData.rewardQa.times) && (
         <Tag closeable={canEditReward}
-          onClose={() => onAttachClick({ type: THREAD_TYPE.reward }, { rewardQa: {} }) }
+          onClose={() => onAttachClick({ type: THREAD_TYPE.reward }, { rewardQa: {} })}
           onClick={() => {
             onAttachClick({ type: THREAD_TYPE.reward });
           }}
@@ -64,8 +64,13 @@ function MoneyDisplay(props) {
           {`悬赏金额${plus(postData.rewardQa.value, 0)}元\\结束时间 ${postData.rewardQa.times}`}
         </Tag>
       )}
-      {/* 字数 */}
-      {/* <div className={styles['editor-count']}>还能输入{MAX_COUNT - this.props.count}个字</div> */}
+    </>
+  );
+
+  if (props.pc) return tags;
+  return (
+    <div id="dzq-money-box" className={`${styles['money-box']} ${clsName}`} onClick={e => e.stopPropagation()}>
+      {tags}
     </div>
   );
 }

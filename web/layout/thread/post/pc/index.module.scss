@@ -64,6 +64,42 @@
       }
     }
   }
+  &-footer {
+    height: 52px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    :global {
+      .dzq-tag {
+        @include tag-default;
+        margin-right: rem($margin-4n);
+
+        &:after {
+          display: none;
+        }
+
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+
+      .dzq-icon-CloseOutlined {
+        font-size: 12px !important;
+        transform: scale(.85);
+      }
+    }
+    &--left {
+      display: flex;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      flex: 1;
+      margin-right: rem($margin-10);
+    }
+    &--right {
+      font-size: $font-size-label;
+      color: $text-color-secondary;
+    }
+  }
 }
 .money-box {
   position: absolute;

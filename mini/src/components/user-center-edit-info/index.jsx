@@ -27,6 +27,13 @@ class index extends Component {
     Taro.hideShareMenu();
   }
 
+  setNavigationBarStyle = () => {
+    Taro.setNavigationBarColor({
+      frontColor: '#ffffff',
+      backgroundColor: '#ffffff',
+    });
+  };
+
   initState = () => {
     this.setState({
       isClickNickName: false,
@@ -35,6 +42,7 @@ class index extends Component {
   };
 
   async componentDidMount() {
+    this.setNavigationBarStyle();
     this.initState();
     const id = this.props.user?.id;
     await this.props.user.updateUserInfo(id);
@@ -215,14 +223,10 @@ class index extends Component {
                 <View className={styles.userCenterEditWeChat}>
                   <Avatar size="small" image={this.user.wxHeadImgUrl} name={this.user.wxNickname} />
                   <Text className={styles.wxNickname}>{this.user.wxNickname}</Text>
-                  {
-                    site.isDomainWhiteList
-                    && user.isWhiteLsit
-                    && <Text className={styles.linkText} onClick={() => {
-                      Taro.navigateTo({ url: '/subPages/user/rebind/index' });
-                    }}
-                    >换绑</Text>
-                  }
+                  <Text className={styles.linkText} onClick={() => {
+                    Taro.navigateTo({ url: '/subPages/user/rebind/index' });
+                  }}
+                  >换绑</Text>
                 </View>
               </View>
             </View>

@@ -2,9 +2,7 @@ import React from 'react';
 import Taro from '@tarojs/taro';
 import styles from './index.module.scss';
 import { View, Text } from '@tarojs/components';
-import s9e from '@common/utils/s9e';
-import xss from '@common/utils/xss';
-import RichText from '@discuzq/design/dist/components/rich-text/index';
+import FilterRichText from '@components/filter-rich-text'
 import { handleLink } from '@components/thread/utils'
 import Router from '@discuzq/sdk/dist/router';
 /**
@@ -22,14 +20,6 @@ import Router from '@discuzq/sdk/dist/router';
     } else {
       Router.push({url: `/indexPages/thread/index?id=${threadId}`});
     }
-  };
-
-  // 过滤内容
-  const filterContent = (content) => {
-    let newContent = content ? s9e.parse(content) : '暂无内容';
-    newContent = xss(newContent);
-
-    return newContent;
   };
 
   const handlerTitle = (title = '') => {
@@ -50,7 +40,9 @@ import Router from '@discuzq/sdk/dist/router';
           <Text className={styles.prefix}>{item.prefix || '置顶'}</Text>
           {false && <View className={styles.title}>{handlerTitle(item.title)}</View>}
           <View className={styles.title}>
-              <RichText onClick={(e, node) => onClick(item, e, node)} className={styles.richText} content={filterContent(item.title)} />
+            <FilterRichText 
+              onClick={(e, node) => onClick(item, e, node)} className={styles.richText} content={item.title} 
+            />
           </View>
         </View>
       ))}

@@ -27,9 +27,9 @@ function validateUrl(url) {
   }
 
   if (isWeb()) {
+    // 相对地址转绝对地址
+    let absUrl = url;
     try {
-      // 相对地址转绝对地址
-      let absUrl = url;
       if (url.startsWith('/')) {
         absUrl = `${window.location.origin}${url}`;
       }

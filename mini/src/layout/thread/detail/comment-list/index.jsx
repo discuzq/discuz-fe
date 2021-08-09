@@ -18,6 +18,7 @@ import Router from '@discuzq/sdk/dist/router';
 @inject('topic')
 @inject('search')
 @inject('thread')
+@inject('commentPosition')
 @inject('comment')
 @inject('user')
 @observer
@@ -28,7 +29,7 @@ class RenderCommentList extends React.Component {
       showCommentInput: false, // 是否弹出评论框
       commentSort: true, // ture 评论从旧到新 false 评论从新到旧
       showDeletePopup: false, // 是否弹出删除弹框
-      showReplyDeletePopup:false, // 是否弹出回复删除弹框
+      showReplyDeletePopup: false, // 是否弹出回复删除弹框
       inputText: '请输入内容', // 默认回复框placeholder内容
     };
 
@@ -93,9 +94,19 @@ class RenderCommentList extends React.Component {
     const searchStore = this.props.search;
     const topicStore = this.props.topic;
 
-    const { success, msg } = await this.props.comment.updateLiked(params, threadStore, indexStore, searchStore, topicStore);
+    const { success, msg } = await this.props.comment.updateLiked(
+      params,
+      threadStore,
+      indexStore,
+      searchStore,
+      topicStore,
+    );
 
-    if (success) {
+    if (this.props.isPositionComment) {
+      this.props.commentPosition.setCommentListDetailField(data.id, 'isLiked', params.isLiked);
+      const likeCount = params.isLiked ? data.likeCount + 1 : data.likeCount - 1;
+      this.props.commentPosition.setCommentListDetailField(data.id, 'likeCount', likeCount);
+    } else {
       this.props.thread.setCommentListDetailField(data.id, 'isLiked', params.isLiked);
       const likeCount = params.isLiked ? data.likeCount + 1 : data.likeCount - 1;
       this.props.thread.setCommentListDetailField(data.id, 'likeCount', likeCount);
@@ -139,7 +150,11 @@ class RenderCommentList extends React.Component {
     };
     const { success, msg } = await this.props.comment.updateLiked(params);
 
-    if (success) {
+    if (this.props.isPositionComment) {
+      this.props.commentPosition.setReplyListDetailField(comment.id, reply.id, 'isLiked', params.isLiked);
+      const likeCount = params.isLiked ? reply.likeCount + 1 : reply.likeCount - 1;
+      this.props.commentPosition.setReplyListDetailField(comment.id, reply.id, 'likeCount', likeCount);
+    } else {
       this.props.thread.setReplyListDetailField(comment.id, reply.id, 'isLiked', params.isLiked);
       const likeCount = params.isLiked ? reply.likeCount + 1 : reply.likeCount - 1;
       this.props.thread.setReplyListDetailField(comment.id, reply.id, 'likeCount', likeCount);
@@ -164,7 +179,10 @@ class RenderCommentList extends React.Component {
   async deleteComment() {
     if (!this.commentData.id) return;
 
-    const { success, msg } = await this.props.comment.delete(this.commentData.id, this.props.thread);
+    const { success, msg } = await this.props.comment.delete(
+      this.commentData.id,
+      this.props.isPositionComment ? this.props.commentPosition : this.props.thread,
+    );
     this.setState({
       showDeletePopup: false,
     });
@@ -301,8 +319,8 @@ class RenderCommentList extends React.Component {
 
   avatarClick(data) {
     const { userId } = data;
-    if(!userId) return;
-    Router.push({url: `/subPages/user/index?id=${userId}`});
+    if (!userId) return;
+    Router.push({ url: `/subPages/user/index?id=${userId}` });
   }
 
   replyAvatarClick(reply, comment, floor) {
@@ -310,7 +328,7 @@ class RenderCommentList extends React.Component {
   }
 
   // 点击回复的删除
-  async replyDeleteClick(reply,comment) {
+  async replyDeleteClick(reply, comment) {
     this.commentData = comment;
     this.replyData = reply;
     this.setState({
@@ -322,12 +340,15 @@ class RenderCommentList extends React.Component {
   async replyDeleteComment() {
     if (!this.replyData.id) return;
 
-    const params = {}
+    const params = {};
     if (this.replyData && this.commentData) {
-      params.replyData = this.replyData;// 本条回复信息
-      params.commentData = this.commentData;// 回复对应的评论信息
+      params.replyData = this.replyData; // 本条回复信息
+      params.commentData = this.commentData; // 回复对应的评论信息
     }
-    const { success, msg } = await this.props.comment.deleteReplyComment(params, this.props.thread);
+    const { success, msg } = await this.props.comment.deleteReplyComment(
+      params,
+      this.props.isPositionComment ? this.props.commentPosition : this.props.thread,
+    );
     this.setState({
       showReplyDeletePopup: false,
     });
@@ -343,7 +364,12 @@ class RenderCommentList extends React.Component {
   }
 
   render() {
-    const { totalCount, commentList } = this.props.thread;
+    let { totalCount, commentList } = this.props.thread;
+
+    const { commentList: commentPositionList, postId } = this.props.commentPosition;
+    if (this.props.isPositionComment) {
+      commentList = commentPositionList || [];
+    }
 
     // 是否作者自己
     const isSelf =
@@ -357,16 +383,23 @@ class RenderCommentList extends React.Component {
 
     return (
       <Fragment>
-        <View className={comment.header}>
-          <View className={comment.number}>共{totalCount}条评论</View>
-          <View className={comment.sort} onClick={() => this.onSortClick()}>
-            <Icon className={comment.sortIcon} name="SortOutlined"></Icon>
-            <Text className={comment.sortText}>{this.state.commentSort ? '评论从新到旧' : '评论从旧到新'}</Text>
+        {this.props.showHeader && (
+          <View className={comment.header}>
+            <View className={comment.number}>共{totalCount}条评论</View>
+            <View className={comment.sort} onClick={() => this.onSortClick()}>
+              <Icon className={comment.sortIcon} name="SortOutlined"></Icon>
+              <Text className={comment.sortText}>{this.state.commentSort ? '评论从新到旧' : '评论从旧到新'}</Text>
+            </View>
           </View>
-        </View>
+        )}
         <View className={comment.body}>
           {commentList.map((val, index) => (
-            <View className={comment.commentItems} key={val.id || index}>
+            <View
+              className={`${comment.commentItems} ${index === commentList.length - 1 && comment.isLastOne}`}
+              key={val.id || index}
+              ref={val.id === postId ? this.props.positionRef : null}
+              id={`position${val.id}`}
+            >
               <CommentList
                 data={val}
                 key={val.id}
@@ -375,7 +408,7 @@ class RenderCommentList extends React.Component {
                 replyClick={() => this.replyClick(val)}
                 deleteClick={() => this.deleteClick(val)}
                 editClick={() => this.editClick(val)}
-                replyAvatarClick={(reply,floor) =>this.replyAvatarClick(reply,val,floor)}
+                replyAvatarClick={(reply, floor) => this.replyAvatarClick(reply, val, floor)}
                 replyLikeClick={(reploy) => this.replyLikeClick(reploy, val)}
                 replyReplyClick={(reploy) => this.replyReplyClick(reploy, val)}
                 replyDeleteClick={(reply) => this.replyDeleteClick(reply, val)}
@@ -386,6 +419,7 @@ class RenderCommentList extends React.Component {
                   // 是帖子作者 && 是悬赏帖 && 评论人不是作者本人
                   isSelf && isReward && this.props.thread?.threadData?.userId !== val.userId
                 }
+                active={val.id === postId}
               ></CommentList>
             </View>
           ))}
@@ -426,5 +460,10 @@ class RenderCommentList extends React.Component {
     );
   }
 }
+
+RenderCommentList.defaultProps = {
+  showHeader: true, // 是否显示排序头部
+};
+
 
 export default RenderCommentList;

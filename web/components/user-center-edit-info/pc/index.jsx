@@ -264,23 +264,16 @@ class index extends Component {
               <p className={styles.pcEditWeiName}>{this.user.wxNickname}</p>
             </div>
           ),
-          operation: () => {
-            const { user, site } = this.props;
-            if (!(site.isDomainWhiteList && user.isWhiteLsit)) {
-              return null;
-            }
-
-            return (
-              <p
-                onClick={() => {
-                  Router.push({ url: '/user/rebind' });
-                }}
-                className={styles.pcEditNicknameCallMsodify}
-              >
-                换绑
-              </p>
-            );
-          },
+          operation: () => (
+            <p
+              onClick={() => {
+                Router.push({ url: '/user/rebind' });
+              }}
+              className={styles.pcEditNicknameCallMsodify}
+            >
+              换绑
+            </p>
+          ),
           // <p
           //   onClick={() => {
           //     this.setState({

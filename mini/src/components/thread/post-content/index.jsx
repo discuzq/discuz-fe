@@ -4,6 +4,7 @@ import RichText from '@discuzq/design/dist/components/rich-text/index';
 import ImagePreviewer from '@discuzq/design/dist/components/image-previewer/index';
 import { noop, handleLink } from '../utils'
 import Router from '@discuzq/sdk/dist/router';
+import Taro from '@tarojs/taro'
 
 import fuzzyCalcContentLength from '@common/utils/fuzzy-calc-content-length';
 import s9e from '@common/utils/s9e';
@@ -13,6 +14,7 @@ import styles from './index.module.scss';
 import { urlToLink } from '@common/utils/replace-url-to-a';
 import replaceStringInRegex from '@common/utils/replace-string-in-regex';
 
+import config from '../../../app.config';
 
 /**
  * 帖子内容展示
@@ -41,6 +43,7 @@ import replaceStringInRegex from '@common/utils/replace-string-in-regex';
   const [imageVisible, setImageVisible] = useState(false);
   const [imageUrlList, setImageUrlList] = useState([]);
   const [curImageUrl, setCurImageUrl] = useState("");
+  const [appPageLinks, setAppPageLinks] = useState([]);
   const ImagePreviewerRef = useRef(null); // 富文本中的图片也要支持预览
   const contentWrapperRef = useRef(null);
   const clickedImageId = useRef(null);
@@ -90,10 +93,19 @@ import replaceStringInRegex from '@common/utils/replace-string-in-regex';
   }, [imageVisible]);
 
   // 点击富文本中的链接
-  const handleLinkClick = () => {
+  const handleLinkClick = (e) => {
     updateViewCount();
     setTimeout(() => { // 等待store更新完成后跳转
     }, 500);
+
+    // 内链跳转
+    let content = e?.children[0]?.data || "";
+    if(content.indexOf("http") === -1) {
+      content = content[0] !== '/' ? '/' + content : content;
+      if(appPageLinks.indexOf(content) !== -1) {
+        Taro.navigateTo({ url: content });
+      }
+    }
   }
 
   // 点击富文本中的图片
@@ -101,7 +113,7 @@ import replaceStringInRegex from '@common/utils/replace-string-in-regex';
     updateViewCount();
     if(node?.attribs?.src) {
       setImageVisible(true);
-      setCurImageUrl(`${decodeURIComponent(node.attribs.src)}`);
+      setCurImageUrl(node.attribs.src);
       clickedImageId.current = event?.target?.id;
     }
   }
@@ -124,14 +136,19 @@ import replaceStringInRegex from '@common/utils/replace-string-in-regex';
 
     for(let i = 0; i < images.length; i++) {
       images[i] = images[i].replace(/<img\s+[^<>]*src=[\"\'\\]+/gm, "") || "";
-      images[i] = decodeURIComponent(images[i]);
-      images[i] = images[i].replace(/&lt;/g, "<")
-                            .replace(/&gt;/g, ">")
-                            .replace(/&amp;/g, "&")
-                            .replace(/&quot;/g, '"')
-                            .replace(/&apos;/g, "'");
     }
     return images;
+  }
+
+  const generateAppRelativePageLinks = () => {
+    const pageLinks = [];
+    for(const pkg of config.subPackages) {
+      const root = pkg.root;
+      for(const page of pkg.pages) {
+        pageLinks.push(`/${root}/${page}`);
+      }
+    }
+    setAppPageLinks(pageLinks);
   }
 
   useEffect(() => {
@@ -158,6 +175,8 @@ import replaceStringInRegex from '@common/utils/replace-string-in-regex';
     if(imageUrlList.length) {
       setImageUrlList(imageUrlList);
     }
+
+    generateAppRelativePageLinks();
 
   }, [filterContent]);
   

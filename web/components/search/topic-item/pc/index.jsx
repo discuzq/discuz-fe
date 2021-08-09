@@ -1,10 +1,9 @@
 import React, { useCallback, useMemo } from 'react';
-import { Icon, RichText } from '@discuzq/design';
+import { Icon } from '@discuzq/design';
 import styles from './index.module.scss';
 import { handleAttachmentData, noop } from '@components/thread/utils';
 import replaceSearchResultContent from '@common/utils/replace-search-result-content';
-import s9e from '@common/utils/s9e';
-import xss from '@common/utils/xss';
+import FilterRichText from '@components/filter-rich-text'
 
 /**
  * 话题组件
@@ -26,15 +25,6 @@ const TopicItem = ({ data, onClick = noop, index, footer }) => {
     text = '暂无内容',
     imageData = []
   } = handleAttachmentData(data?.threads[0]?.content);
-
-  
-  const filterContent = useMemo(() => {
-    let newContent = replaceSearchResultContent(text);
-    newContent = s9e.parse(newContent);
-    newContent = xss(newContent);
-
-    return newContent;
-  }, [threads]);
 
   return (
     <div className={styles.item} onClick={click}>
@@ -59,7 +49,7 @@ const TopicItem = ({ data, onClick = noop, index, footer }) => {
         {
           text ? (
             <div className={styles.richContent}>
-              <RichText onClick={click} className={styles.richText} content={filterContent} />
+              <FilterRichText onClick={click} className={styles.richText} content={replaceSearchResultContent(text)} />
             </div>
           ) : (
             <div className={styles.text}>{text || '暂无内容'}</div>

@@ -9,11 +9,13 @@ import withShare from '@common/utils/withShare/withShare';
 import ErrorMiniPage from '../../layout/error/index';
 import { priceShare } from '@common/utils/priceShare';
 import { updateViewCountInStorage } from '@common/utils/viewcount-in-storage';
+import Toast from '@discuzq/design/dist/components/toast';
 
 // const MemoToastProvider = React.memo(ToastProvider);
 @inject('site')
 @inject('thread')
 @inject('user')
+@inject('commentPosition')
 @inject('index')
 @inject('search')
 @inject('topic')
@@ -49,7 +51,7 @@ class Detail extends React.Component {
   // 页面分享
   getShareData(data) {
     const { threadId, isAnonymous } = this.props.thread.threadData;
-    const {isPrice} = this.props.thread.threadData.displayTag
+    const { isPrice } = this.props.thread.threadData.displayTag;
     const defalutTitle = this.props.thread.title;
     const path = `/indexPages/thread/index?id=${threadId}`;
     if (data.from === 'timeLine') {
@@ -58,6 +60,16 @@ class Detail extends React.Component {
       };
     }
     if (data.from === 'menu')  {
+      const isApproved = this.props?.thread?.threadData?.isApproved === 1;
+      if(!isApproved) {
+        Toast.info({content: '内容正在审核中'})
+        const promise = new Promise((resolve, reject) => {
+          setTimeout(() => {
+            reject()
+          }, 1000)
+        })
+      return {promise}
+      }
       return priceShare({isAnonymous, isPrice, path}) || {
         title: defalutTitle,
         path,
@@ -65,10 +77,12 @@ class Detail extends React.Component {
     }
     this.props.thread.shareThread(threadId, this.props.index, this.props.search, this.props.topic);
 
-    return  priceShare({isAnonymous, isPrice, path}) || {
-      title: defalutTitle,
-      path,
-    };
+    return (
+      priceShare({ isAnonymous, isPrice, path }) || {
+        title: defalutTitle,
+        path,
+      }
+    );
   }
 
   updateViewCount = async (id) => {
@@ -96,8 +110,8 @@ class Detail extends React.Component {
   };
 
   async componentDidShow() {
-    const { id } = getCurrentInstance().router.params;
-    
+    const { id, postId } = getCurrentInstance().router.params;
+
     // 判断缓存
     // const oldId = this.props?.thread?.threadData?.threadId;
     // if (Number(id) === oldId && id && oldId) {
@@ -106,7 +120,7 @@ class Detail extends React.Component {
     // this.props.thread.reset();
 
     if (id) {
-      await this.getPageDate(id);
+      await this.getPageDate(id, postId);
       this.updateViewCount(id);
     }
   }
@@ -137,7 +151,7 @@ class Detail extends React.Component {
     }
   }
 
-  async getPageDate(id) {
+  async getPageDate(id, postId) {
     // 先尝试从列表store中获取帖子数据
     this.getThreadDataFromList(id);
 
@@ -177,11 +191,37 @@ class Detail extends React.Component {
         }
       }
     }
+
+    await this.getPositionComment(id, postId);
+
     if (!this.props?.thread?.commentList) {
+      this.props.thread.setCommentListPage(this.props.commentPosition?.postsPositionPage || 1);
       const params = {
         id,
+        page: this.props.thread.page,
       };
       this.props.thread.loadCommentList(params);
+    }
+  }
+
+  // 获取指定评论位置的相关信息
+  async getPositionComment(id, postId) {
+    // 获取评论所在的页面位置
+    if (id && postId && (!this.props?.commentPosition?.postsPositionPage)) {
+      this.props.commentPosition.setPostId(Number(postId));
+      const params = {
+        threadId: id,
+        postId,
+        pageSize: 20,
+      };
+      await this.props.commentPosition.fetchPositionPosts(params);
+      // 请求第一页的列表数据
+      if (this.props.commentPosition.isShowCommentList) {
+        const params1 = {
+          id,
+        };
+        this.props.commentPosition.loadCommentList(params1);
+      }
     }
   }
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react';
 import { Icon, Button } from '@discuzq/design';
 import { parseContentData } from '../../utils';
@@ -17,85 +17,91 @@ import styles from './index.module.scss';
 import { debounce } from '@common/utils/throttle-debounce';
 
 // 帖子内容
-const RenderThreadContent = inject('user')(
-  observer((props) => {
-    const { store: threadStore } = props;
-    const { text, indexes } = threadStore?.threadData?.content || {};
-    const { parentCategoryName, categoryName } = threadStore?.threadData;
-    const tipData = {
-      postId: threadStore?.threadData?.postId,
-      threadId: threadStore?.threadData?.threadId,
-      platform: 'h5',
-      payType: threadStore?.threadData?.payType,
-    };
+const RenderThreadContent = inject('user')(observer((props) => {
+  const { store: threadStore } = props;
+  const { text, indexes } = threadStore?.threadData?.content || {};
+  const { parentCategoryName, categoryName } = threadStore?.threadData;
+  const tipData = {
+    postId: threadStore?.threadData?.postId,
+    threadId: threadStore?.threadData?.threadId,
+    platform: 'h5',
+    payType: threadStore?.threadData?.payType,
+  };
     // 是否合法
-    const isApproved = (threadStore?.threadData?.isApproved || 0) === 1;
-    const isEssence = threadStore?.threadData?.displayTag?.isEssence || false;
+  const isApproved = (threadStore?.threadData?.isApproved || 0) === 1;
+  const isEssence = threadStore?.threadData?.displayTag?.isEssence || false;
 
-    // 是否免费帖
-    const isFree = threadStore?.threadData?.payType === 0;
+  // 是否免费帖
+  const isFree = threadStore?.threadData?.payType === 0;
 
-    // 是否附件付费帖
-    const isAttachmentPay = threadStore?.threadData?.payType === 2 && threadStore?.threadData?.paid === false;
-    const attachmentPrice = threadStore?.threadData?.attachmentPrice || 0;
-    // 是否需要附加付费
-    const needAttachmentPay = !canFreeViewPost && isAttachmentPay && !isSelf && !isPayed;
-    // 是否付费帖子
-    const isThreadPay = threadStore?.threadData?.payType === 1;
-    const threadPrice = threadStore?.threadData?.price || 0;
-    // 是否已经付费
-    const isPayed = threadStore?.threadData?.paid === true;
-    // 当前用户是否需要付费
-    const isNeedPay = threadStore?.threadData?.payType === 1 && threadStore?.threadData?.paid === false;
-    // 是否作者自己
-    const isSelf = props.user?.userInfo?.id && props.user?.userInfo?.id === threadStore?.threadData?.userId;
+  // 是否附件付费帖
+  const isAttachmentPay = threadStore?.threadData?.payType === 2 && threadStore?.threadData?.paid === false;
+  const attachmentPrice = threadStore?.threadData?.attachmentPrice || 0;
+  // 是否需要附加付费
+  const needAttachmentPay = !canFreeViewPost && isAttachmentPay && !isSelf && !isPayed;
+  // 是否付费帖子
+  const isThreadPay = threadStore?.threadData?.payType === 1;
+  const threadPrice = threadStore?.threadData?.price || 0;
+  // 是否已经付费
+  const isPayed = threadStore?.threadData?.paid === true;
+  // 当前用户是否需要付费
+  const isNeedPay = threadStore?.threadData?.payType === 1 && threadStore?.threadData?.paid === false;
+  // 是否作者自己
+  const isSelf = props.user?.userInfo?.id && props.user?.userInfo?.id === threadStore?.threadData?.userId;
 
-    // 是否红包帖
-    const isRedPack = threadStore?.threadData?.displayTag?.isRedPack;
-    // 是否悬赏帖
-    const isReward = threadStore?.threadData?.displayTag?.isReward;
+  // 是否红包帖
+  const isRedPack = threadStore?.threadData?.displayTag?.isRedPack;
+  // 是否悬赏帖
+  const isReward = threadStore?.threadData?.displayTag?.isReward;
 
-    // 是否打赏帖
-    const isBeReward = isFree && threadStore?.threadData?.ability.canBeReward && !isRedPack && !isReward;
-    // 是否显示打赏按钮： 免费帖 && 不是自己 && 不是红包 && 不是悬赏 && 允许被打赏
-    const canBeReward = isFree && threadStore?.threadData?.ability.canBeReward && !isRedPack && !isReward;
-    // 是否已打赏
-    const isRewarded = threadStore?.threadData?.isReward;
+  // 是否打赏帖
+  const isBeReward = isFree && threadStore?.threadData?.ability.canBeReward && !isRedPack && !isReward;
+  // 是否显示打赏按钮： 免费帖 && 不是自己 && 不是红包 && 不是悬赏 && 允许被打赏
+  const canBeReward = isFree && threadStore?.threadData?.ability.canBeReward && !isRedPack && !isReward;
+  // 是否已打赏
+  const isRewarded = threadStore?.threadData?.isReward;
 
-    // 是否可以免费查看付费帖子
-    const canFreeViewPost = threadStore?.threadData?.ability.canFreeViewPost;
+  // 是否可以免费查看付费帖子
+  const canFreeViewPost = threadStore?.threadData?.ability.canFreeViewPost;
 
-    const parseContent = parseContentData(indexes);
+  const parseContent = parseContentData(indexes);
 
-    const onContentClick = async () => {
-      typeof props.onPayClick === 'function' && props.onPayClick();
-    };
+  const onContentClick = async () => {
+    typeof props.onPayClick === 'function' && props.onPayClick();
+  };
 
-    const onTagClick = () => {
-      typeof props.onTagClick === 'function' && props.onTagClick();
-    };
+  const onTagClick = () => {
+    typeof props.onTagClick === 'function' && props.onTagClick();
+  };
 
-    const onMoreClick = () => {
-      props.fun.moreClick();
-    };
+  const onMoreClick = () => {
+    props.fun.moreClick();
+  };
 
-    const onLikeClick = () => {
-      typeof props.onLikeClick === 'function' && props.onLikeClick();
-    };
+  const onLikeClick = () => {
+    typeof props.onLikeClick === 'function' && props.onLikeClick();
+  };
 
-    const onBuyClick = (url) => {
-      url && window.open(url);
-    };
+  const onBuyClick = (url) => {
+    url && window.open(url);
+  };
 
-    const onRewardClick = () => {
-      typeof props.onRewardClick === 'function' && props.onRewardClick();
-    };
+  const onRewardClick = () => {
+    typeof props.onRewardClick === 'function' && props.onRewardClick();
+  };
 
-    const onUserClick = (e) => {
-      typeof props.onUserClick === 'function' && props.onUserClick(e);
-    };
-
-    return (
+  const onUserClick = (e) => {
+    typeof props.onUserClick === 'function' && props.onUserClick(e);
+  };
+  const postLoad = () => {
+    threadStore.setContentImgLength();
+  };
+  useEffect(() => {
+    if (parseContent.IMAGE?.length === threadStore.contentImgLength || !parseContent.IMAGE) {
+      props.setContentImgReady();
+    }
+  }, [threadStore.contentImgLength]);
+  return (
       <div className={`${styles.container}`}>
         <div className={styles.header}>
           <div className={styles.userInfo}>
@@ -142,6 +148,7 @@ const RenderThreadContent = inject('user')(
           {/* 图片 */}
           {parseContent.IMAGE && (
             <ImageDisplay
+              postLoad={postLoad}
               flat
               platform="h5"
               imgData={parseContent.IMAGE}
@@ -311,8 +318,7 @@ const RenderThreadContent = inject('user')(
           </div>
         )}
       </div>
-    );
-  }),
-);
+  );
+}));
 
 export default RenderThreadContent;

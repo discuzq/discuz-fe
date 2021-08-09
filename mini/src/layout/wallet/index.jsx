@@ -349,8 +349,7 @@ class WalletH5Page extends React.Component {
   };
 
   // 渲染顶部title
-  renderTitleContent = () => {
-    return (
+  renderTitleContent = () => (
       <View className={layout.topBarTitle}>
         <View onClick={this.handleBack} className={layout.customCapsule} style={this.getTopBarBtnStyle()}>
           <Icon size={18} name="LeftOutlined" />
@@ -360,7 +359,6 @@ class WalletH5Page extends React.Component {
         </View>
       </View>
     );
-  };
 
   render() {
     const tabList = [
@@ -437,7 +435,7 @@ class WalletH5Page extends React.Component {
           </View>
           {/* 列表展示区 */}
           <View className={layout.tabs}>
-            <Tabs scrollable={true} className={layout.tabList} onActive={this.onTabActive}>
+            <Tabs scrollable className={layout.tabList} onActive={this.onTabActive}>
               {tabList.map(([id, label, icon]) => (
                 <Tabs.TabPanel key={id} id={id} label={label} name={icon.name}></Tabs.TabPanel>
               ))}
@@ -480,9 +478,7 @@ class WalletH5Page extends React.Component {
           ref={this.timeRef}
           onConfirm={this.handleMoneyTime}
           initValue={this.state.initValue}
-          disabledTime={true}
-          wrap-class="my-class"
-          select-item-class="mySelector"
+          disabledTime
           type="wallet"
         />
       </Page>

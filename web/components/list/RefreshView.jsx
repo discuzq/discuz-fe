@@ -19,8 +19,10 @@ const RefreshView = ({noMore = false, loadText = '加载更多...', noMoreText =
         <div className={`${styles.refreshView}`}>
             {
                 !noMore ? (
-                    <><Spin className={styles.spin} size={16} type="spinner"/>
-                        <span>{loadText}</span></>
+                    <div className={styles.loading}>
+                        <Spin className={styles.spin} size={16} type="spinner"/>
+                        <span>{loadText}</span>
+                    </div>
                 ) : (
                     noMoreType !== 'normal' ? (
                         <div className={styles.lineSty}>

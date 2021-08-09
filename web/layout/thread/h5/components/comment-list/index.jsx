@@ -78,8 +78,8 @@ class CommentList extends React.Component {
   }
 
   // 点击评论列表用户头像
-  replyAvatarClick(data,floor) {
-    typeof this.props.replyAvatarClick === 'function' && this.props.replyAvatarClick(data,floor);
+  replyAvatarClick(data, floor) {
+    typeof this.props.replyAvatarClick === 'function' && this.props.replyAvatarClick(data, floor);
   }
 
   generatePermissions(data = {}) {
@@ -138,28 +138,24 @@ class CommentList extends React.Component {
           <div className={styles.commentListAvatar} onClick={() => this.avatarClick()}>
             {/*头像和昵称*/}
             <Avatar
-              image={(this.props.data?.user?.nickname || this.props.data?.user?.userName) && this.props.data?.user?.avatar}
+              image={
+                (this.props.data?.user?.nickname || this.props.data?.user?.userName) && this.props.data?.user?.avatar
+              }
               name={this.props.data?.user?.nickname || this.props.data?.user?.userName || '异'}
               circle={true}
             ></Avatar>
           </div>
           {/*评论内容*/}
           <div className={styles.commentListContent}>
-            <div className={styles.commentListContentText}>
+            <div className={`${styles.commentListContentText} ${this.props.active && styles.active}`}>
               <div className={styles.commentHeader}>
                 <div className={styles.userInfo}>
                   <div className={styles.commentListName}>
                     {this.props.data?.user?.nickname || this.props.data?.user?.userName || '用户异常'}
                   </div>
-                  {!!groups?.isDisplay  && (
-                    <div className={styles.groups}>{groups?.name || groups?.groupName}</div>
-                  )}
+                  {!!groups?.isDisplay && <div className={styles.groups}>{groups?.name || groups?.groupName}</div>}
                 </div>
-                {!isApproved ? (
-                  <div className={styles.isApproved}>审核中</div>
-                ) : (
-                  <div></div>
-                )}
+                {!isApproved ? <div className={styles.isApproved}>审核中</div> : <div></div>}
               </div>
               <div className={classNames(styles.commentListText)}>
                 <PostContent
@@ -226,7 +222,7 @@ class CommentList extends React.Component {
                         data={this.needReply[0]}
                         key={this.needReply[0].id}
                         isShowOne={true}
-                        avatarClick={(floor) => this.replyAvatarClick(this.needReply[0],floor)}
+                        avatarClick={(floor) => this.replyAvatarClick(this.needReply[0], floor)}
                         likeClick={() => this.replyLikeClick(this.needReply[0])}
                         replyClick={() => this.replyReplyClick(this.needReply[0])}
                         deleteClick={() => this.replyDeleteClick(this.needReply[0])}
@@ -234,15 +230,18 @@ class CommentList extends React.Component {
                       ></ReplyList>
                     ) : (
                       (this.needReply || []).map((val, index) => (
-                        <ReplyList
-                          data={val}
-                          key={val.id || index}
-                          avatarClick={(floor) => this.replyAvatarClick(val,floor)}
-                          likeClick={() => this.replyLikeClick(val)}
-                          replyClick={() => this.replyReplyClick(val)}
-                          deleteClick={() => this.replyDeleteClick(val)}
-                          toCommentDetail={() => this.toCommentDetail()}
-                        ></ReplyList>
+                        <div key={val.id || index} ref={val.id === this.props.postId ? this.props.positionRef : null}>
+                          <ReplyList
+                            data={val}
+                            key={val.id || index}
+                            avatarClick={(floor) => this.replyAvatarClick(val, floor)}
+                            likeClick={() => this.replyLikeClick(val)}
+                            replyClick={() => this.replyReplyClick(val)}
+                            deleteClick={() => this.replyDeleteClick(val)}
+                            toCommentDetail={() => this.toCommentDetail()}
+                            active={this.props.postId === val.id}
+                          ></ReplyList>
+                        </div>
                       ))
                     )}
                   </div>

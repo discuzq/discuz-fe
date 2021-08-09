@@ -76,7 +76,7 @@ export default class List extends React.Component {
                         return (
                         <View id={`virtual-list-${index}`}>
                         {
-                            item?.map((subItem, subIndex) => (<Thread data={subItem} key={`${subItem.threadId}-${subItem.updatedAt}`} relativeToViewport={displays[index]} dispatch={dispatch}/>))
+                            item?.map((subItem, subIndex) => (<Thread data={subItem} setData={this.props.setData} setVisible={this.props.setVisible} key={`${subItem.threadId}-${subItem.updatedAt}`} relativeToViewport={displays[index]} dispatch={dispatch}/>))
                         }
                         </View>
                     )})

@@ -85,7 +85,7 @@ function AttachmentToolbar(props) {
     const { onUploadComplete } = props;
     if (item.type === THREAD_TYPE.video) {
       file = files[0];
-      const isUpload = onVideoUpload();
+      const isUpload = onVideoUpload(true);
       if (!isUpload) return false;
       tencentVodUpload({
         file,
@@ -187,13 +187,12 @@ function AttachmentToolbar(props) {
       ) : null;
     }
     return isShow ? (
-      <div
-        key={item.name}
-        onClick={() => trggerInput(item)}
-        className={clsName}
-      >
+      <div key={item.name} className={clsName}>
         <Icon
-          onClick={e => handleAttachClick(e, item)}
+          onClick={e => {
+            handleAttachClick(e, item);
+            trggerInput(item);
+          }}
           name={item.name}
           size="20" />
         <input

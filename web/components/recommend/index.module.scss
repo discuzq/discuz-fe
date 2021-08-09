@@ -80,6 +80,14 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      :global {
+        .qq-emotion {
+          height: rem(20);
+          width: rem(20);
+          position: relative;
+          top: rem(-2);
+        }
+      }
     }
   }
   .browse {
