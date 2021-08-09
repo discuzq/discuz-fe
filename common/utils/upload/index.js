@@ -15,14 +15,17 @@ const upload = (options) => {
 
   debugger;
   return Promise.all(files.map(file => {
-    options.file = file;
+    const opts = {
+      file,
+      ...options
+    };
 
     return new Promise(async resolve => {
       try {
-        const res = await cosSdkUpload(options);
+        const res = await cosSdkUpload(opts);
         resolve(res);
       } catch (error) {
-        const res = await attachmentApiUpload(options);
+        const res = await attachmentApiUpload(opts);
         resolve(res);
       }
     });
