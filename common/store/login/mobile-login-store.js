@@ -184,15 +184,12 @@ export default class mobileLoginStore {
         if (smsLoginResp.code === NEED_BIND_TOKEN_FLAG) {
           const uid = get(smsLoginResp, 'data.uid', '');
           // 去除登录态，防止用户携带登录态跳入其他页面
-          // const accessToken = get(smsLoginResp, 'data.accessToken', '');
-          // 种下 access_token
-          // setAccessToken({
-          //   accessToken,
-          // });
+          const accessToken = get(smsLoginResp, 'data.accessToken', '');
           throw {
             ...MOBILE_LOGIN_STORE_ERRORS.NEED_BIND_WECHAT,
             sessionToken: get(smsLoginResp, 'data.sessionToken'),
             nickname: get(smsLoginResp, 'data.nickname'),
+            accessToken,
             uid,
           };
         }

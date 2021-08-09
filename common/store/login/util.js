@@ -58,6 +58,9 @@ const checkCompleteUserInfo = (resp) => {
   const isMissNickname = get(resp, 'data.isMissNickname', false);
   const isMissRequireInfo = get(resp, 'data.userStatus') === 10;
   const accessToken = get(resp, 'data.accessToken', '');
+  if (resp.code === -8000) { // 绑定微信时不需要先设置登录态
+    return;
+  }
   const uid = get(resp, 'data.uid', '');
 
   setAccessToken({
