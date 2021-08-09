@@ -57,6 +57,12 @@ const Index = ({ index: indexStore, onSubmit = noop, isShowDefault = false }) =>
         return item
       })
       indexItems[subIndex].isActive = true;
+    } else if(isNaN(index)) {
+      newDataSource.map(item => {
+        if (!item.children?.length) {
+          item.isActive = false
+        }
+      })
     }
 
     const result = handleResult(newDataSource)
@@ -128,6 +134,7 @@ const Index = ({ index: indexStore, onSubmit = noop, isShowDefault = false }) =>
                   index={`${index}`} 
                   title={title(item.label)} 
                   style={{ padding: '3px 10px', height: '55px' }}
+                  onClick={onClick}
                 >
                   {
                     item.children.map((secondItem, secondIndex) => {
