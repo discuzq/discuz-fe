@@ -61,6 +61,7 @@ class ThreadH5Page extends React.Component {
       // inputValue: '', // 评论内容
       inputText: '请输入内容', // 默认回复框placeholder内容
       toView: '', // 接收元素id用来滚动定位
+      stateFlag: true,
     };
 
     this.perPage = 20;
@@ -175,6 +176,7 @@ class ThreadH5Page extends React.Component {
       }
       this.flag = !this.flag;
     }
+    this.setState({ stateFlag: this.flag})
   }
 
   // 点击收藏icon
@@ -982,15 +984,27 @@ class ThreadH5Page extends React.Component {
               {/* 操作区 */}
               <View className={footer.operate}>
                 <View className={footer.icon} onClick={() => this.onMessageClick()}>
-                  {totalCount > 0 ? (
+                  {this.state.stateFlag ? 
+                    totalCount > 0 ? (
                     <View className={classNames(footer.badge, totalCount < 10 && footer.isCricle)}>
                       {totalCount > 99 ? '99+' : `${totalCount || '0'}`}
                     </View>
                   ) : (
                     ''
+                  ) : (
+                    <View className={footer.content}>
+                      正文
+                    </View>
                   )}
                   <Icon size="20" name="MessageOutlined"></Icon>
                 </View>
+                <Icon
+                  color={this.props.thread?.threadData?.isLike ? styleVar['--color-primary'] : ''}
+                  className={footer.icon}
+                  onClick={debounce(() => this.onLikeClick(), 500)}
+                  size="20"
+                  name="LikeOutlined"
+                ></Icon>
                 <Icon
                   color={this.props.thread?.isFavorite ? styleVar['--color-primary'] : ''}
                   className={footer.icon}

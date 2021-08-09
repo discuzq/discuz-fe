@@ -205,7 +205,6 @@ const InputPop = (props) => {
       props.setDisabled(true);
     }
   };
-  console.log(props.isDisabled);
   return (
     <div>
       <Popup position="bottom" visible={visible} onClose={onCancel}>

@@ -14,7 +14,6 @@ import ReportPopup from '../../h5/components/report-popup';
 import goToLoginPage from '@common/utils/go-to-login-page';
 import footer from './footer.module.scss';
 
-
 @inject('site')
 @inject('user')
 @inject('comment')

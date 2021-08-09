@@ -12,7 +12,7 @@
     }
   }
   .input {
-    width: 176px;
+    width: 255px;
   }
 }
 
@@ -74,15 +74,4 @@
   padding: 0;
   border: none !important;
   overflow: initial;
-}
-.content {
-  position: absolute;
-  font-size: 12px;
-  text-align: left;
-  color: #8590a6;
-  line-height: 17px;
-  width: 24px;
-  background-color: #fff;
-  left: 10px;
-  bottom: 12px;
 }

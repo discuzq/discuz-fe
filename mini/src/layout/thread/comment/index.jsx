@@ -12,7 +12,9 @@ import InputPopup from '../components/input-popup';
 import ReportPopup from '../components/report-popup';
 import goToLoginPage from '@common/utils/go-to-login-page';
 import Taro from "@tarojs/taro";
-
+import { Icon, Input } from '@discuzq/design';
+import footer from './footer.module.scss';
+import classNames from 'classnames';
 
 @inject('site')
 @inject('user')
@@ -30,6 +32,8 @@ class CommentH5Page extends React.Component {
       showDeletePopup: false, // 是否弹出删除弹框
       showReplyDeletePopup:false, // 是否弹出回复删除弹框
       inputText: '请输入内容', // 默认回复框placeholder内容
+      showEmojis: false,
+      showPicture: false,
     };
 
     this.commentData = null;
@@ -377,7 +381,17 @@ class CommentH5Page extends React.Component {
       content: msg,
     });
   }
-
+  onInputClick = () => {
+    this.setState({ showCommentInput: true });
+  }
+  onEmojiIconClick = () => {
+    this.setState({ showCommentInput: true });
+    this.setState({ showEmojis: true})
+  }
+  onPcitureIconClick = () => {
+    this.setState({ showCommentInput: true });
+    this.setState({ showPicture: true });
+  }
   render() {
     const { commentDetail: commentData, isReady } = this.props.comment;
 
@@ -437,14 +451,49 @@ class CommentH5Page extends React.Component {
               replyDeleteClick={(reply) => this.replyDeleteClick(reply, commentData)}
               replyAvatarClick={(reply,floor) =>this.replyAvatarClick(reply,commentData,floor)}
               onMoreClick={() => this.onMoreClick()}
-              isHideEdit={true}
+              isHideEdit
             ></CommentList>
           )}
         </View>
+        {isReady && (
+          <View className={classNames(styles.inputFooterContainer, this.state.showCommentInput && styles.zindex)}>
+          <View className={classNames(styles.inputFooter, this.state.showCommentInput && styles.zindex)}>
+              {/* 评论区触发 */}
+              <View className={footer.inputClick} onClick={() => this.onInputClick()}>
+                <Input
+                  className={footer.input}
+                  placeholder="写评论"
+                  disabled
+                  prefixIcon="EditOutlined"
+                  placeholderClass={footer.inputPlaceholder}
+                ></Input>
+              </View>
 
+              {/* 操作区 */}
+              <View className={footer.operate}>
+                <Icon
+                  className={footer.icon}
+                  onClick={this.onEmojiIconClick}
+                  size="20"
+                  name="SmilingFaceOutlined"
+                ></Icon>
+                <Icon
+                  className={footer.icon}
+                  onClick={this.onPcitureIconClick}
+                  size="20"
+                  name="PictureOutlinedBig"
+                ></Icon>
+              </View>
+            </View>
+          </View>
+        )}
         <View className={styles.footer}>
           {/* 评论弹层 */}
           <InputPopup
+            showEmojis={this.state.showEmojis}
+            cancleEmojie={() => {this.setState({ showEmojis: false });}}
+            showPicture={this.state.showPicture}
+            canclePicture={() => {this.setState({ showPicture: false });}}
             visible={this.state.showCommentInput}
             inputText={this.state.inputText}
             onClose={() => this.setState({ showCommentInput: false })}

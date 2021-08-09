@@ -28,7 +28,7 @@ const InputPop = (props) => {
   const [imageList, setImageList] = useState([]);
   const [imageUploading, setImageUploading] = useState(false);
   const [bottomHeight, setBottomHeight] = useState(0);
-
+  const [isDisabled, setDisabled] = useState(true)
   const [focus, setFocus] = useState(true);
 
   // 输入框光标位置
@@ -40,16 +40,32 @@ const InputPop = (props) => {
   useEffect(() => {
     setValue(initValue);
   }, [initValue]);
-
+  useEffect(() => {
+    setShowEmojis(props.showEmojis);
+    // 请求表情地址
+    async function fetchEmojis() {
+      if (!emojis?.length) {
+        const ret = await readEmoji();
+        const { code, data = [] } = ret;
+        if (code === 0) {
+          setEmojis(data.map(item => ({ code: item.code, url: item.url })));
+        }
+      }
+    }
+    fetchEmojis()
+  }, [props.showEmojis]);
+  useEffect(() => {
+    setShowPicture(props.showPicture);
+  }, [props.showPicture]);
   // 监听键盘的高度
   Taro.onKeyboardHeightChange((res) => {
     setBottomHeight((res?.height || 0) - (getBottomSafeArea() || 0));
   });
-
+  isDisabled
   // 获取底部安全距离
   const getBottomSafeArea = () => {
-    const screenHeight = Taro.getSystemInfoSync().screenHeight;
-    const bottom = Taro.getSystemInfoSync().safeArea.bottom;
+    const {screenHeight} = Taro.getSystemInfoSync();
+    const {bottom} = Taro.getSystemInfoSync().safeArea;
 
     return screenHeight - bottom
   };
@@ -83,6 +99,12 @@ const InputPop = (props) => {
     setShowAt(false);
     setShowEmojis(false);
     setShowPicture(false);
+    if (typeof props.cancleEmojie === 'function') {
+      props.cancleEmojie();
+    }
+    if (typeof props.canclePicture === 'function') {
+      props.canclePicture();
+    }
     onClose();
   };
 
@@ -126,10 +148,15 @@ const InputPop = (props) => {
     const newValue = value.substr(0, insertPosition) + (emoji.code || '') + value.substr(insertPosition);
     setValue(newValue);
     setCursorPos(cursorPos + emoji.code.length);
-
+    if (newValue.length > 0 && isDisabled) {
+      setDisabled(false);
+    }
+    if (newValue.length === 0 && !isDisabled) {
+      setDisabled(true);
+    }
     textareaRef.current.focus();
     // setFocus(true)
-
+    
     setShowEmojis(false);
   };
 
@@ -143,10 +170,22 @@ const InputPop = (props) => {
       textareaRef.current.focus();
       setFocus(true);
     }
+    if (checkUser.length > 0 && isDisabled) {
+      setDisabled(false);
+    }
+    if (checkUser.length === 0 && !isDisabled) {
+      setDisabled(true);
+    }
   }, [checkUser]);
 
   const handleUploadChange = async (list) => {
     setImageList([...list]);
+    if (list.length > 0 && isDisabled) {
+      setDisabled(false);
+    }
+    if (list.length === 0 && !isDisabled) {
+      setDisabled(true);
+    }
   };
 
   // 附件、图片上传之前
@@ -217,7 +256,16 @@ const InputPop = (props) => {
   const onClick = () => {
     typeof onCancel === 'function' && onCancel();
   };
-
+  const handleChange = (e) => {
+    onChange(e)
+    setValue(e.target.value)
+    if (e.target.value.length > 0 && isDisabled) {
+      setDisabled(false);
+    }
+    if (e.target.value.length === 0 && !isDisabled) {
+      setDisabled(true);
+    }
+  };
   return visible ? (
     <View className={classnames(styles.body, visible && styles.show)}>
       <View className={styles.popup} onClick={onClick}>
@@ -235,8 +283,7 @@ const InputPop = (props) => {
                   onChange(e);
                 }}
                 onChange={debounce((e) => {
-                  onChange(e);
-                  setValue(e.target.value);
+                  handleChange(e)
                 }, 100)}
                 // onFocus={() => setShowEmojis(false)}
                 placeholder={inputText}
@@ -244,7 +291,7 @@ const InputPop = (props) => {
                 placeholderClass={styles.placeholder}
                 forwardedRef={textareaRef}
                 focus={focus}
-                fixed={true}
+                fixed
                 adjustPosition={false}
                 // autoHeight={false}
               ></Textarea>
@@ -291,7 +338,7 @@ const InputPop = (props) => {
               </View>
               <View
                 onClick={onSubmitClick}
-                className={classnames(styles.ok, (loading || imageUploading) && styles.disabled)}
+                className={classnames(styles.ok, (loading || imageUploading || isDisabled) && styles.disabled)}
               >
                 发布
               </View>
