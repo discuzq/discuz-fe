@@ -2,9 +2,17 @@
 
 .inputClick {
   :global {
+    .dzq-input__prefix-icon {
+      color: #4F5A70
+    }
     .dzq-input.is-disabled .dzq-input__inner {
       background-color: $body-bg-color;
       -webkit-appearance: none; // ios下去除上面阴影
+    }
+    .dzq-input__inner {
+      border-radius: 18px;
+      background: rgba($color: #EFF1F3, $alpha: 0.3);
+      border: 1px solid #eee;
     }
   }
   .input {

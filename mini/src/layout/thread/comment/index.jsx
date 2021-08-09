@@ -478,7 +478,7 @@ class CommentH5Page extends React.Component {
           </View>
         </ScrollView>
         {isReady && (
-          <View className={classNames(styles.inputFooterContainer, this.state.showCommentInput && styles.zindex)}>
+        <View className={classNames(styles.inputFooterContainer, this.state.showCommentInput && styles.zindex)}>
           <View className={classNames(styles.inputFooter, this.state.showCommentInput && styles.zindex)}>
               {/* 评论区触发 */}
               <View className={footer.inputClick} onClick={() => this.onInputClick()}>

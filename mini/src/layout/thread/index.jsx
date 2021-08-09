@@ -157,7 +157,7 @@ class ThreadH5Page extends React.Component {
     }
 
     if (this.flag) {
-      this.nextPosition = e.detail?.scrollTop || 0;
+      this.nextPosition = 0;
     }
     this.currentPosition = e.detail?.scrollTop || 0;
 
@@ -1039,7 +1039,7 @@ class ThreadH5Page extends React.Component {
                     {isCommentReady && isShowCommentList && (
                       <Fragment>
                         <RenderCommentList
-                          isPositionComment={true}
+                          isPositionComment
                           router={this.props.router}
                           sort={(flag) => this.onSortChange(flag)}
                           replyAvatarClick={(comment, reply, floor) => this.replyAvatarClick(comment, reply, floor)}

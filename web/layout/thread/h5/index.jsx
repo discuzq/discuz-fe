@@ -153,7 +153,7 @@ class ThreadH5Page extends React.Component {
   };
   // 点击信息icon
   onMessageClick() {
-    const position = this.flag ? this.position : this.nextPosition;
+    const position = this.flag ? this.position : 0;
     this.flag = !this.flag;
     this.setState({ stateFlag: this.flag });
     this.threadBodyRef.current.scrollTo(0, position);

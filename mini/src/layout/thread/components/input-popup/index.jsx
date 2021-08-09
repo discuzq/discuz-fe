@@ -42,6 +42,7 @@ const InputPop = (props) => {
   }, [initValue]);
   useEffect(() => {
     setShowEmojis(props.showEmojis);
+    setFocus(false);
     // 请求表情地址
     async function fetchEmojis() {
       if (!emojis?.length) {
@@ -56,6 +57,7 @@ const InputPop = (props) => {
   }, [props.showEmojis]);
   useEffect(() => {
     setShowPicture(props.showPicture);
+    setFocus(false);
   }, [props.showPicture]);
   // 监听键盘的高度
   Taro.onKeyboardHeightChange((res) => {
