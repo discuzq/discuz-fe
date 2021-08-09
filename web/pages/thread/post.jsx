@@ -17,7 +17,7 @@ import { tencentVodUpload } from '@common/utils/tencent-vod';
 import { plus } from '@common/utils/calculate';
 import { defaultOperation } from '@common/constants/const';
 import ViewAdapter from '@components/view-adapter';
-import { attachmentUploadMultiple } from '@common/utils/attachment-upload';
+import upload from '@common/utils/upload';
 import { formatDate } from '@common/utils/format-date';
 
 @inject('site')
@@ -674,9 +674,14 @@ class PostPage extends React.Component {
   }
 
   async createThread(isDraft, isAutoSave = false) {
-    const { threadPost, thread } = this.props;
+    const { threadPost, thread, site } = this.props;
 
     // 图文混排：第三方图片转存
+    const { webConfig: { setAttach, qcloud } } = site;
+    const { supportImgExt, supportMaxSize } = setAttach;
+    const { qcloudCosBucketName, qcloudCosBucketArea, qcloudCosSignUrl, qcloudCos } = qcloud;
+
+
     const errorTips = '帖子内容中，有部分图片转存失败，请先替换相关图片再重新发布';
     const vditorEl = document.getElementById('dzq-vditor');
     if (vditorEl) {
@@ -693,7 +698,7 @@ class PostPage extends React.Component {
 
     let contentText = threadPost.postData.contentText;
     const images = contentText.match(/<img.*?\/>/g)?.filter(image => (!image.match('alt="attachmentId-') && !image.includes('emoji')));
-    if (images) {
+    if (images && images.length) {
       const fileurls = images.map(img => {
         const src = img.match(/\"(.*?)\"/);
         if (src) return src[1];
@@ -705,7 +710,16 @@ class PostPage extends React.Component {
         hasMask: true,
         duration: 0,
       });
-      const res = await attachmentUploadMultiple(fileurls);
+      const res = await upload({
+        fileurls,
+        type: 1,
+        supportImgExt,
+        supportMaxSize,
+        qcloudCosBucketName,
+        qcloudCosBucketArea,
+        qcloudCosSignUrl,
+        qcloudCos,
+      });
       const sensitiveArr = [];
       const uploadError = [];
       res.forEach((ret, index) => {
@@ -718,6 +732,7 @@ class PostPage extends React.Component {
           contentText = contentText.replace(images[index], images[index].replace('alt=\"\"', 'alt=\"uploadError\"'));
         } else {
           uploadError.push('');
+          contentText = contentText.replace(images[index], images[index].replace('alt=\"\"', 'alt=\"uploadError\"'));
         }
       });
       threadPost.setPostData({ contentText });
