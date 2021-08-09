@@ -40,12 +40,7 @@ class CopyRight extends React.Component {
       <div className={clsName} style={style}>
         <div className={styles.text}>
           <a href="https://discuz.chat" target="_blank">
-            Powered By Discuz！Q
-          </a>
-        </div>
-        <div className={styles.text}>
-          <a href={curSiteUrl} target="_blank">
-            &copy; {curYear} {setSite.siteName}
+            Powered By Discuz！Q &copy; {curYear} {setSite.siteName}
           </a>
         </div>
         {

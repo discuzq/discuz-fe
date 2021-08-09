@@ -107,7 +107,7 @@ function VList(props, ref) {
       if (list.length <= 2) {
         return winHeight - 230 - 65 + 10; // +10 底部tab栏高度计算修正
       }
-      return 149;
+      return 131;
     }
     return cache.rowHeight({ index, data });
   };
