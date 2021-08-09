@@ -1,4 +1,4 @@
-import React, { useState, useRef }from 'react';
+import React, { useState, useRef, useEffect }from 'react';
 import { inject, observer } from 'mobx-react';
 import { Icon, Toast, Spin, AudioPlayer } from '@discuzq/design';
 import { extensionList, isPromise, noop } from '../utils';
@@ -10,7 +10,9 @@ import FilePreview from './../file-preview';
 import getAttachmentIconLink from '@common/utils/get-attachment-icon-link';
 import { get } from '@common/utils/get';
 
+import { ATTACHMENT_FOLD_COUNT } from '@common/constants';
 import styles from './index.module.scss';
+import Router from '@discuzq/sdk/dist/router';
 
 /**
  * 附件
@@ -223,10 +225,32 @@ const Index = ({
     );
   };
 
+  // 是否展示 查看更多
+  const [isShowMore, setIsShowMore] = useState(false);
+  useEffect(() => {
+    // 详情页不折叠
+    const {pathname} = window.location;
+    if (/^\/thread\/\d+/.test(pathname)) {
+      setIsShowMore(false);
+    } else {
+      setIsShowMore(attachments.length > ATTACHMENT_FOLD_COUNT);
+    }
+  }, []);
+
+  const gotoDetail = () => {
+    Router.push({
+      url: `/thread/${threadId}`,
+    });
+  };
+
   return (
     <div className={styles.wrapper}>
         {
           attachments.map((item, index) => {
+            if (isShowMore && index >= ATTACHMENT_FOLD_COUNT) {
+              return null;
+            }
+
             // 获取文件类型
             const extension = item?.extension || '';
             const type = extensionList.indexOf(extension.toUpperCase()) > 0
@@ -240,6 +264,11 @@ const Index = ({
               )
             );
           })
+        }
+        {
+          isShowMore ? (<div className={styles.loadMore} onClick={gotoDetail}>
+            查看更多<Icon name='RightOutlined' className={styles.icon} size={12} />
+          </div>) : <></>
         }
         { previewFile ? <FilePreview file={previewFile} onClose={() => setPreviewFile(null) } /> : <></> }
     </div>

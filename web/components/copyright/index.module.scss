@@ -5,6 +5,9 @@
   line-height: $font-line-height-xs;
   &.center {
     text-align: center;
+    .beian > a {
+      justify-content: center;
+    }
   }
   .text > a {
     text-decoration: unset;
@@ -13,12 +16,25 @@
       text-decoration: underline;
     }
   }
+  .beian {
+    padding-top: rem($padding-1n);
+  }
+
+  .beian > a > img {
+    padding-right: rem($padding-2n);
+  }
 
   &.h5 {
     margin-top: rem($margin-10);
     margin-bottom: rem($margin-10);
     .text > a {
       color: $h5-copyright-color;
+    }
+    .beian > a {
+      display: flex;
+      text-align: center;
+      align-content: center;
+      justify-content: center;
     }
   }
   
@@ -31,6 +47,11 @@
     }
     .text > a {
       color: $text-color-secondary;
+    }
+    .beian > a {
+      display: flex;
+      text-align: center;
+      align-content: center;
     }
   }
 }
