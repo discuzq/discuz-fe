@@ -65,7 +65,7 @@ class ThreadH5Page extends React.Component {
       showContent: '',
       // inputValue: '', // 评论内容
       show: false, // 分享海报弹窗
-      stateFlag: true,
+      stateFlag: !this.props.thread?.isPositionToComment,
       contentImgIsReady: false, // 内容区域图片是否加载完成
     };
 
@@ -77,8 +77,8 @@ class ThreadH5Page extends React.Component {
     this.commentDataRef = React.createRef();
     this.position = 0;
     this.nextPosition = 0;
-    this.flag = true;
-
+    this.flag = !this.props.thread?.isPositionToComment;
+    this.isFirst = true;
     // 修改评论数据
     this.comment = null;
 
@@ -112,11 +112,14 @@ class ThreadH5Page extends React.Component {
   componentDidMount() {
     this.setState({ loadWeiXin: isWeiXin() });
   }
-
   componentDidUpdate() {
+    if (!this.isFirst) {
+      return ;
+    }
     const { thread } = this.props;
     // 当图片都加载完成后
     if (this.state.contentImgIsReady) {
+      this.isFirst = false;
       // 当内容加载完成后，获取评论区所在的位置
       this.position = this.commentDataRef?.current?.offsetTop - 50;
       thread.clearContentImgState();
@@ -880,15 +883,18 @@ class ThreadH5Page extends React.Component {
               {/* 操作区 */}
               <div className={footer.operate}>
                 <div className={footer.icon} onClick={() => this.onMessageClick()}>
-                  {totalCount > 0 && this.state.stateFlag ? (
+                  {this.state.stateFlag
+                    ? totalCount > 0 ? (
                     <div className={classNames(footer.badge, totalCount < 10 && footer.isCricle)}>
                       {totalCount > 99 ? '99+' : `${totalCount || '0'}`}
                     </div>
-                  ) : (
+                    ) : (
+                      ''
+                    ) : (
                     <div className={footer.content}>
-                      {'正文'}
+                      正文
                     </div>
-                  )}
+                    )}
                   <Icon size="20" name="MessageOutlined"></Icon>
                 </div>
                 <Icon

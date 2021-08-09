@@ -61,7 +61,6 @@ const InputPop = (props) => {
   Taro.onKeyboardHeightChange((res) => {
     setBottomHeight((res?.height || 0) - (getBottomSafeArea() || 0));
   });
-  isDisabled
   // 获取底部安全距离
   const getBottomSafeArea = () => {
     const {screenHeight} = Taro.getSystemInfoSync();

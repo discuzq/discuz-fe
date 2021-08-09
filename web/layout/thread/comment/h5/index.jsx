@@ -33,7 +33,6 @@ class CommentH5Page extends React.Component {
       inputText: '请输入内容', // 默认回复框placeholder内容
       showEmojis: false,
       showPicture: false,
-      isDisabled: true, // input框发布是否可用
     };
 
     this.commentData = null;
@@ -498,8 +497,6 @@ class CommentH5Page extends React.Component {
             cancleEmojie={() => {this.setState({ showEmojis: false });}}
             showPicture={this.state.showPicture}
             canclePicture={() => {this.setState({ showPicture: false });}}
-            isDisabled={this.state.isDisabled}
-            setDisabled={(state) => {this.setState({isDisabled: state})}}
             visible={this.state.showCommentInput}
             inputText={this.state.inputText}
             onClose={() => this.setState({ showCommentInput: false })}

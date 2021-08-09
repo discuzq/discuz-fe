@@ -22,7 +22,7 @@ const InputPop = (props) => {
   const [showPicture, setShowPicture] = useState(false);
 
   const [imageList, setImageList] = useState([]);
-
+  const [isDisabled, setDisabled] = useState(true);
   const [imageUploading, setImageUploading] = useState(false);
   useEffect(() => {
     setValue(initValue || '');
@@ -107,7 +107,12 @@ const InputPop = (props) => {
     const insertPosition = textareaRef?.current?.selectionStart || 0;
     const newValue = value.substr(0, insertPosition) + (emoji.code || '') + value.substr(insertPosition);
     setValue(newValue);
-
+    if (newValue.length > 0 && isDisabled) {
+      setDisabled(false);
+    }
+    if (newValue.length === 0 && !isDisabled) {
+      setDisabled(true);
+    }
     // setShowEmojis(false);
   };
 
@@ -120,10 +125,22 @@ const InputPop = (props) => {
     setValue(newValue);
 
     setShowEmojis(false);
+    if (atList.length > 0 && isDisabled) {
+      setDisabled(false);
+    }
+    if (atList.length === 0 && !isDisabled) {
+      setDisabled(true);
+    }
   };
 
   const handleUploadChange = async (list) => {
     setImageList([...list]);
+    if (list.length > 0 && isDisabled) {
+      setDisabled(false);
+    }
+    if (list.length === 0 && !isDisabled) {
+      setDisabled(true);
+    }
   };
 
   // 附件、图片上传之前
@@ -198,11 +215,11 @@ const InputPop = (props) => {
 
   const handleChange = (e) => {
     setValue(e.target.value);
-    if (e.target.value.length > 0 && props.isDisabled) {
-      props.setDisabled(false);
+    if (e.target.value.length > 0 && isDisabled) {
+      setDisabled(false);
     }
-    if (e.target.value.length === 0 && !props.isDisabled) {
-      props.setDisabled(true);
+    if (e.target.value.length === 0 && !isDisabled) {
+      setDisabled(true);
     }
   };
   return (
@@ -264,7 +281,7 @@ const InputPop = (props) => {
 
             <div
               onClick={onSubmitClick}
-              className={classnames(styles.ok, (loading || imageUploading || props.isDisabled) && styles.disabled)}
+              className={classnames(styles.ok, (loading || imageUploading || isDisabled) && styles.disabled)}
             >
               发布
             </div>
