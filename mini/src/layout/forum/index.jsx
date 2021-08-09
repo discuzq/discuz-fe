@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 import { View } from '@tarojs/components';
 import Popup from '@discuzq/design/dist/components/popup/index';
 import Icon from '@discuzq/design/dist/components/icon/index';
-import Avatar from '@discuzq/design/dist/components/avatar/index';
+import Avatar from '@components/avatar';
 import '@discuzq/design/dist/styles/index.scss';
 import HomeHeader from '@components/home-header';
 import UserCenterUsers from '@components/user-center-users';
@@ -97,7 +97,7 @@ class ForumH5Page extends React.Component {
                   <Avatar
                     size="small"
                     key={item.userId}
-                    text={item?.nickname?.substring(0, 1)?.toUpperCase()}
+                    name={item.nickname}
                     className={layout.forum_member_img}
                     image={item.avatar}
                   />

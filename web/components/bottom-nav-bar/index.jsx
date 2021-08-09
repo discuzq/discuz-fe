@@ -60,6 +60,7 @@ const BottomNavBar = ({ router, user, fixed = true, placeholder = false, curr = 
       temp[idx].active = true;
       setTabs(temp);
     }
+
     router.push(i.router);
   };
 
