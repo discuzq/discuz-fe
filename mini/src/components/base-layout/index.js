@@ -38,7 +38,8 @@ const BaseLayout = (props) => {
     onScroll = () => {}, 
     baselayout, 
     pageName, 
-    onClickTabBar = () => {}
+    onClickTabBar = () => {},
+    listClassName = '', // 用于list组件className的定义
   } = props;
 
   const [showShadow, setShowShadow] = useState(false); // 用于修补ios视频全屏后会跳到顶部
@@ -132,13 +133,13 @@ const BaseLayout = (props) => {
           showPullDown ? (
             <View className={styles.list} ref={pullDownWrapper}>
               {/* <PullDownRefresh onRefresh={onPullDown} isFinished={isFinished} height={height}> */}
-                  <List {...props} className={styles.listHeight} ref={listRef} hasOnScrollToLower={index.hasOnScrollToLower} onScroll={handleScroll}>
+                  <List {...props} className={`${styles.listHeight} ${listClassName}`} ref={listRef} hasOnScrollToLower={index.hasOnScrollToLower} onScroll={handleScroll}>
                       {typeof(children) === 'function' ? children({ ...props }) : children}
                   </List>
               {/* </PullDownRefresh> */}
             </View>
           ) : (
-            <List {...props} className={styles.list} ref={listRef} hasOnScrollToLower={index.hasOnScrollToLower} onScroll={handleScroll}>
+            <List {...props} className={`${styles.list} ${listClassName}`} ref={listRef} hasOnScrollToLower={index.hasOnScrollToLower} onScroll={handleScroll}>
                 {typeof(children) === 'function' ? children({ ...props }) : children}
             </List>
           )

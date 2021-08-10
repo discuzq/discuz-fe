@@ -1,5 +1,6 @@
 import React from 'react';
 import Document, { Html, Head, Main, NextScript } from 'next/document';
+import envConfig from '@common/config';
 
 class MyDocument extends Document {
   static async getInitialProps(ctx) {
@@ -18,7 +19,34 @@ class MyDocument extends Document {
     return null;
   }
 
+  createTalkingdata() {
+    const currEnvConfig = envConfig();
+
+    if ( process.env.NODE_ENV === 'development' ) {
+      return '';
+    }
+    return `
+      var appid = '';
+      var channelname = window.location.hostname;
+      if (!!window.navigator.userAgent.match(/AppleWebKit.*Mobile.*/)) {
+        appid = '500D36509CE649E88446FB4E7A51B221'; // h5
+      } else {
+        appid = '4F323A1D5F444BF69C7C4E10704AEA2F'; // pc
+      }
+      var url = 'http://sdk.talkingdata.com/app/h5/v1?appid=' + appid + '&vn=' + '${currEnvConfig.version}' + '&vc=' + '${currEnvConfig.version}' + '&td_channelid=' + channelname;
+      if ( window.location.protocol.indexOf('https') != -1 ) {
+        url = 'https://jic.talkingdata.com/app/h5/v1?appid=' + appid + '&vn=' + '${currEnvConfig.version}' + '&vc=' + '${currEnvConfig.version}' + '&td_channelid=' + channelname;
+      }
+      var talkingdata = document.createElement('script');
+      talkingdata.type = 'text/javascript';
+      talkingdata.async = true;
+      talkingdata.src = url;
+      document.getElementsByTagName('body')[0].appendChild(talkingdata);
+    `
+  }
+
   render() {
+  
     return (
       <Html lang="cn">
         <Head>
@@ -55,18 +83,7 @@ class MyDocument extends Document {
             </script>
             <NextScript/>
         </body>
-        <script dangerouslySetInnerHTML={{__html: `
-          var appid = '500D36509CE649E88446FB4E7A51B221';
-          var url = 'http://sdk.talkingdata.com/app/h5/v1?appid=' + appid + '&vn=' + 'discuzq3.0' + '&vc=' + 'DISCUZ_CONFIG_VERSION';
-          if ( window.location.protocol.indexOf('https') != -1 ) {
-            url = 'https://jic.talkingdata.com/app/h5/v1?appid=' + appid + '&vn=' + 'discuzq3.0' + '&vc=' + 'DISCUZ_CONFIG_VERSION';
-          }
-          var talkingdata = document.createElement('script');
-          talkingdata.type = 'text/javascript';
-          talkingdata.async = true;
-          talkingdata.src = url;
-          document.getElementsByTagName('body')[0].appendChild(talkingdata);
-        `}}/>
+        <script dangerouslySetInnerHTML={{__html: this.createTalkingdata()}}/>
         <script dangerouslySetInnerHTML={{__html: `
           window.sessionStorage.setItem('__TD_td_channel', window.location.hostname.replace(/\./g, '_'));
           var tdjs = document.createElement('script');
