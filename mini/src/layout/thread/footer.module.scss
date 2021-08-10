@@ -15,12 +15,14 @@
     }
     .dzq-input__inner {
       border-radius: 18px;
-      background: rgba($color: #EFF1F3, $alpha: 0.3);
-      border: 1px solid #eee;
+      background-color: #fafafb !important;
+      border: 1px solid #fefefe !important;
+      padding-left: 42px !important;
     }
     .dzq-icon {
       line-height: 36px;
-      color:#4F5A70;
+      color: $text-color-regular;
+      width: 48px;
     }
   }
   .input {
