@@ -1,6 +1,7 @@
 @import '@common/styles/index.scss';
 
 .inputClick {
+  flex:1;
   :global {
     .dzq-input__prefix-icon {
       width: rem(48);
@@ -24,7 +25,7 @@
     }
   }
   .input {
-    width: rem(255);
+    width: 100%;
   }
 }
 
@@ -51,6 +52,7 @@
   padding-left: rem(4);
   left: rem(10);
   bottom: rem(12);
+  
 }
 .badge {
   min-width: rem(17);

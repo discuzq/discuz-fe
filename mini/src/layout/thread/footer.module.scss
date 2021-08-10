@@ -1,7 +1,7 @@
 @import '@common/styles/index.scss';
 
 .inputClick {
-  
+  flex:1;
   :global {
     .dzq-input.is-disabled .dzq-input__inner {
       background-color: $body-bg-color;
@@ -26,7 +26,7 @@
     }
   }
   .input {
-    width: 176px;
+    width: 100%;
   }
 }
 
