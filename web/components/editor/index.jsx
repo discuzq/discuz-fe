@@ -13,7 +13,7 @@ import './index.scss';
 import '@discuzq/vditor/src/assets/scss/index.scss';
 import { Toast } from '@discuzq/design';
 import browser, { constants } from '@common/utils/browser';
-import upload from '@common/utils/upload';
+import commonUpload from '@common/utils/common-upload';
 
 export default function DVditor(props) {
   const { pc, emoji = {}, atList = [], topic, value = '', isResetContentText,
@@ -403,7 +403,7 @@ export default function DVditor(props) {
               hasMask: true,
               duration: 0,
             });
-            const res = await upload({
+            const res = await commonUpload({
               files,
               type: 1,
               supportImgExt,

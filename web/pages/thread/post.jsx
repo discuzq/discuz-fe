@@ -17,7 +17,7 @@ import { tencentVodUpload } from '@common/utils/tencent-vod';
 import { plus } from '@common/utils/calculate';
 import { defaultOperation } from '@common/constants/const';
 import ViewAdapter from '@components/view-adapter';
-import upload from '@common/utils/upload';
+import commonUpload from '@common/utils/common-upload';
 import { formatDate } from '@common/utils/format-date';
 
 @inject('site')
@@ -710,7 +710,7 @@ class PostPage extends React.Component {
         hasMask: true,
         duration: 0,
       });
-      const res = await upload({
+      const res = await commonUpload({
         files: fileurls,
         type: 1,
         supportImgExt,

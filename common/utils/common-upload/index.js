@@ -1,7 +1,7 @@
 import cosSdkUpload from './cos-sdk-upload';
 import attachmentApiUpload from './attachment-api-upload';
 
-const upload = (options) => {
+const commonUpload = (options) => {
   const {
     files,
     type,
@@ -13,7 +13,6 @@ const upload = (options) => {
     supportMaxSize,
   } = options;
 
-  debugger;
   return Promise.all(files.map(file => {
     const opts = {
       file,
@@ -33,4 +32,4 @@ const upload = (options) => {
   }));
 };
 
-export default upload;
+export default commonUpload;

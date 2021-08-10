@@ -215,6 +215,14 @@ class ThreadPCPage extends React.Component {
                   {(currentDefaultOperation === defaultOperation.attach || Object.keys(postData.files).length > 0) && (
                     <FileUpload
                       limit={9}
+                      cosOptions={{
+                        supportImgExt,
+                        supportMaxSize,
+                        qcloudCosBucketName,
+                        qcloudCosBucketArea,
+                        qcloudCosSignUrl,
+                        qcloudCos,
+                      }}
                       className={styles['no-padding']}
                       fileList={Object.values(postData.files)}
                       onChange={fileList => this.props.handleUploadChange(fileList, THREAD_TYPE.file)}
