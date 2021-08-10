@@ -31,7 +31,29 @@ class BuyPCPage extends React.Component {
 
   render() {
     const { index } = this.props;
-    const { pageData, currentPage, totalPage   } = index.threads || {};
+
+    const { lists } = index;
+
+    const buyThreadsList = index.getList({
+      namespace: 'buy',
+    });
+
+    const totalCount = index.getAttribute({
+      namespace: 'buy',
+      key: 'totalCount',
+    });
+
+    const totalPage = index.getAttribute({
+      namespace: 'buy',
+      key: 'totalPage',
+    });
+
+    const currentPage = index.getAttribute({
+      namespace: 'buy',
+      key: 'currentPage',
+    });
+
+    const requestError = index.getListRequestError({ namespace: 'buy' });
 
     return (
       <BaseLayout
@@ -39,23 +61,24 @@ class BuyPCPage extends React.Component {
         noMore={currentPage >= totalPage}
         onRefresh={this.props.dispatch}
         showRefresh={false}
+        pageName={'buy'}
         rightClass={styles.rightSide}
-        isShowLayoutRefresh={!!pageData?.length}
+        isShowLayoutRefresh={!!buyThreadsList?.length}
         className="mybuy"
       >
         <SidebarPanel
           title="我的购买"
           type='normal'
           isShowMore={false}
-          noData={!pageData?.length}
-          isLoading={!pageData}
+          noData={!buyThreadsList?.length}
+          isLoading={!buyThreadsList}
           icon={{ type: 3, name: 'ShoppingCartOutlined' }}
-          rightText={`共有${this.props.totalCount}条购买`}
+          rightText={totalCount !== undefined ? `共有${totalCount}条购买` : null}
           mold='plane'
-          isError={this.props.index.threadError.isError}
-          errorText={this.props.index.threadError.errorText}
+          isError={requestError.isError}
+          errorText={requestError.errorText}
         >
-          {pageData?.map((item, index) => (
+          {buyThreadsList?.map((item, index) => (
             <ThreadContent className={index === 0 && styles.threadStyle} data={item} key={index} />
           ))}
         </SidebarPanel>

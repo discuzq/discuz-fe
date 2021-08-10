@@ -12,30 +12,32 @@ import { withRouter } from 'next/router';
 @inject('index')
 @observer
 class Index extends React.Component {
-  static async getInitialProps(ctx) {
-    const threads = await readThreadList(
-      {
-        params: {
-          filter: {
-            complex: 3,
-          },
-          perPage: 10,
-        },
-      },
-      ctx,
-    );
-    return {
-      serverIndex: {
-        threads: threads && threads.code === 0 ? threads.data : null,
-        totalPage: threads && threads.code === 0 ? threads.data.totalPage : null,
-        totalCount: threads && threads.code === 0 ? threads.data.totalCount : null,
-      },
-    };
-  }
+  // static async getInitialProps(ctx) {
+  // const threads = await readThreadList(
+  //   {
+  //     params: {
+  //       filter: {
+  //         complex: 3,
+  //       },
+  //       perPage: 10,
+  //     },
+  //   },
+  //   ctx,
+  // );
+  //   const threads = null;
+  //   return {
+  //     serverIndex: {
+  //       threads: threads && threads.code === 0 ? threads.data : null,
+  //       totalPage: threads && threads.code === 0 ? threads.data.totalPage : null,
+  //       totalCount: threads && threads.code === 0 ? threads.data.totalCount : null,
+  //     },
+  //   };
+  // }
 
   constructor(props) {
     super(props);
     const { serverIndex, index } = this.props;
+    index.registerList({ namespace: 'collect' });
     this.state = {
       firstLoading: true, // 首次加载状态判断
       totalCount: 0,
@@ -57,7 +59,8 @@ class Index extends React.Component {
     const { index } = this.props;
     const hasThreadsData = !!index.threads;
     if (!hasThreadsData) {
-      const threadsResp = await this.props.index.getReadThreadList({
+      const threadsResp = await index.fetchList({
+        namespace: 'collect',
         perPage: 10,
         page: this.state.page,
         filter: {
@@ -65,12 +68,18 @@ class Index extends React.Component {
         },
       });
 
-      this.setState({
-        totalCount: threadsResp.totalCount,
-        totalPage: threadsResp.totalPage,
+      index.setList({
+        namespace: 'collect',
+        data: threadsResp,
+        page: this.state.page,
       });
 
-      if (this.state.page <= threadsResp.totalPage) {
+      this.setState({
+        totalCount: threadsResp.data.totalCount,
+        totalPage: threadsResp.data.totalPage,
+      });
+
+      if (this.state.page <= threadsResp.data.totalPage) {
         this.setState({
           page: this.state.page + 1,
         });
@@ -91,7 +100,7 @@ class Index extends React.Component {
 
   clearStoreThreads = () => {
     const { index } = this.props;
-    index.setThreads(null);
+    index.clearList({ namespace: 'collect' });
   };
 
   componentWillUnmount() {
@@ -100,7 +109,8 @@ class Index extends React.Component {
 
   dispatch = async () => {
     const { index } = this.props;
-    const threadsResp = await index.getReadThreadList({
+    const threadsResp = await index.fetchList({
+      namespace: 'collect',
       perPage: 10,
       page: this.state.page,
       filter: {
@@ -108,7 +118,13 @@ class Index extends React.Component {
       },
     });
 
-    if (this.state.page <= threadsResp.totalPage) {
+    index.setList({
+      namespace: 'collect',
+      data: threadsResp,
+      page: this.state.page,
+    });
+
+    if (this.state.page <= threadsResp.data.totalPage) {
       this.setState({
         page: this.state.page + 1,
       });
@@ -142,7 +158,7 @@ class Index extends React.Component {
             dispatch={this.dispatch}
           />
         }
-        title={`我的收藏`}
+        title={'我的收藏'}
       />
     );
   }
