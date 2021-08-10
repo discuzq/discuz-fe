@@ -1,20 +1,24 @@
 @import '@common/styles/index.scss';
 .orCode{
   width: rem(327);
-  height: rem(220);
   margin-top: $margin-2n;
   position: relative;
   text-align: center;
   .orCode__img {
     margin-top: $margin-5n;
-    width: rem(150);
-    height: rem(150);
     display: inline-block;
     img {
-      width: 100%;
-      height: 100%;
+      width: rem(150);
+      height: rem(150);
       display: inline-block;
       border: $border-solid-1;
+    }
+  }
+  .orCode_mini {
+    img {
+      overflow: hidden;
+      border-radius: $border-radius-circle;
+      padding: $padding-4n;
     }
   }
   .orCode__text {
@@ -88,5 +92,8 @@
       margin-left: 50%;
       transform: translate(-50%, 0);
     }
+  }
+  .h5_miniCodeMask {
+    padding: $padding-4n;
   }
 }

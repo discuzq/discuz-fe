@@ -37,8 +37,8 @@ const Index = (props) => {
 
   // 标题显示37个字符
   const newTitle = useMemo(() => {
-    if (title.length > 37) {
-      return `${title.slice(0, 37)}...`;
+    if (title.length > 100) {
+      return `${title.slice(0, 100)}...`;
     }
     return title;
   }, [title]);
