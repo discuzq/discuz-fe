@@ -20,11 +20,23 @@ import LoginHelper from '@common/utils/login-helper';
 @inject('commonLogin')
 @observer
 class WXBind extends Component {
+  constructor(props) {
+    super(props);
+    this.handleBindButtonClick = this.handleBindButtonClick.bind(this);
+  }
+
+  async componentDidMount() {
+    await getParamCode(this.props.commonLogin);
+  }
+
+  componentWillUnmount() {
+    this.props.commonLogin.reset();
+  }
+
   getUserProfileCallback = async (params) => {
     const { scene: sessionToken } = getCurrentInstance().router.params;
 
     try {
-      await getParamCode(this.props.commonLogin);
       const res = await this.props.miniBind.mobilebrowserBind({
         jsCode: this.props.commonLogin.jsCode,
         iv: params.iv,
@@ -32,6 +44,7 @@ class WXBind extends Component {
         sessionToken,
         type: 'pc'
       });
+      this.props.commonLogin.setLoginLoading(true);
       checkUserStatus(res);
       if (res.code === 0) {
         this.props.h5QrCode.bindTitle = '已成功绑定';
@@ -43,6 +56,8 @@ class WXBind extends Component {
         Message: res.msg,
       };
     } catch (error) {
+      this.props.commonLogin.setLoginLoading(true);
+      await getParamCode(this.props.commonLogin);
       // 注册信息补充
       if (error.Code === MOBILE_LOGIN_STORE_ERRORS.NEED_COMPLETE_REQUIRED_INFO.Code) {
         if (isExtFieldsOpen(this.props.site)) {
@@ -78,6 +93,18 @@ class WXBind extends Component {
     }
   }
 
+  handleBindButtonClick() {
+    const { commonLogin } = this.props;
+    if (!commonLogin.loginLoading) {
+      return;
+    }
+    commonLogin.setLoginLoading(false);
+    getUserProfile(this.getUserProfileCallback, true, async () => {
+      commonLogin.setLoginLoading(true);
+      await getParamCode(this.props.commonLogin);
+    });
+  }
+
   render() {
     const { nickname } = getCurrentInstance().router.params;
 
@@ -95,7 +122,7 @@ class WXBind extends Component {
                 ? <Button
                   className={layout.button}
                   type="primary"
-                  onClick={() => {getUserProfile(this.getUserProfileCallback)}}
+                  onClick={this.handleBindButtonClick}
                 >
                   点此，绑定小程序，并继续访问
                 </Button>

@@ -26,10 +26,15 @@ class WXAuthorization extends Component {
       isBtn: true,
       loginTitle: `你确定要授权登录${props.site.siteName}吗？`
     }
+    this.handleAuthorizationButtonClick = this.handleAuthorizationButtonClick.bind(this);
   }
 
   async componentDidMount() {
-    await getParamCode(this.props.commonLogin)
+    await getParamCode(this.props.commonLogin);
+  }
+
+  componentWillUnmount() {
+    this.props.commonLogin.reset();
   }
 
   authorization = async (params) => {
@@ -46,6 +51,7 @@ class WXAuthorization extends Component {
           sessionToken
         },
       });
+      this.props.commonLogin.setLoginLoading(true);
 
       // 落地页开关打开
       if (res.code === NEED_BIND_OR_REGISTER_USER) {
@@ -57,11 +63,9 @@ class WXAuthorization extends Component {
       }
       if (res.code === 0) {
         this.setState({
-          loginTitle: '已成功登录'
-        })
-        this.setState({
+          loginTitle: '已成功登录',
           isBtn: false,
-        });
+        })
         return;
       }
       checkUserStatus(res);
@@ -70,10 +74,10 @@ class WXAuthorization extends Component {
         Message: res.msg,
       };
     } catch (error) {
+      this.props.commonLogin.setLoginLoading(true);
+      await getParamCode(this.props.commonLogin);
       this.setState({
-        loginTitle: '登录失败，请刷新二维码重新扫码'
-      });
-      this.setState({
+        loginTitle: '登录失败，请刷新二维码重新扫码',
         isBtn: false,
       });
       Toast.error({
@@ -85,6 +89,18 @@ class WXAuthorization extends Component {
         error,
       };
     }
+  }
+
+  handleAuthorizationButtonClick() {
+    const { commonLogin } = this.props;
+    if (!commonLogin.loginLoading) {
+      return;
+    }
+    commonLogin.setLoginLoading(false);
+    getUserProfile(this.authorization, true, async () => {
+      commonLogin.setLoginLoading(true);
+      await getParamCode(this.props.commonLogin);
+    });
   }
 
   render() {
@@ -104,7 +120,7 @@ class WXAuthorization extends Component {
                 ? <Button
                   className={layout.button}
                   type="primary"
-                  onClick={() => {getUserProfile(this.authorization)}}
+                  onClick={this.handleAuthorizationButtonClick}
                 >
                   确定
                 </Button>

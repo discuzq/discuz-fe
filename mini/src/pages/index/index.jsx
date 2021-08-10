@@ -113,6 +113,12 @@ class Index extends React.Component {
 
     // 初始化站点数据
     async initSiteData() {
+      // 是否需要清理当前数据重新加载
+      const { params } = this.$instance.router;
+      if (params.reload === 'true') {
+        this.props.user.removeUserInfo();
+        await this.props.site.getSiteInfo();
+      }
 
       const { site, user, emotion } = this.props;
 
@@ -124,7 +130,8 @@ class Index extends React.Component {
       site.setPlatform('mini');
 
       let webConfig;
-      if ( !site.webConfig ) {
+      // 有登录态，但是siteStore中没有user数据的情况，也需要重新获取forum数据
+      if ( !site.webConfig || ( user.isLogin() && !site.webConfig.user ) ) {
         // 获取站点信息
         const siteResult = await readForum({});
         // 检查站点状态

@@ -17,3 +17,6 @@ export const THREAD_LIST_SEQUENCE = {
   nomarl: 0, // 正常列表
   smartSort: 1, // 智能排序
 };
+
+// 首页附件折叠参数
+export const ATTACHMENT_FOLD_COUNT = 6;

@@ -7,6 +7,7 @@ import { handleString2Arr } from '@common/utils/handleCategory';
 import HOCFetchSiteData from '../middleware/HOCFetchSiteData';
 import ViewAdapter from '@components/view-adapter';
 import isServer from '@common/utils/is-server';
+import browser from '@common/utils/browser';
 
 @inject('site')
 @inject('index')
@@ -198,7 +199,7 @@ class Index extends React.Component {
 // eslint-disable-next-line new-cap
 export default HOCFetchSiteData(Index, (pass) => {
   // 因部署方式的问题，所有路径第一次访问都会访问index.html，导致会出现首页渲染出来之后跳转到制定的url地址，为了防止这种情况，对首页的渲染做一次判断，如果url不是首页连接，将不渲染首页。
-  if (!isServer()) {
+  if (!isServer() && !browser.env('uc')) { // uc浏览器存在异常，首页不做判断
     const pathname = window.location.pathname;
     if (pathname === '/' || pathname === '/index') {
       return true;

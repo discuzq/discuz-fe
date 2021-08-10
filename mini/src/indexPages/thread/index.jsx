@@ -145,7 +145,7 @@ class Detail extends React.Component {
         threadData = topicRes?.data;
       }
 
-      if (threadData?.threadId) {
+      if (threadData?.threadId && !threadData?.displayTag?.isRedPack && !threadData?.displayTag?.isReward) {
         this.props.thread.setThreadData(threadData);
       }
     }
