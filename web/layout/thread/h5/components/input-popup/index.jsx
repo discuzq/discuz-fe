@@ -22,13 +22,25 @@ const InputPop = (props) => {
   const [showPicture, setShowPicture] = useState(false);
 
   const [imageList, setImageList] = useState([]);
-
+  const [isDisabled, setDisabled] = useState(true);
   const [imageUploading, setImageUploading] = useState(false);
-
   useEffect(() => {
     setValue(initValue || '');
   }, [initValue]);
-
+  useEffect(async () => {
+    setShowEmojis(props.showEmojis);
+    // 请求表情地址
+    if (!emojis?.length) {
+      const ret = await readEmoji();
+      const { code, data = [] } = ret;
+      if (code === 0) {
+        setEmojis(data.map(item => ({ code: item.code, url: item.url })));
+      }
+    }
+  }, [props.showEmojis]);
+  useEffect(() => {
+    setShowPicture(props.showPicture);
+  }, [props.showPicture]);
   const onSubmitClick = async () => {
     if (loading || imageUploading) return;
 
@@ -53,6 +65,12 @@ const InputPop = (props) => {
     setShowAt(false);
     setShowEmojis(false);
     setShowPicture(false);
+    if (typeof props.cancleEmojie === 'function') {
+      props.cancleEmojie();
+    }
+    if (typeof props.canclePicture === 'function') {
+      props.canclePicture();
+    }
     onClose();
   };
 
@@ -66,7 +84,7 @@ const InputPop = (props) => {
       const ret = await readEmoji();
       const { code, data = [] } = ret;
       if (code === 0) {
-        setEmojis(data.map((item) => ({ code: item.code, url: item.url })));
+        setEmojis(data.map(item => ({ code: item.code, url: item.url })));
       }
     }
   };
@@ -89,23 +107,40 @@ const InputPop = (props) => {
     const insertPosition = textareaRef?.current?.selectionStart || 0;
     const newValue = value.substr(0, insertPosition) + (emoji.code || '') + value.substr(insertPosition);
     setValue(newValue);
-
+    if (newValue.length > 0 && isDisabled) {
+      setDisabled(false);
+    }
+    if (newValue.length === 0 && !isDisabled) {
+      setDisabled(true);
+    }
     // setShowEmojis(false);
   };
 
   // 完成@人员选择
   const onAtListChange = (atList) => {
     // 在光标位置插入
-    const atListStr = atList.map((atUser) => ` @${atUser} `).join('');
+    const atListStr = atList.map(atUser => ` @${atUser} `).join('');
     const insertPosition = textareaRef?.current?.selectionStart || 0;
     const newValue = value.substr(0, insertPosition) + (atListStr || '') + value.substr(insertPosition);
     setValue(newValue);
 
     setShowEmojis(false);
+    if (atList.length > 0 && isDisabled) {
+      setDisabled(false);
+    }
+    if (atList.length === 0 && !isDisabled) {
+      setDisabled(true);
+    }
   };
 
   const handleUploadChange = async (list) => {
     setImageList([...list]);
+    if (list.length > 0 && isDisabled) {
+      setDisabled(false);
+    }
+    if (list.length === 0 && !isDisabled) {
+      setDisabled(true);
+    }
   };
 
   // 附件、图片上传之前
@@ -167,7 +202,7 @@ const InputPop = (props) => {
     if (value.code === 0) {
       file.response = value.data;
     }
-    setImageUploading(list?.length && list.some((image) => image.status === 'uploading'));
+    setImageUploading(list?.length && list.some(image => image.status === 'uploading'));
   };
 
   const onFail = (ret) => {
@@ -178,6 +213,15 @@ const InputPop = (props) => {
     });
   };
 
+  const handleChange = (e) => {
+    setValue(e.target.value);
+    if (e.target.value.length > 0 && isDisabled) {
+      setDisabled(false);
+    }
+    if (e.target.value.length === 0 && !isDisabled) {
+      setDisabled(true);
+    }
+  };
   return (
     <div>
       <Popup position="bottom" visible={visible} onClose={onCancel}>
@@ -189,7 +233,7 @@ const InputPop = (props) => {
               rows={4}
               showLimit={false}
               value={value}
-              onChange={(e) => setValue(e.target.value)}
+              onChange={e => handleChange(e)}
               placeholder={inputText}
               disabled={loading}
               forwardedRef={textareaRef}
@@ -237,7 +281,7 @@ const InputPop = (props) => {
 
             <div
               onClick={onSubmitClick}
-              className={classnames(styles.ok, (loading || imageUploading) && styles.disabled)}
+              className={classnames(styles.ok, (loading || imageUploading || isDisabled) && styles.disabled)}
             >
               发布
             </div>

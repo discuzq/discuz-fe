@@ -65,6 +65,7 @@ class ThreadH5Page extends React.Component {
       showContent: '',
       // inputValue: '', // 评论内容
       show: false, // 分享海报弹窗
+      stateFlag: !this.props.thread?.isPositionToComment,
       contentImgIsReady: false, // 内容区域图片是否加载完成
     };
 
@@ -76,8 +77,8 @@ class ThreadH5Page extends React.Component {
     this.commentDataRef = React.createRef();
     this.position = 0;
     this.nextPosition = 0;
-    this.flag = true;
-
+    this.flag = !this.props.thread?.isPositionToComment;
+    this.isFirst = true;
     // 修改评论数据
     this.comment = null;
 
@@ -111,11 +112,14 @@ class ThreadH5Page extends React.Component {
   componentDidMount() {
     this.setState({ loadWeiXin: isWeiXin() });
   }
-
   componentDidUpdate() {
+    if (!this.isFirst) {
+      return ;
+    }
     const { thread } = this.props;
     // 当图片都加载完成后
     if (this.state.contentImgIsReady) {
+      this.isFirst = false;
       // 当内容加载完成后，获取评论区所在的位置
       this.position = this.commentDataRef?.current?.offsetTop - 50;
       thread.clearContentImgState();
@@ -149,8 +153,9 @@ class ThreadH5Page extends React.Component {
   };
   // 点击信息icon
   onMessageClick() {
-    const position = this.flag ? this.position : this.nextPosition;
+    const position = this.flag ? this.position : 0;
     this.flag = !this.flag;
+    this.setState({ stateFlag: this.flag });
     this.threadBodyRef.current.scrollTo(0, position);
   }
 
@@ -443,7 +448,7 @@ class ThreadH5Page extends React.Component {
 
     if (imageList?.length) {
       params.attachments = imageList
-        .filter((item) => item.status === 'success' && item.response)
+        .filter(item => item.status === 'success' && item.response)
         .map((item) => {
           const { id } = item.response;
           return {
@@ -802,14 +807,14 @@ class ThreadH5Page extends React.Component {
               setContentImgReady={this.setContentImgReady}
               fun={fun}
               onLikeClick={() => this.onLikeClick()}
-              onOperClick={(type) => this.onOperClick(type)}
+              onOperClick={type => this.onOperClick(type)}
               onCollectionClick={() => this.onCollectionClick()}
               onReportClick={() => this.onReportClick()}
               onRewardClick={() => this.onRewardClick()}
               onTagClick={() => this.onTagClick()}
               onPayClick={() => this.onPayClick()}
               // onPayClick={() => this.onPayClick()}
-              onUserClick={(e) => this.onUserClick(e)}
+              onUserClick={e => this.onUserClick(e)}
             ></RenderThreadContent>
           ) : (
             <LoadingTips type="init"></LoadingTips>
@@ -826,17 +831,17 @@ class ThreadH5Page extends React.Component {
                       <RenderCommentList
                         isPositionComment={true}
                         router={this.props.router}
-                        sort={(flag) => this.onSortChange(flag)}
+                        sort={flag => this.onSortChange(flag)}
                         replyAvatarClick={(comment, reply, floor) => this.replyAvatarClick(comment, reply, floor)}
                       ></RenderCommentList>
                       {!isCommentPositionNoMore && (
-                        // <BottomView
-                        //   onClick={() => this.onLoadMoreClick()}
-                        //   noMoreType="line"
-                        //   loadingText="点击加载更多"
-                        //   isError={isCommentListError}
-                        //   noMore={isCommentPositionNoMore}
-                        // ></BottomView>
+                      // <BottomView
+                      //   onClick={() => this.onLoadMoreClick()}
+                      //   noMoreType="line"
+                      //   loadingText="点击加载更多"
+                      //   isError={isCommentListError}
+                      //   noMore={isCommentPositionNoMore}
+                      // ></BottomView>
 
                         <div className={layout.showMore} onClick={() => this.onLoadMoreClick()}>
                           <div className={layout.hidePercent}>展开更多评论</div>
@@ -852,8 +857,8 @@ class ThreadH5Page extends React.Component {
                     positionRef={this.positionRef}
                     showHeader={!isShowCommentList}
                     router={this.props.router}
-                    sort={(flag) => this.onSortChange(flag)}
-                    onEditClick={(comment) => this.onEditClick(comment)}
+                    sort={flag => this.onSortChange(flag)}
+                    onEditClick={comment => this.onEditClick(comment)}
                     replyAvatarClick={(comment, reply, floor) => this.replyAvatarClick(comment, reply, floor)}
                   ></RenderCommentList>
                   <BottomView noMoreType="line" isError={isCommentListError} noMore={isNoMore}></BottomView>
@@ -878,15 +883,27 @@ class ThreadH5Page extends React.Component {
               {/* 操作区 */}
               <div className={footer.operate}>
                 <div className={footer.icon} onClick={() => this.onMessageClick()}>
-                  {totalCount > 0 ? (
+                  {this.state.stateFlag
+                    ? totalCount > 0 ? (
                     <div className={classNames(footer.badge, totalCount < 10 && footer.isCricle)}>
                       {totalCount > 99 ? '99+' : `${totalCount || '0'}`}
                     </div>
-                  ) : (
-                    ''
-                  )}
+                    ) : (
+                      ''
+                    ) : (
+                    <div className={footer.content}>
+                      正文
+                    </div>
+                    )}
                   <Icon size="20" name="MessageOutlined"></Icon>
                 </div>
+                <Icon
+                  color={this.props.thread?.threadData?.isLike ? styleVar['--color-primary'] : ''}
+                  className={footer.icon}
+                  onClick={debounce(() => this.onLikeClick(), 500)}
+                  size="20"
+                  name="LikeOutlined"
+                ></Icon>
                 <Icon
                   color={this.props.thread?.isFavorite ? styleVar['--color-primary'] : ''}
                   className={footer.icon}
@@ -929,7 +946,7 @@ class ThreadH5Page extends React.Component {
               visible={this.state.showMorePopup}
               onClose={() => this.setState({ showMorePopup: false })}
               onSubmit={() => this.setState({ showMorePopup: false })}
-              onOperClick={(type) => this.onOperClick(type)}
+              onOperClick={type => this.onOperClick(type)}
             ></MorePopup>
 
             {/* 删除弹层 */}
@@ -947,14 +964,14 @@ class ThreadH5Page extends React.Component {
               inputText={this.inputText}
               visible={this.state.showReportPopup}
               onCancel={() => this.setState({ showReportPopup: false })}
-              onOkClick={(data) => this.onReportOk(data)}
+              onOkClick={data => this.onReportOk(data)}
             ></ReportPopup>
 
             {/* 打赏弹窗 */}
             <RewardPopup
               visible={this.state.showRewardPopup}
               onCancel={() => this.setState({ showRewardPopup: false })}
-              onOkClick={(value) => this.onRewardSubmit(value)}
+              onOkClick={value => this.onRewardSubmit(value)}
             ></RewardPopup>
 
             {/* 微信浏览器内分享弹窗 */}
