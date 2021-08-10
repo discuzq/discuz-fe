@@ -16,6 +16,9 @@ const immutableHeightMap = {}; // 不可变的高度
 let preScrollTop = 0;
 let scrollTimer;
 let loadData = false;
+let startNum;
+let stopNum;
+
 // 增强cache实例
 function extendCache(instance) {
   instance.getDefaultHeight = ({ index, data }) => {
@@ -200,7 +203,7 @@ function Home(props, ref) {
       setFlag(true);
     }, 100);
 
-    props.onScroll && props.onScroll({ scrollTop, clientHeight, scrollHeight });
+    props.onScroll && props.onScroll({ scrollTop, clientHeight, scrollHeight, startNum, stopNum });
     if (scrollTop !== 0) {
       props.vlist.setPosition(scrollTop);
     }
@@ -222,17 +225,19 @@ function Home(props, ref) {
 
   // 自定义扫描数据范围
   const overscanIndicesGetter = ({ cellCount, scrollDirection, overscanCellsCount, startIndex, stopIndex }) => {
+    startNum = startIndex;
+    stopNum = stopIndex;
+
     // 往回滚动
     if (scrollDirection === -1) {
       return {
-        overscanStartIndex: Math.max(0, startIndex - overscanCellsCount),
+        overscanStartIndex: Math.max(0, startIndex),
         overscanStopIndex: Math.min(cellCount - 1, stopIndex + overscanCellsCount),
       };
     }
-
     return {
       overscanStartIndex: Math.max(0, startIndex - overscanCellsCount),
-      overscanStopIndex: Math.min(cellCount - 1, stopIndex + overscanCellsCount),
+      overscanStopIndex: Math.min(cellCount - 1, stopIndex),
     };
   };
 
@@ -278,7 +283,7 @@ function Home(props, ref) {
                     rowHeight={getRowHeight}
                     rowRenderer={rowRenderer}
                     width={width}
-                    // overscanIndicesGetter={overscanIndicesGetter}
+                    overscanIndicesGetter={overscanIndicesGetter}
                   />
 
                   <div className={`baselayout-right ${layout.right}`}>
