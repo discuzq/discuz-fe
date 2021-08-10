@@ -14,6 +14,7 @@ import styles from './index.module.scss';
 import locals from '@common/utils/local-bridge';
 import constants from '@common/constants';
 import { THREAD_TYPE } from '@common/constants/thread-post';
+import { attachmentUploadOne } from '@common/utils/upload';
 
 export default inject('threadPost', 'site')(observer(({ type, threadPost, site, audioUpload, children, pageScrollTo }) => {
   const { postData, setPostData } = threadPost;
@@ -44,7 +45,7 @@ export default inject('threadPost', 'site')(observer(({ type, threadPost, site, 
       const isLegalSize = fileSize > 0 && fileSize < supportMaxSize * 1024 * 1024;
 
       if (isLegalType && isLegalSize) {
-        uploadPromise.push(upload(cloneList[i]));
+        uploadPromise.push(attachmentUploadOne(cloneList[i]));
       } else {
         cloneList.splice(i, 1);
         i--;
