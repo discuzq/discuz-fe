@@ -1,7 +1,6 @@
 @import '@common/styles/index.scss';
 
 .inputClick {
-  flex:1;
   :global {
     .dzq-input__prefix-icon {
       color: $text-color-regular;
@@ -25,7 +24,7 @@
     }
   }
   .input {
-    width: 100%
+    width: rem(167);
   }
 }
 
