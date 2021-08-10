@@ -226,27 +226,9 @@ const Index = ({
   };
 
   // 是否展示 查看更多
-  const [isShowMore, setIsShowMore] = useState(false);
-  useEffect(() => {
-    // 详情页不折叠
-    const {pathname} = window.location;
-    if (/^\/thread\/\d+/.test(pathname)) {
-      setIsShowMore(false);
-    } else {
-      setIsShowMore(attachments.length > ATTACHMENT_FOLD_COUNT);
-    }
-  }, []);
-
+  const [isShowMore, setIsShowMore] = useState(attachments.length > ATTACHMENT_FOLD_COUNT);
   const clickMore = () => {
-    // 首页则展开所有附件，非首页进入帖子详情
-    const {pathname} = window.location;
-    if (pathname === '/' || pathname === '/index') {
-      setIsShowMore(false);
-    } else {
-      Router.push({
-        url: `/thread/${threadId}`,
-      });
-    }
+    setIsShowMore(false);
   };
 
   return (

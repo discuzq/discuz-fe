@@ -261,27 +261,9 @@ const Index = ({
   };
 
   // 是否展示 查看更多
-  const [isShowMore, setIsShowMore] = useState(false);
-  useEffect(() => {
-    // 详情页不折叠
-    const {path} = Taro.getCurrentInstance().router;
-    if (~path.indexOf('/indexPages/thread/index')) {
-      setIsShowMore(false);
-    } else {
-      setIsShowMore(attachments.length > ATTACHMENT_FOLD_COUNT);
-    }
-  }, []);
-
+  const [isShowMore, setIsShowMore] = useState(attachments.length > ATTACHMENT_FOLD_COUNT);
   const clickMore = () => {
-    // 首页则展开所有附件，非首页进入帖子详情
-    const {path} = Taro.getCurrentInstance().router;
-    if (~path.indexOf('/indexPages/home/index')) {
-      setIsShowMore(false);
-    } else {
-      Router.push({
-        url: `/indexPages/thread/index?id=${threadId}`,
-      });
-    }
+    setIsShowMore(false);
   };
 
   return (
@@ -309,7 +291,7 @@ const Index = ({
         }
         {
           isShowMore ? (<View className={styles.loadMore} onClick={clickMore}>
-            查看更多<Icon name='RightOutlined' className={styles.icon} size={12} />
+            查看更多{isShowMore ? 'true' : 'false'}<Icon name='RightOutlined' className={styles.icon} size={12} />
           </View>) : <></>
         }
     </View>
