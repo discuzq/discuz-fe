@@ -291,7 +291,7 @@ const Index = ({
         }
         {
           isShowMore ? (<View className={styles.loadMore} onClick={clickMore}>
-            查看更多{isShowMore ? 'true' : 'false'}<Icon name='RightOutlined' className={styles.icon} size={12} />
+            查看更多<Icon name='RightOutlined' className={styles.icon} size={12} />
           </View>) : <></>
         }
     </View>
