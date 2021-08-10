@@ -3,24 +3,23 @@
 .inputClick {
   :global {
     .dzq-input__prefix-icon {
-      color: #4F5A70
+      color: $text-color-regular
     }
     .dzq-input__inner {
       border-radius: 18px;
-      background: rgba($color: #EFF1F3, $alpha: 0.3);
+      background: rgba($color: $text-bg-color2, $alpha: 0.3);
       border: 1px solid #eee;
+
+      &::placeholder {
+        color: $text-color-regular!important;
+        font-size: rem(14);
+        line-height: rem(24);
+        text-align: left;
+      }
     }
     .dzq-input .is-disabled .dzq-input__inner {
       background-color: $body-bg-color;
       -webkit-appearance: none; // ios下去除上面阴影
-    }
-  }
-  :global {
-    .input-placeholder {
-      font-size: 14px;
-      line-height: 24px;
-      text-align: left;
-      color: black;
     }
   }
   .input {
