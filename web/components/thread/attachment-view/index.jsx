@@ -237,10 +237,16 @@ const Index = ({
     }
   }, []);
 
-  const gotoDetail = () => {
-    Router.push({
-      url: `/thread/${threadId}`,
-    });
+  const clickMore = () => {
+    // 首页则展开所有附件，非首页进入帖子详情
+    const {pathname} = window.location;
+    if (pathname === '/' || pathname === '/index') {
+      setIsShowMore(false);
+    } else {
+      Router.push({
+        url: `/thread/${threadId}`,
+      });
+    }
   };
 
   return (
@@ -266,7 +272,7 @@ const Index = ({
           })
         }
         {
-          isShowMore ? (<div className={styles.loadMore} onClick={gotoDetail}>
+          isShowMore ? (<div className={styles.loadMore} onClick={clickMore}>
             查看更多<Icon name='RightOutlined' className={styles.icon} size={12} />
           </div>) : <></>
         }

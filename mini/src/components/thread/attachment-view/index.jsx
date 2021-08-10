@@ -272,10 +272,16 @@ const Index = ({
     }
   }, []);
 
-  const gotoDetail = () => {
-    Router.push({
-      url: `/indexPages/thread/index?id=${threadId}`,
-    });
+  const clickMore = () => {
+    // 首页则展开所有附件，非首页进入帖子详情
+    const {path} = Taro.getCurrentInstance().router;
+    if (~path.indexOf('/indexPages/home/index')) {
+      setIsShowMore(false);
+    } else {
+      Router.push({
+        url: `/indexPages/thread/index?id=${threadId}`,
+      });
+    }
   };
 
   return (
@@ -302,7 +308,7 @@ const Index = ({
           })
         }
         {
-          isShowMore ? (<View className={styles.loadMore} onClick={gotoDetail}>
+          isShowMore ? (<View className={styles.loadMore} onClick={clickMore}>
             查看更多<Icon name='RightOutlined' className={styles.icon} size={12} />
           </View>) : <></>
         }
