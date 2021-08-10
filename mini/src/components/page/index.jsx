@@ -64,9 +64,9 @@ export default class Page extends React.Component {
 
       // 付费模式处理
       if (siteMode === 'pay') {
-        // 已付费用户，直接跳转首页
+        // 已付费用户，恢复页面
         if (path === PARTNER_INVITE_URL && user.paid) {
-          Router.replace({ url: INDEX_URL });
+          LoginHelper.restore(false);
           return false;
         }
 
@@ -110,18 +110,11 @@ export default class Page extends React.Component {
         }
       }
 
-      // 访问指定页面，经过登陆、付费等操作完成后，跳回主页
-      // 大问题
-      // const jumpUrl = LoginHelper.getUrl();
-      // if (jumpUrl) {
-      //   if (jumpUrl.includes(path)) {
-      //     LoginHelper.clear();
-      //   }
-      //   if (path === INDEX_URL) {
-      //     LoginHelper.restore();
-      //     return false;
-      //   }
-      // }
+      // 跳转指定页面后清空记录
+      const jumpUrl = LoginHelper.getUrl();
+      if (jumpUrl?.includes(path)) {
+        LoginHelper.clear();
+      }
     }
 
     return true;

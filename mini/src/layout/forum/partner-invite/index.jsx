@@ -186,7 +186,7 @@ class PartnerInviteH5Page extends React.Component {
             ) : (
               <></>
             )}
-            {!isLoading && !threadsPageData?.length ? <NoData /> : <></>}
+            {!isLoading && !usersPageData?.length ? <NoData /> : <></>}
             {isLoading ? (
               <View className={layout.spinner}>
                 <Spin type="spinner" />

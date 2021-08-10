@@ -16,12 +16,19 @@ export default function fuzzyCalcContentLength(content, lengthInLine = 50) {
     let _content = content;
 
     const EMOJ_SIZE = 1.5;
-    const IMG_SIZE = lengthInLine * 4;
-    const countImgs = (_content?.match(/<img/g) || []).length;
+    const IMG_DEFAULT_HEIGHT = lengthInLine * 4;
     const countEmojs = (_content?.match(/qq-emotion/g) || []).length;
 
     // 替换表情标签
     let newContent = replaceStringInRegex(_content, "emoj", '');
+
+    const links = getImgLinksFromText(newContent);
+    let totalImgHeight = 0;
+    for(let i = 0; links?.length && i < links.length; i++) {
+        const imgObj = new Image();
+        imgObj.src = links[i];
+        totalImgHeight += imgObj?.height || IMG_DEFAULT_HEIGHT;
+    }
 
     // 替换图片标签
     newContent = replaceStringInRegex(newContent, "img", '');
@@ -33,8 +40,8 @@ export default function fuzzyCalcContentLength(content, lengthInLine = 50) {
     // 替换所有标签
     newContent = replaceStringInRegex(newContent, "tags", '');
 
-    let totalCount = EMOJ_SIZE * countEmojs + // 表情大小
-    IMG_SIZE * (countImgs - countEmojs > 0 ? countImgs - countEmojs : 0); // 加上图片大小
+    let totalCount = EMOJ_SIZE * countEmojs; // 表情大小
+    totalCount += parseInt(totalImgHeight / 16) * lengthInLine; // 16个像素算是一行
 
     if(!newContent || newContent === '') return parseInt(totalCount);
     totalCount += newContent.length;
@@ -51,4 +58,17 @@ export default function fuzzyCalcContentLength(content, lengthInLine = 50) {
 
     return parseInt(totalCount);
 }
-  
+
+function getImgLinksFromText(text) {
+    const links = [];
+    const images = text.match(/<img[\s]+[^<>]*>/gi);  //筛选出所有的image
+
+    for (let i = 0; images?.length && i < images.length; i++) {
+
+        if(images[i].indexOf("src=") !== -1) {
+            const link = images[i].match(/src=[\'\"]?([^\'\"]*)[\'\"]?/g)[0].substr(5); // 移除src="
+            links.push(link.substr(0, link.length - 1)); // 移除最后一个"
+        }
+    }
+    return links;
+}

@@ -9,6 +9,8 @@ import { FILE_PREVIEW_FORMAT, AUDIO_FORMAT } from '@common/constants/thread-post
 import FilePreview from './../file-preview';
 import getAttachmentIconLink from '@common/utils/get-attachment-icon-link';
 import { ATTACHMENT_FOLD_COUNT } from '@common/constants';
+import { get } from '@common/utils/get';
+
 import styles from './index.module.scss';
 import Router from '@discuzq/sdk/dist/router';
 
@@ -27,6 +29,7 @@ const Index = ({
   threadId = null,
   thread = null,
   user = null,
+  site = null,
   updateViewCount = noop,
 }) => {
   // 处理文件大小的显示
@@ -122,7 +125,8 @@ const Index = ({
 
   // 文件是否可预览
   const isAttachPreviewable = (file) => {
-    return FILE_PREVIEW_FORMAT.includes(file?.extension?.toUpperCase())
+    const qcloudCosDocPreview = get(site, 'webConfig.qcloud.qcloudCosDocPreview', false);
+    return qcloudCosDocPreview && FILE_PREVIEW_FORMAT.includes(file?.extension?.toUpperCase())
   };
 
   // 附件预览
@@ -277,4 +281,4 @@ const Index = ({
   );
 };
 
-export default inject('thread', 'user')(observer(Index));
+export default inject('thread', 'user', 'site')(observer(Index));
