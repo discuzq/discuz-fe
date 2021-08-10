@@ -8,9 +8,9 @@ import isWeiXin from '@common/utils/is-weixin';
 import { FILE_PREVIEW_FORMAT, AUDIO_FORMAT } from '@common/constants/thread-post';
 import FilePreview from './../file-preview';
 import getAttachmentIconLink from '@common/utils/get-attachment-icon-link';
+import { ATTACHMENT_FOLD_COUNT } from '@common/constants';
 import { get } from '@common/utils/get';
 
-import { ATTACHMENT_FOLD_COUNT } from '@common/constants';
 import styles from './index.module.scss';
 import Router from '@discuzq/sdk/dist/router';
 
@@ -226,27 +226,9 @@ const Index = ({
   };
 
   // 是否展示 查看更多
-  const [isShowMore, setIsShowMore] = useState(false);
-  useEffect(() => {
-    // 详情页不折叠
-    const {pathname} = window.location;
-    if (/^\/thread\/\d+/.test(pathname)) {
-      setIsShowMore(false);
-    } else {
-      setIsShowMore(attachments.length > ATTACHMENT_FOLD_COUNT);
-    }
-  }, []);
-
+  const [isShowMore, setIsShowMore] = useState(attachments.length > ATTACHMENT_FOLD_COUNT);
   const clickMore = () => {
-    // 首页则展开所有附件，非首页进入帖子详情
-    const {pathname} = window.location;
-    if (pathname === '/' || pathname === '/index') {
-      setIsShowMore(false);
-    } else {
-      Router.push({
-        url: `/thread/${threadId}`,
-      });
-    }
+    setIsShowMore(false);
   };
 
   return (
