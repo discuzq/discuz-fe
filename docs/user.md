@@ -24,15 +24,19 @@ $ npm config set registry http://mirrors.cloud.tencent.com/npm/
 
 ## 小程序构建
 
-- 修改`mini/project.config.json`文件中的appid为自己的appid
-- 修改`common/config/prod.js`中的域名指向
+- ~~修改`mini/project.config.json`文件中的appid为自己的appid~~（废弃）
+- ~~修改`common/config/prod.js`中的域名指向~~（废弃）
+- discuz-fe文件目录下，`dzq.config.yaml`是整个Discuz!Q3.0的环境配置文件
+  - 修改HOST，将修改你的应用的域名指向
+  - 修改APPID，将修改你的appid
 
-```js
-module.exports = {
-  TITLE: 'Discuz!Q',
-  COMMON_BASE_URL: process.env.DISCUZ_ENV === 'web' ? '' : '你的网站域名',
-};
+```yaml
+TITLE: Discuz!Q
+HOST: 【你的域名】
+APPID: 【你的appid】
+VERSION: v3.0.210729
 ```
+
 - 进行小程序编译
 
 ```bash
@@ -63,7 +67,9 @@ $ npm run build:weapp
 
 ### 注意！！！
 如果修改过你小程序的域名和appid，在每一次拉取代码更新时，会存在`冲突`的情况导致无法成功更新代码。一般情况下会存在冲突的文件如下：
-- ./mini/common/config/prod.js
+- ~~./mini/common/config/prod.js~~(废弃)
+- ~~./mini/project.config.json~~(废弃)
+- ./discuz-fe/dzq.config.yaml
 - ./mini/project.config.json
 
 可以通过以下命令将修改的代码暂时保存起来，更新后再恢复。

@@ -72,16 +72,17 @@ class index extends Component {
             this.setState({
               isFollowedLoading: false,
             });
+          } else {
+            await this.props.user.getTargetUserInfo(id);
+            Toast.success({
+              content: '操作成功',
+              hasMask: false,
+              duration: 2000,
+            });
+            this.setState({
+              isFollowedLoading: false,
+            });
           }
-          await this.props.user.getTargetUserInfo(id);
-          Toast.success({
-            content: '操作成功',
-            hasMask: false,
-            duration: 2000,
-          });
-          this.setState({
-            isFollowedLoading: false,
-          });
         } catch (error) {
           console.error(error);
           Toast.error({
@@ -106,16 +107,17 @@ class index extends Component {
             this.setState({
               isFollowedLoading: false,
             });
+          } else {
+            await this.props.user.getTargetUserInfo(id);
+            Toast.success({
+              content: '操作成功',
+              hasMask: false,
+              duration: 2000,
+            });
+            this.setState({
+              isFollowedLoading: false,
+            });
           }
-          await this.props.user.getTargetUserInfo(id);
-          Toast.success({
-            content: '操作成功',
-            hasMask: false,
-            duration: 2000,
-          });
-          this.setState({
-            isFollowedLoading: false,
-          });
         } catch (error) {
           console.error(error);
           Toast.error({

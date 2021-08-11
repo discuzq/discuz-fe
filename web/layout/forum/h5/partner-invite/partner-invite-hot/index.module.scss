@@ -2,8 +2,7 @@
 
 .hot{
   background-color: $white;
-  padding: rem($padding-4n);
-  padding-top: 0;
+  padding: 0 rem($padding-4n);
 
   &.popularContents{
     padding-bottom: 0;

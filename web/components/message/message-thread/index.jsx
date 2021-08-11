@@ -109,6 +109,9 @@ class Index extends React.Component {
         isFirst: item.isFirst, // 标识消息主题来源于主题或评论
         createdAt: item.createdAt,
         threadId: item.threadId,
+        isReply: item.isReply === 1, // 是否是楼中楼回复
+        postId: item.postId || 0,
+        replyPostId: item.replyPostId || 0,
         content: item.threadTitle || item.postContent,
         type: item.type,
         avatar: item.userAvatar,

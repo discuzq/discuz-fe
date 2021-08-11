@@ -74,9 +74,9 @@
         }
         :global {
           .dzq-checkbox--radio {
-            border-radius: rem(var(--border-radius-small));
+            border-radius: rem($border-radius-small);
             &::after {
-              border-radius: rem(var(--border-radius-small));
+              border-radius: rem($border-radius-small);
             }
           }
         }

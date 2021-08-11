@@ -1,36 +1,57 @@
 
 @import '@common/styles/index.scss';
 .container {
-  margin-top: rem($margin-5n);
-  margin-bottom: rem($margin-5n);
+  font-size: $font-size-small;
+  line-height: $font-line-height-xs;
   &.center {
     text-align: center;
-  }
-  &.line{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: row;
-    .text {
-      font-size: rem($font-size-label);
-      line-height: rem($font-line-height-small);
-      color: $text-color-secondary;
-      &:not(:last-child){
-        margin-right: rem(20);
-      }
+    .beian > a {
+      justify-content: center;
     }
   }
-  .text {
-    font-size: rem($font-size-label);
-    line-height: rem($font-line-height-small);
-    color: $text-color-secondary;
-    >a{
+  .text > a {
+    text-decoration: unset;
+    cursor: pointer;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  .beian {
+    padding-top: rem($padding-1n);
+  }
+
+  .beian > a > img {
+    padding-right: rem($padding-2n);
+  }
+
+  &.h5 {
+    margin-top: rem($margin-10);
+    margin-bottom: rem($margin-10);
+    .text > a {
+      color: $copyright-text-color;
+    }
+    .beian > a {
+      display: flex;
+      text-align: center;
+      align-content: center;
+      justify-content: center;
+    }
+  }
+
+  &.pc {
+    margin-top: rem($margin-5n);
+    margin-bottom: rem($margin-5n);
+    // PC登录等页面
+    &.mode_login {
+      margin: $margin-5n 0 auto;
+    }
+    .text > a {
       color: $text-color-secondary;
-      text-decoration: unset;
-      cursor: pointer;
-      &:hover{
-        text-decoration: underline;
-      }
+    }
+    .beian > a {
+      display: flex;
+      text-align: center;
+      align-content: center;
     }
   }
 }

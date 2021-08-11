@@ -1,5 +1,13 @@
 @import '@common/styles/index.scss';
 
+.mainContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: calc(100vh - 80px);
+  overflow: scroll;
+}
+
 .userCenterEditMiddle {
   padding: rem($padding-4n);
   padding-bottom: 0;
@@ -166,13 +174,14 @@
 
 }
 .userCenterEditBtn {
+  background-color: #fff;;
   width: calc(100% - 32px);
   display: flex;
   align-items: center;
   justify-content: center;
   position: fixed;
   bottom: rem(20);
-  padding: 0 rem($padding-4n);
+  padding: rem($padding-4n);
   @include ios-safe-area-inset-bottom;
   button {
     // width: rem(166);

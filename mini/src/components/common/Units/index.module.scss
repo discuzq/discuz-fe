@@ -54,6 +54,11 @@
     width: 90%;
   }
 
+  .icon {
+    width: 20px;
+    height: 20px;
+  }
+
   .name {
     line-height: 52px;
     color: $text-color-primary;
@@ -70,6 +75,11 @@
     line-height: 52px;
     color: $text-color-regular;
     font-size: $font-size-label;
+  }
+
+  .icon {
+    width: 17px;
+    height: 20px;
   }
 }
 
@@ -149,9 +159,9 @@
   .video-delete {
     position: absolute;
     top: 0;
-    left: 0;
+    right: 0;
     height: 40px;
-    width: 100%;
+    width: 40px;
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -194,10 +204,5 @@
 
   .remove {
     margin-left: $margin-2n;
-  }
-
-  .icon {
-    width: 20px;
-    height: 20px;
   }
 }

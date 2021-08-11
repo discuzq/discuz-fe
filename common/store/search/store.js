@@ -27,6 +27,10 @@ class SearchStore {
   @observable topicsError = { isError: false, errorText: '' }
   @observable usersError = { isError: false, errorText: '' }
   @observable threadsError = { isError: false, errorText: '' }
+  
+  @observable currentKeyword = null // 当前搜索页正在搜索的关键词
+
+  @observable searchNoData = false // 如果没有搜索到结果为true
 }
 
 export default SearchStore;

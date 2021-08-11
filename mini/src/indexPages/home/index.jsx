@@ -12,6 +12,7 @@ import { priceShare } from '@common/utils/priceShare';
 @inject('topic')
 @inject('index')
 @inject('user')
+@inject('baselayout')
 @observer
 @withShare({
   needLogin: true
@@ -20,6 +21,17 @@ class Index extends React.Component {
   state = {
     isError: false,
     errorText: '加载失败'
+  }
+
+  componentDidHide() {
+    const { baselayout } = this.props;
+
+    const playingAudioDom = baselayout?.playingAudioDom;
+
+    if(playingAudioDom) {
+      baselayout.playingAudioDom.pause();
+      baselayout.playingAudioDom = null;
+    }
   }
 
   getShareData(data) {

@@ -53,7 +53,7 @@ const Index = ({ message, user }) => {
         chatPerson = sender;
       }
       newList.push({
-        id: id,
+        id: `${id}${dialogMessage?.createdAt}`,
         createdAt: dialogMessage?.createdAt,
         dialogId: dialogMessage?.dialogId,
         content: dialogMessage?.imageUrl ? '[图片]' : dialogMessage?.messageText,

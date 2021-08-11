@@ -84,7 +84,7 @@ const handleLines = (baseHeight) => {
 // 处理站点介绍，
 const handleSiteIntroduction = (data, baseHeight, maxLineNum) => {
     const textHeight = 146
-    let {siteIntroduction} = data.webConfig?.setSite
+    let {siteIntroduction = ''} = data.webConfig?.setSite
     const contentWidth = posterWidth - 64
     if(!siteIntroduction) {
         // siteIntroduction = '暂无介绍'

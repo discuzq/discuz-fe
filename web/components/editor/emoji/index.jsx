@@ -47,16 +47,12 @@ export default function Emoji(props) {
   // };
   const cls = pc ? styles.pc : styles.h5;
   return (
-    <div ref={emojiRef} id="dzq-toolbar-emoji" className={`${styles['dzq-emoji']} ${cls} dzq-toolbar-emoji ${atTop ? '' : styles.atTop}`} style={{ display: visible ? 'block' : 'none' }}>
+    <div ref={emojiRef} id="dzq-toolbar-emoji" className={`${styles['dzq-emoji']} ${cls} dzq-toolbar-emoji ${atTop ? '' : styles.atTop}`} style={{ display: visible ? 'block' : 'none' }} onClick={e => e.stopPropagation()}>
       <div className={styles['dzq-emoji__inner']}>
         {emojis.map(item => <img className={styles['dzq-emoji__icon']}
           key={item.code}
           src={item.url}
-          onClick={(e) => {
-            e.stopPropagation();
-            // setVisible(false);
-            onClick(item);
-          }}
+          onClick={(e) => { onClick(item) }}
         />)}
       </div>
     </div>

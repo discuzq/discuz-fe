@@ -43,7 +43,7 @@ class IndexH5Page extends React.Component {
     { loading: (res) => (
             <div>
                 <HomeHeader ref={this.headerRef} />
-                <DynamicLoading data={res} style={{padding: '0 0 20px 0'}} loadComponent={
+                <DynamicLoading data={res} style={{padding: '0 0 20px'}} loadComponent={
                   <div style={{width: '100%'}}>
                     <div className={styles.placeholder}>
                       <div className={styles.header}>

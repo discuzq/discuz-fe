@@ -29,6 +29,7 @@ import BaseLayoutStore from './baselayout/action';
 import WalletStore from './wallet/action';
 import VListStore from './vlist/action';
 import CardStore from './card/action';
+import CommentPosition from './thread/comment-position/action';
 import EmotionStore from './emotion/action';
 
 useStaticRendering(isServer());
@@ -68,6 +69,7 @@ export default function initializeStore(initProps = {}) {
       baselayout: new BaseLayoutStore(),
       wallet: new WalletStore(),
       vlist: new VListStore(),
+      commentPosition: new CommentPosition(),
       emotion: new EmotionStore()
     };
   }
@@ -103,6 +105,7 @@ export default function initializeStore(initProps = {}) {
       baselayout: new BaseLayoutStore(),
       wallet: new WalletStore(),
       vlist: new VListStore(),
+      commentPosition: new CommentPosition(),
       emotion: new EmotionStore()
     });
   }

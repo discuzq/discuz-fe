@@ -18,7 +18,7 @@ class PC400Page extends React.Component {
   }
 
   render() {
-    const height = isServer() ? '100vh' : `${window.innerHeight - 160}px`;
+    const height = isServer() ? '100vh' : `${window.innerHeight - 200}px`;
     return (
       <div className={styles.body}>
         <Header/>

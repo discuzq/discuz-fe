@@ -12,12 +12,11 @@ class Index extends React.Component {
   // 渲染单项草稿组件
   renderItem = ({ item, onEdit, isLast }) => {
     return (
-      <div
-        className={classNames(styles.item, { [styles['border-none']]: isLast })}
-        onClick={() => onEdit(item)}
-      >
+      <div className={classNames(styles.item, { [styles['border-none']]: isLast })}>
         <ThreadCenterView data={item} onClick={() => onEdit(item)} />
-        <div className={styles['item-time']}>编辑于&nbsp;{item.updatedAt}</div>
+        <div className={styles['item-time']} onClick={() => onEdit(item)}>
+          编辑于&nbsp;{item.updatedAt}
+        </div>
       </div>
     )
   }

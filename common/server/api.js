@@ -24,7 +24,9 @@ import {
   JUMP_TO_PAY_SITE,
   SITE_NO_INSTALL,
   JUMP_TO_SUPPLEMENTARY,
-  OPERATING_FREQUENCY
+  OPERATING_FREQUENCY,
+  NEED_BIND_WEIXIN_FLAG,
+  NEED_BIND_PHONE_FLAG
 } from '@common/constants/site';
 import LoginHelper from '@common/utils/login-helper';
 
@@ -185,8 +187,33 @@ http.interceptors.response.use((res) => {
     case JUMP_TO_PAY_SITE: {
       if (process.env.DISCUZ_ENV === 'web') {
         url = '/forum/partner-invite';
+        LoginHelper.saveCurrentUrl();
+        window.location.replace(url); // 此处LoginHelper的saveAndRedirect跳转失败
       } else {
-        url = '/subPages/forum/partner-invite/index'
+        const targetPath = '/subPages/forum/partner-invite/index';
+        url = `/pages/index/index?reload=true?path=${encodeURIComponent(targetPath)}`; // 跳转中转页重新加载站点和用户信息
+        LoginHelper.saveAndRedirect(url);
+      }
+      break;
+    }
+    case NEED_BIND_WEIXIN_FLAG: {
+      // 未登录不做处理，登录流程有自己相关的跳转。不存在小程序出现需要绑定微信的情况，故小程序也不做处理
+      if (!res?.config?.headers?.authorization || process.env.DISCUZ_ENV === 'mini') {
+        break;
+      }
+      url = '/user/wx-bind-qrcode';
+      LoginHelper.saveAndRedirect(url);
+      break;
+    }
+    case NEED_BIND_PHONE_FLAG: {
+      // 未登录不做处理，登录流程有自己相关的跳转。
+      if (!res?.config?.headers?.authorization) {
+        break;
+      }
+      if (process.env.DISCUZ_ENV === 'web') {
+        url = '/user/bind-phone';
+      } else {
+        url = '/subPages/user/bind-phone/index'
       }
       LoginHelper.saveAndRedirect(url);
       break;

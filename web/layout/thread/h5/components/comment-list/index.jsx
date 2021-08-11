@@ -138,14 +138,16 @@ class CommentList extends React.Component {
           <div className={styles.commentListAvatar} onClick={() => this.avatarClick()}>
             {/* 头像和昵称*/}
             <Avatar
-              image={(this.props.data?.user?.nickname || this.props.data?.user?.userName) && this.props.data?.user?.avatar}
+              image={
+                (this.props.data?.user?.nickname || this.props.data?.user?.userName) && this.props.data?.user?.avatar
+              }
               name={this.props.data?.user?.nickname || this.props.data?.user?.userName || '异'}
               circle={true}
             ></Avatar>
           </div>
           {/* 评论内容*/}
           <div className={styles.commentListContent}>
-            <div className={styles.commentListContentText}>
+            <div className={`${styles.commentListContentText} ${this.props.active && styles.active}`}>
               <div className={styles.commentHeader}>
                 <div className={styles.userInfo}>
                   <div className={styles.commentListName}>
@@ -160,11 +162,7 @@ class CommentList extends React.Component {
                     <div className={styles.groups}>{groups?.name || groups?.groupName}</div>
                   )}
                 </div>
-                {!isApproved ? (
-                  <div className={styles.isApproved}>审核中</div>
-                ) : (
-                  <div></div>
-                )}
+                {!isApproved ? <div className={styles.isApproved}>审核中</div> : <div></div>}
               </div>
               <div className={classNames(styles.commentListText)}>
                 <PostContent
@@ -240,16 +238,19 @@ class CommentList extends React.Component {
                       ></ReplyList>
                     ) : (
                       (this.needReply || []).map((val, index) => (
-                        <ReplyList
-                          data={val}
-                          key={val.id || index}
-                          avatarClick={floor => this.replyAvatarClick(val, floor)}
-                          likeClick={() => this.replyLikeClick(val)}
-                          replyClick={() => this.replyReplyClick(val)}
-                          deleteClick={() => this.replyDeleteClick(val)}
-                          toCommentDetail={() => this.toCommentDetail()}
-                          threadId={this.props.threadId}
-                        ></ReplyList>
+                        <div key={val.id || index} ref={val.id === this.props.postId ? this.props.positionRef : null}>
+                          <ReplyList
+                            data={val}
+                            key={val.id || index}
+                            avatarClick={(floor) => this.replyAvatarClick(val, floor)}
+                            likeClick={() => this.replyLikeClick(val)}
+                            replyClick={() => this.replyReplyClick(val)}
+                            deleteClick={() => this.replyDeleteClick(val)}
+                            toCommentDetail={() => this.toCommentDetail()}
+                            active={this.props.postId === val.id}
+                            threadId={this.props.threadId}
+                          ></ReplyList>
+                        </div>
                       ))
                     )}
                   </div>

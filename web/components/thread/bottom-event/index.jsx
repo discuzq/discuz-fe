@@ -51,17 +51,26 @@ const Index = ({
     {
       icon: 'ShareAltOutlined',
       name: '分享',
-      event: onShare,
+      event: null,
       type: 'share',
     }];
   }, [isLiked]);
+
+  // TODO：此处逻辑需要移植到thread/index中，方便逻辑复用
   const handleClick = () => {
-    if (!user.isLogin()) {
-      goToLoginPage({ url: '/user/login' });
-      return;
+    updateViewCount();
+
+    if (platform === 'pc') {
+      onShare()
+    } else {
+      if (!user.isLogin()) {
+        goToLoginPage({ url: '/user/login' });
+        return;
+      }
+      setShow(true);
     }
-    setShow(true);
   };
+  
   const [show, setShow] = useState(false);
   const onClose = () => {
     setShow(false);
@@ -108,7 +117,7 @@ const Index = ({
       <div className={needHeight ? styles.operation : styles.operations}>
         {
           postList.map((item, index) => (
-              <div key={index} className={styles.fabulous} onClick={platform === 'h5' && item.name === '分享' ? handleClick : item.event}>
+              <div key={index} className={styles.fabulous} onClick={item.name === '分享' ? handleClick : item.event}>
                 <Icon
                   className={`${styles.icon} ${item.type} ${isLiked && item.name === '赞' ? styles.likedColor : styles.dislikedColor}`}
                   name={item.icon}
@@ -121,13 +130,13 @@ const Index = ({
           ))
         }
       </div>
-      {show && <MorePopop
+      <MorePopop
         show={show}
         fromThread
         handleH5Share={handleH5Share}
         onClose={onClose}
         createCard={createCard}>
-      </MorePopop>}
+      </MorePopop>
     </div>
   );
 };

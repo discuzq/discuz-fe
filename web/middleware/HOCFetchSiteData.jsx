@@ -13,6 +13,7 @@ import typeofFn from '@common/utils/typeof';
 import setWxShare from '@common/utils/set-wx-share';
 import styles from './HOCFetchSiteData.module.scss';
 import initWXSDK from '@common/utils/init-wx-sdk';
+import canPublish from '@common/utils/can-publish';
 import {
   WEB_SITE_JOIN_WHITE_LIST,
   JUMP_TO_404,
@@ -102,6 +103,7 @@ export default function HOCFetchSiteData(Component, _isPass) {
     constructor(props) {
       super(props);
       this.handleWxShare = this.handleWxShare.bind(this);
+      this.canPublish = this.canPublish.bind(this);
 
       let isNoSiteData;
       const { serverUser, serverSite, serverEmotion, user, site, emotion } = props;
@@ -203,7 +205,7 @@ export default function HOCFetchSiteData(Component, _isPass) {
       const { user, site } = this.props;
       const { userInfo } = user;
       const { webConfig: { setSite } } = site;
-      const { siteName, siteIntroduction, siteHeaderLogo } = setSite;
+      const { siteName, siteIntroduction, siteHeaderLogo, siteFavicon } = setSite;
       const { nickname, avatarUrl, signature, id } = userInfo;
 
       // 默认分享标题
@@ -215,7 +217,7 @@ export default function HOCFetchSiteData(Component, _isPass) {
       // 默认分享链接
       let link = window.location.href;
       // 默认分享图片
-      let img = siteHeaderLogo;
+      let img = siteHeaderLogo || siteFavicon;
 
       /**
        * 不适用默认分享，需要特殊处理的页面
@@ -415,6 +417,11 @@ export default function HOCFetchSiteData(Component, _isPass) {
       return newProps;
     }
 
+    canPublish() {
+      const { user, site } = this.props;
+      return canPublish(user, site);
+    }
+
     render() {
       const { isNoSiteData, isPass } = this.state;
       const { site } = this.props;
@@ -427,7 +434,7 @@ export default function HOCFetchSiteData(Component, _isPass) {
           </div>
         );
       }
-      return <Component {...this.filterProps(this.props)}/>;
+      return <Component canPublish={this.canPublish} {...this.filterProps(this.props)}/>;
     }
   }
 

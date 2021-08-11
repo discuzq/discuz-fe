@@ -22,12 +22,13 @@ const Index = ({
           setConfig(config);
         }
       )
+    } else {
+      getSiteConfig({ data, miniCode, siteName, user }).then(
+        config => {
+          setConfig(config)
+        }
+      )
     }
-    getSiteConfig({ data, miniCode, siteName, user }).then(
-      config => {
-        setConfig(config)
-      }
-    )
   }, [miniCode])
   const [config, setConfig] = useState('')
   const [shareImage, setShareImage] = useState('')

@@ -24,6 +24,8 @@ import PropTypes from 'prop-types';
  * */
 const Index = forwardRef(({
   value,
+  postType,
+  navInfo,
   placeholder,
   disabled,
   showEmoji,
@@ -34,17 +36,26 @@ const Index = forwardRef(({
   onBlur,
 }, ref) => {
   const [isAndroid, setIsAndroid] = useState(false);
-  const [height, setHeight] = useState(78); // IOS textarea输入时的展示高度
-  const [realHeight, setRealHeight] = useState(78); // 记录IOS textarea展开时的真实高度
+  const [initialized, setInitialized] = useState(false); // IOS textarea 高度是否已经初始化
+  const [realHeight, setRealHeight] = useState(260); // IOS textarea展开时的真实高度
+  const [defaultHeight, setDefaultHeight] = useState(260); // 输入时显示的半屏高度
 
   // 兼容ios，监听换行更新高度
   const onLineChange = (e) => {
-    if ((bottomHeight > 0 || showEmoji)) {
-      const newHeight = e.detail.height + 30; // 为避免抖动，补偿30px展示高度
-      setRealHeight(e.detail.height > 78 ? newHeight : 78);
-      if (height < 260 && height < newHeight) {
-        setHeight(newHeight > 260 ? 260 : newHeight);
-      }
+    /*
+    * 非首次发帖时，初始化IOS文本域高度
+    * 初始化渲染时IOS系统默认使用了22px的行高，css中真实行高确是28px。需要补偿展示高度
+    */
+    if (postType !== 'isFirst' && e.detail.lineCount > 1 && !initialized) {
+      setRealHeight(parseInt(e.detail.height * (28 / 22) + 100));
+      setInitialized(true);
+      return;
+    }
+
+    if (realHeight - e.detail.height > 150) return; // 忽略非正常状态下行数超过5行的快速下降
+
+    if ((bottomHeight > 0 || showEmoji) && e.detail.height > defaultHeight) { // 输入时更新内容真实高度
+      setRealHeight(e.detail.height);
     };
   }
 
@@ -52,9 +63,14 @@ const Index = forwardRef(({
     Taro.getSystemInfo({
       success: (res) => {
         res?.platform !== 'ios' && setIsAndroid(true);
+        if (bottomHeight) {
+          const {statusBarHeight, navHeight} = navInfo;
+          const _height = res.screenHeight - statusBarHeight - navHeight - bottomHeight - 200; // 200 为标题、操作栏高度加一点间距之和
+          setDefaultHeight(_height);
+        }
       }
-    })
-  }, [])
+    });
+  }, [bottomHeight])
 
   if (isAndroid) {
     return (
@@ -62,9 +78,8 @@ const Index = forwardRef(({
         <View className={styles['container-inner']}>
           <Textarea
             ref={ref}
-            className={classNames(styles.textarea, !!value && styles['textarea-editing'], {
-              [styles['textarea-max-height']]: bottomHeight > 0 || showEmoji,
-            })}
+            className={classNames(styles.textarea, !!value && styles['textarea-editing'], styles['textarea-min-height'])}
+            style={(bottomHeight > 0 || showEmoji) ? `max-height:${defaultHeight}px` : ''}
             placeholderClass={styles['textarea-placeholder']}
             value={value}
             disabled={disabled}
@@ -95,7 +110,10 @@ const Index = forwardRef(({
           disabled={disabled}
           placeholder={placeholder}
           maxlength={maxLength}
-          style={`height:${(bottomHeight > 0 || showEmoji) ? height : realHeight}px`}
+          style={(bottomHeight > 0 || showEmoji)
+            ? `height:${defaultHeight}px;`
+            : `height:${realHeight > defaultHeight ? realHeight : defaultHeight}px;`
+          }
           showConfirmBar={false}
           onFocus={onFocus}
           onBlur={onBlur}
@@ -103,7 +121,7 @@ const Index = forwardRef(({
           onInput={e => onChange(e.target.value, maxLength)}
           // 键盘弹起时，不自动上推页面。此属性解决键盘弹起页面上推导致工具栏以及header显示异常
           adjustPosition={false}
-          onLineChange={debounce(onLineChange, 200)}
+          onLineChange={debounce(onLineChange, 100)}
         />
       </View>
     </View>

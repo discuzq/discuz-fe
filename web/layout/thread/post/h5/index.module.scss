@@ -15,8 +15,23 @@
   bottom: 0;
   left: 0;
   width: 100%;
-  background-color: $white;
+  background-color: transparent;
   z-index: $zindex-popup;
+
+  .post-localdata {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    background-color: transparent;
+    text-align: right;
+
+    :global {
+      .dzq-tag {
+        border-top-right-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+      }
+    }
+  }
 }
 @supports (bottom: constant(safe-area-inset-bottom)) or (bottom: env(safe-area-inset-bottom)) {
   .post-bottombar {
@@ -59,7 +74,8 @@
   height: 35px;
   padding: 0 rem(16);
   align-items: flex-start;
-  justify-content: flex-start;
+  justify-content: space-between;
+  background-color: $white;
   :global { /* stylelint-disable-line */
     .dzq-tag {
       display: flex;
@@ -70,16 +86,20 @@
       align-items: center;
     }
     .dzq-tag-text {
-      display: inline-block;
-      max-width: rem(280);
+      display: inline-block !important;
+      max-width: rem(200);
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      word-break: break-all;
     }
   }
-  .post-counter {
+  .post-autosave {
+    display: inline-flex;
+    align-items: center;
+    height: 25px;
     font-size: $font-size-small;
-    color: $text-color-placeholder;
+    color: $text-color-secondary;
   }
 }
 

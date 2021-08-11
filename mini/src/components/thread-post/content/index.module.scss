@@ -13,15 +13,14 @@
     line-height: 16px;
     text-align: left;
     resize: none;
-    min-height: 78px;
   }
 
   .textarea-editing {
     line-height: 26px;
   }
 
-  .textarea-max-height {
-    max-height: 260px;
+  .textarea-min-height {
+    min-height: 78px;
   }
 
   .textarea-placeholder {

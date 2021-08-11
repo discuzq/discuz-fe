@@ -3,10 +3,13 @@ import React, { useState, useRef, useEffect } from 'react';
 import styles from './index.module.scss';
 import { Button, Toast } from '@discuzq/design';
 import Footer from './footer';
+import Header from '@components/header';
 import isWeiXin from '@common/utils/is-weixin';
 import { inject, observer } from 'mobx-react';
+import SiteCard from './siteCard';
+import ThreadCard from './threadCard';
 
-const Index = ({ children, card }) => {
+const Index = ({ card, threadId }) => {
   const [url, setUrl] = useState('');
   const [ready, setReady] = useState(false);
   const post = useRef(null);
@@ -29,10 +32,12 @@ const Index = ({ children, card }) => {
   }
 
   return (
+    <div>
+      <Header />
     <div className={styles.contain}>
       <div className={styles.poster} ref={post}>
-        {children}
-        <Footer setReady={setReady}></Footer>
+        {!threadId ? <SiteCard></SiteCard> : <ThreadCard threadId={threadId}></ThreadCard>}
+        <Footer setReady={setReady} threadId={threadId}></Footer>
       </div>
       {ready && imgReady ? (
         <div className={styles.imgbox}>
@@ -51,6 +56,7 @@ const Index = ({ children, card }) => {
           <div className={styles.wxBtn}>长按图片保存到相册</div>
         )}
       </div>
+    </div>
     </div>
   );
 };

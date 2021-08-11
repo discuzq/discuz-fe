@@ -7,6 +7,21 @@
     align-items: center;
     justify-content: flex-start;
     flex-direction: column;
+    .container {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-direction: column;
+        padding-bottom: 59px;
+        & > div {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+        }
+    }
     .img{
         margin-top: rem(120);
         width: rem(80);
@@ -30,7 +45,7 @@
         padding-right: rem(8);
         @include ios-safe-area-inset-bottom;
         box-sizing: border-box;
-        border-top: var(--border-border);
+        border-top: $border-solid-1;
         .btn{
             width: 100%;
             height: rem(42);

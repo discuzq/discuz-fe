@@ -6,7 +6,7 @@ import DVditor from '@components/editor';
 import Title from '@components/thread-post/title';
 import { AttachmentToolbar, DefaultToolbar } from '@components/editor/toolbar';
 import Position from '@components/thread-post/position';
-import { Button, Audio, AudioRecord } from '@discuzq/design';
+import { Button, Audio, AudioRecord, Tag } from '@discuzq/design';
 import ClassifyPopup from '@components/thread-post/classify-popup';
 import { withRouter } from 'next/router';
 import Emoji from '@components/editor/emoji';
@@ -24,6 +24,7 @@ import Copyright from '@components/copyright';
 import ForTheForm from '@components/thread/for-the-form';
 import VideoDisplay from '@components/thread-post/video-display';
 import MoneyDisplay from '@components/thread-post/money-display';
+import TagLocalData from '@components/thread-post/tag-localdata';
 
 @inject('threadPost')
 @inject('index')
@@ -43,6 +44,22 @@ class ThreadPCPage extends React.Component {
       lastindex: -1,
       vditor: null,
     };
+
+    this.pluginContainer = React.createRef();
+  }
+
+  componentDidMount() {
+
+    // 监听插件区域的高度变化调整编辑器的min-height style，使编辑器初始化时占满编辑框，更容易监测到图片拖拽上传
+    const resizeObserver = new ResizeObserver(() => {
+      const el = this.pluginContainer.current;
+      if (el && el.offsetHeight) {
+        document.querySelector('#dzq-vditor').style.minHeight = '44px';
+      } else {
+        document.querySelector('#dzq-vditor').style.minHeight = '450px';
+      }
+    });
+    resizeObserver.observe(this.pluginContainer.current);
   }
 
   hintCustom = (type, key, textareaPosition, lastindex, vditor) => {
@@ -106,6 +123,7 @@ class ThreadPCPage extends React.Component {
                 <DVditor
                   pc
                   value={postData.contentText}
+                  isResetContentText={postData.isResetContentText}
                   emoji={emoji}
                   atList={atList}
                   topic={topic}
@@ -118,100 +136,113 @@ class ThreadPCPage extends React.Component {
                   hintCustom={(type, key, textareaPosition, lastindex, vditor) =>
                     this.hintCustom(type, key, textareaPosition, lastindex, vditor)}
                   hintHide={this.hintHide}
+                  site={site}
                 />
-                {this.state.editorTopicShow
-                  && <TopicSelect
-                    pc
-                    visible={this.state.editorTopicShow}
-                    style={this.state.topicStyle}
-                    cancelTopic={this.hintHide}
-                    clickTopic={(val) => {
-                      this.setEditorRange();
-                      this.props.handleSetState({ topic: val });
-                    }}
-                  />
-                }
-                {this.state.editorAtShow
-                  && <AtSelect
-                    pc
-                    style={this.state.atStyle}
-                    visible={this.state.editorAtShow}
-                    getAtList={(list) => {
-                      this.setEditorRange();
-                      this.props.handleAtListChange(list);
-                    }}
-                    onCancel={this.hintHide}
-                  />
-                }
 
-                {/* 插入图片 */}
-                {(currentAttachOperation === THREAD_TYPE.image
-                  || Object.keys(postData.images).length > 0) && (
-                  <ImageUpload
-                    className={styles['no-padding']}
-                    fileList={Object.values(postData.images)}
-                    onChange={fileList => this.props.handleUploadChange(fileList, THREAD_TYPE.image)}
-                    onComplete={(ret, file) => this.props.handleUploadComplete(ret, file, THREAD_TYPE.image)}
-                    beforeUpload = {(cloneList, showFileList) => this.props.beforeUpload(cloneList, showFileList, THREAD_TYPE.image)}
-                  />
-                )}
-
-                {/* 视频组件 */}
-                {(postData.video && postData.video.thumbUrl) && (
-                  <VideoDisplay
-                    pc
-                    src={postData.video.thumbUrl}
-                    onDelete={() => this.props.setPostData({ video: {} })}
-                    onReady={this.props.onVideoReady} />
-                )}
-
-                {/* 录音组件 */}
-                {(currentAttachOperation === THREAD_TYPE.voice) && (
-                  <div id="dzq-post-audio-record">
-                    <AudioRecord duration={60}
-                      onUpload={(blob) => {
-                        this.props.handleAudioUpload(blob);
+                <div ref={this.pluginContainer}>
+                  {this.state.editorTopicShow
+                    && <TopicSelect
+                      pc
+                      visible={this.state.editorTopicShow}
+                      style={this.state.topicStyle}
+                      cancelTopic={this.hintHide}
+                      clickTopic={(val) => {
+                        this.setEditorRange();
+                        this.props.handleSetState({ topic: val });
                       }}
                     />
-                  </div>
-                )}
-                {/* 语音组件 */}
-                {(Boolean(postData.audio.mediaUrl))
-                  && (<Audio src={postData.audio.mediaUrl} />)}
+                  }
+                  {this.state.editorAtShow
+                    && <AtSelect
+                      pc
+                      style={this.state.atStyle}
+                      visible={this.state.editorAtShow}
+                      getAtList={(list) => {
+                        this.setEditorRange();
+                        this.props.handleAtListChange(list);
+                      }}
+                      onCancel={this.hintHide}
+                    />
+                  }
 
-                {/* 附件上传组件 */}
-                {(currentDefaultOperation === defaultOperation.attach || Object.keys(postData.files).length > 0) && (
-                  <FileUpload
-                    limit={9}
-                    className={styles['no-padding']}
-                    fileList={Object.values(postData.files)}
-                    onChange={fileList => this.props.handleUploadChange(fileList, THREAD_TYPE.file)}
-                    onComplete={(ret, file) => this.props.handleUploadComplete(ret, file, THREAD_TYPE.file)}
-                    beforeUpload = {(cloneList, showFileList) => this.props.beforeUpload(cloneList, showFileList, THREAD_TYPE.file)}
-                  />
-                )}
+                  {/* 插入图片 */}
+                  {(currentAttachOperation === THREAD_TYPE.image
+                    || Object.keys(postData.images).length > 0) && (
+                    <ImageUpload
+                      className={styles['no-padding']}
+                      fileList={Object.values(postData.images)}
+                      onChange={fileList => this.props.handleUploadChange(fileList, THREAD_TYPE.image)}
+                      onComplete={(ret, file) => this.props.handleUploadComplete(ret, file, THREAD_TYPE.image)}
+                      beforeUpload = {(cloneList, showFileList) => this.props.beforeUpload(cloneList, showFileList, THREAD_TYPE.image)}
+                    />
+                  )}
 
-                {/* 商品组件 */}
-                {postData.product && postData.product.readyContent && (
-                  <Product
-                    pc
-                    good={postData.product}
-                    onDelete={() => this.props.setPostData({ product: {} })}
-                  />
-                )}
+                  {/* 视频组件 */}
+                  {(postData.video && postData.video.thumbUrl) && (
+                    <VideoDisplay
+                      pc
+                      src={postData.video.thumbUrl}
+                      onDelete={() => this.props.setPostData({ video: {} })}
+                      onReady={this.props.onVideoReady} />
+                  )}
+
+                  {/* 录音组件 */}
+                  {(currentAttachOperation === THREAD_TYPE.voice) && (
+                    <div id="dzq-post-audio-record">
+                      <AudioRecord duration={60}
+                        onUpload={(blob) => {
+                          this.props.handleAudioUpload(blob);
+                        }}
+                      />
+                    </div>
+                  )}
+                  {/* 语音组件 */}
+                  {(Boolean(postData.audio.mediaUrl))
+                    && (<Audio src={postData.audio.mediaUrl} />)}
+
+                  {/* 附件上传组件 */}
+                  {(currentDefaultOperation === defaultOperation.attach || Object.keys(postData.files).length > 0) && (
+                    <FileUpload
+                      limit={9}
+                      className={styles['no-padding']}
+                      fileList={Object.values(postData.files)}
+                      onChange={fileList => this.props.handleUploadChange(fileList, THREAD_TYPE.file)}
+                      onComplete={(ret, file) => this.props.handleUploadComplete(ret, file, THREAD_TYPE.file)}
+                      beforeUpload = {(cloneList, showFileList) => this.props.beforeUpload(cloneList, showFileList, THREAD_TYPE.file)}
+                    />
+                  )}
+
+                  {/* 商品组件 */}
+                  {postData.product && postData.product.readyContent && (
+                    <Product
+                      pc
+                      good={postData.product}
+                      onDelete={() => this.props.setPostData({ product: {} })}
+                    />
+                  )}
+                </div>
+
               </div>
-              {/* 设置的金额相关展示 */}
-              <MoneyDisplay
-                pc
-                canEditReward={this.props.canEditReward}
-                canEditRedpacket={this.props.canEditRedpacket}
-                payTotalMoney={threadPost.payTotalMoney}
-                redTotalMoney={threadPost.redpacketTotalAmount}
-                postData={postData} setPostData={this.props.setPostData}
-                handleSetState={this.props.handleSetState}
-                onAttachClick={this.props.handleAttachClick}
-                onDefaultClick={this.props.handleDefaultIconClick}
-              />
+              {/* 设置的金额相关展示 + 本地缓存设置 */}
+              <div className={styles.['editor-footer']}>
+                <div className={styles['editor-footer--left']}>
+                  {threadPost.isHaveLocalData && <TagLocalData pc />}
+                  <MoneyDisplay
+                    pc
+                    canEditReward={this.props.canEditReward}
+                    canEditRedpacket={this.props.canEditRedpacket}
+                    payTotalMoney={threadPost.payTotalMoney}
+                    redTotalMoney={threadPost.redpacketTotalAmount}
+                    postData={postData} setPostData={this.props.setPostData}
+                    handleSetState={this.props.handleSetState}
+                    onAttachClick={this.props.handleAttachClick}
+                    onDefaultClick={this.props.handleDefaultIconClick}
+                  />
+                </div>
+                {postData.autoSaveTime && (<div className={styles['editor-footer--right']}>
+                  最近保存{postData.autoSaveTime}
+                </div>)}
+              </div>
             </div>
             <div className={styles.toolbar}>
               <div className={styles['toolbar-left']}>
@@ -275,7 +306,7 @@ class ThreadPCPage extends React.Component {
                 )}
               </div>
             </div>
-            <ClassifyPopup pc onClick={this.hintHide} />
+            <ClassifyPopup pc onClick={this.hintHide} categoryId={threadPost.postData.categoryId} />
             <div className={styles.footer}>
               <Button type="info" disabled={this.props.postType === "isEdit" && !postData.isDraft}
                 onClick={() => this.props.handleDraft()}>保存至草稿箱</Button>

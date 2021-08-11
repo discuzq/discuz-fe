@@ -2,7 +2,6 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'next/router';
 import { Input, Button, Toast, Icon } from '@discuzq/design';
-import '@discuzq/design/dist/styles/index.scss';
 import layout from './index.module.scss';
 import HomeHeader from '@components/home-header';
 import Header from '@components/header';
@@ -36,6 +35,19 @@ class UsernameH5Login extends React.Component {
   }
 
   loginErrorHandler = async (e) => {
+    // 补充昵称
+    if (e.Code === MOBILE_LOGIN_STORE_ERRORS.NEED_BIND_USERNAME.Code || e.Code === MOBILE_LOGIN_STORE_ERRORS.NEED_ALL_INFO.Code) {
+      const uid = get(e, 'uid', '');
+      uid && this.props.user.updateUserInfo(uid);
+
+      if (e.Code === MOBILE_LOGIN_STORE_ERRORS.NEED_ALL_INFO.Code) {
+        this.props.commonLogin.needToCompleteExtraInfo = true;
+      }
+
+      this.props.router.push('/user/bind-nickname');
+      return;
+    }
+
     // 跳转补充信息页
     if (e.Code === MOBILE_LOGIN_STORE_ERRORS.NEED_COMPLETE_REQUIRED_INFO.Code) {
       const uid = get(e, 'uid', '');

@@ -2,14 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { inject, observer } from 'mobx-react';
 import { getMiniCode } from '@server';
 import styles from './index.module.scss';
-const Index = ({ site, setReady }) => {
+const Index = ({ site, setReady, threadId = '' }) => {
   const [miniCode, setMiniCode] = useState('');
   const defaultLogo = '/dzq-img/default-logo.png';
   const { siteName } = site.webConfig?.setSite || '';
   useEffect(async () => {
     try {
+      const threadPath = `/indexPages/thread/index?id=${threadId}`;
       const sitePath = '/indexPages/index/index';
-      const paramPath = `/pages/index/index?path=${encodeURIComponent(sitePath)}`;
+      const path = threadId ? threadPath : sitePath;
+      const paramPath = `/pages/index/index?path=${encodeURIComponent(path)}`;
       const res = await getMiniCode({ params: { path: paramPath } });
       if (res?.code === 0) {
         setMiniCode(res?.data.base64Img);

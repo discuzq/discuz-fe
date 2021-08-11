@@ -1,6 +1,5 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import '@discuzq/design/dist/styles/index.scss';
 import HomeHeader from '@components/home-header';
 import List from '@components/list';
 import { View, Button } from '@tarojs/components';
@@ -17,7 +16,7 @@ import layout from './index.module.scss';
 import SiteInfo from '../site-info';
 import PayBox from '@components/payBox';
 import { simpleRequest } from '@common/utils/simple-request';
-import { getCurrentInstance } from '@tarojs/taro';
+import Taro, { getCurrentInstance } from '@tarojs/taro';
 import { readUser } from '@server';
 import LoginHelper from '@common/utils/login-helper';
 
@@ -37,10 +36,20 @@ class PartnerInviteH5Page extends React.Component {
       invitorName: '',
       invitorAvatar: '/dzq-img/login-user.png',
       isHot: false,
+      isRenew: !!this.props.user?.userInfo?.isRenew, // 是否续费
     };
   }
 
+  setNavigationBarStyle = () => {
+    Taro.setNavigationBarColor({
+      frontColor: '#000000',
+      backgroundColor: '#ffffff'
+    })
+  }
+
   async componentDidMount() {
+    this.setNavigationBarStyle();
+
     try {
       await Promise.all([
         this.initInviteCode(),
@@ -98,33 +107,18 @@ class PartnerInviteH5Page extends React.Component {
   async initThreadList() {
     const { forum, search } = this.props;
 
-    // 1.获取后台设置的付费推荐内容，最多10条。pay===1时，后台默认返回10条，无法修改
+    const INVITE_THREADLIST_SCOPE = 3;
     const threadList = await search.getThreadList({
-      site: 1, // 后台设置的热门推荐
-      params: {
-        pay: 1,
-      },
+      scope: INVITE_THREADLIST_SCOPE,
     });
 
-    // 2.推荐内容数量大于0则title为精彩内容预览，否则为热门内容预览
+     forum.setThreadsPageData(threadList);
+
+    // 推荐内容数量大于0则title为精彩内容预览，否则为热门内容预览
+    const isHot = !threadList?.pageData?.some(item => item.isSite);
     this.setState({
-      isHot: !(threadList?.pageData?.length > 0),
+      isHot,
     });
-
-    // 3.如果付费推荐少于MAX_THREAD_COUNT条，取热门推荐，凑齐MAX_THREAD_COUNT条
-    if (threadList?.pageData?.length < MAX_THREAD_COUNT) {
-      const repeatedIds = threadList?.pageData?.map(item => item.threadId);
-      const hotThreads = await search.getThreadList({
-        repeatedIds,
-        params: {
-          pay: 1,
-        },
-      });
-
-      threadList?.pageData?.push(...hotThreads?.pageData?.slice(0, MAX_THREAD_COUNT - threadList?.pageData?.length));
-    }
-
-    forum.setThreadsPageData(threadList);
   }
 
   handleJoinSite = () => {
@@ -141,8 +135,7 @@ class PartnerInviteH5Page extends React.Component {
           // data 中传递后台参数
           amount: sitePrice,
           title: siteName,
-          // type: user?.userInfo?.expiredAt ? 8 : 1, // 续费传8，新付费传1.站点付费注册
-          type: 1
+          type: this.state.isRenew ? 8 : 1 // 续费传8，新付费传1.站点付费注册
         },
         isAnonymous: false, // 是否匿名
         success: async () => {
@@ -167,7 +160,7 @@ class PartnerInviteH5Page extends React.Component {
     const { webConfig } = site;
     const { setSite: { siteMode, siteExpire, sitePrice, siteMasterScale } = {} } = webConfig;
     const { usersPageData = [], threadsPageData = [], isLoading } = forum;
-    const { invitorName, invitorAvatar, isHot } = this.state;
+    const { invitorName, invitorAvatar, isHot, isRenew } = this.state;
 
     const icon = { type: 3, name: isHot ? 'HotOutlined' : 'WonderfulOutlined' };
     const title = `${isHot ? '热门' : '精彩'}内容预览`
@@ -192,7 +185,7 @@ class PartnerInviteH5Page extends React.Component {
             ) : (
               <></>
             )}
-            {!isLoading && !threadsPageData?.length ? <NoData /> : <></>}
+            {!isLoading && !usersPageData?.length ? <NoData /> : <></>}
             {isLoading ? (
               <View className={layout.spinner}>
                 <Spin type="spinner" />
@@ -256,7 +249,7 @@ class PartnerInviteH5Page extends React.Component {
                 <></>
               }
               <Button className={layout.bottom_button} onClick={this.handleJoinSite}>
-                { user.isLogin() ? `${siteMode === 'pay' ? `¥${sitePrice} ` : ''}立即加入` : '登录浏览更多内容'}
+                { user.isLogin() ? `${siteMode === 'pay' ? `¥${sitePrice} ` : ''}${this.state.isRenew ? '续费' : '立即'}加入` : '登录浏览更多内容'}
               </Button>
             </View>
           </View>

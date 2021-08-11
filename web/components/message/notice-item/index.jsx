@@ -130,13 +130,25 @@ class Index extends Component {
   // 跳转主题详情or私信
   toDetailOrChat = (e, item) => {
     if (e.target.nodeName === 'A') return;
+    let url = '';
     const { type } = this.props;
+
     if (item.threadId) {
-      Router.push({ url: `/thread/${item.threadId}` });
+      url = `/thread/${item.threadId}`;
+    }
+    // 处理点击帖子通知 - 回复(携带评论id, 用于评论定位展示)
+    if (item.type === "replied" && item.threadId && item.postId) {
+      if (item.isReply) {
+        url = `/thread/comment/${item.replyPostId}?threadId=${item.threadId}&postId=${item.postId}`;
+      } else {
+        url = `/thread/${item.threadId}?postId=${item.postId}`;
+      }
     }
     if (type === 'chat') {
-      Router.push({ url: `/message?page=chat&dialogId=${item.dialogId}&nickname=${item.nickname || ''}` });
+      url = `/message?page=chat&dialogId=${item.dialogId}&nickname=${item.nickname || ''}`
     }
+
+    url && Router.push({ url });
   };
 
   render() {

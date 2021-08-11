@@ -2,7 +2,7 @@
 
 // 金额确认标题
 .amountTitle {
-  font-weight: var(--font-weight-regular);
+  font-weight: $font-weight-regular;
   font-size: rem($font-size-middle);
   color: $text-color-primary;
   text-align: center;
@@ -78,7 +78,7 @@
       border-radius: 0 5px 5px 0;
     }
 
-    border: var(--border-border);
+    border: $border-solid-1;
     width: rem(40);
     height: rem(40);
     text-align: center;
@@ -98,7 +98,7 @@
   }
 
   .payListItem01 {
-    border: var(--border-border);
+    border: $border-solid-1;
     width: rem(40);
     height: rem(40);
     text-align: center;

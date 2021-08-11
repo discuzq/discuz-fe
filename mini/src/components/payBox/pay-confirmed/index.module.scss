@@ -64,9 +64,9 @@
         }
         :global {
           .dzq-checkbox--radio {
-            border-radius: var(--border-radius-small);
+            border-radius: $border-radius-small;
             &::after {
-              border-radius: var(--border-radius-small);
+              border-radius: $border-radius-small;
             }
           }
           .dzq-icon {

@@ -11,7 +11,7 @@ export default function csrRouterRedirect() {
         // // 当CSR出现末尾是index，会导致不能正确跳转的问题；
         let { pathname } = window.location;
   
-        if (pathname !== '' || pathname !== '/') {
+        if (pathname !== '' && pathname !== '/') {
           const pathnameArr = pathname.split('/');
           if (pathnameArr[pathnameArr.length - 1] === 'index') {
             pathnameArr.pop();
@@ -41,12 +41,19 @@ export default function csrRouterRedirect() {
             } else {
                 if ( curr['*'] && i == pathArr.length - 1 ) {
                     res.push(pathArr[i]);
+                    curr = curr[pathArr[i]];
                 } else {
                     Router.redirect({ url: `/404` });
                     return;
                 }
             }
         }
+
+        if (curr && curr['*']) {
+            Router.redirect({ url: '/404' });
+            return;
+        }
+
         Router.redirect({ url: `/${res.join('/')}${window.location.search}` });
     }
 }

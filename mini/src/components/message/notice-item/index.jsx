@@ -121,6 +121,14 @@ class Index extends Component {
     if (item.threadId) {
       url = `/indexPages/thread/index?id=${item.threadId}`;
     }
+    // 处理点击帖子通知 - 回复(携带评论id, 用于评论定位展示)
+    if (item.type === "replied" && item.threadId && item.postId) {
+      if (item.isReply) {
+        url = `/indexPages/thread/comment/index?id=${item.replyPostId}&threadId=${item.threadId}&postId=${item.postId}`;
+      } else {
+        url = `/indexPages/thread/index?id=${item.threadId}&postId=${item.postId}`;
+      }
+    }
     if (type === 'chat') {
       url = `/subPages/message/index?page=chat&dialogId=${item.dialogId}&nickname=${item.nickname || ''}`;
     }

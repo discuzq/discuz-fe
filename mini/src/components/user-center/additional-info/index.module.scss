@@ -38,7 +38,7 @@
     flex: 1;
     font-size: $font-size-large;
     color: $text-color-primary;
-    font-weight: var(--font-weight-regular);
+    font-weight: $font-weight-regular;
   }
   .additionItem {
     display: flex;
@@ -46,7 +46,7 @@
     justify-content: space-between;
     font-size: $font-size-primary;
     padding: $padding-4n 0;
-    border-bottom: var(--border-border);
+    border-bottom: $border-solid-1;
     .additionLabel {
       color: $text-color-regular;
       height: 20px;
@@ -81,20 +81,23 @@
   }
   .additionIdentityCard {
     flex-direction: column;
+
     .additionLabel {
       align-self: flex-start;
       max-width: 108px;
       @include text-ellipsis();
     }
+
     .cardItem {
       display: flex;
       justify-content: space-between;
+      flex-direction: column;
       margin-top: $margin-4n;
       width: 100%;
     }
+
     .identityCard {
       width: 100%;
-      height: 215px;
       border-radius: 5px;
       background: #eee;
       position: relative;
@@ -107,11 +110,13 @@
         color: $text-color-regular;
       }
     }
+
     .identityImg {
       width: 100%;
-      height: 215px;
+      // height: 215px;
       border-radius: 5px;
     }
+
     .identityCardBottom {
       margin-bottom: rem($margin-10);
     }

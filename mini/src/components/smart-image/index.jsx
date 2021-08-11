@@ -12,20 +12,20 @@ const SmartImg = ({level, autoSize = false, type, src, onClick, mode = '', noSma
         if (noSmart) return calcCosImageQuality(src, type, 0);
         return calcCosImageQuality(src, type, level);
     }, [noSmart, src, type, level])
-    
+
 
     const imgOnload = useCallback((data) => {
         if (data && data.detail) {
             const { height, width } = data.detail;
             changeIsLong(isLongImage(width,height));
         }
-        
+
     }, [src])
-    
+
     return (
         <View className={styles.box}>
             <Image src={imgSrc}  onLoad={imgOnload} mode={mode} onClick={onClick}/>
-            {isLong && <View className={styles.longImgBox}>长图</View>}
+            {!noSmart && isLong && <View className={styles.longImgBox}>长图</View>}
         </View>
     );
 }

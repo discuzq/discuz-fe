@@ -25,28 +25,52 @@ class WXRebindActionPage extends Component {
       currentStatus: '',
       errorTips: '扫码失败',
     };
+    this.handleRebindButtonClick = this.handleRebindButtonClick.bind(this);
   }
+
+  async componentDidMount() {
+    await getParamCode(this.props.commonLogin);
+  }
+
+  componentWillUnmount() {
+    this.props.commonLogin.reset();
+  }
+
   getUserProfileCallback = async (params) => {
     const { scene: sessionToken } = getCurrentInstance().router.params;
 
     try {
       const { user, commonLogin } = this.props;
-      await getParamCode(commonLogin);
       await user.rebindWechatMini({
         jsCode: commonLogin.jsCode,
         iv: params.iv,
         encryptedData: params.encryptedData,
         sessionToken,
       });
+      this.props.commonLogin.setLoginLoading(true);
       this.setState({
         currentStatus: 'success'
       });
     } catch (e) {
+      this.props.commonLogin.setLoginLoading(true);
+      await getParamCode(this.props.commonLogin);
       this.setState({
         currentStatus: 'error',
         errorTips: e.Msg
       });
     }
+  }
+
+  handleRebindButtonClick() {
+    const { commonLogin } = this.props;
+    if (!commonLogin.loginLoading) {
+      return;
+    }
+    commonLogin.setLoginLoading(false);
+    getUserProfile(this.getUserProfileCallback, true, async () => {
+      commonLogin.setLoginLoading(true);
+      await getParamCode(this.props.commonLogin);
+    });
   }
 
 
@@ -80,7 +104,7 @@ class WXRebindActionPage extends Component {
             <Button
                 className={styles.button}
                 type="primary"
-                onClick={() => {getUserProfile(this.getUserProfileCallback)}}
+                onClick={this.handleRebindButtonClick}
               >
               确认
             </Button>

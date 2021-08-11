@@ -27,9 +27,9 @@ function validateUrl(url) {
   }
 
   if (isWeb()) {
+    // 相对地址转绝对地址
+    let absUrl = url;
     try {
-      // 相对地址转绝对地址
-      let absUrl = url;
       if (url.startsWith('/')) {
         absUrl = `${window.location.origin}${url}`;
       }
@@ -137,7 +137,6 @@ class LoginHelper {
   // 保存当前地址，并跳转目标地址targetUrl
   saveAndRedirect = (targetUrl) => {
     this.saveCurrentUrl();
-
     Router.redirect({
       url: targetUrl,
     });
@@ -157,10 +156,10 @@ class LoginHelper {
     this.gotoLogin();
   };
 
-  // 恢复登录前的跳转。优先级：记录页 > defaultPage > 主页
-  restore = (defaultPage) => {
-    const url = this.getUrl() || defaultPage || (isWeb() ? HOME_PAGE_PC : HOME_PAGE_MINI);
-    this.clear();
+  // 恢复登录前的跳转。优先级：记录页 > 主页
+  restore = (clearUrl = true) => {
+    const url = this.getUrl() || (isWeb() ? HOME_PAGE_PC : HOME_PAGE_MINI);
+    clearUrl && this.clear();
 
     Router.redirect({
       url,

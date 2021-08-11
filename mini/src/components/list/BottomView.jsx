@@ -23,8 +23,7 @@ const Index = ({
     handleError = noop,
     isBox = false,
     className=''
-}) => {
-    return (
+}) => (
         <View className={`${styles.bottomView} ${className} ${isBox ? styles.bottomViewBox : ''}`}>
             {!isError ? (
                 loadingView || <RefreshView noMore={noMore} loadText={loadingText} noMoreText={noMoreText} type={type} />
@@ -33,6 +32,5 @@ const Index = ({
             )}
         </View>
     )
-}
 
 export default React.memo(Index)

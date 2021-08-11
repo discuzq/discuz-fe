@@ -82,6 +82,21 @@ page {
           text-align: left;
           color: $text-color-placeholder;
         }
+        .post-autosave {
+          display: inline-flex;
+          align-items: center;
+          height: 25px;
+          font-size: $font-size-small;
+          color: $text-color-secondary;
+        }
+      }
+      .post-localdata {
+        position: absolute;
+        top: -40px;
+        right: 0;
+        background-color: transparent;
+        text-align: right;
+        text-align: right;
       }
 
       .tag-toolbar {

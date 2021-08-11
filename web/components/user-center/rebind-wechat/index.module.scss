@@ -1,12 +1,12 @@
 @import '@common/styles/index.scss';
-@import '@common/styles/_variable.scss';
+@import '@common/styles/index.scss';
 
 .wechatRebindContent {
   :global {
     .dzq-modal__container {
       width: rem(409);
       height: rem(423);
-      border-radius: rem(var(--border-radius-small));
+      border-radius: rem($border-radius-small);
       background: $white;
     }
   }

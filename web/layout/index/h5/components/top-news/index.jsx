@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter } from 'next/router';
-import { RichText } from '@discuzq/design';
 import styles from './index.module.scss';
+import FilterRichText from '@components/filter-rich-text'
 import s9e from '@common/utils/s9e';
 import xss from '@common/utils/xss';
 /**
@@ -14,14 +14,6 @@ const TopNews = ({ data = [], router, platform = 'h5'}) => {
       return
     }
     router.push(`/thread/${threadId}`);
-  };
-
-  // 过滤内容
-  const filterContent = (content) => {
-    let newContent = content ? s9e.parse(content) : '暂无内容';
-    newContent = xss(newContent);
-
-    return newContent;
   };
 
   const handlerTitle = (title = '') => {
@@ -42,7 +34,9 @@ const TopNews = ({ data = [], router, platform = 'h5'}) => {
           <div className={styles.prefix}>{item.prefix || '置顶'}</div>
           {false && <div className={styles.title}>{handlerTitle(item.title)}</div>}
           <div className={styles.title}>
-              <RichText onClick={(e) => onClick(item, e)} className={styles.richText} content={filterContent(item.title)} />
+            <FilterRichText 
+              onClick={(e) => onClick(item, e)} className={styles.richText} content={item.title}
+            />
           </div>
         </div>
       ))}

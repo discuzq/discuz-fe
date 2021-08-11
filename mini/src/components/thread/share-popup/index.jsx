@@ -5,7 +5,6 @@ import { noop } from '../utils';
 import { View, Image } from '@tarojs/components'
 import sharePointImg from '../../../../../web/public/dzq-img/sharePoint.png';
 import shareKnowImg from '../../../../../web/public/dzq-img/shareKnow.png';
-
 /**
  * 筛选分类组件
  * @prop {boolean} visible 是否分享弹框

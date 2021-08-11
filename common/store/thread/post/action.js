@@ -310,9 +310,9 @@ class ThreadPostAction extends ThreadPostStore {
     if (detail.position && detail.position.address) position = detail.position;
     let contentText = content && content.text;
     // 目前只是简单的队小程序进行简单的处理
-    if (isMini) {
-      contentText = contentText.replace(/<br \/>/g, '\n');
-    } else {
+    if (isMini) contentText = contentText.replace(/<br \/>\n/g, '\n').replace(/<br \/>/g, '\n');
+    // 解决web端行内换行编辑问题
+    else {
       contentText = s9e.emotion(contentText); // 小程序发帖不用转换表情，web端需要
       contentText = contentText.replace(/<br \/>\n/g, '<br />');
     }
@@ -493,6 +493,11 @@ class ThreadPostAction extends ThreadPostStore {
   @action
   setThreadStatus(status) {
     this.threadStatus = status || THREAD_STATUS.create;
+  }
+
+  @action
+  setLocalDataStatus(status) {
+    this.isHaveLocalData = status;
   }
 }
 

@@ -13,7 +13,7 @@
   justify-content: space-between;
   padding: rem($padding-4n);
   .payListItem{
-    border-bottom: var(--border-border);
+    border-bottom: $border-solid-1;
     width: rem(46);
     height: rem(49);
     text-align: center;

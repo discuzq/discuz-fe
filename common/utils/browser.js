@@ -11,7 +11,8 @@ export const constants = {
     IPAD: 'iPad',
     WEBAPP: 'webApp',
     WEIXIN: 'weixin',
-    QQ: 'qq'
+    QQ: 'qq',
+    UC: 'uc',
 };
 
 const browser={
@@ -33,6 +34,7 @@ const browser={
             case constants['WEBAPP'] : return ua.indexOf('Safari') == -1; //是否web应该程序，没有头部与底部
             case constants['WEIXIN'] : return ua.indexOf('MicroMessenger') > -1; //是否微信
             case constants['QQ'] : return ua.match(/\sQQ/i) == " qq"; //是否QQ
+            case constants['UC']: return ua.indexOf('UCBrowser') > -1; // uc浏览器
             default: return false;
         }
     }

@@ -30,7 +30,7 @@ const SmartImg = ({ level, type, src, onClick, noSmart = false, showLongPicture 
   return (
         <div className={styles.box}>
             <img ref={img} src={imgSrc} onLoad={imgOnload} onClick={onClick}/>
-            {isLong && <div className={styles.longImgBox}><p className={styles.longImgText}>长图</p></div>}
+            {!noSmart && isLong && <div className={styles.longImgBox}><p className={styles.longImgText}>长图</p></div>}
         </div>
   );
 };

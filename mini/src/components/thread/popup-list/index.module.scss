@@ -26,7 +26,7 @@
   :global {
     .dzq-tabs__panel {
       border-top: 1px solid rgba(238, 238, 238, 0.75);
-
+      min-height: 71vh;
     }
     .dzq-tabs__item {
       justify-content: flex-start;

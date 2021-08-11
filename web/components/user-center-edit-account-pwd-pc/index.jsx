@@ -170,6 +170,7 @@ export default class index extends Component {
             onChange={this.handleSetPwd}
             mode="password"
             placeholder="请设置密码"
+            autoComplete={'new-password'}
             value={this.props.user?.newPassword}
           />
         </div>
@@ -178,6 +179,7 @@ export default class index extends Component {
             trim
             mode="password"
             placeholder="请确认密码"
+            autoComplete={'new-password'}
             value={this.props.user?.newPasswordRepeat}
             onChange={this.hadleNewPasswordRepeat}
           />
@@ -195,6 +197,7 @@ export default class index extends Component {
             onChange={this.handleSetOldPwd}
             value={this.props.user?.oldPassword}
             mode="password"
+            autoComplete={'new-password'}
             placeholder="请输入旧密码"
           />
         </div>
@@ -204,6 +207,7 @@ export default class index extends Component {
             value={this.props.user?.newPassword}
             onChange={this.handleSetPwd}
             mode="password"
+            autoComplete={'new-password'}
             placeholder="请输入新密码"
           />
         </div>
@@ -212,6 +216,7 @@ export default class index extends Component {
             trim
             onChange={this.hadleNewPasswordRepeat}
             mode="password"
+            autoComplete={'new-password'}
             value={this.props.user?.newPasswordRepeat}
             placeholder="请重复输入新密码"
           />

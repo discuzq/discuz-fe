@@ -3,6 +3,7 @@ import { getByteLen } from '../utils';
 import replaceStringInRegex from '@common/utils/replace-string-in-regex';
 import priceShare from '../card-img/admin-logo-pc.jpg';
 import lookMore from '../card-img/look-more.jpg';
+import s9e from '@common/utils/s9e'
 
 import {
   posterFrameWidth,
@@ -240,7 +241,8 @@ const handleContent = (thread) => {
     },
   });
 
-  let contentText = thread.content.text;
+  let contentText = s9e.parse(thread?.content?.text || '');
+
   // 处理匿名时的文本
   if (thread.displayTag.isPrice) {
     contentText = '';

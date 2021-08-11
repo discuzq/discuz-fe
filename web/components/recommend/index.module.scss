@@ -63,7 +63,7 @@
   cursor: pointer;
   width: 100%;
   padding-bottom: rem(10);
-  border-top: var(--border-border);
+  border-top: $border-solid-1;
   .recommendTitle {
     display: flex;
     padding-top: rem($margin-4n);
@@ -80,6 +80,14 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      :global {
+        .qq-emotion {
+          height: rem(20);
+          width: rem(20);
+          position: relative;
+          top: rem(-2);
+        }
+      }
     }
   }
   .browse {
@@ -157,7 +165,7 @@
 .recommendSwitch {
   width: 100%;
   height: rem(52);
-  border-top: var(--border-border);
+  border-top: $border-solid-1;
   cursor: pointer;
   text-align: center;
   padding-top: rem($padding-4n);

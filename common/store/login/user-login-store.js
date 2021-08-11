@@ -59,10 +59,6 @@ export default class UserLoginStore {
         return loginResp;
       }
 
-      if (loginResp.code === 0) {
-        return loginResp.data;
-      }
-
       if (loginResp.code === NEED_BIND_PHONE_FLAG) {
         throw {
           Code: NEED_BIND_PHONE_FLAG,

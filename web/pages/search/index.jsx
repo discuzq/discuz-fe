@@ -34,17 +34,15 @@ class Index extends React.Component {
 
   constructor(props) {
     super(props);
-    const { serverSearch, search } = this.props;
+    const { serverSearch, search, router } = this.props;
+    const { keyword = '' } = router?.query;
     // 初始化数据到store中
     const { platform } = this.props.site || {};
 
-    if (platform === 'pc') {
-      search.resetIndexData();
-    } else {
-      serverSearch && serverSearch.indexTopics && search.setIndexTopics(serverSearch.indexTopics);
-      serverSearch && serverSearch.indexUsers && search.setIndexUsers(serverSearch.indexUsers);
-      serverSearch && serverSearch.indexThreads && search.setIndexThreads(serverSearch.indexThreads);
-    }
+    search.currentKeyword = keyword;
+    serverSearch && serverSearch.indexTopics && search.setIndexTopics(serverSearch.indexTopics);
+    serverSearch && serverSearch.indexUsers && search.setIndexUsers(serverSearch.indexUsers);
+    serverSearch && serverSearch.indexThreads && search.setIndexThreads(serverSearch.indexThreads);
 
     this.state = {
       stepIndex: 0
@@ -57,9 +55,11 @@ class Index extends React.Component {
 
     const { platform } = this.props.site || {};
 
-    if (platform === 'pc') {
+    if (search.currentKeyword !== keyword) {
+      search.searchNoData = false;
       await search.getSearchData({ hasTopics: false, hasUsers: false, hasThreads: false, search: keyword });
-      this.setStepIndex()
+      this.requestAgain()
+      search.currentKeyword = keyword;
     } else {
       const hasIndexTopics = !!search.indexTopics;
       const hasIndexUsers = !!search.indexUsers;
@@ -70,10 +70,10 @@ class Index extends React.Component {
 
   // 获取数据状态
   setStepIndex = () => {
-    const { hasTopics, hasUsers, hasThreads, isShowAll } = this.props.search.dataIndexStatus
+    const { hasTopics, hasUsers, hasThreads, isShowAll, isNoData } = this.props.search.dataIndexStatus
 
     let stepIndex = 0
-    if (!hasTopics && !hasUsers && !hasThreads) {
+    if (isNoData) {
       stepIndex = this.state.stepIndex
     } else if (isShowAll) {
       stepIndex = 0
@@ -91,23 +91,41 @@ class Index extends React.Component {
   }
 
   dispatch = async (type, data = '') => {
-    const { search } = this.props;
+    const { search, site } = this.props;
 
     if (type === 'refresh') {
       search.getSearchData({ hasTopics: false, hasUsers: false, hasThreads: false });
     } else if (type === 'search') {
+      // 判断，如果是PC端，先执行清除数据操作
+      if (site.platform === 'pc') {
+        search.resetIndexData()
+      }
+      search.searchNoData = false;
       await search.getSearchData({ search: data });
-      this.setStepIndex()
+      this.requestAgain()
     } else if (type === 'update-step-index') {
       this.setState({ stepIndex: data || 0 })
     }
+  }
+
+  requestAgain = async () => {
+    const { platform } = this.props.site || {};
+    const { isNoData } = this.props.search.dataIndexStatus
+
+    // 若搜索数据为空，在发起一次请求
+    if (platform === 'pc' && isNoData) {
+      this.props.search.searchNoData = true;
+      await this.props.search.getSearchData({ hasTopics: false, hasUsers: false, hasThreads: false });
+    }
+
+    this.setStepIndex()
   }
 
   render() {
     return (
       <ViewAdapter
         h5={<IndexH5Page dispatch={this.dispatch} />}
-        pc={ <IndexPCPage dispatch={this.dispatch} stepIndex={this.state.stepIndex} />}
+        pc={ <IndexPCPage dispatch={this.dispatch} stepIndex={this.state.stepIndex} searchNoData={this.props.search.searchNoData} />}
         title='发现'
       />
     );

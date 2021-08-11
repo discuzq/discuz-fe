@@ -52,13 +52,15 @@
     }
   }
   .button {
-    height: rem(25);
+    height: rem(26);
     width: rem(72);
-    font-size: rem(12);
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0;
-    line-height: 25px;
+    span {
+      font-size: rem(12);
+      line-height: rem(12);
+    }
   }
 }

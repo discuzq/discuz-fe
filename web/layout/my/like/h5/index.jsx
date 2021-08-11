@@ -11,8 +11,16 @@ class Index extends React.Component {
   render() {
     const { index } = this.props;
     const { pageData = [], currentPage, totalPage } = index.threads || {};
+
     return (
-      <BaseLayout pageName={'like'} showHeader={true} noMore={currentPage >= totalPage} onRefresh={this.props.dispatch}>
+      <BaseLayout
+        pageName={'like'}
+        showHeader={true}
+        noMore={currentPage >= totalPage}
+        onRefresh={this.props.dispatch}
+        requestError={this.props.index.threadError.isError}
+        errorText={this.props.index.threadError.errorText}
+      >
         {pageData?.map((item, index) => (
           <ThreadContent key={index} data={item} />
         ))}

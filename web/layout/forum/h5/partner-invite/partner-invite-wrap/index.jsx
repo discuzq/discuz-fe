@@ -1,6 +1,5 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import '@discuzq/design/dist/styles/index.scss';
 import HomeHeader from '@components/home-header';
 import List from '@components/list';
 import BaseLayout from '@components/user-center-base-laout-pc';
@@ -19,7 +18,7 @@ class PartnerInviteWrap extends React.Component {
     const { platform } = site;
     if (platform === 'h5') {
       return (
-        <List className={layout.page} allowRefresh={false}>
+        <List className={layout.page} allowRefresh={false} hideCopyright>
           <HomeHeader hideInfo mode='join'/>
           { children }
         </List>

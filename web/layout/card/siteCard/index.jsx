@@ -1,5 +1,4 @@
 import React from 'react';
-import Card from '../index';
 import styles from './index.module.scss';
 import { inject, observer } from 'mobx-react';
 import { Avatar } from '@discuzq/design';
@@ -76,7 +75,7 @@ class SiteCard extends React.Component {
       }
     }
     return (
-        <Card>
+        <div>
           <div
               className={`${styles.container} ${mode ? styles[`container_mode_${mode}`] : ''}`}
               style={{ ...style, ...this.getBgHeaderStyle(bgColor) }}
@@ -138,7 +137,7 @@ class SiteCard extends React.Component {
             </div>
             )}
           </div>
-        </Card>
+        </div>
     );
   }
 }

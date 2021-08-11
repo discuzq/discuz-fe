@@ -55,7 +55,6 @@ export default class UserCenterAdditionalInfo extends Component {
         return <View className={`${styles.additionValue} ${styles.mutipleLineText}`}>{item.fieldsExt}</View>;
       case 2:
         return <View className={styles.additionValue}>{this.getRadioFieldValue(fieldsExt.options || [])}</View>;
-        break;
       case 3:
         return (
           <View className={styles.checkboxValue}>
@@ -66,24 +65,21 @@ export default class UserCenterAdditionalInfo extends Component {
             ))}
           </View>
         );
-        break;
       case 4:
         return (
           <View className={styles.cardItem}>
             {fieldsExt?.map((d, i) => {
-              console.log(d.url, d.name);
               return (
                 <View
                   key={`${d.name}-${i}`}
                   className={`${styles.identityCard} ${i != fieldsExt.length - 1 && styles.identityCardBottom}`}
                 >
-                  <Image mode="scaleToFill" src={d.url} className={styles.identityImg} alt={d.name || '图片'} />
+                  <Image mode="widthFix" src={d.url} className={styles.identityImg} alt={d.name || '图片'} />
                 </View>
               );
             })}
           </View>
         );
-        break;
       case 5:
         return (
           <View className={styles.additionValue}>

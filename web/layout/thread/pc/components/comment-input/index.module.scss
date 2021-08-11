@@ -4,6 +4,7 @@
   background: $white;
   border: $border-solid-1;
   border-radius: rem($border-radius-small);
+  position: relative;
 }
 
 .main {
@@ -25,7 +26,7 @@
 .input {
   width: 100% !important;
   box-sizing: border-box;
-  background-color: $comment-bg-color;
+  background-color: $comment-bg-color !important;
   overflow: hidden;
 }
 .heightMiddle {

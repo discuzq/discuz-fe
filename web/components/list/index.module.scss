@@ -10,6 +10,14 @@
     overflow-y: overlay;
   }
 
+  &.h5 {
+    .wrapper {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+  }
+
   .wrapperH5Center {
     display: flex;
     flex-direction: column;
@@ -19,6 +27,7 @@
       align-items: center;
       justify-content: center;
       background-color: $white;
+      width: 100%;
     }
   }
 
@@ -55,8 +64,13 @@
   justify-content: center;
   font-size: rem($font-size-primary);
   color: $text-color-placeholder;
-  padding: rem(11) 0;
+  padding: rem(11) 0 $padding-5;
   line-height: rem($font-line-height-small);
+  width: 100%;
+  .loading {
+    width: 100%;
+    text-align: center;
+  }
   .spin {
     margin-right: rem(4);
     color: $text-color-placeholder;
@@ -87,7 +101,7 @@
 }
 
 .bottomViewBox {
-  height: rem(400);
+  height: rem(380);
   width: 100%;
   display: flex;
   justify-content: center;
@@ -125,4 +139,12 @@
     bottom: calc(constant(safe-area-inset-bottom) + 80px);
     bottom: calc(env(safe-area-inset-bottom) + 80px);
   }
+}
+
+.bottomViewContainer {
+  height: inherit;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
 }

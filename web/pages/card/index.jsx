@@ -6,7 +6,7 @@ import ErrorH5Page from '@layout/error/h5';
 import { inject, observer } from 'mobx-react';
 import { Toast } from '@discuzq/design';
 import Router from '@discuzq/sdk/dist/router';
-
+import Card from '../../layout/card';
 @inject('card')
 @inject('site')
 @observer
@@ -76,7 +76,7 @@ class CreateCard extends React.Component {
     }
     return (
         <div>
-          {!threadId ? <SiteCard></SiteCard> : <ThreadCard threadId={threadId}></ThreadCard>}
+          <Card threadId={threadId}></Card>
         </div>
     );
   }

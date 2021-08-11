@@ -45,7 +45,7 @@ const Index = inject('threadPost')(observer(({ threadPost, cancel, paidType, pc,
   }
 
   const handlePrice = (val) => {
-    const arr = val.match(/([1-9]\d{0,6}|0)(\.\d{0,2})?/);
+    const arr = val.match(/([1-9]\d{0,5}|0)(\.\d{0,2})?/);
     setPrice(arr ? arr[0] : '');
   }
 
@@ -62,8 +62,8 @@ const Index = inject('threadPost')(observer(({ threadPost, cancel, paidType, pc,
       return false;
     }
 
-    if (parseFloat(price) > 1000000) {
-      Toast.info({ content: '付费金额最高100w元', duration: 2000 });
+    if (parseFloat(price) > 100000) {
+      Toast.info({ content: '付费金额最高10w元', duration: 2000 });
       return false;
     }
 
@@ -105,7 +105,7 @@ const Index = inject('threadPost')(observer(({ threadPost, cancel, paidType, pc,
               mode="number"
               value={price}
               placeholder="金额"
-              maxLength={10}
+              maxLength={9}
               onChange={e => handlePrice(e.target.value)}
             />&nbsp;元
           </div>
@@ -132,7 +132,7 @@ const Index = inject('threadPost')(observer(({ threadPost, cancel, paidType, pc,
             mode="number"
             value={price}
             placeholder="金额"
-            maxLength={10}
+            maxLength={9}
             onChange={e => handlePrice(e.target.value)}
           />&nbsp;元
         </div>
@@ -156,7 +156,7 @@ const Index = inject('threadPost')(observer(({ threadPost, cancel, paidType, pc,
               mode="number"
               value={price}
               placeholder="金额"
-              maxLength={10}
+              maxLength={9}
               onChange={e => handlePrice(e.target.value)}
             />&nbsp;元
           </div>

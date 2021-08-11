@@ -20,6 +20,7 @@ export { default as shareThread } from './thread/shareThread';
 export { default as createReports } from './thread/createReports';
 export { default as reward } from './thread/reward';
 export { default as deleteThread } from './thread/deleteThread';
+export { default as positionPosts } from './thread/positionPosts';
 export { default as readTopicsList } from './search/readTopicsList';
 export { default as readUsersList } from './search/readUsersList';
 export { default as readCategories } from './home/readCategories';

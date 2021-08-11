@@ -3,7 +3,6 @@ import { inject, observer } from 'mobx-react';
 import { withRouter } from 'next/router';
 import layout from './index.module.scss';
 import { Icon, Toast } from '@discuzq/design';
-import '@discuzq/design/dist/styles/index.scss';
 import WeixinQrCode from '@components/login/wx-qr-code';
 import HomeHeader from '@components/home-header';
 import Header from '@components/header';
@@ -21,7 +20,7 @@ import { MOBILE_LOGIN_STORE_ERRORS } from '@common/store/login/mobile-login-stor
 @inject('invite')
 @observer
 class WXLoginH5Page extends React.Component {
-  
+
   timer = null;
   isDestroy = false;
 
@@ -117,6 +116,19 @@ class WXLoginH5Page extends React.Component {
           this.props.h5QrCode.countDown = this.props.h5QrCode.countDown - 3;
         } else {
           clearInterval(this.timer);
+        }
+
+        // 补充昵称
+        if (e.Code === MOBILE_LOGIN_STORE_ERRORS.NEED_BIND_USERNAME.Code || e.Code === MOBILE_LOGIN_STORE_ERRORS.NEED_ALL_INFO.Code) {
+          const uid = get(e, 'uid', '');
+          uid && this.props.user.updateUserInfo(uid);
+
+          if (e.Code === MOBILE_LOGIN_STORE_ERRORS.NEED_ALL_INFO.Code) {
+            this.props.commonLogin.needToCompleteExtraInfo = true;
+          }
+
+          this.props.router.push('/user/bind-nickname');
+          return;
         }
 
         const { site } = this.props;

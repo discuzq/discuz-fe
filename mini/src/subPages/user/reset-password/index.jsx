@@ -4,7 +4,6 @@ import Taro, { redirectTo } from '@tarojs/taro';
 import Button from '@discuzq/design/dist/components/button/index';
 import Toast from '@discuzq/design/dist/components/toast/index';
 import Input from '@discuzq/design/dist/components/input/index';
-import '@discuzq/design/dist/styles/index.scss';
 import PhoneInput from '@components/login/phone-input';
 import { toTCaptcha } from '@common/utils/to-tcaptcha'
 import { View } from '@tarojs/components';

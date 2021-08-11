@@ -32,6 +32,7 @@ import classNames from 'classnames';
 @inject('site')
 @inject('user')
 @inject('thread')
+@inject('commentPosition')
 @inject('comment')
 @inject('index')
 @inject('topic')
@@ -72,11 +73,14 @@ class ThreadPCPage extends React.Component {
     // 举报内容选项
     this.reportContent = ['广告垃圾', '违规内容', '恶意灌水', '重复发帖'];
     this.inputText = '请输入其他理由';
+
+    this.positionRef = React.createRef();
+    this.isPositioned = false;
   }
 
   // 上拉刷新事件
   handleOnRefresh() {
-    this.page = this.page + 1;
+    this.props.thread.setCommentListPage(this.props.thread.page + 1);
     return this.loadCommentList();
   }
 
@@ -119,6 +123,14 @@ class ThreadPCPage extends React.Component {
         isBaseLayoutReady: false,
       });
     }
+
+    // 滚动到指定的评论定位位置
+    if (this.props.commentPosition?.postId && !this.isPositioned && this.positionRef?.current) {
+      this.isPositioned = true;
+      setTimeout(() => {
+        this.positionRef.current.scrollIntoView();
+      }, 1000);
+    }
   }
 
   componentWillUnmount() {
@@ -143,7 +155,7 @@ class ThreadPCPage extends React.Component {
     scrollBodyRef?.current?.scrollTo(0, this.props.thread.scrollDistance);
   }
 
-  // 加载评论列表
+  // 加载第二段评论列表
   async loadCommentList() {
     const { isCommentReady } = this.props.thread;
     if (this.state.isCommentLoading || !isCommentReady) {
@@ -156,7 +168,7 @@ class ThreadPCPage extends React.Component {
     const id = this.props.thread?.threadData?.id;
     const params = {
       id,
-      page: this.page,
+      page: this.props.thread.page,
       perPage: this.perPage,
       sort: this.commentDataSort ? 'createdAt' : '-createdAt',
     };
@@ -176,7 +188,8 @@ class ThreadPCPage extends React.Component {
   // 列表排序
   onSortChange(isCreateAt) {
     this.commentDataSort = isCreateAt;
-    this.page = 1;
+    this.props.thread.setCommentListPage(1);
+    this.props.commentPosition.reset();
     this.loadCommentList();
   }
 
@@ -688,11 +701,51 @@ class ThreadPCPage extends React.Component {
     Router.push({ url: `/user/${userId}` });
   }
 
+  // 点击加载更多
+  onLoadMoreClick() {
+    this.props.commentPosition.page = this.props.commentPosition.page + 1;
+    this.loadCommentPositionList();
+  }
+
+  // 加载第一段评论列表
+  async loadCommentPositionList() {
+    const { isCommentReady } = this.props.commentPosition;
+    if (this.state.isCommentLoading || !isCommentReady) {
+      return;
+    }
+
+    this.setState({
+      isCommentLoading: true,
+    });
+    const id = this.props.thread?.threadData?.id;
+    const params = {
+      id,
+      page: this.props?.commentPosition?.page || 1,
+      perPage: this.perPage,
+      sort: this.commentDataSort ? 'createdAt' : '-createdAt',
+    };
+
+    const { success, msg } = await this.props.commentPosition.loadCommentList(params);
+    this.setState({
+      isCommentLoading: false,
+    });
+    if (success) {
+      return true;
+    }
+    Toast.error({
+      content: msg,
+    });
+  }
+
   renderContent() {
-    const { thread: threadStore } = this.props;
+    const { thread: threadStore, canPublish } = this.props;
     const { isReady, isCommentReady, isNoMore, totalCount, isCommentListError } = threadStore;
     // 是否审核通过
     const isApproved = (threadStore?.threadData?.isApproved || 0) === 1;
+
+    // 定位评论相关
+    const { isShowCommentList, isNoMore: isCommentPositionNoMore } = this.props.commentPosition;
+
     return (
       <div className={layout.bodyLeft}>
         {isReady && !isApproved && <div className={layout.examinePosition}></div>}
@@ -717,7 +770,36 @@ class ThreadPCPage extends React.Component {
         <div className={`${layout.bottom}`} ref={this.commentDataRef}>
           {isCommentReady && isApproved ? (
             <Fragment>
+              {/* 第一段列表 */}
+              {isCommentReady && isShowCommentList && (
+                <Fragment>
+                  <RenderCommentList
+                    isPositionComment={true}
+                    router={this.props.router}
+                    sort={(flag) => this.onSortChange(flag)}
+                    replyAvatarClick={(comment, reply, floor) => this.replyAvatarClick(comment, reply, floor)}
+                  ></RenderCommentList>
+                  {!isCommentPositionNoMore && (
+                    // <BottomView
+                    //   onClick={() => this.onLoadMoreClick()}
+                    //   noMoreType="line"
+                    //   loadingText="点击加载更多"
+                    //   isError={isCommentListError}
+                    //   noMore={isCommentPositionNoMore}
+                    // ></BottomView>
+
+                    <div className={layout.showMore} onClick={() => this.onLoadMoreClick()}>
+                      <div className={layout.hidePercent}>展开更多评论</div>
+                      <Icon className={layout.icon} name="RightOutlined" size={12} />
+                    </div>
+                  )}
+                </Fragment>
+              )}
+
               <RenderCommentList
+                canPublish={canPublish}
+                positionRef={this.positionRef}
+                showHeader={!isShowCommentList}
                 router={this.props.router}
                 sort={flag => this.onSortChange(flag)}
                 onEditClick={comment => this.onEditClick(comment)}
@@ -769,9 +851,7 @@ class ThreadPCPage extends React.Component {
         <div className={layout.qrcode}>
           <QcCode></QcCode>
         </div>
-        <div className={layout.copyright}>
-          <Copyright></Copyright>
-        </div>
+        <Copyright className={layout.copyright}></Copyright>
       </div>
     );
   }

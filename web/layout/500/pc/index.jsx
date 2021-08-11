@@ -19,7 +19,7 @@ class PC500Page extends React.Component {
       window.history.length <= 1 ? Router.redirect({ url: '/' }) : Router.back();
   }
   render() {
-    const height = isServer() ? '100vh' : `${window.innerHeight - 160}px`;
+    const height = isServer() ? '100vh' : `${window.innerHeight - 200}px`;
     const { site: { errPageType = '' } } = this.props;
     return (
       <div className={styles.body}>

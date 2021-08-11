@@ -83,6 +83,7 @@ export const MINI_SITE_JOIN_WHITE_LIST = [
   '/subPages/user/wx-auth/index', // 快捷登录
   '/subPages/user/wx-select/index', // 微信落地页
   '/subPages/user/bind-phone/index', // 绑定手机号
+  '/subPages/user/bind-nickname/index', // 设置昵称
   '/subPages/user/status/index', // 状态
   '/subPages/user/wx-bind/index', // 小程序绑定
   '/subPages/user/wx-authorization/index', // 微信授权

@@ -12,10 +12,10 @@ export const getParamCode = (commonLogin) =>
           commonLogin.setJsCode(res.code);
           return resolve(res);
         }
-        reject(res);
+        return reject(res);
       },
       fail: (err) => {
-        reject(err);
+        return reject(err);
       },
     });
   });
@@ -24,7 +24,7 @@ export const getParamCode = (commonLogin) =>
  * 获取用户信息
  * @returns 用户信息
  */
-export const getUserProfile = (callback, isShowLoading = true) =>
+export const getUserProfile = (callback, isShowLoading = true, fail = () => {}) =>
   new Promise((resolve, reject) => {
     // pc端微信访问小程序，getUserProfile目前接口不可用 20210705
     const getUserInfo = typeof wx.getUserProfile !== 'undefined' ? Taro.getUserProfile : Taro.getUserInfo;
@@ -41,17 +41,20 @@ export const getUserProfile = (callback, isShowLoading = true) =>
             await callback(res);
             resolve(res);
           } else {
+            fail(res);
             throw '微信登录拉起异常: taro.getUserProfile failed';
           }
         } catch (err) {
-          console.error(err);
+          fail(err);
           reject(res);
+          console.error(err);
         }
 
         Taro.hideLoading();
       },
       fail: (res) => {
         console.log('res', res);
+        fail(res);
       },
     });
   });

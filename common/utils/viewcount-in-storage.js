@@ -74,7 +74,7 @@ const addViewedThread = (threadId = null, threadIndex) => {
 }
 
 
-const updateViewCountInStores = async (threadId = null) => {
+const updateViewCountInStorage = async (threadId = null, shouldStore = true) => {
   if(!threadId) return ;
   threadId += ''; // 统一为字符串
   try {
@@ -84,7 +84,7 @@ const updateViewCountInStores = async (threadId = null) => {
       const res = await getViewCount({ params: { threadId } });
       if(res.code === 0) {
         // 更新storage中浏览数据
-        addViewedThread(threadId, viewedThreadPos);
+        if(shouldStore) addViewedThread(threadId, viewedThreadPos);
         return res.data.viewCount;
       } else {
         console.error(res?.msg);
@@ -99,4 +99,4 @@ const updateViewCountInStores = async (threadId = null) => {
 }
 
 
-export { updateViewCountInStores, STORAGE_KEY, STORAGE_TYPE };
+export { updateViewCountInStorage, STORAGE_KEY, STORAGE_TYPE };

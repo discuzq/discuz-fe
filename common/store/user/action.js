@@ -27,6 +27,8 @@ import { get } from '../../utils/get';
 import set from '../../utils/set';
 import typeofFn from '@common/utils/typeof';
 import threadReducer from '../thread/reducer';
+import locals from '@common/utils/local-bridge';
+import constants from '@common/constants';
 
 class UserAction extends SiteStore {
   constructor(props) {
@@ -283,6 +285,10 @@ class UserAction extends SiteStore {
   // 判断用户是否登录
   @action
   isLogin() {
+    if (process.env.DISCUZ_ENV !== 'web') {
+      return !!locals.get(constants.ACCESS_TOKEN_NAME);
+    }
+
     return !!this.userInfo && !!this.userInfo.id;
   }
 
@@ -639,6 +645,7 @@ class UserAction extends SiteStore {
     });
 
     if (updateUserInfoRes.code === 0) {
+      this.userInfo.username = this.editUserName;
       return updateUserInfoRes.data;
     }
 

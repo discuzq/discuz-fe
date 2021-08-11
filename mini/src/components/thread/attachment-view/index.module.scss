@@ -90,10 +90,31 @@
   }
 }
 
+.audioContainer {
+  margin-bottom: $margin-2n;
+}
+
 .label {
   margin-left: 16px;
 }
 
 .spinner {
   width: 22px;
+}
+
+.loadMore {
+  @include cursor-on-pc;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  font-weight: normal;
+  font-size: rem($font-size-primary);
+  line-height: rem($font-line-height-primary);
+  color: $primary-color;
+  padding-top: $padding-2n;
+  .icon {
+    margin-left: $margin-2n;
+    transform: rotateZ(90deg);
+  }
 }

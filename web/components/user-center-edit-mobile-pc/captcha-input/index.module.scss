@@ -1,12 +1,12 @@
 @import '@common/styles/index.scss';
-@import '@common/styles/_variable.scss';
+@import '@common/styles/index.scss';
 
 .payList{
   display: flex;
   align-items: center;
   justify-content: space-between;
   .payListItem{
-    border-bottom: var(--border-border);
+    border-bottom: $border-solid-1;
     width: rem(40);
     height: rem(52);
     text-align: center;

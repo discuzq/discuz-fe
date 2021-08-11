@@ -13,12 +13,14 @@ import { handleString2Arr, getSelectedCategoryIds } from '@common/utils/handleCa
 import DynamicLoading from '@components/dynamic-loading';
 import dynamic from 'next/dynamic';
 import Placeholder from './components/dynamic-vlist/placeholder';
+import HOCFetchSiteData from '@middleware/HOCFetchSiteData';
+
 const DynamicVListLoading = dynamic(
   () => import('./components/dynamic-vlist'),
   { loading: (res) => {
       return (
           <div style={{width: '100%', maxWidth: '1420px'}}>
-              <DynamicLoading data={res} style={{padding: '0 0 20px 0'}} loadComponent={<Placeholder/>}/>
+              <DynamicLoading data={res} style={{padding: '0 0 20px'}} loadComponent={<Placeholder/>}/>
           </div>
       )
     } }
@@ -38,7 +40,7 @@ class IndexPCPage extends React.Component {
       isShowDefault: this.checkIsOpenDefaultTab(),
     };
 
-   
+
     this.enabledVList = true; // 开启虚拟列表
 
     // 轮询定时器
@@ -163,7 +165,9 @@ class IndexPCPage extends React.Component {
 
   // 发帖
   onPostThread = () => {
-    this.props.router.push('/thread/post');
+    if (this.props.canPublish()) {
+      this.props.router.push('/thread/post');
+    }
   };
 
   // 左侧 -- 分类
@@ -246,5 +250,5 @@ class IndexPCPage extends React.Component {
     );
   }
 }
-
-export default withRouter(IndexPCPage);
+// eslint-disable-next-line new-cap
+export default HOCFetchSiteData(withRouter(IndexPCPage));

@@ -4,6 +4,7 @@ import RichText from '@discuzq/design/dist/components/rich-text/index';
 import ImagePreviewer from '@discuzq/design/dist/components/image-previewer/index';
 import { noop, handleLink } from '../utils'
 import Router from '@discuzq/sdk/dist/router';
+import Taro from '@tarojs/taro'
 
 import fuzzyCalcContentLength from '@common/utils/fuzzy-calc-content-length';
 import s9e from '@common/utils/s9e';
@@ -11,7 +12,9 @@ import xss from '@common/utils/xss';
 import { View } from '@tarojs/components'
 import styles from './index.module.scss';
 import { urlToLink } from '@common/utils/replace-url-to-a';
+import replaceStringInRegex from '@common/utils/replace-string-in-regex';
 
+import config from '../../../app.config';
 
 /**
  * 帖子内容展示
@@ -38,7 +41,9 @@ import { urlToLink } from '@common/utils/replace-url-to-a';
   const [cutContentForDisplay, setCutContentForDisplay] = useState('');
   const [showMore, setShowMore] = useState(false); // 根据文本长度显示"查看更多"
   const [imageVisible, setImageVisible] = useState(false);
-  const [imageUrl, setImageUrl] = useState("");
+  const [imageUrlList, setImageUrlList] = useState([]);
+  const [curImageUrl, setCurImageUrl] = useState("");
+  const [appPageLinks, setAppPageLinks] = useState([]);
   const ImagePreviewerRef = useRef(null); // 富文本中的图片也要支持预览
   const contentWrapperRef = useRef(null);
   const clickedImageId = useRef(null);
@@ -88,10 +93,19 @@ import { urlToLink } from '@common/utils/replace-url-to-a';
   }, [imageVisible]);
 
   // 点击富文本中的链接
-  const handleLinkClick = () => {
+  const handleLinkClick = (e) => {
     updateViewCount();
     setTimeout(() => { // 等待store更新完成后跳转
     }, 500);
+
+    // 内链跳转
+    let content = e?.children[0]?.data || "";
+    if(content.indexOf("http") === -1) {
+      content = content[0] !== '/' ? '/' + content : content;
+      if(appPageLinks.indexOf(content) !== -1) {
+        Taro.navigateTo({ url: content });
+      }
+    }
   }
 
   // 点击富文本中的图片
@@ -99,7 +113,7 @@ import { urlToLink } from '@common/utils/replace-url-to-a';
     updateViewCount();
     if(node?.attribs?.src) {
       setImageVisible(true);
-      setImageUrl(node.attribs.src);
+      setCurImageUrl(node.attribs.src);
       clickedImageId.current = event?.target?.id;
     }
   }
@@ -116,11 +130,32 @@ import { urlToLink } from '@common/utils/replace-url-to-a';
     setCutContentForDisplay(ctnSubstring);
   };
 
+  const getImagesFromText = (text) => {
+    const _text = replaceStringInRegex(text, "emoj", '');
+    const images = _text.match(/<img\s+[^<>]*src=[\"\'\\]+([^\"\']*)/gm) || [];
+
+    for(let i = 0; i < images.length; i++) {
+      images[i] = images[i].replace(/<img\s+[^<>]*src=[\"\'\\]+/gm, "") || "";
+    }
+    return images;
+  }
+
+  const generateAppRelativePageLinks = () => {
+    const pageLinks = [];
+    for(const pkg of config.subPackages) {
+      const root = pkg.root;
+      for(const page of pkg.pages) {
+        pageLinks.push(`/${root}/${page}`);
+      }
+    }
+    setAppPageLinks(pageLinks);
+  }
+
   useEffect(() => {
-    const lengthInLine = parseInt((contentWrapperRef.current.offsetWidth || 704) / 16);
+    const lengthInLine = parseInt((contentWrapperRef.current.offsetWidth || 704) / 32);
 
     const length = fuzzyCalcContentLength(filterContent, lengthInLine); // 大致计算文本长度
-    const maxContentLength = lengthInLine * 6 / 2; // 如果默认长度是704，一共可容纳264个字符，rpx是px两倍
+    const maxContentLength = lengthInLine * 6; // 如果默认长度是704，一共可容纳264个字符
 
     if (length < maxContentLength && length <= 1200) {
       // 显示6行内容
@@ -135,6 +170,14 @@ import { urlToLink } from '@common/utils/replace-url-to-a';
     } else {
       setContentTooLong(false);
     }
+
+    const imageUrlList = getImagesFromText(filterContent);
+    if(imageUrlList.length) {
+      setImageUrlList(imageUrlList);
+    }
+
+    generateAppRelativePageLinks();
+
   }, [filterContent]);
   
   return (
@@ -158,8 +201,8 @@ import { urlToLink } from '@common/utils/replace-url-to-a';
               onComplete={() => {
                 setImageVisible(false);
               }}
-              imgUrls={[imageUrl]}
-              currentUrl={imageUrl}
+              imgUrls={imageUrlList}
+              currentUrl={curImageUrl}
             />
           )}
         </View>

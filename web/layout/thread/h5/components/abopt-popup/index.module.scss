@@ -46,7 +46,7 @@
         font-size: $font-size-small;
         position: absolute;
         right: 0;
-        bottom: rem(2);
+        bottom: rem(1);
       }
       :global {
         .dzq-slider__progress--active {
@@ -62,19 +62,19 @@
         }
         .dzq-slider__feature {
           height: rem(4);
-          border-radius: 0 rem(2) rem(2) 0;
-          background: $border-shadow-color;
+          // border-radius: 0 rem(2) rem(2) 0;
+          // background: $border-shadow-color;
         }
         .dzq-slider__value {
           font-size: rem($font-size-small);
           margin-left: rem(4);
-          width: rem(15);
+          width: rem(20);
           text-align: right;
         }
         .dzq-slider__progress__button {
           width: rem(10);
           height: rem(10);
-          border: rem(7) solid $primary-color;
+          border: rem(8) solid $primary-color;
         }
       }
     }

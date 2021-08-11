@@ -32,6 +32,7 @@ import Router from '@discuzq/sdk/dist/router';
 import VideoDisplay from '@components/thread-post/video-display';
 import MoneyDisplay from '@components/thread-post/money-display';
 import toolbarStyles from '@components/editor/toolbar/index.module.scss';
+import TagLocalData from '@components/thread-post/tag-localdata';
 
 function judgeDeviceType() {
   const ua = window.navigator.userAgent.toLowerCase();
@@ -102,6 +103,13 @@ class ThreadCreate extends React.Component {
     else moneybox.style.display = 'none';
   }
 
+  localdataTagDisplay = (isShow) => {
+    const localdataTag = document.querySelector('#post-localdata');
+    if (!localdataTag) return;
+    if (isShow) localdataTag.style.display = 'block';
+    else localdataTag.style.display = 'none';
+  }
+
   // 设置底部bar的样式
   setBottomBarStyle = (y = 0, action, event) => {
     const winHeight = getVisualViewpost();
@@ -123,6 +131,7 @@ class ThreadCreate extends React.Component {
       }
     }
     this.moneyboxDisplay(false);
+    this.localdataTagDisplay(false);
     this.setPostBox(action, event, y);
   }
 
@@ -167,7 +176,7 @@ class ThreadCreate extends React.Component {
     } else {
       if (toolbar) toolbar.className = toolbarStyles['dvditor-toolbar'];
     }
-    if (moneybox && moneybox?.style?.display !== 'none') bottombarHeight += 65; // 直接算最高的高度
+    if (moneybox && moneybox?.style?.display !== 'none') bottombarHeight += 50; // 直接算最高的高度
     return bottombarHeight;
   }
 
@@ -199,6 +208,7 @@ class ThreadCreate extends React.Component {
       this.setPostBox('clear');
       postBottombar.style.top = 'auto';
       postBottombar.style.bottom = '0px';
+      this.localdataTagDisplay(true);
     }, 300);
   }
 
@@ -246,6 +256,7 @@ class ThreadCreate extends React.Component {
           {/* 编辑器 */}
           <DVditor
             value={postData.contentText}
+            isResetContentText={postData.isResetContentText}
             emoji={emoji}
             atList={atList}
             topic={topic}
@@ -264,6 +275,7 @@ class ThreadCreate extends React.Component {
             }}
             onInit={this.props.handleVditorInit}
             setState={this.props.handleSetState}
+            site={site}
           />
           {/* 图片 */}
           {(currentAttachOperation === THREAD_TYPE.image || Object.keys(postData.images).length > 0) && (
@@ -335,14 +347,19 @@ class ThreadCreate extends React.Component {
           )}
         </div>
         <div id="post-bottombar" className={styles['post-bottombar']}>
-          {/* 插入位置 */}
-          {(permissions?.insertPosition?.enable && webConfig?.lbs?.lbs) && (
+          {threadPost.isHaveLocalData && (<div id="post-localdata" className={styles['post-localdata']}>
+            <TagLocalData />
+          </div>)}
+          {/* 插入位置和自动保存 */}
+          {((permissions?.insertPosition?.enable && webConfig?.lbs?.lbs) || postData.autoSaveTime) && (
             <div id="post-position" className={styles['position-box']}>
-            {/* <div className={styles['post-counter']}>还能输入{MAX_COUNT - this.props.count}个字</div> */}
-              <Position
+              {/* 插入位置 */}
+              {(permissions?.insertPosition?.enable && webConfig?.lbs?.lbs) && (<Position
                 lbskey={webConfig.lbs.qqLbsKey}
                 position={postData.position}
-                onChange={position => this.props.setPostData({ position })} />
+                onChange={position => this.props.setPostData({ position })} />)}
+              {/* 自动保存提示 */}
+              {postData.autoSaveTime && (<div className={styles['post-autosave']}>最近保存{postData.autoSaveTime}</div>)}
             </div>
           )}
           {((postData.rewardQa.value && postData.rewardQa.times)
@@ -412,6 +429,7 @@ class ThreadCreate extends React.Component {
         {/* 选择帖子类别 */}
         <ClassifyPopup
           show={categoryChooseShow}
+          categoryId={threadPost.postData.categoryId}
           onVisibleChange={val => this.props.handleSetState({ categoryChooseShow: val })}
         />
         {/* 插入 at 关注的人 */}

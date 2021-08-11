@@ -33,6 +33,20 @@ class CommentPCPage extends React.Component {
 
     this.commentData = null;
     this.replyData = null;
+
+
+    this.positionRef = React.createRef();
+    this.isPositioned = false;
+  }
+
+  componentDidUpdate() {
+    // 滚动到指定的评论定位位置
+    if (this.props.comment?.postId && !this.isPositioned && this.positionRef?.current) {
+      this.isPositioned = true;
+      setTimeout(() => {
+        this.positionRef.current.scrollIntoView();
+      }, 1000);
+    }
   }
 
   // 返回
@@ -188,7 +202,7 @@ class CommentPCPage extends React.Component {
       goToLoginPage({ url: '/user/login' });
       return;
     }
-
+    if (!this.props.canPublish()) return ;
     this.commentData = comment;
     this.replyData = null;
     this.setState({
@@ -203,7 +217,7 @@ class CommentPCPage extends React.Component {
       goToLoginPage({ url: '/user/login' });
       return;
     }
-
+    if (!this.props.canPublish()) return ;
     this.commentData = null;
     this.replyData = reply;
     this.replyData.commentId = comment.id;
@@ -361,6 +375,8 @@ class CommentPCPage extends React.Component {
                   isShowInput={this.state.commentId === commentData.id}
                   onSubmit={(value, imageList) => this.createReply(value, imageList)}
                   threadId={this.props.thread?.threadData?.userId}
+                  postId={this.props.comment.postId}
+                  positionRef={this.positionRef}
                 ></CommentList>
               ) : (
                 <LoadingTips type="init"></LoadingTips>

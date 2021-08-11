@@ -27,16 +27,22 @@ class MiniAuth extends React.Component {
     this.state = {
       isVisible: true
     }
+    this.handleLoginButtonClick = this.handleLoginButtonClick.bind(this);
   }
+
   async componentDidMount() {
     const { action, sessionToken } = getCurrentInstance().router.params;
-    await getParamCode(this.props.commonLogin)
+    await getParamCode(this.props.commonLogin);
     // 其他地方跳入的小程序绑定流程
     if(action === 'mini-bind'){
       Router.redirect({
         url: `/subPages/user/wx-bind/index?sessionToken=${sessionToken}`
       })
     }
+  }
+
+  componentWillUnmount() {
+    this.props.commonLogin.reset();
   }
 
   getUserProfileCallback = async (params) => {
@@ -58,6 +64,7 @@ class MiniAuth extends React.Component {
           inviteCode
         },
       });
+      commonLogin.setLoginLoading(true);
 
       // 优先判断是否能登录
       if (resp.code === 0) {
@@ -88,6 +95,21 @@ class MiniAuth extends React.Component {
         Message: resp.msg,
       };
     } catch (error) {
+      this.props.commonLogin.setLoginLoading(true);
+      await getParamCode(this.props.commonLogin);
+      // 补充昵称
+      if (error.Code === MOBILE_LOGIN_STORE_ERRORS.NEED_BIND_USERNAME.Code || error.Code === MOBILE_LOGIN_STORE_ERRORS.NEED_ALL_INFO.Code) {
+        const uid = get(error, 'uid', '');
+        uid && this.props.user.updateUserInfo(uid);
+
+        if (error.Code === MOBILE_LOGIN_STORE_ERRORS.NEED_ALL_INFO.Code) {
+          this.props.commonLogin.needToCompleteExtraInfo = true;
+        }
+
+        Router.redirect({ url: '/subPages/user/bind-nickname/index' });
+        return;
+      }
+
       // 注册信息补充
       if (error.Code === MOBILE_LOGIN_STORE_ERRORS.NEED_COMPLETE_REQUIRED_INFO.Code) {
         const uid = get(error, 'uid', '');
@@ -100,6 +122,7 @@ class MiniAuth extends React.Component {
         LoginHelper.restore();
         return;
       }
+
       // 跳转状态页
       if (error.Code === BANNED_USER || error.Code === REVIEWING || error.Code === REVIEW_REJECT) {
         const uid = get(error, 'uid', '');
@@ -123,6 +146,18 @@ class MiniAuth extends React.Component {
     }
   }
 
+  handleLoginButtonClick() {
+    const { commonLogin } = this.props;
+    if (!commonLogin.loginLoading) {
+      return;
+    }
+    commonLogin.setLoginLoading(false);
+    getUserProfile(this.getUserProfileCallback, true, async () => {
+      commonLogin.setLoginLoading(true);
+      await getParamCode(this.props.commonLogin);
+    });
+  }
+
   render() {
     return (
       <Page>
@@ -131,7 +166,7 @@ class MiniAuth extends React.Component {
           visible={this.state.isVisible}
         >
           <View  className={layout.modal} >
-            <Button className={layout.button} onClick={() => {getUserProfile(this.getUserProfileCallback)}}>微信快捷登录</Button>
+            <Button className={layout.button} onClick={this.handleLoginButtonClick}>微信快捷登录</Button>
           </View>
         </Popup>
       </Page>

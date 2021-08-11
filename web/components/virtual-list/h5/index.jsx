@@ -104,7 +104,10 @@ function VList(props, ref) {
 
     // 底部
     if (data.type === 'footer') {
-      return 60;
+      if (list.length <= 2) {
+        return winHeight - 230 - 65 + 10; // +10 底部tab栏高度计算修正
+      }
+      return 131;
     }
     return cache.rowHeight({ index, data });
   };
@@ -121,6 +124,7 @@ function VList(props, ref) {
             errorText={props.errorText}
             type="line"
             platform={props.platform}
+            copyright
           ></BottomView>
         );
       default:

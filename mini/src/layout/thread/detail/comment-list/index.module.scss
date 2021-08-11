@@ -41,5 +41,9 @@
 
   .commentItems {
     border-bottom: $border-solid-1;
+
+    &.isLastOne {
+      border-bottom: none;
+    }
   }
 }

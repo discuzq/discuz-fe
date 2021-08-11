@@ -50,7 +50,7 @@ const Paid = inject('threadPost')(observer((props) => {
   }
 
   const handlePrice = (val) => {
-    const arr = val.match(/([1-9]\d{0,6}|0)(\.\d{0,2})?/);
+    const arr = val.match(/([1-9]\d{0,5}|0)(\.\d{0,2})?/);
     setPrice(arr ? arr[0] : '');
     setRefresh(!refresh);
   }
@@ -68,8 +68,8 @@ const Paid = inject('threadPost')(observer((props) => {
       return false;
     }
 
-    if (parseFloat(price) > 1000000) {
-      Taro.showToast({ title: '付费金额最高100w元', icon: 'none', duration: 2000 })
+    if (parseFloat(price) > 100000) {
+      Taro.showToast({ title: '付费金额最高10w元', icon: 'none', duration: 2000 })
       return false;
     }
 
@@ -116,7 +116,7 @@ const Paid = inject('threadPost')(observer((props) => {
               miniType="digit"
               value={price}
               placeholder="金额"
-              maxLength={10}
+              maxLength={9}
               onChange={e => handlePrice(e.target.value)}
             />&nbsp;元
           </View>
@@ -144,7 +144,7 @@ const Paid = inject('threadPost')(observer((props) => {
             miniType="digit"
             value={price}
             placeholder="金额"
-            maxLength={10}
+            maxLength={9}
             onChange={e => handlePrice(e.target.value)}
           />&nbsp;元
         </View>
@@ -169,7 +169,7 @@ const Paid = inject('threadPost')(observer((props) => {
               miniType="digit"
               value={price}
               placeholder="金额"
-              maxLength={10}
+              maxLength={9}
               onChange={e => handlePrice(e.target.value)}
             />&nbsp;元
           </View>

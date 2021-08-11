@@ -2,7 +2,6 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'next/router';
 import { Toast, Icon } from '@discuzq/design';
-import '@discuzq/design/dist/styles/index.scss';
 import styles from './index.module.scss';
 import JoinBanner from '@components/join-banner-pc';
 import WeixinQrCode from '@components/login/wx-qr-code';
@@ -131,7 +130,7 @@ class RebindPage extends React.Component {
             && <div className={styles.statusWrap}>
                 { currentStatus === 'success' && <Icon color='#3AC15F' name="SuccessOutlined" size={80} className={styles.statusIcon} /> }
                 { currentStatus === 'error' && <Icon color='#E02433' name="WrongOutlined" size={80} className={styles.statusIcon} /> }
-                <p className={styles.hint}>请将已登录设备推出登录</p>
+                <p className={styles.hint}>请将已登录设备退出登录</p>
                 <p className={styles.statusBottom}>
                   { currentStatus === 'success'
                     ? <>

@@ -5,8 +5,6 @@ import ImageDisplay from '@components/thread/image-display';
 import PostContent from '@components/thread/post-content';
 import UserInfo from '@components/thread/user-info';
 import styles from './index.module.scss';
-import Card from '../index';
-import card from '@pages/card';
 
 const ThreadCard = inject('user', 'card')(observer((props) => {
   const { card: threadStore } = props;
@@ -60,7 +58,7 @@ const ThreadCard = inject('user', 'card')(observer((props) => {
     parseContent = '';
   }
   return (
-    <Card>
+    <div>
       {isReady && (
       <div className={`${styles.container}`}>
         <div className={styles.header}>
@@ -121,7 +119,7 @@ const ThreadCard = inject('user', 'card')(observer((props) => {
       </div>
       )}
 
-    </Card>
+    </div>
   );
 }));
 

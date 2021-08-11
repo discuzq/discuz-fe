@@ -6,6 +6,7 @@
 
 .content {
   @include content;
+  flex: 1;
   .title {
     @include title;
   }

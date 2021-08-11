@@ -25,7 +25,7 @@ export const getHeaderConfig = async ({data, user, siteName}) => {
             ]
         }
     }
-    if (setSite.siteBackgroundImage) {
+    if (setSite?.siteBackgroundImage) {
         headerConfig.config.images.push(bgc)
     } else {
         headerConfig.config.blocks.push(bgc)
@@ -40,7 +40,7 @@ export const getHeaderConfig = async ({data, user, siteName}) => {
 
 // 处理背景图片
 const handleBgc = (setSite) => {
-    if (setSite.siteBackgroundImage) {
+    if (setSite?.siteBackgroundImage) {
         return {
             url: setSite.siteBackgroundImage,
             x: 0,
@@ -151,7 +151,7 @@ const handleAvatar = (user) => {
 // 处理图片logo地址
 const handleLogo = async (setSite) => {
     let logoUrl =  logoImg;
-    if (setSite.siteHeaderLogo) {
+    if (setSite?.siteHeaderLogo) {
         logoUrl = setSite.siteHeaderLogo;
     }
     const height = 70

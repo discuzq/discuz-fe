@@ -26,7 +26,7 @@ class Index extends React.Component {
 
   async componentDidMount() {
     this.setState({
-      height: window.outerHeight - 95, // header 是 40px，留出 2px ，用以触发下拉事件
+      height: window.outerHeight - 40, // header 是 40px，留出 2px ，用以触发下拉事件
     });
     await this.props.user.getUserShieldList();
   }

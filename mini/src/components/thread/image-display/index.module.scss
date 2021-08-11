@@ -93,7 +93,7 @@
         padding-bottom: 0 !important;
       }
       .smallCol {
-        height: 50%;
+        height: calc(50% + 2px);
       }
       .smallRow{
         width: 100%;

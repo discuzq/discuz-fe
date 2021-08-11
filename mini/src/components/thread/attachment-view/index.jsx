@@ -1,16 +1,18 @@
-import React, { useState }from 'react';
+import React, { useState, useRef, useEffect }from 'react';
 import styles from './index.module.scss';
 import { inject, observer } from 'mobx-react';
 import Toast from '@discuzq/design/dist/components/toast/index';
 import Spin from '@discuzq/design/dist/components/spin/index';
+import Icon from '@discuzq/design/dist/components/icon/index';
+import AudioPlayer from '@discuzq/design/dist/components/audio-player/index';
+import { AUDIO_FORMAT } from '@common/constants/thread-post';
 import { extensionList, isPromise, noop } from '../utils';
 import { View, Text, Image } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import getAttachmentIconLink from '@common/utils/get-attachment-icon-link';
-
 import { throttle } from '@common/utils/throttle-debounce.js';
-
-
+import { ATTACHMENT_FOLD_COUNT } from '@common/constants';
+import Router from '@discuzq/sdk/dist/router';
 
 /**
  * 附件
@@ -27,6 +29,7 @@ const Index = ({
   user = null,
   threadId = null,
   thread = null,
+  baselayout,
   updateViewCount = noop,
 }) => {
   // 处理文件大小的显示
@@ -41,7 +44,7 @@ const Index = ({
     return `${fileSize} B`;
   };
 
-  const fetchDownloadUrl = (threadId, attachmentId, callback) => {
+  const fetchDownloadUrl = async (threadId, attachmentId, callback) => {
     if(!threadId || !attachmentId) return;
 
     // TODO: toastInstance 返回的是boolean
@@ -49,7 +52,7 @@ const Index = ({
     //   duration: 0,
     // });
 
-    thread.fetchThreadAttachmentUrl(threadId, attachmentId).then((res) => {
+    await thread.fetchThreadAttachmentUrl(threadId, attachmentId).then((res) => {
       if(res?.code === 0 && res?.data) {
         const { url } = res.data;
         if(!url) {
@@ -154,7 +157,75 @@ const Index = ({
     }
   };
 
+    // 音频播放
+  const isAttachPlayable = (file) => {
+    return AUDIO_FORMAT.includes(file?.extension?.toUpperCase())
+  };
+
+  const beforeAttachPlay = async (file) => {
+    // 该文件已经通过校验，能直接播放
+    if (file.readyToPlay) {
+      return true;  
+    }
+
+    if (!isPay) {
+      if(!file || !threadId) return;
+
+      await fetchDownloadUrl(threadId, file.id, () => {
+        file.readyToPlay = true;
+      });
+    } else {
+      onPay();
+    }
+
+    return !!file.readyToPlay;
+  };
+
+  const onPlay = (audioRef, audioWrapperRef) => {
+    const audioContext = audioRef?.current?.getState()?.audioCtx;
+    updateViewCount();
+    if( audioContext && baselayout && audioWrapperRef) {
+      
+      // 暂停之前正在播放的视频
+      if(baselayout.playingVideoDom) {
+        Taro.createVideoContext(baselayout.playingVideoDom)?.pause();
+      }
+
+       // 暂停之前正在播放的音频
+      if (baselayout.playingAudioDom) {
+        if(baselayout.playingAudioWrapperId !== audioWrapperRef.current.uid) {
+          baselayout.playingAudioDom?.pause();
+          baselayout.playingAudioWrapperId = audioWrapperRef.current.uid;
+        }
+      }
+
+      baselayout.playingAudioDom = audioContext;
+      baselayout.playingAudioWrapperId = audioWrapperRef.current.uid;
+    }
+  };
+
   const Normal = ({ item, index, type }) => {
+    if (isAttachPlayable(item)) {
+      const { url, fileName, fileSize } = item;
+      const audioRef = useRef();
+      const audioWrapperRef = useRef();
+
+      return (
+        <View className={styles.audioContainer} key={index} onClick={onClick} ref={audioWrapperRef}>
+          <AudioPlayer
+            ref={audioRef}
+            src={url}
+            fileName={fileName}
+            onPlay={() => onPlay(audioRef, audioWrapperRef)}
+            fileSize={handleFileSize(parseFloat(item.fileSize || 0))}
+            beforePlay={async () => await beforeAttachPlay(item)}
+            onDownload={throttle(() => onDownLoad(item, index), 1000)}
+            onLink={throttle(() => onLinkShare(item), 1000)}
+          />
+        </View>
+      );
+    }
+
     return (
       <View className={styles.container} key={index} onClick={onClick} >
         <View className={styles.wrapper}>
@@ -189,15 +260,35 @@ const Index = ({
     );
   };
 
+  // 是否展示 查看更多
+  const [isShowMore, setIsShowMore] = useState(false);
+  useEffect(() => {
+    // 详情页不折叠
+    const {path} = Taro.getCurrentInstance().router;
+    if (~path.indexOf('/indexPages/thread/index')) {
+      setIsShowMore(false);
+    } else {
+      setIsShowMore(attachments.length > ATTACHMENT_FOLD_COUNT);
+    }
+  }, []);
+  const clickMore = () => {
+    setIsShowMore(false);
+  };
+
   return (
     <View className={styles.wrapper}>
         {
           attachments.map((item, index) => {
+            if (isShowMore && index >= ATTACHMENT_FOLD_COUNT) {
+              return null;
+            }
+
             // 获取文件类型
             const extension = item?.extension || '';
             const type = extensionList.indexOf(extension.toUpperCase()) > 0
               ? extension.toUpperCase()
               : 'UNKNOWN';
+
             return (
               !isPay ? (
                 <Normal key={index} item={item} index={index} type={type} />
@@ -207,8 +298,13 @@ const Index = ({
             );
           })
         }
+        {
+          isShowMore ? (<View className={styles.loadMore} onClick={clickMore}>
+            查看更多<Icon name='RightOutlined' className={styles.icon} size={12} />
+          </View>) : <></>
+        }
     </View>
   );
 };
 
-export default inject('user', 'thread')(observer(Index));
+export default inject('user', 'baselayout', 'thread')(observer(Index));

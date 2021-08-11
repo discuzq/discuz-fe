@@ -46,7 +46,7 @@
         font-size: $font-size-small;
         position: absolute;
         right: 0;
-        bottom: 2px;
+        bottom: 1px;
       }
       :global {
         .dzq-slider__progress__button {
@@ -54,14 +54,14 @@
           height: 0px;
           padding: 5px;
           border-radius: 50%;
-          border: solid 7px $primary-color;
+          border: solid 8px $primary-color;
         }
         .dzq-slider__progress--active {
           height: 4px;
         }
         .dzq-slider__feature {
           height: 4px;
-          background: $border-shadow-color;
+          // background: $border-shadow-color;
         }
         .dzq-slider__progress--max {
           height: 4px;

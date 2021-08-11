@@ -12,6 +12,11 @@
       // padding-right: rem($padding-4n);
       border-radius: rem($border-radius-small);
       background-color: $comment-bg-color;
+
+      &.active {
+        background: $primary-color10;
+      }
+
       .replyHeader {
         display: flex;
         justify-content: space-between;
@@ -91,6 +96,7 @@
 
             .dzq-p {
               margin-bottom: 0;
+              font-size: $font-size-middle !important;
             }
           }
         }
@@ -143,6 +149,9 @@
               color: #fff;
             }
           }
+        }
+        .positionTop {
+          top: 0;
         }
       }
     }

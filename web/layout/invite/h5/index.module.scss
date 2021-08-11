@@ -2,6 +2,14 @@
 .content{
   height: 100%;
   background: $white;
+
+  .mainContent {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-bottom: 55px;
+    min-height: calc(100vh - 100px);
+  }
   // 头部
   .header{
     height: rem(164);
@@ -104,10 +112,8 @@
   // 邀请列表 start
   .invite_list{
     background: $white;
-    min-height: rem(285);
     box-sizing: border-box;
-    padding: rem($padding-4n);
-    padding-bottom: rem($padding-10 * 6);
+    padding: rem($padding-4n) rem($padding-4n) 0;
   }
   .invite_list_title{
     font-size: rem($font-size-middle);
@@ -291,8 +297,7 @@
     justify-content: center;
     font-size: rem($font-size-primary);
     color: $text-color-placeholder;
-    padding: rem($padding-6n) 0;
+    padding: rem($padding-6n) 0 rem($padding-2n);
     line-height: rem($font-line-height-small);
   }
-
 }

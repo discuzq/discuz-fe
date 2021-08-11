@@ -43,6 +43,7 @@ const config = {
         'user/wx-bind-phone/index',
         'user/status/index',
         'user/bind-phone/index',
+        'user/bind-nickname/index',
         'user/wx-auth/index',
         'user/wx-authorization/index',
         'user/supplementary/index',
@@ -91,7 +92,7 @@ const config = {
       network: 'all',
       packages: ['indexPages'],
     },
-  },
+  }
 };
 
 module.exports = config;

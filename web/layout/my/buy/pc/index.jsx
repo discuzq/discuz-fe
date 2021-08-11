@@ -52,6 +52,8 @@ class BuyPCPage extends React.Component {
           icon={{ type: 3, name: 'ShoppingCartOutlined' }}
           rightText={`共有${this.props.totalCount}条购买`}
           mold='plane'
+          isError={this.props.index.threadError.isError}
+          errorText={this.props.index.threadError.errorText}
         >
           {pageData?.map((item, index) => (
             <ThreadContent className={index === 0 && styles.threadStyle} data={item} key={index} />

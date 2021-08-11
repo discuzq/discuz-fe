@@ -21,7 +21,7 @@ export default class index extends Component {
     this.state = {
       isLoading: true,
       isPreviewBgVisible: false, // 是否预览背景图片
-      isNormalTitle: false, // 是否显示不透明 title 
+      isNormalTitle: false, // 是否显示不透明 title
     };
   }
 
@@ -34,6 +34,17 @@ export default class index extends Component {
     // 监听
     eventCenter.on(onShowEventId, this.onShow);
   }
+
+  componentDidMount() {
+    this.setNavigationBarStyle();
+  }
+
+  setNavigationBarStyle = () => {
+    Taro.setNavigationBarColor({
+      frontColor: '#ffffff',
+      backgroundColor: '#ffffff',
+    });
+  };
 
   fetchUserThreads = async () => {
     try {
@@ -90,12 +101,12 @@ export default class index extends Component {
     return Object.values(userThreads).reduce((fullData, pageData) => [...fullData, ...pageData]);
   };
 
-  onRefresh = () => {
+  onRefresh = async () => {
     const { isLoading } = this.state;
 
     // 避免第一次进入页面时，触发了上拉加载
     if (!isLoading) {
-      return this.fetchUserThreads;
+      return await this.fetchUserThreads();
     }
     return Promise.resolve();
   };
@@ -113,14 +124,14 @@ export default class index extends Component {
         left: '50%',
         transform: 'translate(-50%)',
         color: 'black',
-        zIndex: 1,
+        zIndex: 1000,
         width: '100%',
         backgroundColor: 'white',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         paddingTop: `${this.getStatusBarHeight() - 8}px`,
-      }
+      };
     }
 
     return {
@@ -128,7 +139,7 @@ export default class index extends Component {
       top: `${this.getStatusBarHeight()}px`,
       left: '50%',
       transform: 'translate(-50%, 8px)',
-      zIndex: 1
+      zIndex: 1000
     };
   }
 
@@ -177,16 +188,16 @@ export default class index extends Component {
     const formattedUserThreads = this.formatUserThreadsData(userThreads);
     return (
       <BaseLayout
-        onScroll={e => {
+        onScroll={(e) => {
           const currentScrollTop = e.detail.scrollTop;
           if (currentScrollTop > 170) {
             this.setState({
-              isNormalTitle: true
-            })
+              isNormalTitle: true,
+            });
           } else {
             this.setState({
-              isNormalTitle: false
-            })
+              isNormalTitle: false,
+            });
           }
         }}
         showHeader={false}

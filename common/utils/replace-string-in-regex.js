@@ -39,6 +39,15 @@ export default function replaceStringInRegex(text, type, newSubstr) {
       newText = newText.replace(/<br[^<>]*>/g, newSubstr);
       newText = newText.replace(/<view[\s]+class=([^\/]*dzq\-br[^\/]*)(?:\"|\')[^\/]*<\/view>/g, newSubstr);
       break;
+    case "breakInCode":
+      let codeBlocks = newText.match(/<code>[\s\S]*?<\/code>/g) || []; // 找到代码块
+      const CODE_PLACEHOLDER = `#$#break#$#`;
+      let noCodeText = newText.replace(/<code>[\s\S]*?<\/code>/g, CODE_PLACEHOLDER); // 用占位符替代代码块
+      for(let i = 0; i < codeBlocks.length; i++) {
+        noCodeText = noCodeText.replace(CODE_PLACEHOLDER, codeBlocks[i].replace(/<br[^<>]*>/g, newSubstr));
+      }
+      newText = noCodeText;
+      break;
     case "tags":
       newText = newText.replace(/<[^<>]*>|<\/[^<>]*>/g, newSubstr);
       break;

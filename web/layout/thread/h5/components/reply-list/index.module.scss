@@ -12,6 +12,11 @@
       padding: rem($padding-2n) rem($padding-3n);
       border-radius: rem($border-radius-small);
       background: $body-bg-color;
+
+      &.active {
+        background: $primary-color10;
+      }
+
       .replyListName {
         display: flex;
         justify-content: space-between;
@@ -134,6 +139,9 @@
               line-height: rem(18);
             }
           }
+        }
+        .positionTop {
+          top: 0;
         }
       }
     }
