@@ -479,6 +479,7 @@ class CommentH5Page extends React.Component {
               ></CommentList>
             )}
           </View>
+          <View className={styles.box}></View>
         </ScrollView>
         {isReady && (
         <View className={classNames(styles.inputFooterContainer, this.state.showCommentInput && styles.zindex)}>
