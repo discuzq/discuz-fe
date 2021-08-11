@@ -37,12 +37,13 @@ const attachmentApiUpload = (options) => {
 
           resolve(ret);
         } else {
-          console.log(res);
+          reject('error');
           const msg = res.statusCode === 413 ? '上传大小超过了服务器限制' : res.msg;
           Toast.error({ content: `上传失败：${msg}` });
         }
       },
       fail(res) {
+        reject('error');
         console.log(res);
       }
     });
