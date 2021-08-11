@@ -75,6 +75,22 @@
               text-align: left;
               color: $text-color-primary;
             }
+            .masterBox {
+              padding-top:rem(2);
+              padding-left: rem($padding-2n);
+              .masterText {
+                border-radius: rem(4) 0;
+                background: #ff9700;
+                display: inline-block;
+                font-size: rem(12);
+                -webkit-text-size-adjust:none;
+                -webkit-transform : scale(0.83,0.83);
+                line-height: rem(14);
+                padding: rem(1) rem(4);
+                text-align: left;
+                color: #fff;
+              }
+            }
             .groups {
               color: var(--color-text-secondary);
               font-size: $font-size-label;
@@ -162,7 +178,7 @@
           }
         }
         .moreReply {
-          // font-weight: var(--font-weight-regular);
+          // font-weight: $font-weight-regular;
           font-weight: bold;
           font-size: rem($font-size-primary);
           line-height: rem($font-line-height-middle);

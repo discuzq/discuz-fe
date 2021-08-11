@@ -5,7 +5,7 @@
   align-items: center;
   justify-content: space-between;
   .payListItem{
-    border-bottom: var(--border-border);
+    border-bottom: $border-solid-1;
     width: 40px;
     height: 53px;
     text-align: center;
@@ -57,7 +57,7 @@
       border-bottom: none;
       border-right: none;
       line-height: 50px;
-      background: var(--comment-content-bg-color);
+      background: $comment-bg-color;
     }
   }
 }

@@ -19,7 +19,7 @@ export const TopicItem = ({ data, onClick = noop }) => {
       <div className={styles.container} onClick={click}>
         <div className={styles.title}>{`#${data.content}#` || '暂无内容'}</div>
         <div className={styles.content}>
-          <FilterRichText onClick={click} className={styles.richText} content={replaceSearchResultContent(threads[0]?.content?.text)} />
+          <FilterRichText onClick={click} className={styles.richText} content={replaceSearchResultContent(threads[0]?.content?.text || '暂无内容')} />
         </div>
         <div className={styles.tags}>
           <div className={styles.tag}>热度 {data.viewCount || 0}</div>

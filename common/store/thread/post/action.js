@@ -499,6 +499,16 @@ class ThreadPostAction extends ThreadPostStore {
   setLocalDataStatus(status) {
     this.isHaveLocalData = status;
   }
+
+  @action
+  setEditorHintAtKey(value) {
+    this.editorHintAtKey = value;
+  }
+
+  @action
+  setEditorHintTopicKey(value) {
+    this.editorHintTopicKey = value;
+  }
 }
 
 export default ThreadPostAction;

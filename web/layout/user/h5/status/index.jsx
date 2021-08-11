@@ -2,7 +2,6 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'next/router';
 import { Button } from '@discuzq/design';
-import '@discuzq/design/dist/styles/index.scss';
 import HomeHeader from '@components/home-header';
 import Header from '@components/header';
 import layout from './index.module.scss';

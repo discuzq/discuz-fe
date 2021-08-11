@@ -1,5 +1,5 @@
 @import '@common/styles/index.scss';
-@import '@common/styles/_variable.scss';
+@import '@common/styles/index.scss';
 
 .payconfirmWrapper {
   background: var(--color-white);
@@ -250,7 +250,7 @@
       border-radius: 0 5px 5px 0;
     }
     box-sizing: border-box;
-    border: var(--border-border);
+    border: $border-solid-1;
     width: rem(40);
     height: rem(40);
     text-align: center;

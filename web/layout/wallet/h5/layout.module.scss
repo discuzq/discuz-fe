@@ -14,7 +14,7 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-  background: var(--comment-content-bg-color);
+  background: $comment-bg-color;
 }
 
 .header {
@@ -31,7 +31,7 @@
   min-height: rem(52);
 
   .status {
-    
+
     font-weight: normal;
     color: #4f5a70;
     font-size: rem($font-size-primary);
@@ -84,7 +84,7 @@
     .dzq-tabs__label {
       margin-top: rem(13) !important;
       padding-bottom: rem(11) !important;
-      
+
       font-weight: 600;
       font-size: rem($font-size-primary);
     }
@@ -132,7 +132,7 @@
     color: $white;
     background-color: $primary-color;
     border: none;
-    
+
     font-weight: normal;
     font-size: rem($font-size-middle);
   }

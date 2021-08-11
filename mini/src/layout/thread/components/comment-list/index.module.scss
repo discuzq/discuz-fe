@@ -77,6 +77,21 @@
               color: $text-color-primary;
               @include text-ellipsis();
             }
+            .masterBox {
+              padding-left: rem($padding-2n);
+              display: flex;
+              align-items: center;
+              .masterText {
+                border-radius: 4px 0;
+                background: #ff9700;
+                display: inline-block;
+                font-size: 10px;
+                line-height: 14px;
+                padding: 0 4px;
+                text-align: left;
+                color: #fff;
+              }
+            }
             .groups {
               color: var(--color-text-secondary);
               font-size: $font-size-label;
@@ -161,7 +176,7 @@
           }
         }
         .moreReply {
-          // font-weight: var(--font-weight-regular);
+          // font-weight: $font-weight-regular;
           font-weight: bold;
           font-size: $font-size-primary;
           line-height: $font-line-height-middle;
