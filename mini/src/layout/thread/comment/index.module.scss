@@ -3,7 +3,8 @@
   height: 100vh;
   width: 100vw;
   background: $white;
-
+  display: flex;
+  flex-direction: column;
   .header {
     height: 50px;
     display: flex;
@@ -37,7 +38,12 @@
   }
 
   .body {
-    padding-bottom: 50px;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0%;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
     height: 100%;
     overflow-y: auto;
   }
