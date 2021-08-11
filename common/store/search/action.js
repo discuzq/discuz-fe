@@ -124,6 +124,22 @@ class SearchAction extends SearchStore {
    }
 
   /**
+   * 发现模块 - 重置更多搜索结果页数据
+   */
+  @action
+  resetResultData() {
+    this.topicsError = { isError: false, errorText: '' }
+    this.usersError = { isError: false, errorText: '' }
+    this.threadsError = { isError: false, errorText: '' }
+
+    this.currentKeyword = null // 当前正在搜索的关键词重置
+
+    this.setTopics(null)
+    this.setUsers(null)
+    this.setThreads(null)
+  }
+
+  /**
    * 发现模块 - 首页数据
    * @param {object} search * 搜索值
    * @param {number} type * 0: 发现页发起请求 1：发现搜索结果页发起请求

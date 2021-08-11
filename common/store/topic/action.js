@@ -168,6 +168,16 @@ class TopicAction extends TopicStore {
         this.threads.pageData[index] = data;
       }
     }
+
+
+    /**
+     * 话题页面 - 清空缓存数据
+     */
+    @action
+    resetTopicsData() {
+      this.setTopics(null)
+      this.setTopicDetail(null)
+    }
 }
 
 export default TopicAction;
