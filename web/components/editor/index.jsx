@@ -298,7 +298,7 @@ function DVditor(props) {
               Toast.info({ content: `最多输入${MAX_COUNT}字` });
             }
           },
-          type: 'markdown',
+          type: 'text',
           max: MAX_COUNT,
         },
         toolbarConfig: {
@@ -433,8 +433,22 @@ function DVditor(props) {
             });
             toastInstance.destroy();
             if (error.length) {
+              const errorLength = error.length;
+
+              let content = `${errorLength}张图片上传失败，请重新尝试上传。`;
+
+              const sensitiveLen = error.filter(item => item?.msg.includes('敏感图')).length;
+
+              if (errorLength === sensitiveLen) {
+                content = `有${sensitiveLen}张敏感图片上传失败，请更换图片重新上传。`;
+              }
+
+              if (errorLength > sensitiveLen && sensitiveLen) {
+                content = `${error.length}张图片上传失败，其中有${sensitiveLen}张为敏感图，请处理后重新尝试上传。`;
+              }
+
               Toast.info({
-                content: `${error.length}张图片上传失败，请重新尝试上传`,
+                content,
                 duration: 2000,
               });
             }
