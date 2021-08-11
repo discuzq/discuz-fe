@@ -1,7 +1,6 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'next/router';
-import '@discuzq/design/dist/styles/index.scss';
 import { Button, Toast, Avatar, Icon } from '@discuzq/design';
 import { get } from '@common/utils/get';
 import SiteInfo from './site-info';

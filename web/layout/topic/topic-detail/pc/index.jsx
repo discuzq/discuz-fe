@@ -83,8 +83,9 @@ class IndexPCPage extends React.Component {
         <BaseLayout
           onSearch={this.onSearch}
           right={ this.renderRight }
-        showRefresh={false}
-        className="topic-detail-page"
+          showRefresh={false}
+          className="topic-detail-page"
+          pageName="topic-detail"
         >
           {
           fetchTopicInfoLoading ? (

@@ -316,8 +316,6 @@ class Index extends React.Component {
               data={data}
               user={this.props.user}
               updateViewCount={this.updateViewCount}
-              setVisible={this.props.setVisible}
-              setData={this.props.setData}
             />
             </>
           ) : <Skeleton style={{ minHeight: `${minHeight}px` }} />

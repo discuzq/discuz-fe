@@ -285,7 +285,8 @@ function avatar(props) {
               <Button
                 onClick={blocking ? () => {} : (e) => blockingHandler(e)}
                 loading={blocking}
-                className={`${styles.btn} ${styles.blocked}`}
+                // className={`${styles.btn} ${styles.blocked}`}
+                className={`${styles.btn}`} // fix:867271513 by 贺重威
                 type="primary"
               >
                 {!blocking && (

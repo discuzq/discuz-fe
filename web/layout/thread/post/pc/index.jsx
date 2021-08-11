@@ -105,6 +105,9 @@ class ThreadPCPage extends React.Component {
     } = this.props;
     const { postData } = threadPost;
     const { webConfig = {} } = site;
+    const { setAttach, qcloud } = webConfig;
+    const { supportImgExt, supportMaxSize } = setAttach;
+    const { qcloudCosBucketName, qcloudCosBucketArea, qcloudCosSignUrl, qcloudCos } = qcloud;
 
     return (
       <div className={styles.container}>
@@ -136,7 +139,6 @@ class ThreadPCPage extends React.Component {
                   hintCustom={(type, key, textareaPosition, lastindex, vditor) =>
                     this.hintCustom(type, key, textareaPosition, lastindex, vditor)}
                   hintHide={this.hintHide}
-                  site={site}
                 />
 
                 <div ref={this.pluginContainer}>
@@ -169,6 +171,14 @@ class ThreadPCPage extends React.Component {
                   {(currentAttachOperation === THREAD_TYPE.image
                     || Object.keys(postData.images).length > 0) && (
                     <ImageUpload
+                      cosOptions={{
+                        supportImgExt,
+                        supportMaxSize,
+                        qcloudCosBucketName,
+                        qcloudCosBucketArea,
+                        qcloudCosSignUrl,
+                        qcloudCos,
+                      }}
                       className={styles['no-padding']}
                       fileList={Object.values(postData.images)}
                       onChange={fileList => this.props.handleUploadChange(fileList, THREAD_TYPE.image)}
@@ -204,6 +214,14 @@ class ThreadPCPage extends React.Component {
                   {(currentDefaultOperation === defaultOperation.attach || Object.keys(postData.files).length > 0) && (
                     <FileUpload
                       limit={9}
+                      cosOptions={{
+                        supportImgExt,
+                        supportMaxSize,
+                        qcloudCosBucketName,
+                        qcloudCosBucketArea,
+                        qcloudCosSignUrl,
+                        qcloudCos,
+                      }}
                       className={styles['no-padding']}
                       fileList={Object.values(postData.files)}
                       onChange={fileList => this.props.handleUploadChange(fileList, THREAD_TYPE.file)}

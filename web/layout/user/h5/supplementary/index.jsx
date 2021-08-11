@@ -2,7 +2,6 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'next/router';
 import { Button, Toast } from '@discuzq/design';
-import '@discuzq/design/dist/styles/index.scss';
 import h5layout from './index.module.scss';
 import pclayout from './pc.module.scss';
 import { getSignInFields, setSignInFields } from '@server';
@@ -137,7 +136,7 @@ class SupplementaryH5Page extends React.Component {
                     }
 
                     if (needToBindWechat === true) {
-                      return this.props.router.push(`/user/wx-bind-qrcode?sessionToken=${sessionToken}&loginType=${platform}&nickname=${nickName}`);
+                      return this.props.router.push(`/user/wx-bind-qrcode?sessionToken=${sessionToken}&loginType=${platform}&nickname=${nickName}&isSkip=${true}`);
                     }
                     if (statusMsg && statusCode) {
                       return this.props.router.push(`/user/status?statusCode=${statusCode}&statusMsg=${statusMsg}`);

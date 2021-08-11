@@ -11,21 +11,15 @@ import HOCFetchSiteData from '@middleware/HOCFetchSiteData';
 @inject('search')
 @observer
 class Index extends React.Component {
-  // static async getInitialProps(ctx) {
-  //   const search = ctx?.query?.keyword || '';
-  //   const topicFilter = {
-  //     hot: 0,
-  //     content: search,
-  //   };
-  //   const result = await readUsersList({ params: { filter: { username: search } } });
-  //   const topics = await readTopicsList({ params: { filter: topicFilter, perPage: 10 } });
-  //   return {
-  //     serverSearch: {
-  //       users: result?.data,
-  //       topics: topics?.data,
-  //     },
-  //   };
-  // }
+  static async getInitialProps(ctx) {
+    const search = ctx?.query?.keyword || '';
+    const result = await readUsersList({ params: { filter: { username: search } } });
+    return {
+      serverSearch: {
+        users: result?.data,
+      },
+    };
+  }
 
   page = 1;
   perPage = 20;
@@ -34,8 +28,7 @@ class Index extends React.Component {
     super(props);
     const { serverSearch, search } = this.props;
     // 初始化数据到store中
-    search.setUsers(null);
-    search.setTopics(null);
+    serverSearch && serverSearch.users && search.setUsers(serverSearch.users);
   }
 
   async componentDidMount() {
@@ -43,22 +36,13 @@ class Index extends React.Component {
     const { keyword = '' } = router.query;
     // 当服务器无法获取数据时，触发浏览器渲染
     const hasUsers = !!search.users;
-    const hasTopics = !!search.topics;
 
-    // if (!hasUsers) {
-      // this.toastInstance = Toast.loading({
-      //   content: '加载中...',
-      //   duration: 0,
-      // });
-
+    if (!hasUsers) {
       this.page = 1;
       await search.getUsersList({ search: keyword, perPage: this.perPage });
-      this.toastInstance?.destroy();
-    // }
-    // if (!hasTopics) {
-      // search.getTopicsList({ search: keyword, perPage: 1});
-    // }
+    }
   }
+
   dispatch = async (type, data) => {
     const { search } = this.props;
 

@@ -4,7 +4,6 @@ import { withRouter } from 'next/router';
 import isWeiXin from '@common/utils/is-weixin';
 import { Toast } from '@discuzq/design';
 import clearLoginStatus from '@common/utils/clear-login-status';
-import '@discuzq/design/dist/styles/index.scss';
 import { BANNED_USER, REVIEWING, REVIEW_REJECT } from '@common/store/login/util';
 
 /** *

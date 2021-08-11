@@ -19,37 +19,56 @@ class Index extends React.Component {
 
   constructor(props) {
     super(props);
+    this.props.index.registerList({ namespace: 'buy' });
   }
 
   async componentDidMount() {
     Taro.hideShareMenu();
     const { index } = this.props;
-    index.setThreads(null);
-    await index.getReadThreadList({
+    const threadsResp = await index.fetchList({
+      namespace: 'buy',
+      perPage: 10,
+      page: this.page,
       filter: {
         complex: 4,
       },
-      perPage: this.perPage,
-      page: 1,
     });
+
+    index.setList({
+      namespace: 'buy',
+      data: threadsResp,
+      page: this.page,
+    });
+
+    this.page += 1;
   }
 
   componentWillUnmount() {
-    this.props.index.setThreads(null);
+    const { index } = this.props;
+    index.clearList({ namespace: 'buy' });
   }
 
   dispatch = async () => {
     const { index } = this.props;
-
-    this.page += 1;
-    return await index.getReadThreadList({
+    const threadsResp = await index.fetchList({
+      namespace: 'buy',
+      perPage: 10,
+      page: this.page,
       filter: {
         complex: 4,
       },
-      perPage: this.perPage,
+    });
+
+    index.setList({
+      namespace: 'buy',
+      data: threadsResp,
       page: this.page,
     });
+    if (this.page <= threadsResp.totalPage) {
+      this.page += 1;
+    }
   };
+
   getShareData(data) {
     const { site } = this.props;
     const defalutTitle = site.webConfig?.setSite?.siteName || '';

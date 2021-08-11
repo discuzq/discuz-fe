@@ -113,7 +113,7 @@ import config from '../../../app.config';
     updateViewCount();
     if(node?.attribs?.src) {
       setImageVisible(true);
-      setCurImageUrl(`${decodeURIComponent(node.attribs.src)}`);
+      setCurImageUrl(node.attribs.src);
       clickedImageId.current = event?.target?.id;
     }
   }
@@ -136,12 +136,6 @@ import config from '../../../app.config';
 
     for(let i = 0; i < images.length; i++) {
       images[i] = images[i].replace(/<img\s+[^<>]*src=[\"\'\\]+/gm, "") || "";
-      images[i] = decodeURIComponent(images[i]);
-      images[i] = images[i].replace(/&lt;/g, "<")
-                            .replace(/&gt;/g, ">")
-                            .replace(/&amp;/g, "&")
-                            .replace(/&quot;/g, '"')
-                            .replace(/&apos;/g, "'");
     }
     return images;
   }

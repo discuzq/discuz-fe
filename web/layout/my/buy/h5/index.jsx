@@ -11,23 +11,46 @@ import styles from './index.module.scss';
 class Index extends React.Component {
   render() {
     const { index } = this.props;
-    const { pageData = [], currentPage, totalPage, totalCount } = index.threads || {};
+
+    const { lists } = index;
+
+    const buyThreadsList = index.getList({
+      namespace: 'buy',
+    });
+
+    const totalCount = index.getAttribute({
+      namespace: 'buy',
+      key: 'totalCount',
+    });
+
+    const totalPage = index.getAttribute({
+      namespace: 'buy',
+      key: 'totalPage',
+    });
+
+    const currentPage = index.getAttribute({
+      namespace: 'buy',
+      key: 'currentPage',
+    });
+
+    const requestError = index.getListRequestError({ namespace: 'buy' });
     return (
       <BaseLayout
-        requestError={this.props.index.threadError.isError}
-        errorText={this.props.index.threadError.errorText}
+        requestError={requestError.isError}
+        errorText={requestError.errorText}
+        quickScroll={true}
         pageName={'buy'}
         showHeader={true}
         noMore={currentPage >= totalPage}
         onRefresh={this.props.dispatch}
       >
-        {pageData?.length !== 0 && (
+        {buyThreadsList?.length !== 0 && (
           <div className={styles.titleBox}>
             <span className={styles.num}>{`${totalCount || 0}`}</span>
             条购买
           </div>
         )}
-        {pageData?.map((item, index) => (
+        {buyThreadsList?.map((item, index) => (
           <ThreadContent key={index} data={item} />
         ))}
       </BaseLayout>

@@ -1,6 +1,5 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import '@discuzq/design/dist/styles/index.scss';
 import HomeHeader from '@components/home-header';
 import List from '@components/list';
 import { View, Button } from '@tarojs/components';
@@ -50,7 +49,7 @@ class PartnerInviteH5Page extends React.Component {
 
   async componentDidMount() {
     this.setNavigationBarStyle();
-    
+
     try {
       await Promise.all([
         this.initInviteCode(),
@@ -186,7 +185,7 @@ class PartnerInviteH5Page extends React.Component {
             ) : (
               <></>
             )}
-            {!isLoading && !threadsPageData?.length ? <NoData /> : <></>}
+            {!isLoading && !usersPageData?.length ? <NoData /> : <></>}
             {isLoading ? (
               <View className={layout.spinner}>
                 <Spin type="spinner" />

@@ -4,12 +4,10 @@ import Tip from '../tip';
 import Icon from '@discuzq/design/dist/components/icon/index';
 import { View, Text } from '@tarojs/components'
 import ShareButton from '../share-button'
-import Popup from '@discuzq/design/dist/components/popup/index';
 import goToLoginPage from '@common/utils/go-to-login-page';
 import Taro from '@tarojs/taro'
 import Toast from '@discuzq/design/dist/components/toast';
 import { noop } from '../utils';
-import MorePopup from '@layout/thread/components/more-popup'
 /**
  * 帖子底部内容
  * @prop {array}    userImgs 点赞分享用户信息
@@ -28,16 +26,18 @@ const Index = ({
   isLiked = false,
   isSendingLike = false,
   tipData,
+  data,
   index,
   user,
-  data,
+  shareThreadid,
+  shareNickname,
+  shareAvatar,
+  getShareData,
   unifyOnClick = null,
-  setData,
   onShare = () => {},
   onComment = () => {},
   onPraise = () => {},
   updateViewCount = noop,
-  setVisible,
 }) => {
   const postList = useMemo(() => {
     const praise =  {
@@ -60,6 +60,7 @@ const Index = ({
       type: 'share'
     }];
   }, [isLiked]);
+  const [ show, setShow ] = useState(false)
   const handleClickShare = () => {
     updateViewCount();
     // 对没有登录的先登录
@@ -68,10 +69,11 @@ const Index = ({
       goToLoginPage({ url: '/subPages/user/wx-auth/index' });
       return;
     }
-    setData(data)
-    setVisible()
+    setShow(true)
   }
-
+  useEffect(() => {
+    index.setHiddenTabBar(show)
+  }, [show])
   const needHeight = useMemo(() => userImgs.length !== 0 || comment > 0 || sharing > 0, [userImgs, comment, sharing])
   return (
     <View>
@@ -134,6 +136,17 @@ const Index = ({
           ))
         }
       </View>
+      {show && (
+        <ShareButton 
+          show={show} 
+          data={data} 
+          setShow={setShow} 
+          shareThreadid={shareThreadid} 
+          shareAvatar={shareAvatar} 
+          shareNickname={shareNickname} 
+          getShareData={getShareData}
+        ></ShareButton>
+      )}
     </View>
   );
 };

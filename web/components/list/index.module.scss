@@ -66,6 +66,11 @@
   color: $text-color-placeholder;
   padding: rem(11) 0 $padding-5;
   line-height: rem($font-line-height-small);
+  width: 100%;
+  .loading {
+    width: 100%;
+    text-align: center;
+  }
   .spin {
     margin-right: rem(4);
     color: $text-color-placeholder;

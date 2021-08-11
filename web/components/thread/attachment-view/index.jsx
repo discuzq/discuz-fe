@@ -1,4 +1,4 @@
-import React, { useState, useRef }from 'react';
+import React, { useState, useRef, useEffect }from 'react';
 import { inject, observer } from 'mobx-react';
 import { Icon, Toast, Spin, AudioPlayer } from '@discuzq/design';
 import { extensionList, isPromise, noop } from '../utils';
@@ -8,8 +8,11 @@ import isWeiXin from '@common/utils/is-weixin';
 import { FILE_PREVIEW_FORMAT, AUDIO_FORMAT } from '@common/constants/thread-post';
 import FilePreview from './../file-preview';
 import getAttachmentIconLink from '@common/utils/get-attachment-icon-link';
+import { ATTACHMENT_FOLD_COUNT } from '@common/constants';
+import { get } from '@common/utils/get';
 
 import styles from './index.module.scss';
+import Router from '@discuzq/sdk/dist/router';
 
 /**
  * 附件
@@ -26,6 +29,7 @@ const Index = ({
   threadId = null,
   thread = null,
   user = null,
+  site = null,
   updateViewCount = noop,
 }) => {
   // 处理文件大小的显示
@@ -121,7 +125,8 @@ const Index = ({
 
   // 文件是否可预览
   const isAttachPreviewable = (file) => {
-    return FILE_PREVIEW_FORMAT.includes(file?.extension?.toUpperCase())
+    const qcloudCosDocPreview = get(site, 'webConfig.qcloud.qcloudCosDocPreview', false);
+    return qcloudCosDocPreview && FILE_PREVIEW_FORMAT.includes(file?.extension?.toUpperCase())
   };
 
   // 附件预览
@@ -220,10 +225,29 @@ const Index = ({
     );
   };
 
+  // 是否展示 查看更多
+  const [isShowMore, setIsShowMore] = useState(false);
+  useEffect(() => {
+    // 详情页不折叠
+    const {pathname} = window.location;
+    if (/^\/thread\/\d+/.test(pathname)) {
+      setIsShowMore(false);
+    } else {
+      setIsShowMore(attachments.length > ATTACHMENT_FOLD_COUNT);
+    }
+  }, []);
+  const clickMore = () => {
+    setIsShowMore(false);
+  };
+
   return (
     <div className={styles.wrapper}>
         {
           attachments.map((item, index) => {
+            if (isShowMore && index >= ATTACHMENT_FOLD_COUNT) {
+              return null;
+            }
+
             // 获取文件类型
             const extension = item?.extension || '';
             const type = extensionList.indexOf(extension.toUpperCase()) > 0
@@ -238,9 +262,14 @@ const Index = ({
             );
           })
         }
+        {
+          isShowMore ? (<div className={styles.loadMore} onClick={clickMore}>
+            查看更多<Icon name='RightOutlined' className={styles.icon} size={12} />
+          </div>) : <></>
+        }
         { previewFile ? <FilePreview file={previewFile} onClose={() => setPreviewFile(null) } /> : <></> }
     </div>
   );
 };
 
-export default inject('thread', 'user')(observer(Index));
+export default inject('thread', 'user', 'site')(observer(Index));

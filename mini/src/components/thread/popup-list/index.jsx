@@ -19,7 +19,6 @@ import { View, Text } from '@tarojs/components'
  */
 
  const Index = ({ visible = false, onHidden = () => {}, tipData = {}, router, index }) => {
-  const isClickTab = useRef(false);
 
   const allPageNum = useRef(1);
   const likePageNum = useRef(1);
@@ -84,10 +83,6 @@ import { View, Text } from '@tarojs/components'
   };
 
   const loadMoreData = () => {
-    if (isClickTab.current) {
-      isClickTab.current = false;
-      return;
-    }
 
     if (current === 0) {
       allPageNum.current += 1;
@@ -106,9 +101,6 @@ import { View, Text } from '@tarojs/components'
     const hasAll = id === 0 && !all;
     const hasLikes = id === 1 && !likes;
     const hasTips = (id === 2 || id === 3) && !tips;
-
-    // TODO 临时解决点击tab时，导致list组件触发上拉刷新的问题
-    isClickTab.current = true;
 
     if (hasAll || hasLikes || hasTips) {
       singleLoadData({ type: id, page: 1 });

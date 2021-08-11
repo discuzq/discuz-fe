@@ -2,7 +2,6 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'next/router';
 import { Button, Input, Toast } from '@discuzq/design';
-import '@discuzq/design/dist/styles/index.scss';
 import layout from './index.module.scss';
 import HomeHeader from '@components/home-header';
 import Header from '@components/header';
@@ -65,7 +64,7 @@ class BindNicknameH5Page extends React.Component {
           }
 
           if (needToBindWechat === true) {
-            return this.props.router.push(`/user/wx-bind-qrcode?sessionToken=${sessionToken}&loginType=${platform}&nickname=${nickName}`);
+            return this.props.router.push(`/user/wx-bind-qrcode?sessionToken=${sessionToken}&loginType=${platform}&nickname=${nickName}&isSkip=${true}`);
           }
           if (statusMsg && statusCode) {
             return this.props.router.push(`/user/status?statusCode=${statusCode}&statusMsg=${statusMsg}`);

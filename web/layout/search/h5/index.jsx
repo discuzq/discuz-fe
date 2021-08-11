@@ -14,6 +14,7 @@ import SidebarPanel from '@components/sidebar-panel';
 @observer
 class SearchH5Page extends React.Component {
   onSearch = (keyword) => {
+    this.props.search.currentKeyword = keyword;
     this.props.router.push(`/search/result?keyword=${keyword || ''}`);
   };
 
@@ -52,6 +53,12 @@ class SearchH5Page extends React.Component {
 
     const { dispatch = () => {} } = this.props;
     dispatch('refresh', {});
+  }
+
+  componentDidMount() {
+    const { search } = this.props;
+    this.props.baselayout['h5-search-result'] = -1;
+    search.resetSearchData();
   }
 
   render() {

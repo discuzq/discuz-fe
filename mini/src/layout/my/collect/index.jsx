@@ -26,47 +26,74 @@ class Index extends React.Component {
         duration: 2000,
       });
     } else {
-      let collectTotalCount = totalCount;
+      let collectTotalCount = index.getAttribute({
+        namespace: 'collect',
+        key: 'totalCount',
+      });
       Toast.success({
         content: '取消收藏成功',
         duration: 2000,
       });
       // 这里需要对收藏条数做单独处理
-      collectTotalCount--;
+      collectTotalCount = collectTotalCount - 1;
       if (collectTotalCount <= 0) {
         collectTotalCount = 0;
       }
-      // FIXME: 这里采用数组截取的方式也直接改变了原数据--不安全
-      pageData.splice(pageData.indexOf(item), 1);
-      this.props.index.setThreads({ ...index.threads, totalCount: collectTotalCount, pageData: [...pageData] });
-      this.props.dispatch();
+
+      index.setAttribute({ namespace: 'collect', key: 'totalCount', value: collectTotalCount });
+      index.deleteListItem({ namespace: 'collect', item });
     }
   }, 1000);
 
   render() {
     const { index } = this.props;
-    const { pageData = [], currentPage, totalPage, totalCount } = index.threads || {};
+
+    const { lists } = index;
+
+    const collectThreadsList = index.getList({
+      namespace: 'collect',
+    });
+
+    const totalCount = index.getAttribute({
+      namespace: 'collect',
+      key: 'totalCount',
+    });
+
+    const totalPage = index.getAttribute({
+      namespace: 'collect',
+      key: 'totalPage',
+    });
+
+    const currentPage = index.getAttribute({
+      namespace: 'collect',
+      key: 'currentPage',
+    });
+
+    const requestError = index.getListRequestError({ namespace: 'collect' });
+
     return (
       <BaseLayout
-        showLoadingInCenter={!pageData?.length}
+        showLoadingInCenter={!collectThreadsList?.length}
         showHeader={false}
         noMore={currentPage >= totalPage}
         onRefresh={this.props.dispatch}
+        requestError={requestError.isError}
+        errorText={requestError.errorText}
       >
-        {pageData?.length !== 0 && (
+        {collectThreadsList?.length !== 0 && (
           <View className={styles.titleBox}>
             <Text className={styles.num}>{`${totalCount || 0}`}</Text>
             条收藏
           </View>
         )}
 
-        {pageData?.map((item, index) => (
+        {collectThreadsList?.map((item) => (
           <ThreadContent
             onClickIcon={async () => {
               this.handleUnFavoriteItem(item);
             }}
             isShowIcon
-            key={index + new Date().getTime()}
+            key={`${item.threadId}-${item.updatedAt}`}
             data={item}
           />
         ))}

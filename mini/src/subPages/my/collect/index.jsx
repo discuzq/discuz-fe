@@ -19,34 +19,50 @@ class Index extends React.Component {
 
   constructor(props) {
     super(props);
+    this.props.index.registerList({ namespace: 'collect' });
   }
 
   async componentDidMount() {
     Taro.hideShareMenu();
     const { index } = this.props;
-    index.setThreads(null);
-    await index.getReadThreadList({
+    const threadsResp = await index.fetchList({
+      namespace: 'collect',
+      perPage: 10,
+      page: this.page,
       filter: {
         complex: 3,
       },
-      perPage: this.perPage,
-      page: 1,
+    });
+
+    index.setList({
+      namespace: 'collect',
+      data: threadsResp,
+      page: this.page,
     });
   }
 
   componentWillUnmount() {
-    this.props.index.setThreads(null);
+    const { index } = this.props;
+    index.clearList({ namespace: 'collect' });
   }
 
   dispatch = async () => {
     const { index } = this.props;
 
     this.page += 1;
-    return await index.getReadThreadList({
+
+    const threadsResp = await index.fetchList({
+      namespace: 'collect',
+      perPage: 10,
+      page: this.page,
       filter: {
         complex: 3,
       },
-      perPage: this.perPage,
+    });
+
+    index.setList({
+      namespace: 'collect',
+      data: threadsResp,
       page: this.page,
     });
   };
