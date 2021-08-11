@@ -19,7 +19,7 @@
     .dzq-modal__container {
       width: rem(409);
       height: rem(423);
-      border-radius: rem(var(--border-radius-small));
+      border-radius: rem($border-radius-small);
       background: $white;
       box-sizing: border-box;
       padding: rem($padding-6n);
@@ -50,7 +50,7 @@
     text-align: center;
     font-size: rem($font-size-middle);
     color: $text-color-primary;
-    font-weight: var(--font-weight-regular);
+    font-weight: $font-weight-regular;
     letter-spacing: 1px;
   }
   .inputItem {
