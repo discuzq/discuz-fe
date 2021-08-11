@@ -3,6 +3,10 @@
   height: 100vh;
   width: 100vw;
   background: $white;
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: 0%;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   .header {
@@ -80,5 +84,9 @@
 }
 .zindex {
   z-index: -1;
+}
+
+.box {
+  margin-bottom: env(safe-area-inset-bottom)
 }
 

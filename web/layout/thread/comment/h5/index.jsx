@@ -465,7 +465,7 @@ class CommentH5Page extends React.Component {
           )}
         </div>
         {isReady && (
-          <div className={styles.inputooterContainer}>
+          <div className={styles.inputFooterContainer}>
             <div className={styles.inputFooter}>
               {/* 评论区触发 */}
               <div className={footer.inputClick} onClick={() => this.onInputClick()}>

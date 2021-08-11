@@ -181,10 +181,10 @@ const InputPop = (props) => {
 
   const handleUploadChange = async (list) => {
     setImageList([...list]);
-    if (list.length > 0 && isDisabled) {
+    if (list.length > 0 && isDisabled ) {
       setDisabled(false);
     }
-    if (list.length === 0 && !isDisabled) {
+    if (list.length === 0 && !isDisabled  && value.length === 0) {
       setDisabled(true);
     }
   };
@@ -263,7 +263,7 @@ const InputPop = (props) => {
     if (e.target.value.length > 0 && isDisabled) {
       setDisabled(false);
     }
-    if (e.target.value.length === 0 && !isDisabled) {
+    if (e.target.value.length === 0 && !isDisabled  && value.length === 0) {
       setDisabled(true);
     }
   };
