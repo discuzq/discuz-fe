@@ -5,7 +5,7 @@ import styles from './index.module.scss';
 import classNames from 'classnames';
 import ProgressRender from './progress-render';
 import { fixImageOrientation } from '@common/utils/exif';
-import fileUpload from '@common/utils/upload';
+import commonUpload from '@common/utils/common-upload';
 
 
 export default function DzqUpload(props) {
@@ -28,15 +28,16 @@ export default function DzqUpload(props) {
     className,
     wxChooseImage = () => new Promise(resolve => resolve([])),
   } = props;
+  const type = data.type;
   const multiple = limit > 1;
   const post = async (file, list, updater) => {
     const fileImg = await fixImageOrientation(file.originFileObj);
     if (cosOptions) {
       file.status = 'uploading';
       updater(list);
-      const response = await fileUpload({
+      const response = await commonUpload({
         files: [fileImg],
-        type: 1,
+        type,
         ...cosOptions,
       });
       const res = response[0];

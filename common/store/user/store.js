@@ -99,6 +99,9 @@ class UserStore {
   @observable userShieldTotalPage = 1; // 总页数
   @observable userShieldTotalCount = 0; // 总条数
 
+  // target user 数据表，以 user id 作为映射
+  @observable targetUsers = {};
+
   @computed get userStatus() {
     return get(this.userInfo, 'status');
   }

@@ -16,7 +16,7 @@ export default function fuzzyCalcContentLength(content, lengthInLine = 50) {
     let _content = content;
 
     const EMOJ_SIZE = 1.5;
-    const IMG_DEFAULT_HEIGHT = lengthInLine * 4;
+    const IMG_DEFAULT_HEIGHT = lengthInLine * 6;
     const countEmojs = (_content?.match(/qq-emotion/g) || []).length;
 
     // 替换表情标签
@@ -25,9 +25,13 @@ export default function fuzzyCalcContentLength(content, lengthInLine = 50) {
     const links = getImgLinksFromText(newContent);
     let totalImgHeight = 0;
     for(let i = 0; links?.length && i < links.length; i++) {
-        const imgObj = new Image();
-        imgObj.src = links[i];
-        totalImgHeight += imgObj?.height || IMG_DEFAULT_HEIGHT;
+        if (typeof Image === "undefined") {
+            totalImgHeight +=  IMG_DEFAULT_HEIGHT;
+        } else {
+            const imgObj = new Image();
+            imgObj.src = links[i];
+            totalImgHeight += imgObj?.height || IMG_DEFAULT_HEIGHT;
+        }
     }
 
     // 替换图片标签

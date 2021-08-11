@@ -60,12 +60,12 @@
     .forum_member_img{
       @include img;
     }
-    .forum_member_img:nth-child(2){
+    &>view:nth-child(2){
       position: relative;
       left: rem(-4);
       z-index: $zindex-backtotop;
     }
-    .forum_member_img:nth-child(3){
+    &>view:nth-child(3){
       position: relative;
       left: rem(-8);
       z-index: $zindex-backtotop;

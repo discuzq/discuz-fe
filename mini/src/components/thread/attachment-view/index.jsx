@@ -271,17 +271,8 @@ const Index = ({
       setIsShowMore(attachments.length > ATTACHMENT_FOLD_COUNT);
     }
   }, []);
-
   const clickMore = () => {
-    // 首页则展开所有附件，非首页进入帖子详情
-    const {path} = Taro.getCurrentInstance().router;
-    if (~path.indexOf('/indexPages/home/index')) {
-      setIsShowMore(false);
-    } else {
-      Router.push({
-        url: `/indexPages/thread/index?id=${threadId}`,
-      });
-    }
+    setIsShowMore(false);
   };
 
   return (

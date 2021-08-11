@@ -10,20 +10,16 @@ import ThreadCenterView from '@components/thread/ThreadCenterView';
 @observer
 class Index extends React.Component {
   // 渲染单项草稿组件
-  renderItem = ({ item, onEdit, isLast }) => {
-    return (
+  renderItem = ({ item, onEdit, isLast }) => (
       <div className={classNames(styles.item, { [styles['border-none']]: isLast })}>
         <ThreadCenterView data={item} onClick={() => onEdit(item)} />
         <div className={styles['item-time']} onClick={() => onEdit(item)}>
           编辑于&nbsp;{item.updatedAt}
         </div>
       </div>
-    )
-  }
+  )
 
-  getRenderList = (data = []) => {
-    return data.map(item => ({ id: item.threadId, ...item }));
-  }
+  getRenderList = (data = []) => data.map(item => ({ id: item.threadId, ...item }))
 
   render() {
     const { index, dispatch, onDelete, onEdit } = this.props;

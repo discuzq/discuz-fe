@@ -20,23 +20,32 @@ class BlockPcPage extends React.Component {
     super(props);
 
     this.state = {
-      isLoading: true
+      isLoading: true,
     };
   }
 
   async componentDidMount() {
+    this.props.router.events.on('routeChangeStart', this.beforeRouterChange);
     await this.props.user.getUserShieldList();
 
-    this.setState({ isLoading: false })
+    this.setState({ isLoading: false });
   }
 
   componentWillUnmount() {
-    this.props.user.clearUserShield();
+    this.props.router.events.off('routeChangeStart', this.beforeRouterChange);
   }
 
   redirectToSearchResultPost = () => {
     this.props.router.push(`/search/result-post?keyword=${this.state.value || ''}`);
   };
+
+
+  beforeRouterChange = (url) => {
+    // 如果不是进入 用户信息 详情页面
+    if (!/user\/[0-9]{0,10}/.test(url)) {
+      this.props.user.clearUserShield();
+    }
+  }
 
   // 加载更多函数
   loadMore = async () => {
@@ -54,12 +63,13 @@ class BlockPcPage extends React.Component {
   );
 
   render() {
-    const { isLoading } = this.state
+    const { isLoading } = this.state;
     const { user } = this.props;
     const { userShieldPage, userShieldTotalPage, userShield, userShieldTotalCount } = user;
 
     return (
       <BaseLayout
+        name={'block'}
         right={this.renderRight}
         immediateCheck={false}
         onRefresh={this.loadMore}

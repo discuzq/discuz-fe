@@ -15,6 +15,7 @@ import setWxShare from '@common/utils/set-wx-share';
 
 @inject('site')
 @inject('user')
+@inject('index')
 @observer
 class H5OthersPage extends React.Component {
   constructor(props) {
@@ -104,7 +105,14 @@ class H5OthersPage extends React.Component {
   fetchTargetUserThreads = async () => {
     const { query } = this.props.router;
     if (query.id) {
-      await this.props.user.getTargetUserThreads(query.id);
+      const targetUserThreadsList = await this.props.index.fetchList({
+        namespace: `user/${query.id}`,
+        filter: {
+          toUserId: query.id,
+          complex: 5,
+        },
+      });
+      this.props.index.setList({ namespace: `user/${query.id}`, data: targetUserThreadsList });
     }
     return;
   };
@@ -133,14 +141,37 @@ class H5OthersPage extends React.Component {
   render() {
     const { site, user } = this.props;
     const { platform } = site;
-    const { targetUserThreads, targetUserThreadsTotalCount, targetUserThreadsPage, targetUserThreadsTotalPage } = user;
+    const { index } = this.props;
+    const { lists } = index;
+
+    const { query = {} } = this.props.router;
+
+    const userThreadsList = index.getList({
+      namespace: `user/${query.id}`,
+    });
+
+    const totalPage = index.getAttribute({
+      namespace: `user/${query.id}`,
+      key: 'totalPage',
+    });
+
+    const totalCount = index.getAttribute({
+      namespace: `user/${query.id}`,
+      key: 'totalCount',
+    });
+
+    const currentPage = index.getAttribute({
+      namespace: `user/${query.id}`,
+      key: 'currentPage',
+    });
+
     return (
       <BaseLayout
         showHeader={true}
         showTabBar={false}
         immediateCheck={true}
         onRefresh={this.fetchTargetUserThreads}
-        noMore={targetUserThreadsTotalPage < targetUserThreadsPage}
+        noMore={totalPage < currentPage}
         showRefresh={!this.state.fetchUserInfoLoading}
       >
         <div className={styles.mobileLayout}>
@@ -161,7 +192,7 @@ class H5OthersPage extends React.Component {
           <div className={styles.unit}>
             <div className={styles.threadUnit}>
               <div className={styles.threadTitle}>主题</div>
-              <div className={styles.threadCount}>{targetUserThreadsTotalCount}个主题</div>
+              <div className={styles.threadCount}>{totalCount === undefined ? '' : `${totalCount}个主题`}</div>
             </div>
 
             <div className={styles.dividerContainer}>
@@ -169,9 +200,8 @@ class H5OthersPage extends React.Component {
             </div>
 
             <div className={styles.threadItemContainer}>
-              {this.formatUserThreadsData(targetUserThreads)
-                && this.formatUserThreadsData(targetUserThreads).length > 0 && (
-                  <UserCenterThreads data={this.formatUserThreadsData(targetUserThreads)} />
+              {userThreadsList.length > 0 && (
+                  <UserCenterThreads data={userThreadsList} />
               )}
             </div>
           </div>

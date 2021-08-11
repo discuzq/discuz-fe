@@ -26,7 +26,7 @@ const SearchInput = ({
 }) => {
   const [value, setValue] = React.useState(defaultValue);
   const [isShow, setIsShow] = React.useState(false);
-  const [timeoutID, setTimeoutID] = React.useState(null);
+  const timeoutID = React.useRef(null);
   const inputRef = useRef(null);
 
   const inputChange = (e) => {
@@ -36,25 +36,25 @@ const SearchInput = ({
       if(!isShow) setIsShow(true)
     }
     if(searchWhileTyping && val.length >= searchWhileTypingStartsAt) {
-      if(timeoutID !== null) { // 做一个防抖Debounce
-        clearTimeout(timeoutID);
-        setTimeoutID(null);
+      if(timeoutID.current !== null) { // 做一个防抖Debounce
+        clearTimeout(timeoutID.current);
+        timeoutID.current = null;
       }
-      setTimeoutID(setTimeout(() => {
+      timeoutID.current = setTimeout(() => {
         onSearch(val);
-      }, searchWhileTyping ? 1000 : 0));
+      }, searchWhileTyping ? 1000 : 0);
     }
   }
 
   const onEnter = (e) => {
     const val = e.target.value || "";
-    if(timeoutID !== null) {
-      clearTimeout(timeoutID);
-      setTimeoutID(null);
+    if(timeoutID.current !== null) {
+      clearTimeout(timeoutID.current);
+      timeoutID.current = null;
     }
-    setTimeoutID(setTimeout(() => {
+    timeoutID.current = setTimeout(() => {
       onSearch(val);
-    }, 500));
+    }, 500);
   }
 
   const clearInput = () => {

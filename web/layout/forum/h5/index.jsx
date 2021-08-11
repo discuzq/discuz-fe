@@ -1,7 +1,8 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'next/router';
-import { Popup, Icon, Avatar } from '@discuzq/design';
+import { Popup, Icon } from '@discuzq/design';
+import Avatar from '@components/avatar';
 import '@discuzq/design/dist/styles/index.scss';
 import HomeHeader from '@components/home-header';
 import Header from '@components/header';
@@ -96,7 +97,7 @@ class ForumH5Page extends React.Component {
                     size='small'
                     className={layout.forum_agent_img}
                     image={siteAuthor.avatar}
-                    text={siteAuthor.nickname?.substring(0, 1)?.toUpperCase()}
+                    name={siteAuthor.nickname}
                   />
                   <span className={layout.forum_agent_name}>{siteAuthor.nickname}</span>
                 </div>
@@ -110,7 +111,7 @@ class ForumH5Page extends React.Component {
                 <div className={layout.forum_member}>
                   {
                       usersPageData?.slice(0, 3).map(item => (
-                        <Avatar size='small' key={item.userId} text={item.nickname?.substring(0, 1)?.toUpperCase()} className={layout.forum_member_img} image={item.avatar}/>
+                        <Avatar size='small' key={item.userId} text={item.nickname} className={layout.forum_member_img} image={item.avatar}/>
                       ))
                   }
                   <Icon size={10} color='#8590A6' name='RightOutlined'/>

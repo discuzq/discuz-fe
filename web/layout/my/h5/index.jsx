@@ -12,6 +12,7 @@ import { withRouter } from 'next/router';
 
 @inject('site')
 @inject('user')
+@inject('index')
 @observer
 class H5MyPage extends React.Component {
   constructor(props) {
@@ -25,8 +26,16 @@ class H5MyPage extends React.Component {
 
   fetchUserThreads = async () => {
     try {
-      const userThreadsList = await this.props.user.getUserThreads();
-      this.props.user.setUserThreads(userThreadsList);
+      const userThreadsList = await this.props.index.fetchList({
+        namespace: 'my',
+        filter: {
+          toUserId: 0,
+          complex: 5,
+        },
+      });
+      if (!this.unMount) {
+        this.props.index.setList({ namespace: 'my', data: userThreadsList });
+      }
     } catch (err) {
       console.error(err);
       let errMessage = '加载用户列表失败';
@@ -51,32 +60,13 @@ class H5MyPage extends React.Component {
     return Promise.resolve();
   };
 
-  fetchUserThreads = async () => {
-    try {
-      const userThreadsList = await this.props.user.getUserThreads();
-      if (!this.unMount) {
-        this.props.user.setUserThreads(userThreadsList);
-      }
-    } catch (err) {
-      let errMessage = '加载用户列表失败';
-      if (err.Code && err.Code !== 0) {
-        errMessage = err.Msg;
-      }
-      Toast.error({
-        content: errMessage,
-        duration: 2000,
-        hasMask: false,
-      });
-    }
-  };
-
   beforeRouterChange = (url) => {
     if (url === '/my') {
       return;
     }
     // 如果不是进入 thread 详情页面
     if (!/thread\//.test(url)) {
-      this.props.user.clearUserThreadsInfo();
+      this.props.index.clearList({ namespace: 'my' });
     }
   };
 
@@ -139,10 +129,32 @@ class H5MyPage extends React.Component {
 
   render() {
     const { isLoading } = this.state;
-    const { site, user } = this.props;
+    const { site } = this.props;
     const { platform } = site;
-    const { userThreads, userThreadsTotalCount, userThreadsPage, userThreadsTotalPage } = user;
-    const formattedUserThreads = this.formatUserThreadsData(userThreads);
+    const { index } = this.props;
+    const { lists } = index;
+
+    const myThreadsList = index.getList({
+      namespace: 'my',
+    });
+
+    const totalPage = index.getAttribute({
+      namespace: 'my',
+      key: 'totalPage',
+    });
+
+    const totalCount = index.getAttribute({
+      namespace: 'my',
+      key: 'totalCount',
+    });
+
+    const currentPage = index.getAttribute({
+      namespace: 'my',
+      key: 'currentPage',
+    });
+
+    const requestError = index.getListRequestError({ namespace: 'my' });
+
     return (
       <BaseLayout
         curr={'my'}
@@ -150,7 +162,9 @@ class H5MyPage extends React.Component {
         showHeader={false}
         showTabBar={true}
         onRefresh={this.onRefresh}
-        noMore={!isLoading && userThreadsPage >= userThreadsTotalPage}
+        noMore={!isLoading && currentPage >= totalPage}
+        requestError={requestError.isError}
+        errorText={requestError.errorText}
         immediateCheck
       >
         <div className={styles.mobileLayout}>
@@ -167,7 +181,7 @@ class H5MyPage extends React.Component {
           <div className={styles.unit}>
             <div className={styles.threadUnit}>
               <div className={styles.threadTitle}>主题</div>
-              <div className={styles.threadCount}>{userThreadsTotalCount}个主题</div>
+              <div className={styles.threadCount}>{totalCount !== undefined ? `${totalCount}个主题` : ''}</div>
             </div>
 
             <div className={styles.dividerContainer}>
@@ -175,7 +189,7 @@ class H5MyPage extends React.Component {
             </div>
 
             <div className={styles.threadItemContainer}>
-              {formattedUserThreads?.length > 0 && <UserCenterThreads data={formattedUserThreads} />}
+              {myThreadsList?.length > 0 && <UserCenterThreads data={myThreadsList} />}
             </div>
           </div>
         </div>

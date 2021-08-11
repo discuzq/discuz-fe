@@ -71,6 +71,8 @@ class PC extends React.Component {
     const { currentPage, totalPage, pageData = [] } = index.drafts || {};
     return (
       <BaseLayout
+        curr={'draft'}
+        pageName="draft"
         onRefresh={this.onPullingUp}
         noMore={currentPage >= totalPage}
         showRefresh={false}
