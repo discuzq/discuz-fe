@@ -11,8 +11,6 @@ import Audio from '@discuzq/design/dist/components/audio/index';
 import Toast from '@discuzq/design/dist/components/toast/index';
 import { Units } from '@components/common';
 import styles from './index.module.scss';
-import locals from '@common/utils/local-bridge';
-import constants from '@common/constants';
 import { THREAD_TYPE } from '@common/constants/thread-post';
 import commonUpload from '@common/utils/common-upload';
 
@@ -22,10 +20,6 @@ export default inject('threadPost', 'site')(observer(({ type, threadPost, site, 
   const { setAttach, qcloud } = webConfig;
   const { supportImgExt, supportMaxSize } = setAttach;
   const { qcloudCosBucketName, qcloudCosBucketArea, qcloudCosSignUrl, qcloudCos } = qcloud;
-
-
-
-
 
   const localData = JSON.parse(JSON.stringify(postData));
 
@@ -61,18 +55,22 @@ export default inject('threadPost', 'site')(observer(({ type, threadPost, site, 
 
     // 3 开始进行上传
     const type = isImage ? 1 : 0;
-
-    const res = await commonUpload({
-      files: cloneList,
-      type,
-      qcloudCos,
-      qcloudCosBucketName,
-      qcloudCosBucketArea,
-      qcloudCosSignUrl,
-      supportImgExt,
-      supportMaxSize,
-      host: envConfig.COMMON_BASE_URL
-    });
+    let res = [];
+    try {
+      res = await commonUpload({
+        files: cloneList,
+        type,
+        qcloudCos,
+        qcloudCosBucketName,
+        qcloudCosBucketArea,
+        qcloudCosSignUrl,
+        supportImgExt,
+        supportMaxSize,
+        host: envConfig.COMMON_BASE_URL
+      });
+    } catch (error) {
+      Taro.hideLoading();
+    }
 
     Taro.hideLoading();
     pageScrollTo({ selector: isImage ? "#thread-post-image" : "#thread-post-file" });

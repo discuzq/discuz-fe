@@ -1,6 +1,6 @@
 import { getCosTmpKey, updateAttachment } from '@common/server';
 import time from '@discuzq/sdk/dist/time';
-var COS = require('cos-wx-sdk-v5');
+const COS = require('./cos-wx-sdk-v5');
 
 export default (options) => {
   return new Promise(async (resolve, reject) => {
@@ -24,10 +24,6 @@ export default (options) => {
     const path = `public/attachments/${time.formatDate(new Date(), 'YYYY/MM/DD')}/`;
 
     // 初始化cos实例
-    // var cos = new COS({
-    //   SecretId: 'AKIDCJAnwjKjthEk6HBm6fwzhCLFRRBlsBxG',
-    //   SecretKey: 'DF1SjllSwlna8i9D6jAGFPPzT6TXHnac',
-    // });
     const cos = new COS({
       getAuthorization: async (_options, callback) => {
         const res = await getCosTmpKey({
@@ -83,6 +79,8 @@ export default (options) => {
           }
         });
       } else if (err) {
+        console.log(err);
+        debugger;
         // todo: 异常情况处理，上传失败
         reject(err);
       }

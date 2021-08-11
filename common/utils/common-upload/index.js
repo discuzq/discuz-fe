@@ -19,13 +19,19 @@ const commonUpload = (options) => {
       ...options
     };
 
-    return new Promise(async resolve => {
+    return new Promise(async (resolve, reject) => {
       try {
         const res = await cosSdkUpload(opts);
         resolve(res);
       } catch (error) {
-        const res = await attachmentApiUpload(opts);
-        resolve(res);
+
+        try {
+          const res = await attachmentApiUpload(opts);
+          resolve(res);
+        } catch (error) {
+          reject('error');
+        }
+
       }
     });
 
