@@ -58,7 +58,7 @@
       border-bottom: none;
       border-right: none;
       line-height: rem(50);
-      background: var(--comment-content-bg-color);
+      background: $comment-bg-color;
     }
   }
 }

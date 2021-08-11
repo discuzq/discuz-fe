@@ -65,6 +65,7 @@ export default class ReplyList extends React.Component {
   }
 
   transformer = (parsedDom) => {
+    const isSelf = this.props.threadId === this.props?.data?.userId || (this.props.threadId === this.props?.data?.commentUserId)
     const hasAvatarImage = !!this.props?.data?.commentUser?.avatar;
     const element =
       this.props.data.commentUserId && this.props.data?.commentUser ? (
@@ -87,6 +88,11 @@ export default class ReplyList extends React.Component {
           <span className={styles.replyedUserName} onClick={() => this.avatarClick(3)}>
             {this.props.data.commentUser.nickname || this.props.data.commentUser.userName || '用户异常'}
           </span>
+          {isSelf && (
+            <div className={styles.masterBox}>
+              <span className={styles.masterText}>楼主</span>
+            </div>
+          )}
         </div>
       ) : (
         ''
@@ -100,6 +106,7 @@ export default class ReplyList extends React.Component {
   render() {
     const { canLike, canDelete, canHide } = this.generatePermissions(this.props.data);
     const { groups } = this.props.data?.user || {};
+    const isSelf = this.props.threadId === this.props?.data?.userId
 
     // 评论回复内容是否通过审核
     const isApproved = this.props?.data?.isApproved === 1;
@@ -127,6 +134,11 @@ export default class ReplyList extends React.Component {
                 <div className={styles.replyListName} onClick={() => this.avatarClick(2)}>
                   {this.props.data?.user?.nickname || this.props.data?.user?.userName || '用户异常'}
                 </div>
+                {isSelf && (
+                    <div className={styles.masterBox}>
+                      <span className={styles.masterText}>楼主</span>
+                    </div>
+                  )}
                 {!!groups?.isDisplay && (
                   <div className={styles.groups}>{groups?.name || groups?.groupName}</div>
                 )}

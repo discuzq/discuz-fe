@@ -76,7 +76,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid var(--comment-content-bg-color);
+  border-bottom: 1px solid $comment-bg-color;
   box-sizing: border-box;
   height: rem(52);
   overflow: hidden;

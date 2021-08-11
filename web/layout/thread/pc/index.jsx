@@ -860,7 +860,7 @@ class ThreadPCPage extends React.Component {
     const { isCommentReady, isNoMore } = this.props.thread;
     const { thread: threadStore } = this.props;
     const { isReady } = threadStore;
-
+    console.log(this.props.thread.threadData);
     // 是否审核通过
     const isApproved = (threadStore?.threadData?.isApproved || 0) === 1;
     // TODO:目前还不清楚这块代码的作用，可能会对过滤代码块有影响
@@ -919,6 +919,7 @@ class ThreadPCPage extends React.Component {
               height="middle"
               onSubmit={value => this.onPublishClick(value)}
               initValue={this.state.inputValue}
+              threadId={this.props.thread?.threadData?.userId}
             ></CommentInput>
           </div>
         </Popup>

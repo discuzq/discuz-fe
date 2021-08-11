@@ -3,7 +3,7 @@
 .container {
   height: 100vh;
   width: 100vw;
-  background: var(--comment-content-bg-color);
+  background: $comment-bg-color;
 }
 
 .header {
@@ -74,7 +74,7 @@
     .lower {
       display: flex;
       justify-content: space-between;
-      
+
       font-size: $font-size-label;
       text-align: left;
       color: $text-color-secondary;

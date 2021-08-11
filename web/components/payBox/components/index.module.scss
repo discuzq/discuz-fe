@@ -52,7 +52,7 @@
   .ampuntLine {
     width: 100%;
     height: rem(10);
-    background-color: var(--comment-content-bg-color);
+    background-color: $comment-bg-color;
     margin: rem($margin-2n) 0;
   }
 }

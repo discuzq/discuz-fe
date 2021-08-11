@@ -114,7 +114,7 @@
   .ampuntLine {
     width: 100%;
     height: 10px;
-    background-color: var(--comment-content-bg-color);
+    background-color: $comment-bg-color;
     margin: $margin-2n 0;
   }
 }
