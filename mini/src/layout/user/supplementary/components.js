@@ -4,7 +4,6 @@ import Checkbox from '@discuzq/design/dist/components/checkbox/index';
 import Radio from '@discuzq/design/dist/components/radio/index';
 import Toast from '@discuzq/design/dist/components/toast/index';
 import { View } from '@tarojs/components';
-import '@discuzq/design/dist/styles/index.scss';
 import { ATTACHMENT_TYPE, ACCEPT_FILE_TYPES, ACCEPT_IMAGE_TYPES, THREAD_TYPE } from '@common/constants/thread-post';
 import Upload from './upload';
 

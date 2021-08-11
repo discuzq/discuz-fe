@@ -1,5 +1,6 @@
-// TODO: 除颜色和字体以外，其它变量需要逐步移动到scss变量中
-// TODO: 颜色待和董琳对接
+/**
+ * 默认主题
+ */
 $light: (
   --color-primary: #2469f6,
   --color-primary2: #3977f6,
@@ -9,9 +10,14 @@ $light: (
   --color-primary5: #7ba5f9,
   --color-primary6: #91b3fa,
   --color-primary7: #a7c3fb,
+  // checkbox 选中的背景颜色
   --color-primary8: #bcd1fc,
   --color-primary9: #d3e1fd,
   --color-primary10: #e8f0fe,
+  // --color-primary-opacity: rgba(#2469f6, 0.1), // 主要是 tag 组件的，暂时注释，等重构的时候再调整
+  // --color-primary-opacity: rgba(#2469f6, 0.6),
+
+  // 关闭按钮背景，小程序顶部胶囊按钮背景
   --color-primary20: #0545c8,
 
   --color-success: #3ac15f,
@@ -24,8 +30,11 @@ $light: (
   --color-success8: #c3ecce,
   --color-success9: #d7f3df,
   --color-success10: #ebf9ef,
+  // --color-success-opacity1: rgba(#3ac15f, 0.1),
+  // --color-success-opacity6: rgba(#3ac15f, 0.6),
 
-  --color-info: #5087f8, // TODO: 这里的色系和primary有重复，需要确认问题
+  // TODO: 这里的色系和primary有重复，需要确认问题
+  --color-info: #5087f8,
   --color-info2: #739ff9,
   --color-info3: #a7c3fb,
   --color-info4: #cadbfd,
@@ -41,6 +50,8 @@ $light: (
   --color-error8: #f6bcc1,
   --color-error9: #f9d3d6,
   --color-error10: #fce8ea,
+  // --color-error-opacity1: rgba(#e02433, 0.1),
+  // --color-error-opacity6: rgba(#e02433, 0.6),
 
   --color-warn: #ffc300,
   --color-warn2: #ffc819,
@@ -52,6 +63,8 @@ $light: (
   --color-warn8: #ffedb2,
   --color-warn9: #fff3cc,
   --color-warn10: #fff9e5,
+  // --color-warn-opacity1: rgba(#ffc300, 0.1),
+  // --color-warn-opacity6: rgba(#ffc300, 0.6),
 
   --color-disabled: #c5c6cb,
   --color-disabled2: #d0d1d5,
@@ -60,34 +73,41 @@ $light: (
   --color-disabled5: #f4f4f5,
   --color-white: #fff,
   --color-black: #000,
-  --color-h5-copyright: #c5c6ca,
 
   // 标签里面用到的：悬赏、付费等
   --color-orange: #f66524,
-  --color-orange2: #F67439,
-  --color-orange3: #F7834F,
-  --color-orange4: #F89365,
-  --color-orange5: #F9A27B,
-  --color-orange6: #FAB191,
-  --color-orange7: #FBC1A7,
-  --color-orange8: #FCD0BC,
-  --color-orange9: #FDE0D3,
-  --color-orange10: #FEEFE8,
+  --color-orange2: #f67439,
+  --color-orange3: #f7834f,
+  --color-orange4: #f89365,
+  --color-orange5: #f9a27b,
+  --color-orange6: #fab191,
+  --color-orange7: #fbc1a7,
+  --color-orange8: #fcd0bc,
+  --color-orange9: #fde0d3,
+  --color-orange10: #feefe8,
+  // --color-orange-opacity1: rgba(#f66524, 0.1),
+  // --color-orange-opacity6: rgba(#f66524, 0.6),
 
+  // 边框颜色
   --border-line-color: #eee,
-  --border-color-hover: #c5c6ca, // TODO: 待去掉，没用
 
+  // 边框引用颜色
   --border-color-blockquote: #dbdbdb,
 
+  // 阴影颜色
   --shadow-color: #c5c9d5,
   --shadow-color2: #f1f3f4,
 
+  // 正文主色，比如：正文标题、内容
   --color-text-primary: #0b0b37,
+  // 二级内容文字颜色
   --color-text-regular: #4f5a70,
+  // 次要文字颜色，比如：时间、置顶文字、操作文字（列表中的赞、评论、分享、数字）
   --color-text-secondary: #8590a6,
-  // 董琳说 8490a8 对应的应该是 8590a6
-  --color-text-placeholder: #c5c6cb, // border hover 的颜色还有 loading 文字和这个一致
+  // border hover 的颜色还有 loading 文字，copyright 和这个一致
+  --color-text-placeholder: #c5c6cb,
   --color-box-placeholder: #f1f3f4,
+  // 引用文字颜色
   --color-text-blockquote: #6a737d,
 
   // pc，移动都是统一这个背景色；另外 // 评论框，评论，附件，语音，模块与模块之间的间距背景色
@@ -97,63 +117,6 @@ $light: (
   // 灰色标签（编辑器付费、红包设置之后的显示的背景色），灰色按钮背景色
   --background-color-text2: #eff1f3,
 
-  --mask-background-color: rgba(0, 0, 0, 0.5), // 遮罩背景统一使用这个
-
-  // 评论相关
-  --comment-box-bg-color: #f5f7f8, // TODO: 没用，待去掉
-  --comment-content-bg-color: #f4f6f7, // TODO: 董琳找不着，需要相关人处理一下，如果找的到对应的设计稿颜色，找一下董琳和邹玉薇
-
-  // TODO: 待去掉
-  --border-border: 1px solid #eee,
-  // TODO: 待去掉
-
-  --border-color-dotted-border: 1px dashed #eee,
-  // TODO: 待去掉
-
-  // TODO: 下面的部分待移除
-  --font-size-label: 12px,
-  --font-size-primary: 14px,
-  --font-size-middle: 16px,
-  --font-size-large: 20px,
-
-  --font-line-height-small: 22px,
-  --font-line-height-primary: 24px,
-  --font-line-height-middle: 26px,
-  --font-line-height-large: 30px,
-
-  --font-weight-light: 400,
-  --font-weight-regular: 600,
-  --font-weight-bold: 800,
-
-  --box-shadow: 0 0 8px 0 #f1f3f4,
-
-  --border-radius-small: 5px,
-  --borde0a0s-cir0: 50%,
-  --border-radius-zero: 0,
-
-  --zindex-normal: 0,
-  --zindex-backtotop: 1000,
-  --zindex-too0p: 1200,
-  --zindex-popup: 1400,
-  --zindex-dialog: 1600,
-  --zindex-toast: 1800,
-
-
-
-  --padding-1n: 4px,
-  --padding-2n: 8px,
-  --padding-3n: 12px,
-  --padding-4n: 16px,
-  --padding-5n: 20px,
-  --padding-6n: 24px,
-  --padding-5: 5px,
-  --padding-10: 10px,
-  --margin-1n: 4px,
-  --margin-2n: 8px,
-  --margin-3n: 12px,
-  --margin-4n: 16px,
-  --margin-5n: 20px,
-  --margin-6n: 24px,
-  --margin-5: 5px,
-  --margin-10: 10px,
+  // 遮罩背景统一使用这个
+  --mask-background-color: rgba(0, 0, 0, 0.5),
 );

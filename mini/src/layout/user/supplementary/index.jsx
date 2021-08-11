@@ -2,7 +2,6 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import Button from '@discuzq/design/dist/components/button/index';
 import Toast from '@discuzq/design/dist/components/toast/index';
-import '@discuzq/design/dist/styles/index.scss';
 import { View } from '@tarojs/components';
 import layout from './index.module.scss';
 import { getSignInFields, setSignInFields } from '@server';

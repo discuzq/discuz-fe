@@ -1,5 +1,5 @@
 @import '@common/styles/fn/rem.scss';
-@import '@common/styles/_variable.scss';
+@import '@common/styles/index.scss';
 
 .splitEmelent {
  padding: 0 $padding-4n;
@@ -7,5 +7,5 @@
    .dzq-divider {
      margin: 0;
    }
- } 
+ }
 }
