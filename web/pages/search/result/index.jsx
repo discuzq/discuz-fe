@@ -36,18 +36,23 @@ class Index extends React.Component {
 
     const { serverSearch, search } = this.props;
 
-    // 初始化数据到store中
-    search.resetSearchData();
+    serverSearch && serverSearch.searchTopics && search.setSearchTopics(serverSearch.searchTopics);
+    serverSearch && serverSearch.searchUsers && search.setSearchUsers(serverSearch.searchUsers);
+    serverSearch && serverSearch.searchThreads && search.setSearchThreads(serverSearch.searchThreads);
   }
 
   async componentDidMount() {
     const { search, router } = this.props;
     const { keyword = '' } = router?.query;
 
+    const hasSearchTopics = !!search.searchTopics;
+    const hasSearchUsers = !!search.searchUsers;
+    const hasSearchThreads = !!search.searchThreads;
+
     await search.getSearchData({
-      hasTopics: false,
-      hasUsers: false,
-      hasThreads: false,
+      hasTopics: hasSearchTopics,
+      hasUsers: hasSearchUsers,
+      hasThreads: hasSearchThreads,
       search: keyword,
       type: 1,
     });

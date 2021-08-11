@@ -107,11 +107,11 @@ class Header extends React.Component {
         <img
           className={styles.siteLogo}
           src={site?.webConfig?.setSite?.siteLogo}
-          onClick={() => this.handleRouter('/')}
+          onClick={() => LoginHelper.gotoIndex()}
         />
       );
     }
-    return <img className={styles.siteLogo} src="/dzq-img/admin-logo-pc.png" onClick={() => this.handleRouter('/')} />;
+    return <img className={styles.siteLogo} src="/dzq-img/admin-logo-pc.png" onClick={() => LoginHelper.gotoIndex()} />;
   }
 
   dropdownUserUserCenterActionImpl = () => {

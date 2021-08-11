@@ -114,3 +114,7 @@ export { default as readWalletUser } from './wallet/read-walletUser';
 export { default as readWalletLog } from './wallet/read-walletLog';
 export { default as readWalletCash } from './wallet/read-walletCash';
 export { default as createWalletCash } from './wallet/createWalletCash';
+
+// cos上传
+export { default as getCosTmpKey } from './common/getCosTmpKey';
+export { default as updateAttachment } from './common/updateAttachment';

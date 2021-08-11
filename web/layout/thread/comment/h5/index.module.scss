@@ -2,6 +2,13 @@
 .index {
   height: 100vh;
   width: 100vw;
+  background: $white;
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: 0%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
   .header {
     height: rem(50);
     display: flex;
@@ -33,4 +40,40 @@
       color: $text-color-secondary;
     }
   }
+  .content {
+    width: 100%;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0%;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
 }
+
+.inputFooterContainer {
+  height: rem(50);
+  width: 100%;
+  flex: 0 rem(50);
+  background: $white;
+}
+
+.inputFooter {
+  position: fixed;
+  bottom: 0;
+  bottom: constant(safe-area-inset-bottom); ///兼容 IOS<11.2/
+  bottom: env(safe-area-inset-bottom); ///兼容 IOS>11.2/
+  left: 0;
+  width: 100%;
+  z-index: $zindex-backtotop;
+  min-height: rem(50);
+  padding-left: rem($padding-4n);
+  padding-right: rem($padding-4n);
+  box-sizing: border-box;
+  background: $white;
+  border-top: $border-solid-1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+

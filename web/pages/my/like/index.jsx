@@ -16,40 +16,42 @@ import { withRouter } from 'next/router';
 class Index extends React.Component {
   page = 1;
   prePage = 10;
-  static async getInitialProps(ctx) {
-    const result = await readTopicsList();
-    const threads = await readThreadList(
-      {
-        params: {
-          filter: {
-            complex: 2,
-          },
-          perPage: 10,
-        },
-      },
-      ctx,
-    );
+  // static async getInitialProps(ctx) {
+  //   const result = await readTopicsList();
+  //   const threads = await readThreadList(
+  //     {
+  //       params: {
+  //         filter: {
+  //           complex: 2,
+  //         },
+  //         perPage: 10,
+  //       },
+  //     },
+  //     ctx,
+  //   );
 
-    return {
-      serverIndex: {
-        threads: threads && threads.code === 0 ? threads.data : null,
-        totalPage: threads && threads.code === 0 ? threads.data.totalPage : null,
-        totalCount: threads && threads.code === 0 ? threads.data.totalCount : null,
-      },
-      serverSearch: {
-        topics: result?.data,
-      },
-    };
-  }
+  //   return {
+  //     serverIndex: {
+  //       threads: threads && threads.code === 0 ? threads.data : null,
+  //       totalPage: threads && threads.code === 0 ? threads.data.totalPage : null,
+  //       totalCount: threads && threads.code === 0 ? threads.data.totalCount : null,
+  //     },
+  //     serverSearch: {
+  //       topics: result?.data,
+  //     },
+  //   };
+  // }
 
   constructor(props) {
     super(props);
+    const { serverIndex, index, serverSearch, search } = this.props;
     this.state = {
       firstLoading: true, // 首次加载状态判断
       totalCount: 0,
       page: 1,
     };
-    const { serverIndex, index, serverSearch, search } = this.props;
+    index.registerList({ namespace: 'like' });
+
     if (serverIndex && serverIndex.threads) {
       index.setThreads(serverIndex.threads);
       this.state.page = 2;
@@ -73,17 +75,25 @@ class Index extends React.Component {
     const hasTopics = !!search.topics;
     this.page = 1;
     if (!hasThreadsData) {
-      const threadsResp = await this.props.index.getReadThreadList({
+      const threadsResp = await index.fetchList({
+        namespace: 'like',
+        perPage: 10,
         filter: {
           complex: 2,
         },
-        perPage: 10,
       });
+
+      index.setList({
+        namespace: 'like',
+        data: threadsResp,
+      });
+
       this.setState({
-        totalCount: threadsResp?.totalCount,
-        totalPage: threadsResp?.totalPage,
+        totalCount: threadsResp.data.totalCount,
+        totalPage: threadsResp.data.totalPage,
       });
-      if (this.state.page <= threadsResp?.totalPage) {
+
+      if (this.state.page <= threadsResp?.data.totalPage) {
         this.setState({
           page: this.state.page + 1,
         });
@@ -102,32 +112,30 @@ class Index extends React.Component {
     if (!/thread\//.test(url)) {
       this.clearStoreThreads();
     }
-  }
-
+  };
 
   clearStoreThreads = () => {
     const { index } = this.props;
-    index.setThreads(null);
+    index.clearList({ namespace: 'like' });
   };
-
-  componentWillUnmount() {
-    this.clearStoreThreads();
-    if (!isServer()) {
-      window.removeEventListener('popstate', this.clearStoreThreads);
-    }
-  }
 
   dispatch = async () => {
     const { index } = this.props;
     this.page += 1;
-    const threadsResp = await index.getReadThreadList({
-      perPage: this.prePage,
-      page: this.page,
+    const threadsResp = await index.fetchList({
+      namespace: 'like',
+      perPage: 10,
       filter: {
         complex: 2,
       },
     });
-    if (this.state.page <= threadsResp.totalPage) {
+
+    index.setList({
+      namespace: 'like',
+      data: threadsResp,
+    });
+
+    if (this.state.page <= threadsResp.data.totalPage) {
       this.setState({
         page: this.state.page + 1,
       });
@@ -135,7 +143,7 @@ class Index extends React.Component {
   };
 
   render() {
-    const { site } = this.props;
+    const { site, index } = this.props;
     const { platform } = site;
     const { firstLoading } = this.state;
 
@@ -151,7 +159,7 @@ class Index extends React.Component {
           />
         }
         pc={<IndexPCPage firstLoading={firstLoading} dispatch={this.dispatch} />}
-        title={`我的点赞`}
+        title={'我的点赞'}
       />
     );
   }
