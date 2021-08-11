@@ -25,20 +25,24 @@ class CommentDetail extends React.Component {
 
   async componentDidShow() {
     const { id, threadId, postId } = getCurrentInstance().router.params;
-    
+
     if (threadId) {
       this.props.comment.setThreadId(threadId);
     }
 
     if (postId) {
       this.props.comment.setPostId(Number(postId));
+    } else {
+      this.props.comment.setPostId(null);
     }
 
     if (id) {
-      const res = await readCommentDetail({ params: {
-        perPage: 20,
-        pid: Number(id) 
-      } });
+      const res = await readCommentDetail({
+        params: {
+          perPage: 20,
+          pid: Number(id),
+        },
+      });
 
       if (res.code !== 0) {
         // 404
@@ -65,11 +69,11 @@ class CommentDetail extends React.Component {
 
   render() {
     return this.state.isServerError ? (
-      <ErrorMiniPage text={this.state.serverErrorMsg}/>
+      <ErrorMiniPage text={this.state.serverErrorMsg} />
     ) : (
       <Page>
         {/* <ToastProvider> */}
-          <CommentMiniPage />
+        <CommentMiniPage />
         {/* </ToastProvider> */}
       </Page>
     );

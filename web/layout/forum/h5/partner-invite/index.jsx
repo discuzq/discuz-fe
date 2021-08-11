@@ -30,6 +30,7 @@ class PartnerInviteH5Page extends React.Component {
     this.state = {
       invitorName: '',
       invitorAvatar: '/dzq-img/login-user.png',
+      isRenew: !!this.props.user?.userInfo?.isRenew, // 是否属于续费加入
     };
   }
   async componentDidMount() {
@@ -75,8 +76,7 @@ class PartnerInviteH5Page extends React.Component {
         data: {      // data 中传递后台参数
           amount: sitePrice,
           title: siteName,
-          // type: user?.userInfo?.expiredAt ? 8 : 1, // 续费传8，新付费传1.站点付费注册
-          type: 1
+          type: this.state.isRenew ? 8 : 1 // 续费传8，新付费传1.站点付费注册
         },
         isAnonymous: false, // 是否匿名
         success: async () => {
@@ -102,7 +102,7 @@ class PartnerInviteH5Page extends React.Component {
   // 右侧 - 潮流话题 粉丝 版权信息
   renderRight = () => {
     const { site: { platform, webConfig = {} }, forum, user } = this.props;
-    const { invitorName, invitorAvatar } = this.state;
+    const { invitorName, invitorAvatar, isRenew } = this.state;
     const { setSite: { siteMode, sitePrice, siteMasterScale, siteExpire } = {} } = webConfig;
     const layout = platform === 'h5' ? mlayout : pclayout;
     const { inviteCode } = this.props.router.query;
@@ -113,6 +113,7 @@ class PartnerInviteH5Page extends React.Component {
     }
     const username = get(webConfig, 'setSite.siteAuthor.username', '');
     const avatar = get(webConfig, 'setSite.siteAuthor.avatar', '');
+
     // 站点介绍
     return (
       <>
@@ -177,7 +178,7 @@ class PartnerInviteH5Page extends React.Component {
               : <></>
           }
           <div className={layout.user_card_button} onClick={this.handleJoinSite}>
-            {siteMode === 'pay' ? (user.isLogin() ? `¥${sitePrice} 立即加入` : '登录浏览更多内容') : '立即加入' }
+            {siteMode === 'pay' ? (user.isLogin() ? `¥${sitePrice} ${isRenew ? '续费' : '立即'}加入` : '登录浏览更多内容') : '立即加入' }
           </div>
           {siteMode === 'pay' ? (
             <div className={layout.bottom_title}>
@@ -238,7 +239,7 @@ class PartnerInviteH5Page extends React.Component {
     const { site: { platform, webConfig = {} }, forum: { updataTime }, user } = this.props;
     const { inviteCode } = this.props.router.query;
     const { setSite: { siteMode, siteExpire, sitePrice, siteMasterScale } = {} } = webConfig;
-    const { invitorName, invitorAvatar } = this.state;
+    const { invitorName, invitorAvatar, isRenew } = this.state;
     const layout = platform === 'h5' ? mlayout : pclayout;
     // 内容数
     const countThreads = get(webConfig, 'other.countThreads', '');
@@ -294,7 +295,7 @@ class PartnerInviteH5Page extends React.Component {
                     </div>
                   ) : <></>}
                   <Button className={layout.bottom_button} onClick={this.handleJoinSite}>
-                    { user.isLogin() ? `${siteMode === 'pay' ? `¥${sitePrice} ` : ''}立即加入` : `${siteMode === 'pay' ? '登录浏览更多内容' : '立即加入'}` }
+                    { user.isLogin() ? `${siteMode === 'pay' ? `¥${sitePrice} ` : ''}${isRenew ? '续费' : '立即'}加入` : `${siteMode === 'pay' ? '登录浏览更多内容' : '立即加入'}` }
                   </Button>
                 </div>
                 </>

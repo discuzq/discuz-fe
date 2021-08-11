@@ -54,7 +54,7 @@ class TopicH5Page extends React.Component {
     const { pageData } = this.props.topic?.topicDetail || {};
     const { isError, errorText, fetchTopicInfoLoading = true } = this.props;
     return (
-      <BaseLayout allowRefresh={false}>
+      <BaseLayout allowRefresh={false} pageName="topic-detail">
         {
           fetchTopicInfoLoading ? (
             <BottomView loadingText='加载中...' className={styles.bottomViewBox} isError={isError} errorText={errorText} />

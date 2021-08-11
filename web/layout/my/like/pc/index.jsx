@@ -26,46 +26,69 @@ class LikePCPage extends React.Component {
     const { dispatch } = this.props;
     return dispatch('moreData');
   };
+
   // 右侧 - 潮流话题 粉丝 版权信息
   renderRight = () => {
     const { pageData = [] } = this.props.search.topics || { pageData: [] };
     return (
       <>
         <PopTopic />
-        <Copyright/>
+        <Copyright />
       </>
     );
-  }
+  };
+
   render() {
-    const { index, site } = this.props;
-    const { threads } = index;
-    const { pageData, currentPage, totalPage, totalCount = 0 } = threads || {};
+    const { index } = this.props;
+
+    const { lists } = index;
+
+    const likeThreadList = index.getList({ namespace: 'like' });
+
+    const totalCount = index.getAttribute({
+      namespace: 'like',
+      key: 'totalCount',
+    });
+
+    const totalPage = index.getAttribute({
+      namespace: 'like',
+      key: 'totalPage',
+    });
+
+    const currentPage = index.getAttribute({
+      namespace: 'like',
+      key: 'currentPage',
+    });
+
+    const requestError = index.getListRequestError({ namespace: 'like' });
+
     return (
       <BaseLayout
-        right={ this.renderRight }
+        right={this.renderRight}
         noMore={currentPage >= totalPage}
         showRefresh={false}
         onRefresh={this.fetchMoreData}
         rightClass={styles.rightSide}
-        isShowLayoutRefresh={!!pageData?.length}
+        isShowLayoutRefresh={!!likeThreadList?.length}
+        pageName={'like'}
         className="mylike"
       >
         <SidebarPanel
           title="我的点赞"
-          type='normal'
+          type="normal"
           isShowMore={false}
-          noData={!pageData?.length}
-          isLoading={!pageData}
+          noData={!likeThreadList?.length}
+          isLoading={!likeThreadList}
           icon={{ type: 3, name: 'LikeOutlined' }}
-          rightText={`共有${totalCount}条点赞`}
+          rightText={totalCount !== undefined ? `共有${totalCount}条点赞` : null}
           className={styles.container}
-          mold='plane'
-          isError={this.props.index.threadError.isError}
-          errorText={this.props.index.threadError.errorText}
+          mold="plane"
+          isError={requestError.isError}
+          errorText={requestError.errorText}
         >
-          {
-            pageData?.map((item, index) => <ThreadContent className={styles.threadContent} data={item} key={index} />)
-          }
+          {likeThreadList?.map((item, index) => (
+            <ThreadContent className={styles.threadContent} data={item} key={index} />
+          ))}
         </SidebarPanel>
       </BaseLayout>
     );

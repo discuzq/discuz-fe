@@ -11,16 +11,16 @@ import HOCFetchSiteData from '@middleware/HOCFetchSiteData';
 @inject('search')
 @observer
 class Index extends React.Component {
-  // static async getInitialProps(ctx) {
-  //   const search = ctx?.query?.keyword || '';
-  //   const result = await readThreadList({ params: { filter: { sequence: '0', filter: { sort: '3', search } } } }, ctx);
+  static async getInitialProps(ctx) {
+    const search = ctx?.query?.keyword || '';
+    const result = await readThreadList({ params: { filter: { scope: '0', filter: { sort: '3', search } } } }, ctx);
 
-  //   return {
-  //     serverSearch: {
-  //       threads: result?.data,
-  //     },
-  //   };
-  // }
+    return {
+      serverSearch: {
+        threads: result?.data,
+      },
+    };
+  }
 
   page = 1;
   perPage = 10;
@@ -29,7 +29,7 @@ class Index extends React.Component {
     super(props);
     const { serverSearch, search } = this.props;
     // 初始化数据到store中
-    search.setThreads(null);
+    serverSearch && serverSearch.threads && search.setThreads(serverSearch.threads);
   }
 
   async componentDidMount() {
@@ -37,9 +37,10 @@ class Index extends React.Component {
     const { keyword = '' } = router.query;
     // 当服务器无法获取数据时，触发浏览器渲染
     const hasThreads = !!search.threads;
-
-    this.page = 1;
-    await search.getThreadList({ search: keyword, scope: '2' });
+    if (!hasThreads) {
+      this.page = 1;
+      await search.getThreadList({ search: keyword, scope: '2' });
+    }
   }
 
   dispatch = async (type, keyword) => {
@@ -47,6 +48,7 @@ class Index extends React.Component {
    
     if (type === 'refresh') {
       this.page = 1;
+      search.setThreads(null);
     } else if (type === 'moreData') {
       this.page += 1;
     }

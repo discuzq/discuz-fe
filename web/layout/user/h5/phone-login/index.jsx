@@ -98,6 +98,7 @@ class LoginPhoneH5Page extends React.Component {
         if (e.uid) {
           this.props.commonLogin.setUserId(e.uid);
         }
+        e.accessToken && this.props.commonLogin.setLoginToken(e.accessToken);
         if (wechatEnv === 'miniProgram' && platform === 'h5') {
           this.props.commonLogin.needToBindMini = true;
           this.props.commonLogin.sessionToken = e.sessionToken;
@@ -115,7 +116,7 @@ class LoginPhoneH5Page extends React.Component {
         }
         this.props.commonLogin.needToBindWechat = true;
         this.props.commonLogin.sessionToken = e.sessionToken;
-        this.props.router.push(`/user/wx-bind-qrcode?sessionToken=${e.sessionToken}&loginType=${platform}&nickname=${e.nickname}`);
+        this.props.router.push(`/user/wx-bind-qrcode?sessionToken=${e.sessionToken}&loginType=${platform}&nickname=${e.nickname}&isSkip=${true}`);
         return;
       }
 

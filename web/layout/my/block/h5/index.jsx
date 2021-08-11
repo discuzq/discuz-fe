@@ -25,14 +25,23 @@ class Index extends React.Component {
   }
 
   async componentDidMount() {
+    this.props.router.events.on('routeChangeStart', this.beforeRouterChange);
     this.setState({
       height: window.outerHeight - 40, // header 是 40px，留出 2px ，用以触发下拉事件
     });
     await this.props.user.getUserShieldList();
   }
 
+
+  beforeRouterChange = (url) => {
+    // 如果不是进入 用户信息 详情页面
+    if (!/user\/[0-9]{0,10}/.test(url)) {
+      this.props.user.clearUserShield();
+    }
+  }
+
   componentWillUnmount() {
-    this.props.user.clearUserShield();
+    this.props.router.events.off('routeChangeStart', this.beforeRouterChange);
   }
 
   // 点击头像去到他人页面
@@ -50,34 +59,32 @@ class Index extends React.Component {
     const { user } = this.props;
     const { userShield = [], userShieldPage, userShieldTotalCount, userShieldTotalPage } = user || {};
     return (
-      <div className={styles.shieldBox}>
-        <Header />
+      <BaseLayout
+        // requestError={this.props.index.threadError.isError}
+        // errorText={this.props.index.threadError.errorText}
+        pageName={'block'}
+        showHeader={true}
+        noMore={userShieldTotalPage < userShieldPage}
+        onRefresh={this.loadMore}
+      >
         {userShield.length > 0 && <div className={styles.titleBox}>{`共有${userShieldTotalCount}位用户`}</div>}
-        <List
-          height={this.state.height}
-          immediateCheck={false}
-          showPullDown={false}
-          onRefresh={this.loadMore}
-          noMore={userShieldTotalPage < userShieldPage}
-        >
-          <div className={styles.blockSplitLine} />
-          {userShield.map((item, index) => (
-            <div className={styles.haieldImg} key={index}>
-              <div
-                className={styles.haieldImgBox}
-                onClick={() => {
-                  this.handleOnClick(item);
-                }}
-              >
-                <div className={styles.haieldImgHead}>
-                  <Avatar className={styles.img} image={item.avatar} name={item.username} userId={item.denyUserId} />
-                  <p className={styles.haieldName}>{item.nickname}</p>
-                </div>
+        <div className={styles.blockSplitLine} />
+        {userShield.map((item, index) => (
+          <div className={styles.haieldImg} key={index}>
+            <div
+              className={styles.haieldImgBox}
+              onClick={() => {
+                this.handleOnClick(item);
+              }}
+            >
+              <div className={styles.haieldImgHead}>
+                <Avatar className={styles.img} image={item.avatar} name={item.username} userId={item.denyUserId} />
+                <p className={styles.haieldName}>{item.nickname}</p>
               </div>
             </div>
-          ))}
-        </List>
-      </div>
+          </div>
+        ))}
+      </BaseLayout>
     );
   }
 }
