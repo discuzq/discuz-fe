@@ -206,6 +206,10 @@ class Detail extends React.Component {
 
   // 获取指定评论位置的相关信息
   async getPositionComment(id, postId) {
+    if(!postId) {
+      this.props?.commentPosition?.reset()
+    }
+    
     // 获取评论所在的页面位置
     if (id && postId && (!this.props?.commentPosition?.postsPositionPage)) {
       this.props.commentPosition.setPostId(Number(postId));
