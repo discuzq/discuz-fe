@@ -37,7 +37,7 @@ export default (options) => {
           callback({
             TmpSecretId: credentials.tmpSecretId,
             TmpSecretKey: credentials.tmpSecretKey,
-            SecurityToken: credentials.sessionToken,
+            XCosSecurityToken: credentials.sessionToken,
             StartTime: data.startTime,
             ExpiredTime: data.expiredTime,
           });
@@ -79,8 +79,6 @@ export default (options) => {
           }
         });
       } else if (err) {
-        console.log(err);
-        debugger;
         // todo: 异常情况处理，上传失败
         reject(err);
       }
