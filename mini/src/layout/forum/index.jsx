@@ -4,7 +4,6 @@ import { View } from '@tarojs/components';
 import Popup from '@discuzq/design/dist/components/popup/index';
 import Icon from '@discuzq/design/dist/components/icon/index';
 import Avatar from '@components/avatar';
-import '@discuzq/design/dist/styles/index.scss';
 import HomeHeader from '@components/home-header';
 import UserCenterUsers from '@components/user-center-users';
 import { get } from '@common/utils/get';

@@ -3,7 +3,6 @@ import { inject, observer } from 'mobx-react';
 import { withRouter } from 'next/router';
 import { Popup, Icon } from '@discuzq/design';
 import Avatar from '@components/avatar';
-import '@discuzq/design/dist/styles/index.scss';
 import HomeHeader from '@components/home-header';
 import Header from '@components/header';
 import List from '@components/list';

@@ -5,7 +5,6 @@ import Icon from '@discuzq/design/dist/components/icon/index';
 import Toast from '@discuzq/design/dist/components/toast/index';
 import Avatar from '@discuzq/design/dist/components/avatar/index';
 import { View, Button } from '@tarojs/components';
-import '@discuzq/design/dist/styles/index.scss';
 import HomeHeader from '@components/home-header';
 import layout from './index.module.scss';
 import bgImage from './../../../../web/public/dzq-img/invite-banner-bg.png';
@@ -33,7 +32,7 @@ class InviteH5Page extends React.Component {
       path: `/subPages/forum/partner-invite/index?inviteCode=${inviteCode}`,
       title: `邀请您加入 ${siteName}`,
     };
-    
+
     const { inviteData } = this.props.invite;
 
     return (
