@@ -401,14 +401,17 @@ class CommentH5Page extends React.Component {
   }
   onInputClick = () => {
     this.setState({ showCommentInput: true });
+    this.replyClick(this.props.comment.commentDetail);
   }
   onEmojiIconClick = () => {
     this.setState({ showCommentInput: true });
     this.setState({ showEmojis: true})
+    this.replyClick(this.props.comment.commentDetail);
   }
   onPcitureIconClick = () => {
     this.setState({ showCommentInput: true });
     this.setState({ showPicture: true });
+    this.replyClick(this.props.comment.commentDetail);
   }
   render() {
     const { commentDetail: commentData, isReady } = this.props.comment;

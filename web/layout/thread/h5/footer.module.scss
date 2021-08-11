@@ -1,6 +1,7 @@
 @import '@common/styles/index.scss';
 
 .inputClick {
+  flex:1;
   :global {
     .dzq-input__prefix-icon {
       color: $text-color-regular;
@@ -18,13 +19,13 @@
         text-align: left;
       }
     }
-    .dzq-input .is-disabled .dzq-input__inner {
+    .dzq-input.is-disabled .dzq-input__inner {
       background-color: $body-bg-color;
       -webkit-appearance: none; // ios下去除上面阴影
     }
   }
   .input {
-    width: rem(167);
+    width: 100%;
   }
 }
 
