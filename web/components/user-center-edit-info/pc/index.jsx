@@ -255,25 +255,56 @@ class index extends Component {
           display: 'show',
           condition: () => {
             // 条件都满足时才显示微信
-            const IS_WECHAT_ACCESSABLE = this.props.site.wechatEnv !== 'none' && !!this.user.wxNickname;
+            const IS_WECHAT_ACCESSABLE = this.props.site.wechatEnv !== 'none';
             return IS_WECHAT_ACCESSABLE;
           },
-          render: () => (
-            <div className={styles.pcEditNicknameImgs}>
-              <Avatar className={styles.pcEditNicknameImg} image={this.user.wxHeadImgUrl} name={this.user.wxNickname} />
-              <p className={styles.pcEditWeiName}>{this.user.wxNickname}</p>
-            </div>
-          ),
-          operation: () => (
-            <p
-              onClick={() => {
-                Router.push({ url: '/user/rebind' });
-              }}
-              className={styles.pcEditNicknameCallMsodify}
-            >
-              换绑
-            </p>
-          ),
+          render: () => {
+            const IS_WECHAT_HAS_BIND = Boolean(this.user.wxNickname);
+            if (!IS_WECHAT_HAS_BIND) {
+              return (
+                <div className={styles.pcEditNicknameImgs}>
+                  <p className={styles.pcEditWeiName}>未绑定</p>
+                </div>
+              );
+            }
+            return (
+              <div className={styles.pcEditNicknameImgs}>
+                <Avatar
+                  className={styles.pcEditNicknameImg}
+                  image={this.user.wxHeadImgUrl}
+                  name={this.user.wxNickname}
+                />
+                <p className={styles.pcEditWeiName}>{this.user.wxNickname}</p>
+              </div>
+            );
+          },
+          operation: () => {
+            const IS_WECHAT_HAS_BIND = Boolean(this.user.wxNickname);
+
+            if (!IS_WECHAT_HAS_BIND) {
+              return (
+                <p
+                  onClick={() => {
+                    Router.push({ url: '/user/wx-bind-qrcode' });
+                  }}
+                  className={styles.pcEditNicknameCallMsodify}
+                >
+                  去绑定
+                </p>
+              );
+            }
+
+            return (
+              <p
+                onClick={() => {
+                  Router.push({ url: '/user/rebind' });
+                }}
+                className={styles.pcEditNicknameCallMsodify}
+              >
+                换绑
+              </p>
+            );
+          },
           // <p
           //   onClick={() => {
           //     this.setState({
@@ -318,7 +349,7 @@ class index extends Component {
 
   saveInputEditor = (name) => {
     const { editorConfig } = this.state;
-    const targetConfig = editorConfig.filter((item) => item.name === name);
+    const targetConfig = editorConfig.filter(item => item.name === name);
     if (targetConfig.length) {
       targetConfig[0].isConfirm = true;
       this.setState({
@@ -329,7 +360,7 @@ class index extends Component {
 
   cancelInputConfirmEditor = (name) => {
     const { editorConfig } = this.state;
-    const targetConfig = editorConfig.filter((item) => item.name === name);
+    const targetConfig = editorConfig.filter(item => item.name === name);
     if (targetConfig.length) {
       targetConfig[0].isConfirm = false;
       this.setState({
@@ -340,7 +371,7 @@ class index extends Component {
 
   openInputEditor(name) {
     const { editorConfig } = this.state;
-    const targetConfig = editorConfig.filter((item) => item.name === name);
+    const targetConfig = editorConfig.filter(item => item.name === name);
     if (targetConfig.length) {
       targetConfig[0].display = 'edit';
       this.setState({
@@ -351,7 +382,7 @@ class index extends Component {
 
   closeInputEditor(name) {
     const { editorConfig } = this.state;
-    const targetConfig = editorConfig.filter((item) => item.name === name);
+    const targetConfig = editorConfig.filter(item => item.name === name);
     if (targetConfig.length) {
       targetConfig[0].display = 'show';
       targetConfig[0].isConfirm = false;

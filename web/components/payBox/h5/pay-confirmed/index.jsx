@@ -191,7 +191,7 @@ export default class PayBox extends React.Component {
 
   gotoBind = () => {
     this.props.payBox.visible = false;
-    Router.push({ url: '/user/wx-bind-qrcode' });
+    Router.push({ url: '/user/wx-bind-qrcode?jumpType=1' });
   }
 
   renderRightChoices = (item) => {

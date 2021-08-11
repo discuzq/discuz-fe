@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Taro, { getCurrentInstance, redirectTo, navigateTo  } from '@tarojs/taro';
-import { View, Navigator } from '@tarojs/components';
+import { View, Navigator, Text } from '@tarojs/components';
 import { observer, inject } from 'mobx-react';
 import Button from '@discuzq/design/dist/components/button/index';
 import Toast from '@discuzq/design/dist/components/toast/index';
@@ -23,6 +23,9 @@ class WXBind extends Component {
   constructor(props) {
     super(props);
     this.handleBindButtonClick = this.handleBindButtonClick.bind(this);
+    this.state = {
+      status: ''
+    }
   }
 
   async componentDidMount() {
@@ -49,6 +52,9 @@ class WXBind extends Component {
       if (res.code === 0) {
         this.props.h5QrCode.bindTitle = '已成功绑定';
         this.props.h5QrCode.isBtn = false;
+        this.setState({
+          status: 'success'
+        });
         return;
       }
       throw {
@@ -56,6 +62,9 @@ class WXBind extends Component {
         Message: res.msg,
       };
     } catch (error) {
+      this.setState({
+        status: 'error'
+      });
       this.props.commonLogin.setLoginLoading(true);
       await getParamCode(this.props.commonLogin);
       // 注册信息补充
@@ -106,7 +115,8 @@ class WXBind extends Component {
   }
 
   render() {
-    const { nickname } = getCurrentInstance().router.params;
+    const { nickname, jumpType = '' } = getCurrentInstance().router.params;
+    const { status } = this.state;
 
     return (
       <Page>
@@ -116,6 +126,7 @@ class WXBind extends Component {
               <View className={layout.title}>绑定小程序</View>
               <View className={layout.tips}>
                 {nickname ? `${nickname}，` : ''}{this.props.h5QrCode.bindTitle}
+                { jumpType === '1' && status === 'success' && <Text>请返回原页面继续支付</Text>}
               </View>
               {
                 this.props.h5QrCode.isBtn

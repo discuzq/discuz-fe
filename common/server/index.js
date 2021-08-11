@@ -55,6 +55,7 @@ export { default as h5WechatCodeBind } from './h5WechatCodeBind';
 export { default as miniQrcodeLogin } from './login/miniQrcodeLogin';
 export { default as miniQrcodeBind } from './login/miniQrcodeBind';
 export { default as genMiniScheme } from './genMiniScheme';
+export { default as genMiniBindScheme } from './genMiniBindScheme';
 export { default as miniBind } from './login/miniBind';
 export { default as miniLogin } from './login/miniLogin';
 export { default as usernameAutoBind } from './wx-username-auto-bind';

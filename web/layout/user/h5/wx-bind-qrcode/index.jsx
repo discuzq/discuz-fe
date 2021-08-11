@@ -11,7 +11,7 @@ import { BANNED_USER, REVIEWING, REVIEW_REJECT } from '@common/store/login/util'
 import PcBodyWrap from '../components/pc-body-wrap';
 import { MOBILE_LOGIN_STORE_ERRORS } from '@common/store/login/mobile-login-store';
 import { isExtFieldsOpen } from '@common/store/login/util';
-import { genMiniScheme } from '@server';
+import { genMiniBindScheme } from '@server';
 import SkipMiniPopup from '@components/login/skip-mini-popup';
 import locals from '@common/utils/local-bridge';
 import setAccessToken from '@common/utils/set-access-token';
@@ -48,7 +48,7 @@ class WeixinBindQrCodePage extends React.Component {
 
   async generateQrCode() {
     try {
-      const { sessionToken, nickname } = this.props.router.query;
+      const { sessionToken = '', nickname = '', jumpType = '' } = this.props.router.query;
       const { platform, wechatEnv } = this.props.site;
       const qrCodeType = platform === 'h5' ? 'mobile_browser_bind' : 'pc_bind';
       const { user } = this.props;
@@ -64,6 +64,7 @@ class WeixinBindQrCodePage extends React.Component {
           sessionToken,
           type: wechatEnv === 'miniProgram' ? 'pc_bind_mini' : qrCodeType,
           redirectUri: encodeURIComponent(redirectUri),
+          jumpType,
         },
       });
       // 组件销毁后，不执行后面的逻辑
@@ -137,8 +138,16 @@ class WeixinBindQrCodePage extends React.Component {
 
   onOkClick = async () => {
     this.props.commonLogin.needToBindMini = true;
-    const { sessionToken } = this.props.router.query;
-    const resp = await genMiniScheme();
+    const { sessionToken, jumpType } = this.props.router.query;
+    const resp = await genMiniBindScheme({
+      params: {
+        type: 'bind_mini',
+        query: {
+          scene: sessionToken,
+          jumpType
+        }
+      }
+    });
     if (resp.code === 0) {
       this.setState({
         visible: false
