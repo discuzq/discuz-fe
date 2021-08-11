@@ -439,72 +439,6 @@ class CommentH5Page extends React.Component {
             </View>
           </View> */}
 
-<<<<<<< HEAD
-        {/* 内容 */}
-        <View className={styles.content}>
-          {isReady && (
-            <CommentList
-              data={commentData}
-              likeClick={() => this.likeClick(commentData)}
-              replyClick={() => this.replyClick(commentData)}
-              deleteClick={() => this.deleteClick(commentData)}
-              avatarClick={() => this.avatarClick(commentData)}
-              replyLikeClick={(reploy) => this.replyLikeClick(reploy, commentData)}
-              replyReplyClick={(reploy) => this.replyReplyClick(reploy, commentData)}
-              replyDeleteClick={(reply) => this.replyDeleteClick(reply, commentData)}
-              replyAvatarClick={(reply,floor) =>this.replyAvatarClick(reply,commentData,floor)}
-              onMoreClick={() => this.onMoreClick()}
-              isHideEdit
-              threadId={this.props.thread.threadData.userId}
-            ></CommentList>
-          )}
-        </View>
-
-        <View className={styles.footer}>
-          {/* 评论弹层 */}
-          <InputPopup
-            visible={this.state.showCommentInput}
-            inputText={this.state.inputText}
-            onClose={() => this.setState({ showCommentInput: false })}
-            onSubmit={(value, imageList) => this.createReply(value, imageList)}
-            site={this.props.site}
-            checkUser={this.props?.thread?.checkUser || []}
-            thread={this.props?.thread}
-          ></InputPopup>
-
-          {/* 更多弹层 */}
-          <MorePopup
-            permissions={morePermissions}
-            statuses={moreStatuses}
-            visible={this.state.showMorePopup}
-            onClose={() => this.setState({ showMorePopup: false })}
-            onSubmit={() => this.setState({ showMorePopup: false })}
-            onOperClick={(type) => this.onOperClick(type)}
-          />
-
-          {/* 删除弹层 */}
-          <DeletePopup
-            visible={this.state.showDeletePopup}
-            onClose={() => this.setState({ showDeletePopup: false })}
-            onBtnClick={(type) => this.onBtnClick(type)}
-          />
-
-          {/* 删除回复弹层 */}
-          <DeletePopup
-            visible={this.state.showReplyDeletePopup}
-            onClose={() => this.setState({ showReplyDeletePopup: false })}
-            onBtnClick={() => this.replyDeleteComment()}
-          ></DeletePopup>
-
-          {/* 举报弹层 */}
-          <ReportPopup
-            reportContent={this.reportContent}
-            inputText={this.inputText}
-            visible={this.state.showReportPopup}
-            onCancel={() => this.setState({ showReportPopup: false })}
-            onOkClick={(data) => this.onReportOk(data)}
-          ></ReportPopup>
-=======
           {/* 内容 */}
           <ScrollView className={styles.body} scrollY scrollIntoView={this.state.toView}>
             <View className={styles.content}>
@@ -520,9 +454,10 @@ class CommentH5Page extends React.Component {
                   replyDeleteClick={(reply) => this.replyDeleteClick(reply, commentData)}
                   replyAvatarClick={(reply, floor) => this.replyAvatarClick(reply, commentData, floor)}
                   onMoreClick={() => this.onMoreClick()}
-                  isHideEdit={true}
+                  isHideEdit
                   postId={this.props.comment.postId}
                   positionRef={this.positionRef}
+                  threadId={this.props.thread.threadData.userId}
                 ></CommentList>
               )}
             </View>
@@ -573,7 +508,6 @@ class CommentH5Page extends React.Component {
               onOkClick={(data) => this.onReportOk(data)}
             ></ReportPopup>
           </View>
->>>>>>> origin/releases
         </View>
       </View>
     );

@@ -116,11 +116,7 @@ class CommentList extends React.Component {
     const { groups } = this.props.data?.user || {};
     // 评论内容是否通过审核
     const isApproved = this.props?.data?.isApproved === 1;
-<<<<<<< HEAD
     const isSelf = this.props.threadId === this.props?.data?.userId
-=======
-
->>>>>>> origin/releases
     return (
       <View className={styles.commentList}>
         <View className={styles.header}>
@@ -175,7 +171,6 @@ class CommentList extends React.Component {
                   <View className={styles.commentListName}>
                     {this.props.data?.user?.nickname || this.props.data?.user?.userName || '用户异常'}
                   </View>
-<<<<<<< HEAD
                   {!!isSelf && (
                     <View className={styles.masterBox}>
                       <Text className={styles.masterText}>楼主</Text>
@@ -184,9 +179,6 @@ class CommentList extends React.Component {
                   {!!groups?.isDisplay  && (
                     <View className={styles.groups}>{groups?.name || groups?.groupName}</View>
                   )}
-=======
-                  {!!groups?.isDisplay && <View className={styles.groups}>{groups?.name || groups?.groupName}</View>}
->>>>>>> origin/releases
                 </View>
                 {!isApproved ? <View className={styles.isApproved}>审核中</View> : <View></View>}
               </View>
@@ -258,13 +250,8 @@ class CommentList extends React.Component {
                       <ReplyList
                         data={this.needReply[0]}
                         key={this.needReply[0].id}
-<<<<<<< HEAD
                         isShowOne
                         avatarClick={(floor) => this.replyAvatarClick(this.needReply[0],floor)}
-=======
-                        isShowOne={true}
-                        avatarClick={(floor) => this.replyAvatarClick(this.needReply[0], floor)}
->>>>>>> origin/releases
                         likeClick={() => this.replyLikeClick(this.needReply[0])}
                         replyClick={() => this.replyReplyClick(this.needReply[0])}
                         deleteClick={() => this.replyDeleteClick(this.needReply[0])}
@@ -273,18 +260,6 @@ class CommentList extends React.Component {
                       ></ReplyList>
                     ) : (
                       (this.needReply || []).map((val, index) => (
-<<<<<<< HEAD
-                        <ReplyList
-                          data={val}
-                          key={val.id || index}
-                          avatarClick={(floor) => this.replyAvatarClick(val,floor)}
-                          likeClick={() => this.replyLikeClick(val)}
-                          replyClick={() => this.replyReplyClick(val)}
-                          deleteClick={() => this.replyDeleteClick(val)}
-                          toCommentDetail={() => this.toCommentDetail()}
-                          threadId={this.props.threadId}
-                        ></ReplyList>
-=======
                         <View key={val.id || index} ref={val.id === this.props.postId ? this.props.positionRef : null}>
                           <ReplyList
                             data={val}
@@ -294,9 +269,9 @@ class CommentList extends React.Component {
                             deleteClick={() => this.replyDeleteClick(val)}
                             toCommentDetail={() => this.toCommentDetail()}
                             active={val.id === this.props.postId}
+                            threadId={this.props.threadId}
                           ></ReplyList>
                         </View>
->>>>>>> origin/releases
                       ))
                     )}
                   </View>
