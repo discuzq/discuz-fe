@@ -52,6 +52,7 @@ const InputPop = (props) => {
           setValue('');
           setShowPicture(false);
           setImageList([]);
+          setDisabled(true);
         }
       } catch (error) {
         console.log(error);

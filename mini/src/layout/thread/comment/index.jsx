@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import { inject, observer } from 'mobx-react';
 import { View, ScrollView } from '@tarojs/components';
 import Router from '@discuzq/sdk/dist/router';
@@ -415,7 +415,6 @@ class CommentH5Page extends React.Component {
   }
   render() {
     const { commentDetail: commentData, isReady } = this.props.comment;
-
     // 更多弹窗权限
     const morePermissions = {
       canEdit: false,
@@ -512,6 +511,7 @@ class CommentH5Page extends React.Component {
             </View>
           </View>
         )}
+        <Fragment>
         <View className={styles.footer}>
           {/* 评论弹层 */}
           <InputPopup
@@ -561,6 +561,7 @@ class CommentH5Page extends React.Component {
             onOkClick={(data) => this.onReportOk(data)}
           ></ReportPopup>
         </View>
+        </Fragment>
         </View>
       </View>
     );

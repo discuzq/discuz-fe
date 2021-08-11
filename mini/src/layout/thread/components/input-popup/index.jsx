@@ -30,7 +30,6 @@ const InputPop = (props) => {
   const [bottomHeight, setBottomHeight] = useState(0);
   const [isDisabled, setDisabled] = useState(true)
   const [focus, setFocus] = useState(true);
-
   // 输入框光标位置
   const [cursorPos, setCursorPos] = useState(0);
   const onChange = (e) => {
@@ -41,8 +40,10 @@ const InputPop = (props) => {
     setValue(initValue);
   }, [initValue]);
   useEffect(() => {
-    setShowEmojis(props.showEmojis);
-    setFocus(false);
+    if(props.showEmojis) {
+      setFocus(false);
+      setShowEmojis(props.showEmojis);
+    }
     // 请求表情地址
     async function fetchEmojis() {
       if (!emojis?.length) {
@@ -56,8 +57,10 @@ const InputPop = (props) => {
     fetchEmojis()
   }, [props.showEmojis]);
   useEffect(() => {
-    setShowPicture(props.showPicture);
-    setFocus(false);
+    if(props.showPicture) {
+      setFocus(false);
+      setShowPicture(props.showPicture);
+    }
   }, [props.showPicture]);
   // 监听键盘的高度
   Taro.onKeyboardHeightChange((res) => {
@@ -86,6 +89,8 @@ const InputPop = (props) => {
           setShowPicture(false);
           setShowEmojis(false);
           setImageList([]);
+          setFocus(true);
+          setDisabled(false);
           thread.setCheckUser([]);
         }
       } catch (error) {
