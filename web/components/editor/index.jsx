@@ -13,8 +13,9 @@ import './index.scss';
 import '@discuzq/vditor/src/assets/scss/index.scss';
 import { Toast } from '@discuzq/design';
 import browser, { constants } from '@common/utils/browser';
-import { attachmentUploadMultiple } from '@common/utils/attachment-upload';
+// import { attachmentUploadMultiple } from '@common/utils/attachment-upload';
 import { inject, observer } from 'mobx-react';
+import commonUpload from '@common/utils/common-upload';
 
 function DVditor(props) {
   const { pc, emoji = {}, atList = [], topic, value = '', isResetContentText,
@@ -342,9 +343,10 @@ function DVditor(props) {
           accept: 'image/*',
           handler: async (files) => {
 
-            const { webConfig: { other, setAttach } } = site;
+            const { webConfig: { other, setAttach, qcloud } } = site;
             const { canInsertThreadImage } = other;
             const { supportImgExt, supportMaxSize } = setAttach;
+            const { qcloudCosBucketName, qcloudCosBucketArea, qcloudCosSignUrl, qcloudCos } = qcloud;
 
             if (!canInsertThreadImage) {
               Toast.error({
@@ -409,7 +411,16 @@ function DVditor(props) {
               hasMask: true,
               duration: 0,
             });
-            const res = await attachmentUploadMultiple(files);
+            const res = await commonUpload({
+              files,
+              type: 1,
+              supportImgExt,
+              supportMaxSize,
+              qcloudCosBucketName,
+              qcloudCosBucketArea,
+              qcloudCosSignUrl,
+              qcloudCos,
+            });
             const error = [];
             res.forEach(ret => {
               const { code, data = {} } = ret;

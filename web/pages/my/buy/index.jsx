@@ -14,35 +14,36 @@ import { withRouter } from 'next/router';
 class Index extends React.Component {
   page = 1;
   perPage = 10;
-  static async getInitialProps(ctx) {
-    const threads = await readThreadList(
-      {
-        params: {
-          filter: {
-            complex: 4,
-          },
-          perPage: 10,
-          page: 1,
-        },
-      },
-      ctx,
-    );
-    return {
-      serverIndex: {
-        threads: threads && threads.code === 0 ? threads.data : null,
-        totalPage: threads && threads.code === 0 ? threads.data.totalPage : null,
-        totalCount: threads && threads.code === 0 ? threads.data.totalCount : null,
-      },
-    };
-  }
+  // static async getInitialProps(ctx) {
+  //   const threads = await readThreadList(
+  //     {
+  //       params: {
+  //         filter: {
+  //           complex: 4,
+  //         },
+  //         perPage: 10,
+  //         page: 1,
+  //       },
+  //     },
+  //     ctx,
+  //   );
+  //   return {
+  //     serverIndex: {
+  //       threads: threads && threads.code === 0 ? threads.data : null,
+  //       totalPage: threads && threads.code === 0 ? threads.data.totalPage : null,
+  //       totalCount: threads && threads.code === 0 ? threads.data.totalCount : null,
+  //     },
+  //   };
+  // }
 
   constructor(props) {
     super(props);
+    const { serverIndex, index } = this.props;
     this.state = {
       totalCount: 0,
       page: 1,
     };
-    const { serverIndex, index } = this.props;
+    index.registerList({ namespace: 'buy' });
     if (serverIndex && serverIndex.threads) {
       index.setThreads(serverIndex.threads);
       this.state.page = 2;
@@ -58,13 +59,21 @@ class Index extends React.Component {
     const { index } = this.props;
     const hasThreadsData = !!index.threads;
     if (!hasThreadsData) {
-      const threadsResp = await index.getReadThreadList({
+      const threadsResp = await index.fetchList({
+        namespace: 'buy',
+        perPage: 10,
+        page: this.state.page,
         filter: {
           complex: 4,
         },
-        perPage: this.perPage,
-        page: 1,
       });
+
+      index.setList({
+        namespace: 'buy',
+        data: threadsResp,
+        page: this.state.page,
+      });
+
       this.setState({
         totalCount: threadsResp?.totalCount,
         totalPage: threadsResp?.totalPage,
@@ -84,7 +93,7 @@ class Index extends React.Component {
 
   clearStoreThreads = () => {
     const { index } = this.props;
-    index.setThreads(null);
+    index.clearList({ namespace: 'buy' });
   };
 
   beforeRouterChange = (url) => {
@@ -92,15 +101,22 @@ class Index extends React.Component {
     if (!/thread\//.test(url)) {
       this.clearStoreThreads();
     }
-  }
+  };
 
   dispatch = async () => {
     const { index } = this.props;
-    const threadsResp = await index.getReadThreadList({
+    const threadsResp = await index.fetchList({
+      namespace: 'buy',
+      perPage: 10,
+      page: this.state.page,
       filter: {
         complex: 4,
       },
-      perPage: this.perPage,
+    });
+
+    index.setList({
+      namespace: 'buy',
+      data: threadsResp,
       page: this.state.page,
     });
     if (this.state.page <= threadsResp.totalPage) {
@@ -128,7 +144,7 @@ class Index extends React.Component {
             dispatch={this.dispatch}
           />
         }
-        title={`我的购买`}
+        title={'我的购买'}
       />
     );
   }

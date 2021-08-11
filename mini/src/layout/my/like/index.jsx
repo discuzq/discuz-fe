@@ -9,15 +9,33 @@ import BaseLayout from '@components/base-layout';
 class Index extends React.Component {
   render() {
     const { index } = this.props;
-    const { pageData = [], currentPage, totalPage } = index.threads || {};
+
+    const { lists } = index;
+
+    const likeThreadList = index.getList({ namespace: 'like' });
+
+    const totalPage = index.getAttribute({
+      namespace: 'like',
+      key: 'totalPage',
+    });
+
+    const currentPage = index.getAttribute({
+      namespace: 'like',
+      key: 'currentPage',
+    });
+
+    const requestError = index.getListRequestError({ namespace: 'like' });
+
     return (
       <BaseLayout
         showHeader={false}
         noMore={currentPage >= totalPage}
         onRefresh={this.props.dispatch}
-        showLoadingInCenter={!pageData?.length}
+        showLoadingInCenter={!likeThreadList?.length}
+        requestError={requestError.isError}
+        errorText={requestError.errorText}
       >
-        {pageData?.map((item, index) => (
+        {likeThreadList?.map((item, index) => (
           <ThreadContent key={index} data={item} />
         ))}
       </BaseLayout>

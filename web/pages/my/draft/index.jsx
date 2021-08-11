@@ -17,6 +17,7 @@ class Draft extends React.Component {
   page = 1;
   perPage = 10;
   componentDidMount() {
+    this.props.router.events.on('routeChangeStart', this.beforeRouterChange);
     this.fetchData();
   }
 
@@ -35,6 +36,13 @@ class Draft extends React.Component {
 
   handleEdit = item => this.props.router.push(`/thread/post?id=${item.threadId}`);
 
+  beforeRouterChange = (url) => {
+    // 如果不是进入 发帖 页面
+    if (!/thread\//.test(url)) {
+      this.props.index.drafts = null;
+    }
+  };
+
   handleDelete = async (item) => {
     const { thread, index } = this.props;
     this.toastInstance = Toast.loading({
@@ -50,6 +58,10 @@ class Draft extends React.Component {
     } else {
       Toast.error({ content: res.msg });
     }
+  }
+
+  componentWillUnmount() {
+    this.props.router.events.off('routeChangeStart', this.beforeRouterChange);
   }
 
   render() {
@@ -73,10 +85,9 @@ class Draft extends React.Component {
             onDelete={item => this.handleDelete(item)}
           />
         }
-        title={`我的草稿箱`}
+        title={'我的草稿箱'}
       />
     );
-
   }
 }
 

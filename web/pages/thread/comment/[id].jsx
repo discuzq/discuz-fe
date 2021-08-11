@@ -62,6 +62,8 @@ class CommentDetail extends React.Component {
 
     if (postId) {
       this.props.comment.setPostId(Number(postId));
+    } else {
+      this.props.comment.setPostId(null);
     }
 
     if (!this.props.serverData && id) {
@@ -107,9 +109,12 @@ class CommentDetail extends React.Component {
       );
     }
 
-    return <ViewAdapter
-    h5={<CommentH5Page canPublish={this.props.canPublish}/>}
-    pc={<CommentPCPage canPublish={this.props.canPublish}/>} />;
+    return (
+      <ViewAdapter
+        h5={<CommentH5Page canPublish={this.props.canPublish} />}
+        pc={<CommentPCPage canPublish={this.props.canPublish} />}
+      />
+    );
   }
 }
 

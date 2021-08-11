@@ -305,9 +305,13 @@ class Detail extends React.Component {
       }
     }
   }
-  
+
   // 获取指定评论位置的相关信息
   async getPositionComment(id, postId) {
+    if (!postId) {
+      this.props?.commentPosition?.reset();
+    }
+
     // 获取评论所在的页面位置
     if (id && postId) {
       this.props.commentPosition.setPostId(Number(postId));
@@ -353,7 +357,7 @@ class Detail extends React.Component {
     return (
       <ViewAdapter
         h5={<ThreadH5Page />}
-        pc={<ThreadPCPage canPublish={canPublish}/>}
+        pc={<ThreadPCPage canPublish={canPublish} />}
         title={this.props?.thread?.title || ''}
         showSiteName={showSiteName}
       />

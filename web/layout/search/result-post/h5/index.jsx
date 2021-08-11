@@ -13,7 +13,7 @@ class SearchResultPostH5Page extends React.Component {
   constructor(props) {
     super(props);
 
-    const keyword = this.props.router.query.keyword || '';
+    const keyword = this.props.search.currentPostKeyword || '';
 
     this.state = {
       keyword,
@@ -40,6 +40,7 @@ class SearchResultPostH5Page extends React.Component {
   };
 
   onSearch = (keyword) => {
+    this.props.search.currentPostKeyword = keyword;
     this.setState({ keyword }, () => {
       this.refreshData();
     });
@@ -56,6 +57,7 @@ class SearchResultPostH5Page extends React.Component {
           noMore={currentPage >= totalPage}
           requestError={threadsError.isError}
           errorText={threadsError.errorText}
+          pageName="result-post"
       >
         <div className={styles.topBox}>
           <SearchInput onSearch={this.onSearch} onCancel={this.onCancel} defaultValue={keyword} isShowBottom={false} searchWhileTyping/>

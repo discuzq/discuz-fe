@@ -34,18 +34,18 @@ const List = forwardRef(({
   enableError = false,
   immediateCheck = true,
   requestError = false,
-  errorText='加载失败',
-  platform="",
+  errorText = '加载失败',
+  platform = '',
   showLoadingInCenter = true,
   site,
-  hideCopyright=false,
+  hideCopyright = false,
 }, ref) => {
   const listWrapper = useRef(null);
   const currentScrollTop = useRef(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [errText, setErrText] = useState(errorText);
-  const [isLoadingInCenter, setIsLoadingInCenter] = useState(false)
+  const [isLoadingInCenter, setIsLoadingInCenter] = useState(false);
 
   // 提前加载
   const isH5 = site?.platform === 'h5';
@@ -62,7 +62,7 @@ const List = forwardRef(({
   useEffect(() => {
     // 初始化的时候，是否立即请求一次
     if (immediateCheck && typeof(onRefresh) === 'function') {
-      onRefresh()
+      onRefresh();
     }
   }, []);
 
@@ -77,20 +77,18 @@ const List = forwardRef(({
     } else {
       setIsLoadingInCenter(false);
     }
-  }, [listWrapper.current, children, noMore])
+  }, [listWrapper.current, children, noMore]);
 
   useEffect(() => {
-    setIsError(requestError)
-  }, [requestError])
+    setIsError(requestError);
+  }, [requestError]);
 
   useEffect(() => {
-    setErrText(errorText)
-  }, [errorText])
+    setErrText(errorText);
+  }, [errorText]);
 
-  //移动端没有更多内容样式才有下划线
-  const noMoreType = useMemo(() => {
-    return isH5 ? 'line' : 'normal';
-  },[site.platform])
+  // 移动端没有更多内容样式才有下划线
+  const noMoreType = useMemo(() => (isH5 ? 'line' : 'normal'), [site.platform]);
 
   useImperativeHandle(
     ref,
@@ -174,7 +172,7 @@ const List = forwardRef(({
           .catch((err) => {
             setIsLoading(true);
             setIsError(true);
-            setErrText(err || '加载失败')
+            setErrText(err || '加载失败');
             onError(err);
           });
       } else {

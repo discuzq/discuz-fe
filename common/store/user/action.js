@@ -35,6 +35,59 @@ class UserAction extends SiteStore {
     super(props);
   }
 
+  // 获取指定 userid 的 用户信息
+  getTargetUserInfo({ userId }) {
+
+  }
+
+  // 拉取指定 userid 的 用户信息
+  fetchTargetUserInfo({ userId }) {
+
+  }
+
+  // 设置指定 userid 的 用户信息
+  setTargetUserInfo({
+    userId,
+    userInfo,
+  }) {
+
+  }
+
+  // 更新指定 userid 的 用户信息
+  updateTargetUserInfo({
+    userId,
+    updater,
+  }) {
+
+  }
+
+  // 删除指定 userid 的 用户信息
+  deleteTargetUserInfo({
+    userId,
+  }) {
+
+  }
+
+  // 获取指定用户的关注
+  getTargetUserFollowers({ userId, page }) {
+
+  }
+
+  // 获取指定用户的粉丝
+  getTargetUserFanses({ userId, page }) {
+
+  }
+
+  // 获取用户的关注者
+  getUserFollowers({ page }) {
+
+  }
+
+  // 获取用户的粉丝
+  getUserFanses({ page }) {
+
+  }
+
   @action
   removeUserInfo() {
     this.userInfo = null;
@@ -399,7 +452,7 @@ class UserAction extends SiteStore {
     Object.keys(this.userThreads).forEach((pageNum) => {
       const pageDataSet = this.userThreads[pageNum];
 
-      const itemIdx = pageDataSet.findIndex((item) => item.threadId === id);
+      const itemIdx = pageDataSet.findIndex(item => item.threadId === id);
 
       if (itemIdx === -1) return;
 
@@ -417,12 +470,15 @@ class UserAction extends SiteStore {
   setUserThreads = async (userThreadList) => {
     const pageData = get(userThreadList, 'data.pageData', []);
     const totalPage = get(userThreadList, 'data.totalPage', 1);
+    const currPage = get(userThreadList, 'data.currentPage', 1);
 
     this.userThreadsTotalPage = totalPage;
+
     this.userThreads = {
       ...this.userThreads,
-      [this.userThreadsPage]: pageData,
+      [currPage]: pageData,
     };
+
     this.userThreadsTotalCount = get(userThreadList, 'data.totalCount', 0);
 
     if (this.userThreadsPage <= this.userThreadsTotalPage) {
@@ -947,10 +1003,10 @@ class UserAction extends SiteStore {
 
       // 更新点赞
       if (
-        updateType === 'like' &&
-        !typeofFn.isUndefined(updatedInfo.isLiked) &&
-        !typeofFn.isNull(updatedInfo.isLiked) &&
-        user
+        updateType === 'like'
+        && !typeofFn.isUndefined(updatedInfo.isLiked)
+        && !typeofFn.isNull(updatedInfo.isLiked)
+        && user
       ) {
         const { isLiked, likePayCount = 0 } = updatedInfo;
         const theUserId = user.userId || user.id;
