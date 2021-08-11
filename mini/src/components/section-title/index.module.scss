@@ -27,7 +27,7 @@
   }
 }
 .title {
-  font-weight: var(--font-weight-regular);
+  font-weight: $font-weight-regular;
   line-height: $font-line-height-primary;
   color: var(--color-text-primary);
   margin-left: $padding-2n;

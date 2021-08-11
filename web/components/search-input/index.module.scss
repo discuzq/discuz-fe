@@ -33,15 +33,15 @@
     input {
       border: 0;
       background-color: inherit;
-      font-size: var(--font-size-primary);
-      line-height: var(--font-line-height-primary);
+      font-size: $font-size-primary;
+      line-height: $font-line-height-primary;
     }
   }
 }
 .cancel {
   margin-left: rem($padding-4n);
   font-size: rem($font-size-primary);
-  line-height: var(--font-line-height-primary);
+  line-height: $font-line-height-primary;
   color: var(--color-text-secondary);
   word-break: keep-all;
 }

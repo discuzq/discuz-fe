@@ -46,15 +46,15 @@
     overflow-y: auto;
   }
 }
-.footer {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-}
+// .footer {
+//   position: fixed;
+//   bottom: 0;
+//   width: 100%;
+// }
 .inputFooterContainer {
-  height: rem(50);
+  height: 50px;
   width: 100%;
-  flex:0 0 rem(50);
+  flex:0 0 50px;
   background: $white;
 }
 
@@ -66,9 +66,9 @@
   left: 0;
   width: 100%;
   z-index: $zindex-backtotop;
-  min-height: rem(50);
-  padding-left: rem($padding-4n);
-  padding-right: rem($padding-4n);
+  min-height: 50px;
+  padding-left: $padding-4n;
+  padding-right: $padding-4n;
   box-sizing: border-box;
   background: $white;
   border-top: $border-solid-1;
@@ -80,6 +80,6 @@
   z-index: -1;
 }
 
-.content {
+.box {
   margin-bottom: env(safe-area-inset-bottom)
 }

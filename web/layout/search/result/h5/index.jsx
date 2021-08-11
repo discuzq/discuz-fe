@@ -58,6 +58,7 @@ class SearchResultH5Page extends React.Component {
 
   onSearch = (keyword) => {
     // query 更新
+    this.props.search.resetResultData(); // 新的搜索要清空结果页缓存
     this.props.router.replace(`/search/result?keyword=${keyword}`);
     this.setState({ keyword }, () => {
       this.searchData(keyword);

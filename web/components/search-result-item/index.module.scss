@@ -61,7 +61,7 @@
   .title {
     font-size: rem($font-size-middle);
     line-height: rem($font-line-height-primary);
-    font-weight: var(--font-weight-bold);
+    font-weight: $font-weight-bold;
   }
   .content {
     display: box;

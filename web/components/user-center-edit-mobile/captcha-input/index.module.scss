@@ -5,7 +5,7 @@
   align-items: center;
   justify-content: space-between;
   .payListItem{
-    border-bottom: var(--border-border);
+    border-bottom: $border-solid-1;
     width: rem(40);
     height: rem(53);
     text-align: center;
