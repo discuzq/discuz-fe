@@ -7,12 +7,8 @@
       width: rem(48);
       color:  $text-color-regular
     }
-    .dzq-input.is-disabled .dzq-input__inner {
-      background-color: $body-bg-color;
-      -webkit-appearance: none; // ios下去除上面阴影
-    }
     .dzq-input__inner {
-      border-radius: 18px;
+      border-radius: rem(18);
       background-color: #fafafb !important;
       border: 1px solid #fefefe !important;
       padding-left: rem(42) !important;
@@ -22,6 +18,10 @@
         line-height: rem(24);
         text-align: left;
       }
+    }
+    .dzq-input.is-disabled .dzq-input__inner {
+      background-color: $body-bg-color;
+      -webkit-appearance: none; // ios下去除上面阴影
     }
   }
   .input {

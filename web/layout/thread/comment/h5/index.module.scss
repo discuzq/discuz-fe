@@ -2,6 +2,13 @@
 .index {
   height: 100vh;
   width: 100vw;
+  background: $white;
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: 0%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
   .header {
     height: rem(50);
     display: flex;
@@ -32,6 +39,15 @@
       padding-left: rem($padding-2n);
       color: $text-color-secondary;
     }
+  }
+  .content {
+    width: 100%;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0%;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
   }
 }
 

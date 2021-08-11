@@ -19,7 +19,7 @@
         text-align: left;
       }
     }
-    .dzq-input .is-disabled .dzq-input__inner {
+    .dzq-input.is-disabled .dzq-input__inner {
       background-color: $body-bg-color;
       -webkit-appearance: none; // ios下去除上面阴影
     }

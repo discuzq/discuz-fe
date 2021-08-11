@@ -3,7 +3,12 @@
   height: 100vh;
   width: 100vw;
   background: $white;
-
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: 0%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
   .header {
     height: 50px;
     display: flex;
@@ -37,7 +42,6 @@
   }
 
   .body {
-    padding-bottom: 50px;
     height: 100%;
     overflow-y: auto;
   }
@@ -76,3 +80,6 @@
   z-index: -1;
 }
 
+.content {
+  margin-bottom: env(safe-area-inset-bottom)
+}
