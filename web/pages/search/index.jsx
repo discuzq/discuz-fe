@@ -68,6 +68,7 @@ class Index extends React.Component {
       search.getSearchData({ hasTopics: hasIndexTopics, hasUsers: hasIndexUsers, hasThreads: hasIndexThreads, search: keyword });
     }
     topic.resetTopicsData();
+    search.resetResultData();
   }
 
   // 获取数据状态
