@@ -224,8 +224,8 @@ class CommentH5Page extends React.Component {
 
     const params = {};
     if (this.replyData && this.commentData) {
-      params.replyData = this.replyData; //本条回复信息
-      params.commentData = this.commentData; //回复对应的评论信息
+      params.replyData = this.replyData; // 本条回复信息
+      params.commentData = this.commentData; // 回复对应的评论信息
     }
     const { success, msg } = await this.props.comment.deleteReplyComment(params, this.props.thread);
     this.setState({
@@ -390,14 +390,17 @@ class CommentH5Page extends React.Component {
   }
   onInputClick = () => {
     this.setState({ showCommentInput: true });
+    this.replyClick(this.props.comment.commentDetail);
   }
   onEmojiIconClick = () => {
     this.setState({ showCommentInput: true });
     this.setState({ showEmojis: true });
+    this.replyClick(this.props.comment.commentDetail);
   }
   onPcitureIconClick = () => {
     this.setState({ showCommentInput: true });
     this.setState({ showPicture: true });
+    this.replyClick(this.props.comment.commentDetail);
   }
   render() {
     const { commentDetail: commentData, isReady } = this.props.comment;
@@ -494,9 +497,13 @@ class CommentH5Page extends React.Component {
           {/* 评论弹层 */}
           <InputPopup
             showEmojis={this.state.showEmojis}
-            cancleEmojie={() => {this.setState({ showEmojis: false });}}
+            cancleEmojie={() => {
+ this.setState({ showEmojis: false });
+ }}
             showPicture={this.state.showPicture}
-            canclePicture={() => {this.setState({ showPicture: false });}}
+            canclePicture={() => {
+ this.setState({ showPicture: false });
+ }}
             visible={this.state.showCommentInput}
             inputText={this.state.inputText}
             onClose={() => this.setState({ showCommentInput: false })}

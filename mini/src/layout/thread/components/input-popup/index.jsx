@@ -41,6 +41,7 @@ const InputPop = (props) => {
     setValue(initValue);
   }, [initValue]);
   useEffect(() => {
+    setFocus(true)
     if(props.showEmojis) {
       setFocus(false);
       setShowEmojis(props.showEmojis);
@@ -58,6 +59,7 @@ const InputPop = (props) => {
     fetchEmojis()
   }, [props.showEmojis]);
   useEffect(() => {
+    setFocus(true)
     if(props.showPicture) {
       setFocus(false);
       setShowPicture(props.showPicture);
@@ -269,7 +271,7 @@ const InputPop = (props) => {
     if (e.target.value.length > 0 && isDisabled) {
       setDisabled(false);
     }
-    if (e.target.value.length === 0 && !isDisabled  && value.length === 0) {
+    if (e.target.value.length === 0 && !isDisabled  && imageList.length === 0) {
       setDisabled(true);
     }
   };
