@@ -60,7 +60,7 @@
 
 .inputFooter {
   position: fixed;
-  bottom: 200;
+  bottom: 0;
   bottom: constant(safe-area-inset-bottom); ///兼容 IOS<11.2/
   bottom: env(safe-area-inset-bottom); ///兼容 IOS>11.2/
   left: 0;
