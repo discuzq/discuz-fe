@@ -139,7 +139,6 @@ class ThreadPCPage extends React.Component {
                   hintCustom={(type, key, textareaPosition, lastindex, vditor) =>
                     this.hintCustom(type, key, textareaPosition, lastindex, vditor)}
                   hintHide={this.hintHide}
-                  site={site}
                 />
 
                 <div ref={this.pluginContainer}>

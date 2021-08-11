@@ -13,9 +13,11 @@ import './index.scss';
 import '@discuzq/vditor/src/assets/scss/index.scss';
 import { Toast } from '@discuzq/design';
 import browser, { constants } from '@common/utils/browser';
+// import { attachmentUploadMultiple } from '@common/utils/attachment-upload';
+import { inject, observer } from 'mobx-react';
 import commonUpload from '@common/utils/common-upload';
 
-export default function DVditor(props) {
+function DVditor(props) {
   const { pc, emoji = {}, atList = [], topic, value = '', isResetContentText,
     onChange = () => { }, onFocus = () => { }, onBlur = () => { },
     onInit = () => { },
@@ -96,6 +98,7 @@ export default function DVditor(props) {
     if (users.length) {
       // setCursorPosition();
       vditor.insertValue && vditor.insertValue(users.join(''));
+      props.threadPost.setEditorHintAtKey('');
     }
   }, [atList]);
 
@@ -104,6 +107,7 @@ export default function DVditor(props) {
       setState({ topic: '' });
       // setCursorPosition();
       vditor.insertValue && vditor.insertValue(` ${topic} &nbsp; `);
+      props.threadPost.setEditorHintTopicKey('');
     }
   }, [topic]);
 
@@ -314,6 +318,7 @@ export default function DVditor(props) {
             {
               key: '@',
               hintCustom: (key, textareaPosition, lastindex) => {
+                props.threadPost.setEditorHintAtKey(key);
                 const position = getLineHeight(editor, textareaPosition, '@');
                 hintCustom('@', key, position, lastindex, editor.vditor);
               },
@@ -321,12 +326,15 @@ export default function DVditor(props) {
             {
               key: '#',
               hintCustom: (key, textareaPosition, lastindex) => {
+                props.threadPost.setEditorHintTopicKey(key);
                 const position = getLineHeight(editor, textareaPosition, '#');
                 hintCustom('#', key, position, lastindex, editor.vditor);
               },
             },
           ] : [],
           hide() {
+            props.threadPost.setEditorHintAtKey('');
+            props.threadPost.setEditorHintTopicKey('');
             hintHide();
           },
         },
@@ -454,3 +462,5 @@ export default function DVditor(props) {
     </>
   );
 }
+
+export default inject('threadPost', 'site')(observer(DVditor));
