@@ -52,6 +52,7 @@ const InputPop = (props) => {
           setValue('');
           setShowPicture(false);
           setImageList([]);
+          setShowEmojis(false);
           setDisabled(true);
         }
       } catch (error) {

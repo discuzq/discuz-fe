@@ -57,7 +57,7 @@ class SearchH5Page extends React.Component {
 
   componentDidMount() {
     const { search } = this.props;
-    this.props.baselayout['h5-search-result'] = -1;
+    this.props.baselayout['h5SearchResult'] = -1;
     search.resetSearchData();
   }
 

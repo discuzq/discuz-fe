@@ -20,8 +20,15 @@ const NEED_BIND_OR_REGISTER_USER = -7016;
 @inject('commonLogin')
 @observer
 class WeixinBindH5Page extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      status: ''
+    }
+  }
   render() {
-    const { sessionToken, loginType, code, sessionId, state, nickname }  = this.props.router.query;
+    const { sessionToken, loginType, code, sessionId, state, nickname = '', jumpType = '' }  = this.props.router.query;
+    const { status } = this.state;
     const { site } = this.props;
     const { platform } = site;
     return (
@@ -31,6 +38,7 @@ class WeixinBindH5Page extends React.Component {
           <div className={layout.title}>绑定微信号</div>
           <div className={layout.tips}>
             {nickname ? `${nickname}，` : ''}{this.props.h5QrCode.bindTitle}
+            { jumpType === '1' && status === 'success' && <><br/>请返回原页面继续支付</>}
           </div>
           {
             this.props.h5QrCode.isBtn
@@ -68,6 +76,7 @@ class WeixinBindH5Page extends React.Component {
       if (bindLoading) {
         return;
       }
+      const { jumpType = '' }  = this.props.router.query;
       const { router } = this.props;
       bindLoading = true;
       const res = await h5WechatCodeBind(opts);
@@ -80,7 +89,12 @@ class WeixinBindH5Page extends React.Component {
         return;
       }
       const { loginType }  = this.props.router.query;
-      if (res.code === 0 && loginType === 'h5') {
+      if (res.code === 0) {
+        this.setState({
+          status: 'success'
+        });
+      }
+      if (res.code === 0 && loginType === 'h5' && jumpType !== '1') {
         const accessToken = get(res, 'data.accessToken');
         const uid = get(res, 'data.uid');
         // 注册成功后，默认登录
@@ -107,6 +121,9 @@ class WeixinBindH5Page extends React.Component {
       bindLoading = false;
       this.props.h5QrCode.bindTitle = '绑定失败，请刷新二维码重新扫码';
       this.props.h5QrCode.isBtn = false;
+      this.setState({
+        status: 'error'
+      });
 
       const { site } = this.props;
       // 跳转补充信息页

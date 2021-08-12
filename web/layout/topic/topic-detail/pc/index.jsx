@@ -85,7 +85,7 @@ class IndexPCPage extends React.Component {
           right={ this.renderRight }
           showRefresh={false}
           className="topic-detail-page"
-          pageName="topic-detail"
+          pageName="topicDetail"
         >
           {
           fetchTopicInfoLoading ? (

@@ -498,12 +498,12 @@ class CommentH5Page extends React.Component {
           <InputPopup
             showEmojis={this.state.showEmojis}
             cancleEmojie={() => {
-              this.setState({ showEmojis: false });
-            }}
+ this.setState({ showEmojis: false });
+ }}
             showPicture={this.state.showPicture}
             canclePicture={() => {
-              this.setState({ showPicture: false });
-            }}
+ this.setState({ showPicture: false });
+ }}
             visible={this.state.showCommentInput}
             inputText={this.state.inputText}
             onClose={() => this.setState({ showCommentInput: false })}

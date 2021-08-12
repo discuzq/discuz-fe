@@ -258,7 +258,7 @@ export default class index extends Component {
 
             {!isLoading &&
               myThreadsList?.map((item, index) => (
-                <Thread data={item} key={`${item.threadId}-${item.updatedAt}`} />
+                <Thread data={item} key={`${item.threadId}-${item.updatedAt}-${item.user.avatar}`} />
               ))}
           </View>
         </View>

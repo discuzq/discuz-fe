@@ -13,11 +13,11 @@
     "update": "dzq update"
   },
   "dependencies": {
-    "@discuzq/design": "1.0.64",
+    "@discuzq/design": "1.0.65",
     "@discuzq/discuz-babel-plugin-import": "0.0.1",
     "@discuzq/plugin": "1.0.33",
-    "@discuzq/sdk": "1.0.34",
-    "@discuzq/theme": "1.0.3",
+    "@discuzq/sdk": "1.0.35",
+    "@discuzq/theme": "1.0.4",
     "@discuzq/vditor": "1.0.26",
     "@popperjs/core": "^2.9.2",
     "@sandstreamdev/react-swipeable-list": "^1.0.1",
@@ -35,6 +35,7 @@
     "mobx-react": "6.1.4",
     "next": "10.1.3",
     "prop-types": "15.7.2",
+    "qrcode.react": "^1.0.1",
     "qrcodejs2": "0.0.2",
     "react": "17.0.1",
     "react-datepicker": "3.8.0",

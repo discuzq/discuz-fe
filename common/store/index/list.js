@@ -50,6 +50,11 @@ export default class ListStore {
     return listArray;
   }
 
+  @action
+  forceUpdateList = () => {
+    this.lists = { ...this.lists };
+  }
+
   /**
    * 请求获取 list
    * @param {*} param0
