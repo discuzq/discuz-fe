@@ -16,7 +16,7 @@ class SearchResultUserPcPage extends React.Component {
   constructor(props) {
     super(props);
 
-    const keyword = this.props.search.currentUserKeyword || '';
+    const keyword = this.props.search.currentKeyword || '';
 
     this.state = {
       keyword,
@@ -81,7 +81,7 @@ class SearchResultUserPcPage extends React.Component {
   };
 
   onSearch = (value) => {
-    this.props.search.currentUserKeyword = value;
+    this.props.search.currentKeyword = value;
     this.setState({ keyword: value }, () => {
       this.searchData(value);
     });
@@ -102,7 +102,7 @@ class SearchResultUserPcPage extends React.Component {
         onRefresh={this.fetchMoreData}
         isShowLayoutRefresh={!!pageData?.length}
         className="search-result-user"
-        pageName="result-user"
+        pageName="resultUser"
       >
         <SidebarPanel
           title="活跃用户"

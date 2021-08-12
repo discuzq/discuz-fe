@@ -57,7 +57,7 @@ class SearchResultPostH5Page extends React.Component {
           noMore={currentPage >= totalPage}
           requestError={threadsError.isError}
           errorText={threadsError.errorText}
-          pageName="result-post"
+          pageName="resultPost"
       >
         <div className={styles.topBox}>
           <SearchInput onSearch={this.onSearch} onCancel={this.onCancel} defaultValue={keyword} isShowBottom={false} searchWhileTyping/>
