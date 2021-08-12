@@ -9,7 +9,7 @@ const PC_BOTTOM_INSTANCE = 0;
 class Autoplay {
   constructor(props = {}) {
     this.videoMap = {};
-    window.videoMap = this.videoMap;
+    // window.videoMap = this.videoMap;
 
     this.platform = props.platform || 'pc';
 
@@ -18,14 +18,16 @@ class Autoplay {
   }
 
   addVideo(key, element) {
-    this.videoMap[key] = {
+    const newVideo = {
       key,
       element,
-      isRecorded: false,
-      currentTime: 0,
+      isRecorded: this.videoMap[key]?.isRecorded || false,
+      currentTime: this.videoMap[key]?.currentTime || 0,
       status: 'play',
       isFirst: true,
     };
+
+    this.videoMap[key] = newVideo;
 
     this.addVideoEventListeneres(this.videoMap[key]);
   }
@@ -69,7 +71,6 @@ class Autoplay {
         if (videoObj.isFirst) {
           videoObj.isFirst = false;
         } else {
-          console.log('seeked');
           recordVideo();
         }
       });
@@ -78,7 +79,6 @@ class Autoplay {
 
   // 检测视频播放
   checkVideoPlay = (startNum, stopNum) => {
-    console.log('检查视频播放', startNum, stopNum);
     const videoObj = this.getPlayingVideo();
     const videoElement = videoObj?.element;
     if (videoElement) return;
