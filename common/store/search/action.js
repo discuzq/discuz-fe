@@ -113,15 +113,19 @@ class SearchAction extends SearchStore {
    * 发现模块 - 重置搜索结果页数据
    */
    @action
-   resetSearchData() {
-     this.searchTopicsError = { isError: false, errorText: '' }
-     this.searchUsersError = { isError: false, errorText: '' }
-     this.searchThreadsError = { isError: false, errorText: '' }
+  resetSearchData() {
+    this.searchTopicsError = { isError: false, errorText: '' }
+    this.searchUsersError = { isError: false, errorText: '' }
+    this.searchThreadsError = { isError: false, errorText: '' }
 
-     this.setSearchTopics(null)
-     this.setSearchUsers(null)
-     this.setSearchThreads(null)
-   }
+    this.currentTopicKeyword = null // 用于H5，当前潮流话题页正在搜索的关键词
+    this.currentUserKeyword = null // 用于H5，当前活跃用户页正在搜索的关键词
+    this.currentPostKeyword = null // 用于H5，当前热门内容页正在搜索的关键词
+
+    this.setSearchTopics(null)
+    this.setSearchUsers(null)
+    this.setSearchThreads(null)
+  }
 
   /**
    * 发现模块 - 重置更多搜索结果页数据
