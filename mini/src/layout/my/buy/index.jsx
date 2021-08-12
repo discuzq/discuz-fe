@@ -11,22 +11,47 @@ import { View, Text } from '@tarojs/components';
 class Index extends React.Component {
   render() {
     const { index } = this.props;
-    const { pageData = [], currentPage, totalPage, totalCount } = index.threads || {};
+
+    const { lists } = index;
+
+    const buyThreadsList = index.getList({
+      namespace: 'buy',
+    });
+
+    const totalCount = index.getAttribute({
+      namespace: 'buy',
+      key: 'totalCount',
+    });
+
+    const totalPage = index.getAttribute({
+      namespace: 'buy',
+      key: 'totalPage',
+    });
+
+    const currentPage = index.getAttribute({
+      namespace: 'buy',
+      key: 'currentPage',
+    });
+
+    const requestError = index.getListRequestError({ namespace: 'buy' });
+
     return (
       <BaseLayout
+        requestError={requestError.isError}
+        errorText={requestError.errorText}
         showHeader={false}
         noMore={currentPage >= totalPage}
         onRefresh={this.props.dispatch}
-        showLoadingInCenter={!pageData?.length}
+        showLoadingInCenter={!buyThreadsList?.length}
       >
-        {pageData?.length !== 0 && (
+        {buyThreadsList?.length !== 0 && (
           <View className={styles.titleBox}>
             <Text className={styles.num}>{`${totalCount || 0}`}</Text>
             条购买
           </View>
         )}
 
-        {pageData?.map((item, index) => (
+        {buyThreadsList?.map((item, index) => (
           <ThreadContent key={index} data={item} />
         ))}
       </BaseLayout>

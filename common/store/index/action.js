@@ -59,7 +59,7 @@ class IndexAction extends IndexStore {
   /**
    * 设置过滤项
    */
-   @action
+  @action
   setFilter(data) {
     this.filter = data
   }
@@ -67,7 +67,7 @@ class IndexAction extends IndexStore {
   /**
    * 设置tabBar隐藏or显示
    */
-   @action
+  @action
   setHiddenTabBar(data) {
     this.hiddenTabBar = data
   }
@@ -101,11 +101,11 @@ class IndexAction extends IndexStore {
     this.resetErrorInfo()
   }
 
-/**
- * 详情页点击标签、置顶跳转首页操作
- * @param {array} categoryIds 分类Ids
- * @returns
- */
+  /**
+   * 详情页点击标签、置顶跳转首页操作
+   * @param {array} categoryIds 分类Ids
+   * @returns
+   */
   @action
   async refreshHomeData({ categoryIds = [] } = {}) {
     if (categoryIds?.length) {
@@ -127,36 +127,36 @@ class IndexAction extends IndexStore {
    * @param {array} categoryIds 分类Ids
    * @returns
    */
-   @action
-   async deleteThreadsData({ id } = {}, SiteStore) {
-     if (id && this.threads) {
+  @action
+  async deleteThreadsData({ id } = {}, SiteStore) {
+    if (id && this.threads) {
       //  删除列表
-        const { pageData = [] } = this.threads;
-        const newPageData = pageData.filter(item => `${item.threadId}` !== `${id}`)
+      const { pageData = [] } = this.threads;
+      const newPageData = pageData.filter(item => `${item.threadId}` !== `${id}`)
 
-        if (this.threads?.pageData) {
-          this.threads.pageData = newPageData;
-          this.changeInfo = { type: 'delete', thread: id }
-        }
+      if (this.threads?.pageData) {
+        this.threads.pageData = newPageData;
+        this.changeInfo = { type: 'delete', thread: id }
+      }
 
-        // 删除置顶
-        const newSticksData = this.sticks?.filter(item => `${item.threadId}` !== `${id}`)
+      // 删除置顶
+      const newSticksData = this.sticks?.filter(item => `${item.threadId}` !== `${id}`)
 
-        if (this.sticks) {
-          this.sticks = newSticksData;
-        }
+      if (this.sticks) {
+        this.sticks = newSticksData;
+      }
 
-        if (this.threads?.pageData || this.sticks) {
-          // 更新帖子总数
-          const totalCount = Number(this.threads.totalCount)
-          this.threads.totalCount = totalCount - 1
-        }
+      if (this.threads?.pageData || this.sticks) {
+        // 更新帖子总数
+        const totalCount = Number(this.threads.totalCount)
+        this.threads.totalCount = totalCount - 1
+      }
 
-        // 删除帖子后更新首页导航栏分类数据
-        this.getReadCategories();
-        SiteStore?.getSiteInfo && SiteStore.getSiteInfo(); // 删除帖子后分类中"全部"数据更新
-     }
-   }
+      // 删除帖子后更新首页导航栏分类数据
+      this.getReadCategories();
+      SiteStore?.getSiteInfo && SiteStore.getSiteInfo(); // 删除帖子后分类中"全部"数据更新
+    }
+  }
 
   /**
    * 触发筛选数据
@@ -210,7 +210,7 @@ class IndexAction extends IndexStore {
           });
         } else {
           // 首次加载
-          this.drafts = null;
+          // this.drafts = null;
           this.setDrafts(result.data);
         }
       } else {
@@ -283,7 +283,7 @@ class IndexAction extends IndexStore {
   findAssignThread(threadId) {
     if (this.threads) {
       const { pageData = [] } = this.threads;
-      for (let i = 0; i < pageData.length; i++)  {
+      for (let i = 0; i < pageData.length; i++) {
         if (pageData[i].threadId === threadId) {
           return { index: i, data: pageData[i] };
         }
@@ -295,7 +295,7 @@ class IndexAction extends IndexStore {
   // 获取指定的置顶帖子数据
   findAssignSticks(threadId) {
     if (this.sticks) {
-      for (let i = 0; i < this.sticks.length; i++)  {
+      for (let i = 0; i < this.sticks.length; i++) {
         if (this.sticks[i].threadId === threadId) {
           return { index: i, data: this.sticks[i] };
         }
@@ -373,6 +373,8 @@ class IndexAction extends IndexStore {
     const { index, data } = targetThread;
     this.threads.pageData[index] = threadInfo;
 
+    this.updateAssignThreadInfoInLists({ threadId: typeofFn.isNumber(threadId) ? threadId : +threadId, threadInfo });
+
     // 小程序编辑
     this.changeInfo = { type: 'edit', thread: threadInfo }
 
@@ -420,55 +422,80 @@ class IndexAction extends IndexStore {
   @action
   updateAssignThreadInfo(threadId, obj = {}) {
     const targetThread = this.findAssignThread(threadId);
-    if (!targetThread || targetThread.length === 0) return;
+    const targetThreadsInLists = this.findAssignThreadInLists({ threadId });
 
-    const { index, data } = targetThread;
     const { updateType, updatedInfo, user, openedMore } = obj;
 
-    // 更新整个帖子内容
-    if ( data && updateType === 'content' ) {
-      this.threads.pageData[index] = updatedInfo;
-    }
+    const threadUpdater = ({
+      data,
+      callback = () => {}
+    }) => {
+      if (!data && !data?.likeReward && !data?.likeReward?.users) return;
 
-    if(!data && !data?.likeReward && !data?.likeReward?.users) return;
+      // 更新整个帖子内容
+      if (data && updateType === 'content') {
+        callback(data);
+      }
 
-    // 更新点赞
-    if (updateType === 'like' && !typeofFn.isUndefined(updatedInfo.isLiked) &&
+      // 更新点赞
+      if (updateType === 'like' && !typeofFn.isUndefined(updatedInfo.isLiked) &&
         !typeofFn.isNull(updatedInfo.isLiked) && user) {
-      const { isLiked, likePayCount = 0 } = updatedInfo;
-      const theUserId = user.userId || user.id;
-      data.isLike = isLiked;
-
-      const userData = threadReducer.createUpdateLikeUsersData(user, 1);
+        const { isLiked, likePayCount = 0 } = updatedInfo;
+        const theUserId = user.userId || user.id;
+        data.isLike = isLiked;
+  
+        const userData = threadReducer.createUpdateLikeUsersData(user, 1);
         // 添加当前用户到按过赞的用户列表
-      const newLikeUsers = threadReducer.setThreadDetailLikedUsers(data.likeReward, !!isLiked, userData);
+        const newLikeUsers = threadReducer.setThreadDetailLikedUsers(data.likeReward, !!isLiked, userData);
+  
+        data.likeReward.users = newLikeUsers;
+        data.likeReward.likePayCount = likePayCount;
+      }
+  
+      // 更新评论
+      if (updateType === 'comment' && data?.likeReward) {
+        data.likeReward.postCount = data.likeReward.postCount + 1;
+      }
+  
+      // 更新分享
+      if (updateType === 'share') {
+        data.likeReward.shareCount = data.likeReward.shareCount + 1;
+      }
+  
+      // 更新帖子浏览量
+      if (updateType === 'viewCount') {
+        data.viewCount = updatedInfo.viewCount;
+      }
+  
+      if (updateType === 'openedMore') {
+        data.openedMore = openedMore;
+      }
 
-      data.likeReward.users = newLikeUsers;
-      data.likeReward.likePayCount = likePayCount;
+      callback(data);
     }
 
-    // 更新评论
-    if (updateType === 'comment' && data?.likeReward) {
-      data.likeReward.postCount = data.likeReward.postCount + 1;
+    if (targetThread && targetThread.length !== 0) {
+      const { index, data } = targetThread;
+
+      threadUpdater({
+        data,
+        callback: (updatedInfo) => {
+          this.threads.pageData[index] = updatedInfo;
+        }
+      })
     }
 
-    // 更新分享
-    if (updateType === 'share') {
-      data.likeReward.shareCount = data.likeReward.shareCount + 1;
+    if (targetThreadsInLists && targetThreadsInLists.length !== 0) {
+      targetThreadsInLists.forEach(({ index, page, listName, data }) => {
+        threadUpdater({ 
+          data,
+          callback: (updatedInfo) => {
+            this.lists[listName].data[page][index] = updatedInfo;
+          }
+        })
+      })
     }
 
-    // 更新帖子浏览量
-    if (updateType === 'viewCount') {
-      data.viewCount = updatedInfo.viewCount;
-    }
-
-    if (this.threads?.pageData) {
-      this.threads.pageData[index] = data;
-    }
-
-    if (updateType === 'openedMore') {
-      data.openedMore = openedMore;
-    }
   }
 
   /**
@@ -522,8 +549,8 @@ class IndexAction extends IndexStore {
    * @param {number} id 帖子类别id
    * @returns 选中的帖子详细信息
    */
-   @action
-   async getRecommends({ categoryIds = [] } = {}) {
+  @action
+  async getRecommends({ categoryIds = [] } = {}) {
     this.updateRecommendsStatus('loading');
 
     const result = await readRecommends({ params: { categoryIds } })
@@ -535,7 +562,7 @@ class IndexAction extends IndexStore {
       this.updateRecommendsStatus('error');
       return Promise.reject(result?.msg || '加载失败');
     }
-   }
+  }
 
   /**
    * 推荐帖子
@@ -554,7 +581,7 @@ class IndexAction extends IndexStore {
   adapterList(data = {}) {
     const { pageData = [], ...others } = data;
 
-    const newpageData =  pageData.map(item => {
+    const newpageData = pageData.map(item => {
       item.openedMore = false;
 
       return item;

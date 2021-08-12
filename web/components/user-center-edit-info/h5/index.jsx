@@ -145,89 +145,101 @@ class index extends Component {
     const { isConfirm } = this.state;
     const { user, site } = this.props;
     // 条件都满足时才显示微信
-    const IS_WECHAT_ACCESSABLE = this.props.site.wechatEnv !== 'none' && !!this.user.wxNickname;
+    const IS_WECHAT_ACCESSABLE = this.props.site.wechatEnv !== 'none';
+    const IS_WECHAT_HAS_BIND = Boolean(this.user.wxNickname);
     const ISEXT_FIELD_OPENS = isExtFieldsOpen(this.props?.site);
     return (
       <div>
         <div className={styles.mainContent}>
-        <div>
-          {/* 头部 */}
           <div>
-            <UserCenterEditHeader />
-          </div>
-          {/* middle */}
-          <div className={styles.userCenterEditMiddle}>
-            <h3>个人信息</h3>
-            <div onClick={this.handleClickNickName} className={styles.userInputContent}>
-              {this.renderInputNickName()}
+            {/* 头部 */}
+            <div>
+              <UserCenterEditHeader />
             </div>
-            <div className={styles.userCenterEditItem}>
-              <div className={styles.userCenterEditLabel}>
-                <label>用户名</label>
+            {/* middle */}
+            <div className={styles.userCenterEditMiddle}>
+              <h3>个人信息</h3>
+              <div onClick={this.handleClickNickName} className={styles.userInputContent}>
+                {this.renderInputNickName()}
+              </div>
+              <div className={styles.userCenterEditItem}>
+                <div className={styles.userCenterEditLabel}>
+                  <label>用户名</label>
 
-                <div className={styles.userCenterEditValue} onClick={this.handleGoToEditUserName}>
-                  <div className={styles.ucText}>{this.user.username}</div>
-                  <Icon name="RightOutlined" />
-                </div>
-              </div>
-            </div>
-            {this.props.site?.isSmsOpen && (
-              <div className={styles.userCenterEditItem}>
-                <div className={styles.userCenterEditLabel}>
-                  <label>手机号码</label>
-                </div>
-                <div className={styles.userCenterEditValue} onClick={this.handleGoToEditMobile}>
-                  <div className={styles.ucText}>{this.user.mobile || '去绑定'}</div>
-                  <Icon name="RightOutlined" />
-                </div>
-              </div>
-            )}
-            <div className={styles.userCenterEditItem}>
-              <div className={styles.userCenterEditLabel}>
-                <label>账户密码</label>
-              </div>
-              <div className={styles.userCenterEditValue} onClick={this.handleGoToEditAccountPwd}>
-                <div className={styles.ucText}>{this.props.user?.hasPassword ? '修改' : '设置'}</div>
-                <Icon name="RightOutlined" />
-              </div>
-            </div>
-            <div className={styles.userCenterEditItem}>
-              <div className={styles.userCenterEditLabel}>
-                <label>支付密码</label>
-              </div>
-              <div className={styles.userCenterEditValue} onClick={this.handleGoToEditPayPwd}>
-                <div className={styles.ucText}>{this.props.user?.canWalletPay ? '修改' : '设置'}</div>
-                <Icon name="RightOutlined" />
-              </div>
-            </div>
-            {IS_WECHAT_ACCESSABLE && (
-              <div className={styles.userCenterEditItem}>
-                <div className={styles.userCenterEditLabel}>
-                  <label>微信</label>
-                  <div className={styles.userCenterEditWeChat}>
-                    <Avatar size="small" image={this.user.wxHeadImgUrl} name={this.user.wxNickname} />
-                    <span>{this.user.wxNickname}</span>
-                    <div className={styles.linkText} onClick={() => {
-                      Router.push({ url: '/user/rebind' });
-                    }}
-                    >换绑</div>
+                  <div className={styles.userCenterEditValue} onClick={this.handleGoToEditUserName}>
+                    <div className={styles.ucText}>{this.user.username}</div>
+                    <Icon name="RightOutlined" />
                   </div>
                 </div>
               </div>
-            )}
-            {ISEXT_FIELD_OPENS && (
-              <div className={styles.userCenterEditItem} onClick={this.handleGoToAdditionalInfo}>
-                <div className={styles.userCenterEditLabel}>
-                  <label className={styles.userLabelName}>补充信息</label>
+              {this.props.site?.isSmsOpen && (
+                <div className={styles.userCenterEditItem}>
+                  <div className={styles.userCenterEditLabel}>
+                    <label>手机号码</label>
+                  </div>
+                  <div className={styles.userCenterEditValue} onClick={this.handleGoToEditMobile}>
+                    <div className={styles.ucText}>{this.user.mobile || '去绑定'}</div>
+                    <Icon name="RightOutlined" />
+                  </div>
                 </div>
-                <div className={styles.userCenterEditValue}>
-                  <Icon name="RightOutlined" size={12} />
+              )}
+              <div className={styles.userCenterEditItem}>
+                <div className={styles.userCenterEditLabel}>
+                  <label>账户密码</label>
+                </div>
+                <div className={styles.userCenterEditValue} onClick={this.handleGoToEditAccountPwd}>
+                  <div className={styles.ucText}>{this.props.user?.hasPassword ? '修改' : '设置'}</div>
+                  <Icon name="RightOutlined" />
                 </div>
               </div>
-            )}
-          </div>
-          {/* bottom */}
-          {/* <div className={styles.userCenterEditBottom}> */}
+
+              {IS_WECHAT_ACCESSABLE && (
+                <div className={styles.userCenterEditItem}>
+                  <div className={styles.userCenterEditLabel}>
+                    <label>微信</label>
+                    <div className={styles.userCenterEditWeChat}>
+                      {IS_WECHAT_HAS_BIND && (
+                        <Avatar size="small" image={this.user.wxHeadImgUrl} name={this.user.wxNickname} />
+                      )}
+                      {IS_WECHAT_HAS_BIND ? <span>{this.user.wxNickname}</span> : '未绑定'}
+                      {IS_WECHAT_HAS_BIND && (
+                        <div
+                          className={styles.linkText}
+                          onClick={() => {
+                            Router.push({ url: '/user/rebind' });
+                          }}
+                        >
+                          换绑
+                        </div>
+                      )}
+                      {!IS_WECHAT_HAS_BIND && (
+                        <div
+                          className={styles.linkText}
+                          onClick={() => {
+                            Router.push({ url: '/user/wx-bind-qrcode' });
+                          }}
+                        >
+                          绑定微信
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {ISEXT_FIELD_OPENS && (
+                <div className={styles.userCenterEditItem} onClick={this.handleGoToAdditionalInfo}>
+                  <div className={styles.userCenterEditLabel}>
+                    <label className={styles.userLabelName}>补充信息</label>
+                  </div>
+                  <div className={styles.userCenterEditValue}>
+                    <Icon name="RightOutlined" size={12} />
+                  </div>
+                </div>
+              )}
+            </div>
+            {/* bottom */}
+            {/* <div className={styles.userCenterEditBottom}> */}
             {/* <h3>实名认证</h3>
             <div className={styles.userCenterEditItem}>
               <div className={styles.userCenterEditLabel}>
@@ -236,9 +248,9 @@ class index extends Component {
               </div>
               <div><Icon name="RightOutlined" /></div>
             </div> */}
-          {/* </div> */}
-        </div>
-        <Copyright />
+            {/* </div> */}
+          </div>
+          <Copyright />
         </div>
         <div className={styles.userCenterEditBtn}>
           <Button full onClick={this.handleCancel}>

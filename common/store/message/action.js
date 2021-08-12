@@ -22,9 +22,9 @@ class MessageAction extends MessageStore {
     const { code, data } = ret;
     if (code === 0) {
       const { unreadNotifications = 0, typeUnreadNotifications, dialogNotifications = 0 } = data;
-      const { threadrewardedexpired = 0, receiveredpacket = 0, related = 0, replied = 0, system = 0, withdrawal = 0, liked = 0, rewarded = 0, threadrewarded = 0 } = typeUnreadNotifications;
+      const { threadrewardedexpired = 0, receiveredpacket = 0, related = 0, replied = 0, system = 0, withdrawal = 0, liked = 0, rewarded = 0, threadrewarded = 0, questioned = 0 } = typeUnreadNotifications;
       // withdrawal,提现不在消息中心展示，未读总数需要减去此类型消息的未读数
-      this.totalUnread = unreadNotifications - withdrawal + dialogNotifications;
+      this.totalUnread = unreadNotifications - withdrawal - questioned + dialogNotifications;
       this.threadUnread = related + replied + liked;
       this.financialUnread = receiveredpacket + rewarded + threadrewarded + threadrewardedexpired;
       this.accountUnread = system;

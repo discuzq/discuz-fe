@@ -206,7 +206,7 @@ export default function HOCFetchSiteData(Component, _isPass) {
       const { userInfo } = user;
       const { webConfig: { setSite } } = site;
       const { siteName, siteIntroduction, siteHeaderLogo, siteFavicon } = setSite;
-      const { nickname, avatarUrl, signature, id } = userInfo;
+      const { nickname, avatarUrl, signature, id } = userInfo || {};
 
       // 默认分享标题
       let title = document.title;

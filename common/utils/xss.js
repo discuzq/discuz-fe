@@ -8,5 +8,6 @@ xss.whiteList.input = ['data-task-id', 'type', 'disabled'];
 xss.whiteList.ul = ['class'];
 xss.whiteList.li = ['class', 'data-task-state'];
 xss.whiteList.span = ['class'];
+xss.whiteList.iframe = ['src', 'alt', 'title', 'width', 'height', 'class']
 
 export default xss;

@@ -34,12 +34,12 @@ export default class PayBox extends React.Component {
     // 判断是否微信支付开启
     if (this.props.site.isWechatPayOpen) {
       // if (isWeixin()) {
-        payConfig.unshift({
-          name: '微信支付',
-          icon: 'WechatPaymentOutlined',
-          color: '#09bb07',
-          paymentType: 'weixin',
-        });
+      payConfig.unshift({
+        name: '微信支付',
+        icon: 'WechatPaymentOutlined',
+        color: '#09bb07',
+        paymentType: 'weixin',
+      });
       // }
     }
 
@@ -76,9 +76,9 @@ export default class PayBox extends React.Component {
     const { amount = 0 } = options;
     if (!canWalletPay) {
       return (
-        <p className={styles.subText} onClick={this.goSetPayPwa}>
+        <Button type="text" className={styles.textButton} onClick={this.goSetPayPwa}>
           请设置支付密码
-        </p>
+        </Button>
       );
     }
     if (Number(this.props.payBox?.walletAvaAmount) < Number(amount)) {
@@ -189,10 +189,39 @@ export default class PayBox extends React.Component {
     return disabled;
   };
 
+  gotoBind = () => {
+    this.props.payBox.visible = false;
+    Router.push({ url: '/user/wx-bind-qrcode?jumpType=1' });
+  }
+
+  renderRightChoices = (item) => {
+    const { options = {} } = this.props.payBox;
+    const canWalletPay = this.props.user?.canWalletPay;
+
+    if (item.paymentType === PAYWAY_MAP.WALLET) {
+      if (canWalletPay && Number(this.props.payBox?.walletAvaAmount) >= Number(options.amount)) {
+        return <Radio name={item.paymentType} />;
+      }
+
+      return this.walletPaySubText();
+    }
+
+    if (item.paymentType === PAYWAY_MAP.WX) {
+      if (!this.props.user.isBindWechat) {
+        return (
+          <Button className={styles.textButton} type="text" onClick={this.gotoBind}>
+            绑定微信
+          </Button>
+        );
+      }
+
+      return <Radio name={item.paymentType} />;
+    }
+  };
+
   render() {
     const { options = {} } = this.props.payBox;
     const { payConfig, isSubmit } = this.state;
-    const canWalletPay = this.props.user?.canWalletPay;
     return (
       <div className={styles.payBox}>
         <div className={styles.title}>
@@ -215,13 +244,7 @@ export default class PayBox extends React.Component {
                     <Icon className={styles.icon} name={item.icon} color={item.color} size={20} />
                     <p className={styles.text}>{item.name}</p>
                   </div>
-                  <div className={styles.right}>
-                    {item.paymentType === PAYWAY_MAP.WALLET && this.walletPaySubText()}
-                    {(item.paymentType === PAYWAY_MAP.WX ||
-                      (canWalletPay && Number(this.props.payBox?.walletAvaAmount) >= Number(options.amount))) && (
-                      <Radio name={item.paymentType} />
-                    )}
-                  </div>
+                  <div className={styles.right}>{this.renderRightChoices(item)}</div>
                 </div>
               );
             })}

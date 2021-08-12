@@ -1,8 +1,7 @@
-import React, { useEffect, useRef, useState, forwardRef, useImperativeHandle } from 'react';
+import React, { useEffect, useRef, useState, forwardRef, useImperativeHandle, useMemo } from 'react';
 import { inject, observer } from 'mobx-react';
 import { noop } from '@components/thread/utils';
 import { throttle } from '@common/utils/throttle-debounce.js';
-
 
 import H5BaseLayout from './h5';
 import PCBaseLayout from './pc';
@@ -32,21 +31,41 @@ const BaseLayoutControl = forwardRef((props, ref) => {
     jumpTo = -1,
     pageName = '',
     ready = noop,
+    jumpRuleList = [],
     ...others
   } = props;
 
   const [listRef, setListRef] = useState(null);
-  const [baseLayoutWhiteList, setBaseLayoutWhiteList] = useState(['home', 'search', 'my', 'like', 'collect', 'buy']);
+  
   const layoutRef = useRef(null);
 
-  const disableEffect = useRef(false)
+  const disableEffect = useRef(false);
 
-  useImperativeHandle(
-    ref,
-    () => ({
-      listRef
-    }),
-  );
+  useImperativeHandle(ref, () => ({
+    listRef,
+  }));
+
+  const baseLayoutWhiteList = useMemo(() => {
+    const defaultWhiteList = [
+      'home',
+      'search',
+      'my',
+      'like',
+      'collect',
+      'buy',
+      'block',
+      'draft',
+      'result-topic',
+      'result-user',
+      'result-post',
+      'h5-search-result',
+      'topic-detail',
+    ];
+    if (Array.isArray(jumpRuleList)) {
+      return [...defaultWhiteList, ...jumpRuleList];
+    }
+    return defaultWhiteList;
+  }, [jumpRuleList]);
 
   useEffect(() => {
     ready();
@@ -55,6 +74,21 @@ const BaseLayoutControl = forwardRef((props, ref) => {
   useEffect(() => {
     if (hasListChild) setListRef(layoutRef?.current.listRef);
   }, [layoutRef]);
+
+  const isPageInWhiteList = () => {
+    for (const listItem of baseLayoutWhiteList) {
+      if (typeof listItem === 'string') {
+        if (listItem === pageName) {
+          return true;
+        }
+      } else if (typeof listItem.test === 'function') {
+        if (listItem.test(pageName)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  };
 
   useEffect(() => {
     if (!disableEffect.current) {
@@ -102,9 +136,12 @@ const BaseLayoutControl = forwardRef((props, ref) => {
       const playingVideoTop = baselayout.playingVideoPos;
       const playingVideoBottom = playingVideoDom.offsetHeight + playingVideoTop;
 
-      if (playingVideoTop > 0
-        && (playingVideoBottom < scrollTop // 视频在视窗下面
-          || playingVideoTop > window.innerHeight + scrollTop)) { // 视频在视窗上面
+      if (
+        playingVideoTop > 0 &&
+        (playingVideoBottom < scrollTop || // 视频在视窗下面
+          playingVideoTop > window.innerHeight + scrollTop)
+      ) {
+        // 视频在视窗上面
         baselayout.pauseWebPlayingVideo();
       }
     }
@@ -115,10 +152,12 @@ const BaseLayoutControl = forwardRef((props, ref) => {
       const playingAudioHeight = 56;
       const playingAudioBottom = playingAudioHeight + playingAudioTop;
 
-      if (playingAudioTop > 0
-        && (playingAudioBottom < scrollTop // 音频在视窗下面
-          || playingAudioTop > window.innerHeight + scrollTop)) { // 音频在视窗上面
-
+      if (
+        playingAudioTop > 0 &&
+        (playingAudioBottom < scrollTop || // 音频在视窗下面
+          playingAudioTop > window.innerHeight + scrollTop)
+      ) {
+        // 音频在视窗上面
         baselayout.pauseWebPlayingAudio();
       }
     }
@@ -129,10 +168,14 @@ const BaseLayoutControl = forwardRef((props, ref) => {
   const handleScroll = quickScroll ? quickScrolling : throttle(quickScrolling, 50);
 
   if (site.platform === 'pc') {
-    return <PCBaseLayout onScroll={handleScroll} pageName={pageName} platform={site.platform} {...others} ref={layoutRef} />;
+    return (
+      <PCBaseLayout onScroll={handleScroll} pageName={pageName} platform={site.platform} {...others} ref={layoutRef} />
+    );
   }
 
-  return <H5BaseLayout onScroll={handleScroll} pageName={pageName} platform={site.platform} {...others} ref={layoutRef} />;
+  return (
+    <H5BaseLayout onScroll={handleScroll} pageName={pageName} platform={site.platform} {...others} ref={layoutRef} />
+  );
 });
 
 export default inject('site', 'baselayout')(observer(BaseLayoutControl));

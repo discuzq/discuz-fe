@@ -17,10 +17,10 @@ class SearchResultTopicPCPage extends React.Component {
   constructor(props) {
     super(props);
 
-    const keyword = this.props.router.query.keyword || '';
+    const keyword = this.props.search.currentTopicKeyword || '';
 
     this.state = {
-      keyword,
+      keyword: keyword,
       refreshing: false,
     };
   }
@@ -46,6 +46,7 @@ class SearchResultTopicPCPage extends React.Component {
   };
 
   onSearch = (value) => {
+    this.props.search.currentTopicKeyword = keyword;
     this.setState({ keyword: value }, () => {
       this.searchData(value);
     });
@@ -74,6 +75,7 @@ class SearchResultTopicPCPage extends React.Component {
         onSearch={this.onSearch}
         right={this.renderRight}
         className="search-result-topic"
+        pageName="result-topic"
       >
         <SidebarPanel
           title="潮流话题"
