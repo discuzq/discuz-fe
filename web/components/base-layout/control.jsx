@@ -35,8 +35,6 @@ const BaseLayoutControl = forwardRef((props, ref) => {
     ...others
   } = props;
 
-  const [listRef, setListRef] = useState(null);
-  
   const layoutRef = useRef(null);
 
   const disableEffect = useRef(false);
