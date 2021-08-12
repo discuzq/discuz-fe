@@ -1,6 +1,5 @@
 @import '@common/styles/index.scss';
-@import '@common/styles/theme/index.scss'; // 主题样式
-@import '@discuzq/design/dist/styles/index.scss';
+@import '@discuzq/theme/src/index.scss'; // 包括了主题 + 组件样式
 @import './reset.scss';
 
 page {

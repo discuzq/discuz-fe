@@ -1,6 +1,5 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import '@discuzq/design/dist/styles/index.scss';
 import HomeHeader from '@components/home-header';
 import List from '@components/list';
 import BaseLayout from '@components/user-center-base-laout-pc';

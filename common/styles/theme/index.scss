@@ -1,17 +1,16 @@
-@import './default.scss';
+@import '@discuzq/theme/src/theme/index.scss';
 
-page,
-.dzq-theme-light,
-[data-dzq-theme='light'] {
-  @each $name,
-    $value in $light {
-    #{$name}: #{$value};
-  }
-}
+// /**
+//  * 主题文件
+//  **/
+// @import 'default';
 
-:root {
-  @each $name,
-    $value in $light {
-    #{$name}: #{$value};
-  }
-}
+// // page 是针对小程序的
+// :root,
+// page {
+
+//   @each $name,
+//   $value in $light {
+//     #{$name}: #{$value};
+//   }
+// }

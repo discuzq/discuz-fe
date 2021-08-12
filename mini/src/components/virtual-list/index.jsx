@@ -17,8 +17,6 @@ const VirtualList = ({
   isClickTab,
   wholePageIndex,
   index: indexStore,
-  setVisible,
-  setData
 }) => {
   const [dataSource, setDataSource] = useState([]);
   const windowHeight = useRef(null)
@@ -129,8 +127,6 @@ const VirtualList = ({
                 windowHeight={windowHeight.current} 
                 dispatch={dispatch}
                 isClickTab={isClickTab}
-                setVisible={setVisible}
-                setData={setData}
             />
         }
       </>

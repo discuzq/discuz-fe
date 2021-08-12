@@ -35,7 +35,7 @@
         padding-right: rem(8);
         @include ios-safe-area-inset-bottom;
         box-sizing: border-box;
-        border-top: var(--border-border);
+        border-top: $border-solid-1;
         .btn{
             width: 100%;
             height: rem(42);

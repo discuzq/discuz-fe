@@ -4,7 +4,7 @@ $im-pagebed-padding: 16px;
 $im-profile-icon-size: 38px;
 $im-gap-btw-icon-and-msg: 16px;
 $im-msg-space-aside: $im-pagebed-padding + $im-profile-icon-size + $im-gap-btw-icon-and-msg;
-$im-space-in-between-btns: var(--padding-3n);
+$im-space-in-between-btns: $padding-3n;
 
 @mixin im-pagebed {
   padding: 0 $im-pagebed-padding;

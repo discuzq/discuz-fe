@@ -13,16 +13,16 @@
   }
 
   .content {
-    margin: 0 var(--padding-4n);
-    font-size: var(--font-size-middle);
+    margin: 0 $padding-4n;
+    font-size: $font-size-middle;
     text-align: center;
-    line-height: var(--font-line-height-small);
+    line-height: $font-line-height-small;
     background: var(--color-white);
 
     .item {
-      padding: var(--padding-4n);
+      padding: $padding-4n;
       color: var(--color-text-primary);
-      border-bottom: var(--border-border);
+      border-bottom: $border-solid-1;
     }
     .btn {
       line-height: 54px;

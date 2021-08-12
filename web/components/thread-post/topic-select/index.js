@@ -31,6 +31,8 @@ class TopicSelect extends Component {
     this.fetchTopics();
   }
 
+  getSearchKeyword = () => this.state.keywords || this.props.threadPost.editorHintTopicKey;
+
   // 更新搜索关键字
   updateKeywords = (val = "") => {
     this.setState({ keywords: val, page: 1, finish: false });
@@ -49,13 +51,13 @@ class TopicSelect extends Component {
   async fetchTopics(p) {
     // 1 设置参数
     const { fetchTopic } = this.props.threadPost;
-    const { perPage, keywords } = this.state;
+    const { perPage } = this.state;
     const page = p || this.state.page;
     const params = { page, perPage };
 
     params.filter = {};
-    if (keywords) {
-      params.filter.content = keywords;
+    if (this.getSearchKeyword()) {
+      params.filter.content = this.getSearchKeyword();
     } else {
       params.filter.recommended = 1;
     }
@@ -97,8 +99,10 @@ class TopicSelect extends Component {
   render() {
     const { pc, visible = false, cancelTopic, threadPost, style = {} } = this.props;
     const { topics = [] } = threadPost;
-    const { finish, keywords } = this.state;
+    const { finish } = this.state;
     const platform = pc ? 'pc' : 'h5';
+
+    const searchWord = this.getSearchKeyword();
     const content = (
       <div className={styles.wrapper} onClick={e => e.stopPropagation()}>
 
@@ -109,12 +113,12 @@ class TopicSelect extends Component {
               <Icon className={styles['search-icon']} name="SearchOutlined" size={16}></Icon>
             </div>}
             <Input
-              value={keywords}
+              value={searchWord}
               placeholder='请选择或直接输入话题'
               onChange={e => this.updateKeywords(e.target.value)}
             />
-            {!pc && keywords &&
-              <div className={styles['icon-box']} onClick={() => this.updateKeywords()}>
+            {!pc && searchWord
+              && <div className={styles['icon-box']} onClick={() => this.updateKeywords()}>
                 <Icon className={styles['delete-icon']} name="WrongOutlined" size={16}></Icon>
               </div>
             }
@@ -134,7 +138,7 @@ class TopicSelect extends Component {
           immediateCheck={false}
           platform={platform}
         >
-          {keywords && topics.map(item => item.content).indexOf(keywords) === -1 && this.renderItem({ content: keywords, newTopic: '新话题' })}
+          {searchWord && topics.map(item => item.content).indexOf(searchWord) === -1 && this.renderItem({ content: searchWord, newTopic: '新话题' })}
           {topics.map(item => (
             <React.Fragment key={item.topicId}>
               {this.renderItem(item)}

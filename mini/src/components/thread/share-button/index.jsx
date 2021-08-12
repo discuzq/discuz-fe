@@ -20,7 +20,7 @@ const Index = ({show, setShow, data = '', getShareData, shareNickname, shareAvat
         isPrice: thread?.displayTag?.isPrice,
     }
     const handleClick = () => {
-        setShow()
+        setShow(false)
         const {nickname} = thread.user || ''
         const {avatar} = thread.user || ''
         if(thread.isAnonymous) {
@@ -30,7 +30,7 @@ const Index = ({show, setShow, data = '', getShareData, shareNickname, shareAvat
         }
     }
     const CreateCard = () => {
-        setShow()
+        setShow(false)
         Taro.eventCenter.once('page:init', () => {
             Taro.eventCenter.trigger('message:detail', data)
         })
@@ -39,7 +39,7 @@ const Index = ({show, setShow, data = '', getShareData, shareNickname, shareAvat
         })
     }
     const onClose = () => {
-        setShow()
+        setShow(false)
     }
     // 当页面被隐藏时（去分享）,收起弹窗
     // TODO 最好是做成点击按钮之后，就收起弹窗

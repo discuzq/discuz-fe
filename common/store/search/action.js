@@ -100,8 +100,10 @@ class SearchAction extends SearchStore {
     this.indexUsersError = { isError: false, errorText: '' }
     this.indexThreadsError = { isError: false, errorText: '' }
 
-    this.currentKeyword = null
-    
+    this.currentKeyword = null // 当前正在搜索的关键词重置
+
+    this.searchNoData = false // 搜索页没有搜索到东西，从首页返回搜索页要重置
+
     this.setIndexTopics(null)
     this.setIndexUsers(null)
     this.setIndexThreads(null)

@@ -37,7 +37,7 @@
     flex: 1;
     font-size: rem($font-size-large);
     color: $text-color-primary;
-    font-weight: var(--font-weight-regular);
+    font-weight: $font-weight-regular;
   }
   .additionItem {
     display: flex;
@@ -45,7 +45,7 @@
     justify-content: space-between;
     font-size: rem($font-size-primary);
     padding: rem($padding-4n) 0;
-    border-bottom: var(--border-border);
+    border-bottom: $border-solid-1;
     .additionLabel {
       color: $text-color-regular;
       height: rem(20);

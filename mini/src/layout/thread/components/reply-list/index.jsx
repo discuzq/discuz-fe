@@ -66,9 +66,12 @@ export default class ReplyList extends React.Component {
   }
 
   transformer = (parsedDom) => {
+    const isSelf = this.props.threadId === this.props?.data?.userId || (this.props.threadId === this.props?.data?.commentUserId)
+
+    const hasAvatarImage = !!this.props?.data?.commentUser?.avatar;
     const element =
       this.props.data.commentUserId && this.props?.data?.commentUser ? (
-        <View className={styles.commentUser}>
+        <View className={`${styles.commentUser} ${hasAvatarImage ? '' : styles.positionTop}`}>
           <View
             className={styles.replyedAvatar}
             onClick={() => {
@@ -94,6 +97,11 @@ export default class ReplyList extends React.Component {
           >
             {this.props.data.commentUser.nickname || this.props.data.commentUser.userName || '用户异常'}
           </Text>
+          {!!isSelf && (
+            <View className={styles.masterBox}>
+              <Text className={styles.masterText}>楼主</Text>
+            </View>
+          )}
         </View>
       ) : (
         ''
@@ -111,10 +119,9 @@ export default class ReplyList extends React.Component {
   render() {
     const { canLike, canDelete, canHide } = this.generatePermissions(this.props.data);
     const { groups } = this.props.data?.user || {};
-
     // 评论内容是否通过审核
     const isApproved = this.props?.data?.isApproved === 1;
-
+    const isSelf = this.props.threadId === this.props?.data?.userId
     return (
       <View className={styles.replyList} id={`position${this.props.data?.id}`}>
         <View
@@ -144,7 +151,14 @@ export default class ReplyList extends React.Component {
                 >
                   {this.props.data?.user?.nickname || this.props.data?.user?.userName || '用户异常'}
                 </View>
-                {!!groups?.isDisplay && <View className={styles.groups}>{groups?.name || groups?.groupName}</View>}
+                {!!isSelf && (
+                    <View className={styles.masterBox}>
+                      <Text className={styles.masterText}>楼主</Text>
+                    </View>
+                  )}
+                {!!groups?.isDisplay  && (
+                  <View className={styles.groups}>{groups?.name || groups?.groupName}</View>
+                )}
               </View>
               {!isApproved ? <View className={styles.isApproved}>审核中</View> : <View></View>}
             </View>

@@ -7,6 +7,7 @@ import { handleString2Arr } from '@common/utils/handleCategory';
 import HOCFetchSiteData from '../middleware/HOCFetchSiteData';
 import ViewAdapter from '@components/view-adapter';
 import isServer from '@common/utils/is-server';
+import browser from '@common/utils/browser';
 
 @inject('site')
 @inject('index')
@@ -92,18 +93,7 @@ class Index extends React.Component {
     const { router, index, site } = this.props;
     let { categoryId = '', sequence = '0' } = router.query || {}
 
-    if (site.platform === 'pc') {
-      // 设置PC端左边栏
-      if (categoryId === '') {
-        categoryId = 'all'
-      }
-
-      // 设置PC端顶部
-      if (sequence !== '0') {
-        index.topMenuIndex = `${sequence}`
-      }
-    }
-
+    // 路由中带值
     if (categoryId || sequence !== '0') {
       let ids = categoryId.split('_').map(item => {
         // 判断categoryId是否是数字。可能是all/default
@@ -112,18 +102,30 @@ class Index extends React.Component {
         return id
       }).filter(item => item)
 
-      if (sequence === '1' && !ids?.length) {
+      // H5处理方案
+      if (sequence === '1' && !ids?.length && site.platform === 'h5') {
         ids = ['default']
       }
 
-      if (ids.indexOf('default') !== -1 && sequence === '0') {
+      if (ids.indexOf('default') !== -1 && sequence === '0' && site.platform === 'h5') {
         sequence = '1'
+      }
+
+      // PC处理方案
+      if (!ids?.length && site.platform === 'pc') {
+        ids = ['all']
+      }
+
+      // 设置PC端顶部
+      if (sequence !== '0' && site.platform === 'pc') {
+        index.topMenuIndex = `${sequence}`
       }
 
       const newFilter = { ...index.filter, categoryids: ids, sequence };
 
       index.setFilter(newFilter);
     } else {
+      // 路由中不带值，从store中获取
       const { categoryids, sequence: seq } = index.filter || {}
       this.setUrl(categoryids, seq)
     }
@@ -186,10 +188,11 @@ class Index extends React.Component {
 
   render() {
     const { categoryName = '' } = this.props.index || {}
+    const { setSite: { siteTitle } = {} } = this.props.site.webConfig || {}
     return <ViewAdapter
             h5={<IndexH5Page dispatch={this.dispatch} />}
             pc={<IndexPCPage dispatch={this.dispatch} />}
-            title={categoryName}
+            title={categoryName || siteTitle || ""}
           />;
   }
 }
@@ -197,7 +200,7 @@ class Index extends React.Component {
 // eslint-disable-next-line new-cap
 export default HOCFetchSiteData(Index, (pass) => {
   // 因部署方式的问题，所有路径第一次访问都会访问index.html，导致会出现首页渲染出来之后跳转到制定的url地址，为了防止这种情况，对首页的渲染做一次判断，如果url不是首页连接，将不渲染首页。
-  if (!isServer()) {
+  if (!isServer() && !browser.env('uc')) { // uc浏览器存在异常，首页不做判断
     const pathname = window.location.pathname;
     if (pathname === '/' || pathname === '/index') {
       return true;

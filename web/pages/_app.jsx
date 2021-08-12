@@ -6,7 +6,6 @@ import getPlatform from '@common/utils/get-platform';
 import initializeStore from '@common/store';
 import PayBoxProvider from '../components/payBox/payBoxProvider';
 import isServer from '@common/utils/is-server';
-import '@discuzq/design/dist/styles/index.scss';
 import csrRouterRedirect from '@common/utils/csr-router-redirect';
 import Router from '@discuzq/sdk/dist/router';
 // import sentry from '@common/utils/sentry';
@@ -112,7 +111,7 @@ class DzqApp extends App {
   render() {
     const { Component, pageProps } = this.props;
     return (
-      <div data-dzq-theme="light">
+      <div className={`dzq-theme--${this.appStore.site.theme}`}>
         <Provider {...this.appStore}>
           <Head>
             <meta

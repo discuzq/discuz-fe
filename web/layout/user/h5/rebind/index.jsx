@@ -2,7 +2,6 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'next/router';
 import { Toast, Icon } from '@discuzq/design';
-import '@discuzq/design/dist/styles/index.scss';
 import styles from './index.module.scss';
 import JoinBanner from '@components/join-banner-pc';
 import WeixinQrCode from '@components/login/wx-qr-code';

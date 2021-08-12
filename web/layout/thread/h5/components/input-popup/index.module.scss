@@ -21,7 +21,7 @@
       font-size: $font-size-base;
 
       &::placeholder {
-        color: var(--border-color-hover);
+        color: $disabled-color;
       }
     }
   }
@@ -115,4 +115,5 @@
 
 .disabled {
   color: $disabled-color;
+  pointer-events: none;
 }

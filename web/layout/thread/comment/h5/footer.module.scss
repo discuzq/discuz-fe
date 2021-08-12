@@ -4,8 +4,12 @@
   flex: 1;
   :global {
     .dzq-input__prefix-icon {
-      color: $text-color-regular;
       width: rem(48);
+      color:  $text-color-regular
+    }
+    .dzq-input.is-disabled .dzq-input__inner {
+      background-color: $body-bg-color;
+      -webkit-appearance: none; // ios下去除上面阴影
     }
     .dzq-input__inner {
       border-radius: rem(18);
@@ -18,10 +22,6 @@
         line-height: rem(24);
         text-align: left;
       }
-    }
-    .dzq-input.is-disabled .dzq-input__inner {
-      background-color: $body-bg-color;
-      -webkit-appearance: none; // ios下去除上面阴影
     }
   }
   .input {
@@ -47,8 +47,9 @@
   text-align: left;
   color: #8590a6;
   line-height: rem(17);
-  width: rem(26);
+  width: rem(24);
   background-color: #fff;
+  padding-left: rem(4);
   left: rem(10);
   bottom: rem(12);
 }
