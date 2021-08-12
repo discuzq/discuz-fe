@@ -40,6 +40,7 @@ const InputPop = (props) => {
     setValue(initValue);
   }, [initValue]);
   useEffect(() => {
+    setFocus(true)
     if(props.showEmojis) {
       setFocus(false);
       setShowEmojis(props.showEmojis);
@@ -57,6 +58,7 @@ const InputPop = (props) => {
     fetchEmojis()
   }, [props.showEmojis]);
   useEffect(() => {
+    setFocus(true)
     if(props.showPicture) {
       setFocus(false);
       setShowPicture(props.showPicture);
@@ -162,7 +164,7 @@ const InputPop = (props) => {
     }
     textareaRef.current.focus();
     // setFocus(true)
-    
+
     setShowEmojis(false);
   };
 
@@ -186,7 +188,7 @@ const InputPop = (props) => {
 
   const handleUploadChange = async (list) => {
     setImageList([...list]);
-    if (list.length > 0 && isDisabled) {
+    if (list.length > 0 && isDisabled ) {
       setDisabled(false);
     }
     if (list.length === 0 && !isDisabled  && value.length === 0) {

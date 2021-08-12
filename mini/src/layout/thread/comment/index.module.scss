@@ -42,6 +42,12 @@
   }
 
   .body {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0%;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
     height: 100%;
     overflow-y: auto;
   }
@@ -81,5 +87,6 @@
 }
 
 .box {
-  margin-bottom: env(safe-area-inset-bottom)
+  height: env(safe-area-inset-bottom)
 }
+

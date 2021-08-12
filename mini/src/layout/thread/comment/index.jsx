@@ -475,6 +475,7 @@ class CommentH5Page extends React.Component {
                 isHideEdit
                 postId={this.props.comment.postId}
                 positionRef={this.positionRef}
+                threadId={this.props.thread.threadData.userId}
               ></CommentList>
             )}
           </View>
@@ -512,7 +513,6 @@ class CommentH5Page extends React.Component {
             </View>
           </View>
         )}
-        <Fragment>
         <View className={styles.footer}>
           {/* 评论弹层 */}
           <InputPopup
@@ -562,7 +562,6 @@ class CommentH5Page extends React.Component {
             onOkClick={(data) => this.onReportOk(data)}
           ></ReportPopup>
         </View>
-        </Fragment>
         </View>
       </View>
     );
