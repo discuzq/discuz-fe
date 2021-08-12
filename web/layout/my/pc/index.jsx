@@ -204,7 +204,7 @@ class PCMyPage extends React.Component {
           {myThreadsList?.map((item, index) => (
             <Thread
               data={item}
-              key={`${item.threadId}-${item.updatedAt}`}
+              key={`${item.threadId}-${item.updatedAt}-${item.user.avatar}`}
               className={index === 0 && styles.threadStyle}
             />
           ))}

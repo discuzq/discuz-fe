@@ -24,15 +24,8 @@ class PayResultDialog extends React.Component {
   handleSure = () => {
     this.props.payBox.visible = false;
     this.props.payBox.h5SureDialogVisible = false;
+    this.props.payBox.getOrderDetail();
     this.clearPayBox();
-
-    if (this.props.payBox.successCallback) {
-      this.props.payBox.successCallback();
-    }
-
-    if (this.props.payBox.completedCallback) {
-      this.props.payBox.completedCallback();
-    }
   }
 
   render() {
