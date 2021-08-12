@@ -17,7 +17,7 @@ class SearchResultTopicPCPage extends React.Component {
   constructor(props) {
     super(props);
 
-    const keyword = this.props.search.currentTopicKeyword || '';
+    const keyword = this.props.search.currentKeyword || '';
 
     this.state = {
       keyword: keyword,
@@ -46,7 +46,7 @@ class SearchResultTopicPCPage extends React.Component {
   };
 
   onSearch = (value) => {
-    this.props.search.currentTopicKeyword = keyword;
+    this.props.search.currentKeyword = keyword;
     this.setState({ keyword: value }, () => {
       this.searchData(value);
     });

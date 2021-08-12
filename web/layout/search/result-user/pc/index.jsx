@@ -16,7 +16,7 @@ class SearchResultUserPcPage extends React.Component {
   constructor(props) {
     super(props);
 
-    const keyword = this.props.search.currentUserKeyword || '';
+    const keyword = this.props.search.currentKeyword || '';
 
     this.state = {
       keyword,
@@ -81,7 +81,7 @@ class SearchResultUserPcPage extends React.Component {
   };
 
   onSearch = (value) => {
-    this.props.search.currentUserKeyword = value;
+    this.props.search.currentKeyword = value;
     this.setState({ keyword: value }, () => {
       this.searchData(value);
     });

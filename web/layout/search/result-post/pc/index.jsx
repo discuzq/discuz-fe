@@ -15,7 +15,7 @@ class SearchResultPostH5Page extends React.Component {
   constructor(props) {
     super(props);
 
-    const keyword = this.props.search.currentPostKeyword || '';
+    const keyword = this.props.search.currentKeyword || '';
 
     this.state = {
       keyword,
@@ -35,7 +35,7 @@ class SearchResultPostH5Page extends React.Component {
   };
 
   onSearch = (value) => {
-    this.props.search.currentPostKeyword = value;
+    this.props.search.currentKeyword = value;
     this.setState({ keyword: value }, () => {
       this.searchData(value);
     });
