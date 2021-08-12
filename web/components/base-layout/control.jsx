@@ -35,6 +35,8 @@ const BaseLayoutControl = forwardRef((props, ref) => {
     ...others
   } = props;
 
+  const [listRef, setListRef] = useState(null);
+  
   const layoutRef = useRef(null);
 
   const disableEffect = useRef(false);
@@ -100,7 +102,7 @@ const BaseLayoutControl = forwardRef((props, ref) => {
   }, [jumpTo, hasListChild, pageName]);
 
   const handleListPosition = () => {
-    if (hasListChild && listRef?.current && pageName && baseLayoutWhiteList.indexOf(pageName) !== -1) {
+    if (hasListChild && listRef?.current && pageName && isPageInWhiteList()) {
       if (jumpTo > 0) {
         baselayout[pageName] = jumpTo;
         listRef.current.jumpToScrollTop(jumpTo);
