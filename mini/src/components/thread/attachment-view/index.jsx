@@ -87,13 +87,13 @@ const Index = ({
 
       if(!item || !threadId) return;
 
-      downloading[index] = true;
-      setDownloading([...downloading]);
+      // downloading[index] = true;
+      // setDownloading([...downloading]);
 
       if(!item?.url) {
         Toast.info({content: "获取下载链接失败"});
-        downloading[index] = false;
-        setDownloading([...downloading]);
+        // downloading[index] = false;
+        // setDownloading([...downloading]);
         return;
       }
 
@@ -124,8 +124,8 @@ const Index = ({
           console.error(error.errMsg)
         },
         complete: function () {
-          downloading[index] = false;
-          setDownloading([...downloading]);
+          // downloading[index] = false;
+          // setDownloading([...downloading]);
         }
       })
 
