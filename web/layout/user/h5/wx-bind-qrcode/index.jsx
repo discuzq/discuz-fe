@@ -51,6 +51,7 @@ class WeixinBindQrCodePage extends React.Component {
       const { sessionToken = '', nickname = '', jumpType = '' } = this.props.router.query;
       const { platform, wechatEnv } = this.props.site;
       const qrCodeType = platform === 'h5' ? 'mobile_browser_bind' : 'pc_bind';
+      const process = platform === 'h5' && wechatEnv === 'openPlatform' ? 'bind' : '';
       const { user } = this.props;
       let name = nickname;
       if (user.loginStatus) {
@@ -58,13 +59,13 @@ class WeixinBindQrCodePage extends React.Component {
         name = user.nickname;
       }
 
-      const redirectUri = `${wechatEnv === 'miniProgram' ? '/subPages/user/wx-auth/index' : `${window.location.origin}/user/wx-auth`}?loginType=${platform}&action=wx-bind&nickname=${name}`;
+      const redirectUri = `${wechatEnv === 'miniProgram' ? '/subPages/user/wx-auth/index' : `${window.location.origin}/user/wx-auth`}?loginType=${platform}&action=wx-bind&nickname=${name}&jumpType=${jumpType}`;
       await this.props.h5QrCode.generate({
         params: {
           sessionToken,
           type: wechatEnv === 'miniProgram' ? 'pc_bind_mini' : qrCodeType,
           redirectUri: encodeURIComponent(redirectUri),
-          jumpType,
+          process
         },
       });
       // 组件销毁后，不执行后面的逻辑

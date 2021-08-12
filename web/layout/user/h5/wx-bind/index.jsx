@@ -76,6 +76,7 @@ class WeixinBindH5Page extends React.Component {
       if (bindLoading) {
         return;
       }
+      const { jumpType = '' }  = this.props.router.query;
       const { router } = this.props;
       bindLoading = true;
       const res = await h5WechatCodeBind(opts);
@@ -93,7 +94,7 @@ class WeixinBindH5Page extends React.Component {
           status: 'success'
         });
       }
-      if (res.code === 0 && loginType === 'h5') {
+      if (res.code === 0 && loginType === 'h5' && jumpType !== '1') {
         const accessToken = get(res, 'data.accessToken');
         const uid = get(res, 'data.uid');
         // 注册成功后，默认登录
