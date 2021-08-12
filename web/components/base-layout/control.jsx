@@ -102,7 +102,7 @@ const BaseLayoutControl = forwardRef((props, ref) => {
   }, [jumpTo, hasListChild, pageName]);
 
   const handleListPosition = () => {
-    if (hasListChild && listRef?.current && pageName && baseLayoutWhiteList.indexOf(pageName) !== -1) {
+    if (hasListChild && listRef?.current && pageName && isPageInWhiteList()) {
       if (jumpTo > 0) {
         baselayout[pageName] = jumpTo;
         listRef.current.jumpToScrollTop(jumpTo);

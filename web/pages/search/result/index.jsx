@@ -8,6 +8,7 @@ import HOCFetchSiteData from '@middleware/HOCFetchSiteData';
 
 @inject('site')
 @inject('search')
+@inject('baselayout')
 @observer
 class Index extends React.Component {
   static async getInitialProps(ctx) {
@@ -59,9 +60,10 @@ class Index extends React.Component {
   }
 
   dispatch = async (type, data = '') => {
-    const { search } = this.props;
+    const { search, baselayout } = this.props;
 
     search.resetSearchData();
+    baselayout.resetSearchResultScrolltop();
     search.getSearchData({ search: data, type: 1 });
   }
 
