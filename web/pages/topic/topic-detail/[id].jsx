@@ -53,7 +53,7 @@ class Index extends React.Component {
       this.setState({
         fetchTopicInfoLoading: true,
       });
-      this.props.baselayout['topic-detail'] = -1;
+      this.props.baselayout['topicDetail'] = -1;
       try {
         await topic.getTopicsDetail({ topicId: id });
         this.setState({

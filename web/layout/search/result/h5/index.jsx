@@ -85,7 +85,7 @@ class SearchResultH5Page extends React.Component {
     const { hasTopics, hasUsers, hasThreads, isShowAll } = this.props.search.dataSearchStatus
 
     return (
-      <BaseLayout allowRefresh={false} pageName="h5-search-result">
+      <BaseLayout allowRefresh={false} pageName="h5SearchResult">
         <SearchInput onSearch={this.onSearch} onCancel={this.onCancel} defaultValue={keyword} searchWhileTyping/>
 
         {(isShowAll || hasUsers) && <SidebarPanel

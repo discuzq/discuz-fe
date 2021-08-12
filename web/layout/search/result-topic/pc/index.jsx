@@ -75,7 +75,7 @@ class SearchResultTopicPCPage extends React.Component {
         onSearch={this.onSearch}
         right={this.renderRight}
         className="search-result-topic"
-        pageName="result-topic"
+        pageName="resultTopic"
       >
         <SidebarPanel
           title="潮流话题"

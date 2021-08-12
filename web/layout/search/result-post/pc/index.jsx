@@ -54,7 +54,7 @@ class SearchResultPostH5Page extends React.Component {
         isShowLayoutRefresh={!!pageData?.length}
         className="search-result-post"
         right={<><PopTopic /><Copyright/></>}
-        pageName="result-post"
+        pageName="resultPost"
       >
         <SidebarPanel
           title="热门内容"

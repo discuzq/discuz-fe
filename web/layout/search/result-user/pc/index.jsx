@@ -102,7 +102,7 @@ class SearchResultUserPcPage extends React.Component {
         onRefresh={this.fetchMoreData}
         isShowLayoutRefresh={!!pageData?.length}
         className="search-result-user"
-        pageName="result-user"
+        pageName="resultUser"
       >
         <SidebarPanel
           title="活跃用户"

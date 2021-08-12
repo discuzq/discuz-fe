@@ -55,11 +55,11 @@ const BaseLayoutControl = forwardRef((props, ref) => {
       'buy',
       'block',
       'draft',
-      'result-topic',
-      'result-user',
-      'result-post',
-      'h5-search-result',
-      'topic-detail',
+      'resultTopic',
+      'resultUser',
+      'resultPost',
+      'h5SearchResult',
+      'topicDetail',
     ];
     if (Array.isArray(jumpRuleList)) {
       return [...defaultWhiteList, ...jumpRuleList];
