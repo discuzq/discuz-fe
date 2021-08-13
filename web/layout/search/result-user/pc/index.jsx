@@ -87,6 +87,18 @@ class SearchResultUserPcPage extends React.Component {
     });
   }
 
+  async componentDidMount() {
+    const { search, router } = this.props;
+    const { keyword = '' } = router.query;
+    // 当服务器无法获取数据时，触发浏览器渲染
+    const hasUsers = !!search.users;
+
+    if (!hasUsers || keyword !== search.currentKeyword) {
+      this.page = 1;
+      await search.getUsersList({ search: keyword, perPage: this.perPage });
+    }
+  }
+
   render() {
     // const { keyword } = this.state;
     const { users, usersError } = this.props.search;

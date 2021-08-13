@@ -35,18 +35,6 @@ class Index extends React.Component {
     serverSearch && serverSearch.topics && search.setTopics(serverSearch.topics);
   }
 
-  async componentDidMount() {
-    const { search, router } = this.props;
-    const { keyword = '' } = router.query;
-    // 当服务器无法获取数据时，触发浏览器渲染
-    const hasTopics = !!search.topics;
-
-    if (!hasTopics || keyword !== search.currentKeyword || !search.currentTopicKeyword) {
-      this.page = 1;
-      await search.getTopicsList({ search: keyword || search.currentTopicKeyword, perPage: this.perPage });
-    }
-  }
-
   dispatch = async (type, data) => {
     const { search } = this.props;
     if (type === 'refresh') {
