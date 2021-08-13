@@ -53,14 +53,11 @@ class SearchResultPostH5Page extends React.Component {
     // 当服务器无法获取数据时，触发浏览器渲染
     const hasThreads = !!search.threads;
 
-    if (!hasThreads || (keyword && keyword !== search.currentPostKeyword)) { // 缓存为空或者url参数与缓存不同，刷新
+    if (!hasThreads || (keyword && keyword !== search.currentPostKeyword)) { // 缓存为空或者url参数与缓存不同，刷新；否则，有缓存的关键词，需要回到原来位置
       this.page = 1;
       search.resetResultData();
       baselayout.resultPost = -1;
       await search.getThreadList({ search: keyword, perPage: this.perPage });
-    } else if (!search.currentPostKeyword) { // 有缓存的关键词，需要回到原来位置
-      this.page = 1;
-      await search.getThreadList({ search: search.currentPostKeyword, perPage: this.perPage, hasThreads: hasThreads });
     }
   }
 
