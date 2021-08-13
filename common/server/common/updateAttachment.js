@@ -5,7 +5,6 @@ export default async function _updateAttachment(params) {
     url: '/apiv3/attachment.relation',
     method: 'post',
     data: params,
-    timeout: 5000,
   });
   return res;
 }

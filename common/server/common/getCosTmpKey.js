@@ -5,7 +5,6 @@ export default async function _getCosTmpKey(params) {
     url: '/apiv3/coskey',
     method: 'post',
     data: params,
-    timeout: 5000,
   });
   return res;
 }
