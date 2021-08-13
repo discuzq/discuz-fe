@@ -41,9 +41,9 @@ class Index extends React.Component {
     // 当服务器无法获取数据时，触发浏览器渲染
     const hasTopics = !!search.topics;
 
-    if (!hasTopics) {
+    if (!hasTopics || keyword !== search.currentKeyword || !search.currentTopicKeyword) {
       this.page = 1;
-      await search.getTopicsList({ search: keyword, perPage: this.perPage });
+      await search.getTopicsList({ search: keyword || search.currentTopicKeyword, perPage: this.perPage });
     }
   }
 

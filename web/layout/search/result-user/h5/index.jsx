@@ -14,7 +14,7 @@ class SearchResultUserH5Page extends React.Component {
   constructor(props) {
     super(props);
 
-    const keyword = this.props.search.currentUserKeyword || '';
+    const keyword = this.props.router.query.keyword || this.props.search.currentUserKeyword || '';
 
     this.state = {
       keyword,

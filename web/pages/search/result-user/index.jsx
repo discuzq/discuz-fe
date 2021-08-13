@@ -37,9 +37,9 @@ class Index extends React.Component {
     // 当服务器无法获取数据时，触发浏览器渲染
     const hasUsers = !!search.users;
 
-    if (!hasUsers || keyword !== search.currentKeyword) {
+    if (!hasUsers || keyword !== search.currentKeyword || !search.currentUserKeyword) {
       this.page = 1;
-      await search.getUsersList({ search: keyword, perPage: this.perPage });
+      await search.getUsersList({ search: keyword || search.currentUserKeyword, perPage: this.perPage });
     }
   }
 
