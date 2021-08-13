@@ -260,7 +260,7 @@ class Detail extends React.Component {
     await this.getPositionComment(id, postId);
 
     // 获取评论列表
-    if (!this.props?.thread?.commentList || !this.hasMaybeCache()) {
+    if (!this.props?.thread?.commentList || !this.hasMaybeCache() || postId) {
       this.props.thread.setCommentListPage(this.props.commentPosition?.postsPositionPage || 1);
       const params = {
         id,
