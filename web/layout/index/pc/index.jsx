@@ -42,7 +42,6 @@ class IndexPCPage extends React.Component {
       isShowDefault: this.checkIsOpenDefaultTab(),
     };
 
-
     this.enabledVList = true; // 开启虚拟列表
 
     // 轮询定时器
@@ -58,7 +57,10 @@ class IndexPCPage extends React.Component {
     this.renderLeft = this.renderLeft.bind(this);
     this.renderRight = this.renderRight.bind(this);
 
-    this.autoplay = new Autoplay();
+    const isAutoplay = this.props.site?.webConfig?.qcloud?.qcloudVodAutoPlay || false;
+    if (isAutoplay) {
+      this.autoplay = new Autoplay({ platform: 'pc' });
+    }
   }
 
   componentDidMount() {
@@ -211,12 +213,12 @@ class IndexPCPage extends React.Component {
 
   // 视频播放
   checkVideoPlay = debounce((startNum, stopNum) => {
-    this.autoplay.checkVideoPlay(startNum, stopNum);
+    this.autoplay?.checkVideoPlay(startNum, stopNum);
   }, 1000);
 
   // 视频暂停
   checkVideoPlause = throttle(() => {
-    this.autoplay.checkVideoPlause();
+    this.autoplay?.checkVideoPlause();
   }, 50);
 
   handleScroll = ({ startNum, stopNum } = {}) => {
