@@ -12,7 +12,7 @@ class SearchResultTopicH5Page extends React.Component {
   constructor(props) {
     super(props);
 
-    const keyword = this.props.search.currentTopicKeyword || '';
+    const keyword = this.props.router.query.keyword || '';
 
     this.state = {
       keyword: keyword,
