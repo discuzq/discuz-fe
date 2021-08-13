@@ -33,7 +33,7 @@
     "@discuzq/discuz-babel-plugin-import": "0.0.1",
     "@discuzq/plugin": "1.0.33",
     "@discuzq/sdk": "1.0.35",
-    "@discuzq/theme": "1.0.4",
+    "@discuzq/theme": "1.0.5",
     "@discuzq/vditor": "1.0.26",
     "@tarojs/components": "3.2.2",
     "@tarojs/react": "3.2.2",

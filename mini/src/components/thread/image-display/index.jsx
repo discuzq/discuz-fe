@@ -10,13 +10,13 @@ import {calcImageType, calcImageDefaultType} from '@common/utils/calc-image-type
 const { Col, Row } = Flex
 
 // TODO 图片懒加载
-const Index = ({ 
-  imgData = [], 
-  flat = false, 
-  platform = 'h5', 
-  isPay = false, 
-  onPay = noop, 
-  onImageReady = noop, 
+const Index = ({
+  imgData = [],
+  flat = false,
+  platform = 'h5',
+  isPay = false,
+  onPay = noop,
+  onImageReady = noop,
   relativeToViewport = true ,
   updateViewCount = noop
 }) => {
@@ -85,7 +85,7 @@ const Index = ({
     //         setFirstImgData('fail');
     //       }
     //     }, 2000);
-    //   } 
+    //   }
     //   return () => {
     //     timer && clearTimeout(timer);
     //   }
@@ -129,13 +129,13 @@ const Index = ({
           <View>
               {res.bigImages.map((item, index) => (
                 <View key={index} className={styles.flatItem}>
-                  <SmartImg autoSize noSmart type={item.fileType} src={item.url} mode='widthFix' onClick={() => onClick(item.id)} />
+                  <SmartImg autoSize noSmart type={item.fileType} src={item.url} size={item.fileSize} mode='widthFix' onClick={() => onClick(item.id)} />
                 </View>
               ))}
           </View>
         );
       }
-      
+
       const type = firstImgData === 'fail' ? calcImageDefaultType(imgData.length) : calcImageType(firstImgData.width, firstImgData.height);
       if (imgData.length === 1) {
         return <One type={type} bigImages={res.bigImages} onClick={onClick} smallImages={res.smallImages} style={style} />;
@@ -188,7 +188,7 @@ const Index = ({
     const item = bigImages[0];
     return (
       <View className={`${styles[style]} ${styles[type]}`}>
-        <SmartImg level={1} type={item.fileType} src={item.thumbUrl} mode='aspectFill' onClick={() => onClick(item.id)} />
+        <SmartImg level={1} type={item.fileType} src={item.thumbUrl} size={item.fileSize} mode='aspectFill' onClick={() => onClick(item.id)} />
       </View>
     );
   };
@@ -197,7 +197,7 @@ const Index = ({
     <Row gutter={4} className={`${styles[style]} ${styles[type]} ${styles.row}`}>
       {bigImages.map((item, index) => (
         <Col span={6} className={styles.col} key={index}>
-          <SmartImg level={1} type={item.fileType} src={item.thumbUrl} mode='aspectFill' onClick={() => onClick(item.id)} />
+          <SmartImg level={1} type={item.fileType} src={item.thumbUrl} size={item.fileSize} mode='aspectFill' onClick={() => onClick(item.id)} />
         </Col>
       ))}
     </Row>
@@ -209,31 +209,31 @@ const Index = ({
         <View className={`${styles[style]} ${styles[type]}`}>
           <Row gutter={4}>
             <Col span={8} className={styles.col}>
-              <SmartImg level={1} type={bigImages[0].fileType} mode='aspectFill' src={bigImages[0].thumbUrl} onClick={() => onClick(bigImages[0].id)} />
+              <SmartImg level={1} type={bigImages[0].fileType} mode='aspectFill' src={bigImages[0].thumbUrl} size={bigImages[0].fileSize} onClick={() => onClick(bigImages[0].id)} />
             </Col>
             <Col span={4} className={styles.col}>
               <Row gutter={4} className={styles.smallRow}>
                 {smallImages.map((item, index) => (
                   <Col span={12} key={index} className={styles.smallCol}>
-                    <SmartImg level={2} type={item.fileType} mode='aspectFill' src={item.thumbUrl} onClick={() => onClick(item.id)} />
+                    <SmartImg level={2} type={item.fileType} mode='aspectFill' src={item.thumbUrl} size={item.fileSize} onClick={() => onClick(item.id)} />
                   </Col>
                 ))}
               </Row>
             </Col>
           </Row>
         </View>
-        
+
       );
     }
     return (
       <View className={`${styles[style]} ${styles[type]}`}>
         <View className={styles.bigImages}>
-          <SmartImg level={1} type={bigImages[0].fileType} src={bigImages[0].thumbUrl} mode='aspectFill' onClick={() => onClick(bigImages[0].id)} />
+          <SmartImg level={1} type={bigImages[0].fileType} src={bigImages[0].thumbUrl} size={bigImages[0].fileSize} mode='aspectFill' onClick={() => onClick(bigImages[0].id)} />
         </View>
         <Row gutter={4} className={styles.smallImages}>
           {smallImages.map((item, index) => (
             <Col span={6} className={styles.col} key={index}>
-              <SmartImg level={2} type={item.fileType} src={item.thumbUrl} mode='aspectFill' onClick={() => onClick(item.id)} />
+              <SmartImg level={2} type={item.fileType} src={item.thumbUrl} size={item.fileSize} mode='aspectFill' onClick={() => onClick(item.id)} />
             </Col>
           ))}
         </Row>
@@ -244,13 +244,13 @@ const Index = ({
   const Four = ({ type, bigImages, smallImages, onClick, style }) => (
     <Row gutter={4} className={styles[style]}>
       <Col span={8} className={styles.col}>
-        <SmartImg level={1} type={bigImages[0].fileType} src={bigImages[0].thumbUrl} mode='aspectFill' onClick={() => onClick(bigImages[0].id)} />
+        <SmartImg level={1} type={bigImages[0].fileType} src={bigImages[0].thumbUrl} size={bigImages[0].fileSize} mode='aspectFill' onClick={() => onClick(bigImages[0].id)} />
       </Col>
       <Col span={4} className={styles.col}>
         <Row gutter={4} className={styles.smallRow}>
           {smallImages.map((item, index) => (
             <Col span={12} key={index} className={styles.smallCol}>
-              <SmartImg level={3} type={item.fileType} src={item.thumbUrl} mode='aspectFill' onClick={() => onClick(item.id)} />
+              <SmartImg level={3} type={item.fileType} src={item.thumbUrl} size={item.fileSize} mode='aspectFill' onClick={() => onClick(item.id)} />
             </Col>
           ))}
         </Row>
@@ -263,14 +263,14 @@ const Index = ({
       <Row gutter={4} className={styles.bigImages}>
         {bigImages.map((item, index) => (
           <Col span={6} className={styles.col} key={index}>
-            <SmartImg level={2} type={item.fileType} src={item.thumbUrl} mode='aspectFill' onClick={() => onClick(item.id)} />
+            <SmartImg level={2} type={item.fileType} src={item.thumbUrl} size={item.fileSize} mode='aspectFill' onClick={() => onClick(item.id)} />
           </Col>
         ))}
       </Row>
       <Row gutter={4} className={styles.smallImages}>
         {smallImages.map((item, index) => (
           <Col span={4} className={styles.col} key={index}>
-            <SmartImg level={3} type={item.fileType} src={item.thumbUrl} mode='aspectFill' onClick={() => onClick(item.id)} />
+            <SmartImg level={3} type={item.fileType} src={item.thumbUrl} size={item.fileSize} mode='aspectFill' onClick={() => onClick(item.id)} />
             {imgData?.length > 5 && index === smallImages.length - 1 && (
               <View className={styles.modalBox} onClick={onClickMore}>{`+${imgData.length - 5}`}</View>
             )}

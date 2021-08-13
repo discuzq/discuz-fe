@@ -70,7 +70,7 @@ export default (options) => {
             const res = await updateAttachment({
               type,
               cosUrl,
-              fileName: filename,
+              fileName: type === 1 ? filename : file.name,
             });
             resolve(res);
           } else if (err) {

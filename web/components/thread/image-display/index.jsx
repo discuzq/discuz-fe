@@ -133,6 +133,7 @@ const Index = ({ imgData = [], flat = false, platform = 'h5', isPay = false, onP
                   noSmart
                   type={item.fileType}
                   src={item.url}
+                  size={item.fileSize}
                   onClick={() => onClick(item.id)}
                   showLongPicture={showLongPicture}/>
               </div>
@@ -199,6 +200,7 @@ const One = ({ type, bigImages, onClick, style, showLongPicture, postLoad }) => 
         level={1}
         type={item.fileType}
         src={item.thumbUrl}
+        size={item.fileSize}
         onClick={() => onClick(item.id)}
         showLongPicture={showLongPicture}/>
     </div>
@@ -214,6 +216,7 @@ const Two = ({ type, bigImages, onClick, style, showLongPicture, postLoad }) => 
           level={1}
           type={item.fileType}
           src={item.thumbUrl}
+          size={item.fileSize}
           onClick={() => onClick(item.id)}
           showLongPicture={showLongPicture}/>
       </Col>
@@ -233,6 +236,7 @@ const Three = ({ type, bigImages, smallImages, onClick, style, showLongPicture, 
               type={bigImages[0].fileType}
               src={bigImages[0].thumbUrl}
               onClick={() => onClick(bigImages[0].id)}
+              size={bigImages[0].fileSize}
               showLongPicture={showLongPicture}/>
           </Col>
           <Col span={4} className={styles.col}>
@@ -243,6 +247,7 @@ const Three = ({ type, bigImages, smallImages, onClick, style, showLongPicture, 
                   postLoad={postLoad}
                   level={2}
                   type={item.fileType}
+                  size={item.fileSize}
                   src={item.thumbUrl}
                    onClick={() => onClick(item.id)}
                    showLongPicture={showLongPicture}/>
@@ -263,6 +268,7 @@ const Three = ({ type, bigImages, smallImages, onClick, style, showLongPicture, 
           level={1}
           type={bigImages[0].fileType}
           src={bigImages[0].thumbUrl}
+          size={bigImages[0].fileSize}
           onClick={() => onClick(bigImages[0].id)}
           showLongPicture={showLongPicture}/>
       </div>
@@ -274,6 +280,7 @@ const Three = ({ type, bigImages, smallImages, onClick, style, showLongPicture, 
               level={2}
               type={item.fileType}
               src={item.thumbUrl}
+              size={item.fileSize}
               onClick={() => onClick(item.id)}
               showLongPicture={showLongPicture}/>
           </Col>
@@ -291,6 +298,7 @@ const Four = ({ type, bigImages, smallImages, onClick, style, showLongPicture, p
         level={1}
         type={bigImages[0].fileType}
         src={bigImages[0].thumbUrl}
+        size={bigImages[0].fileSize}
         onClick={() => onClick(bigImages[0].id)}
         showLongPicture={showLongPicture}/>
     </Col>
@@ -303,6 +311,7 @@ const Four = ({ type, bigImages, smallImages, onClick, style, showLongPicture, p
               level={3}
               type={item.fileType}
               src={item.thumbUrl}
+              size={item.fileSize}
               onClick={() => onClick(item.id)}
               showLongPicture={showLongPicture}/>
           </Col>
@@ -323,6 +332,7 @@ const Five = ({ type, bigImages, smallImages, onClick, style, imgData = [], onCl
           level={2}
           type={item.fileType}
           src={item.thumbUrl}
+          size={item.fileSize}
           onClick={() => onClick(item.id)}
           showLongPicture={showLongPicture}/>
         </Col>
@@ -336,6 +346,7 @@ const Five = ({ type, bigImages, smallImages, onClick, style, imgData = [], onCl
           level={3}
           type={item.fileType}
           src={item.thumbUrl}
+          size={item.fileSize}
           onClick={() => onClick(item.id)}
           showLongPicture={showLongPicture}/>
           {imgData?.length > 5 && index === smallImages.length - 1 && (

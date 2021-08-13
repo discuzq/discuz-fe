@@ -14,6 +14,12 @@ const commonUpload = (options) => {
   } = options;
 
   return Promise.all(files.map(file => {
+    if (file.size && file.size / 8 / 1024 / 1024) {
+      debugger;
+    }
+
+
+
     const opts = {
       file,
       ...options
