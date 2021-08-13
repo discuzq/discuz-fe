@@ -133,7 +133,6 @@ const Index = ({ imgData = [], flat = false, platform = 'h5', isPay = false, onP
                   noSmart
                   type={item.fileType}
                   src={item.url}
-                  size={item.fileSize}
                   onClick={() => onClick(item.id)}
                   showLongPicture={showLongPicture}/>
               </div>

@@ -129,7 +129,7 @@ const Index = ({
           <View>
               {res.bigImages.map((item, index) => (
                 <View key={index} className={styles.flatItem}>
-                  <SmartImg autoSize noSmart type={item.fileType} src={item.url} size={item.fileSize} mode='widthFix' onClick={() => onClick(item.id)} />
+                  <SmartImg autoSize noSmart type={item.fileType} src={item.url} mode='widthFix' onClick={() => onClick(item.id)} />
                 </View>
               ))}
           </View>
