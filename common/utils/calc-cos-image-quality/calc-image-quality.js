@@ -124,7 +124,7 @@ function _level_7_quality(viewWidth, conversion) {
 }
 
 function _level_100_quality(viewWidth, conversion) {
-    return `imageView2/2/w/500/h/500/format/webp/rq/1`;
+    return `imageView2/2/w/500/h/500${conversion ? _conversion(conversion) : ''}/rq/1`;
 }
 
 export default function calcImageQuality(viewWidth, type, level) {
@@ -177,6 +177,8 @@ export default function calcImageQuality(viewWidth, type, level) {
             case LEVEL_6: param = _level_6_quality(viewWidth, supportWebp ? 'webp' : 'jpg');
             break;
             case LEVEL_7: param = _level_7_quality(viewWidth, supportWebp ? 'webp' : 'jpg');
+            break;
+            case LEVEL_100: param = _level_100_quality(viewWidth, supportWebp ? 'webp' : 'jpg');
             break;
             default: param = _level_1_quality(viewWidth, supportWebp ? 'webp' : 'jpg');
         }
