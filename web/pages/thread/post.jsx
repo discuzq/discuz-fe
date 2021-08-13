@@ -403,6 +403,12 @@ class PostPage extends React.Component {
     if (!webConfig) return false;
     // 站点支持的文件类型、文件大小
     const { supportFileExt, supportImgExt, supportMaxSize } = webConfig.setAttach;
+    const { qcloudCos } = webConfig.qcloud;
+
+    let photoMaxSize = supportMaxSize;
+    if (type === THREAD_TYPE.image && qcloudCos) {
+      photoMaxSize = supportMaxSize > 15 ? 15 : supportMaxSize;
+    }
 
     const remainLength = 9 - showFileList.length; // 剩余可传数量
     cloneList.splice(remainLength, cloneList.length - remainLength);
@@ -414,7 +420,7 @@ class PostPage extends React.Component {
       const isLegalType = type === THREAD_TYPE.image
         ? this.checkFileType(cloneList[i], supportImgExt)
         : this.checkFileType(cloneList[i], supportFileExt);
-      const isLegalSize = imageSize > 0 && imageSize < supportMaxSize * 1024 * 1024;
+      const isLegalSize = imageSize > 0 && imageSize < photoMaxSize * 1024 * 1024;
 
       // 存在不合法图片时，从上传图片列表删除
       if (!isLegalType || !isLegalSize) {
@@ -427,7 +433,7 @@ class PostPage extends React.Component {
     const supportExt = type === THREAD_TYPE.image ? supportImgExt : supportFileExt;
     const name = type === THREAD_TYPE.file ? '附件' : '图片';
     !isAllLegalType && Toast.info({ content: `仅支持${supportExt}类型的${name}` });
-    !isAllLegalSize && Toast.info({ content: `大小在0到${supportMaxSize}MB之间` });
+    !isAllLegalSize && Toast.info({ content: `大小在0到${photoMaxSize}MB之间` });
     if (type === THREAD_TYPE.file) this.fileList = [...cloneList];
     if (type === THREAD_TYPE.image) this.imageList = [...cloneList];
 

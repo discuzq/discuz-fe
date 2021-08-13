@@ -36,6 +36,13 @@ export default inject('threadPost', 'site')(observer(({ type, threadPost, site, 
     const showList = isImage ? images : files; // 已上传文件列表
     const remainLength = 9 - Object.keys(showList).length; // 剩余可传数量
 
+
+
+    let photoMaxSize = supportMaxSize;
+    if (isImage && qcloudCos) {
+      photoMaxSize = supportMaxSize > 15 ? 15 : supportMaxSize;
+    }
+
     // 1 删除多余文件
     cloneList.splice(remainLength, cloneList.length - remainLength);
 
@@ -105,7 +112,7 @@ export default inject('threadPost', 'site')(observer(({ type, threadPost, site, 
 
     if (!isAllLegal) {
       Toast.error({
-        content: `仅支持${supportExt}格式，且0~${supportMaxSize}MB的${isImage ? '图片' : '文件'}`,
+        content: `仅支持${supportExt}格式，且0~${photoMaxSize}MB的${isImage ? '图片' : '文件'}`,
       });
     }
 

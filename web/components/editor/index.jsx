@@ -13,9 +13,8 @@ import './index.scss';
 import '@discuzq/vditor/src/assets/scss/index.scss';
 import { Toast } from '@discuzq/design';
 import browser, { constants } from '@common/utils/browser';
-// import { attachmentUploadMultiple } from '@common/utils/attachment-upload';
-import { inject, observer } from 'mobx-react';
 import commonUpload from '@common/utils/common-upload';
+import { inject, observer } from 'mobx-react';
 
 function DVditor(props) {
   const { pc, emoji = {}, atList = [], topic, value = '', isResetContentText,
@@ -348,6 +347,12 @@ function DVditor(props) {
             const { supportImgExt, supportMaxSize } = setAttach;
             const { qcloudCosBucketName, qcloudCosBucketArea, qcloudCosSignUrl, qcloudCos } = qcloud;
 
+
+            let photoMaxSize = supportMaxSize;
+            if (qcloudCos) {
+              photoMaxSize = supportMaxSize > 15 ? 15 : supportMaxSize;
+            }
+
             if (!canInsertThreadImage) {
               Toast.error({
                 content: '您没有上传图片的权限',
@@ -381,9 +386,9 @@ function DVditor(props) {
                 return;
               }
 
-              if (file.size > (supportMaxSize * 1024 * 1024)) {
+              if (file.size > (photoMaxSize * 1024 * 1024)) {
                 Toast.error({
-                  content: `仅支持上传小于${supportMaxSize}MB的图片，请重新选择`,
+                  content: `仅支持上传小于${photoMaxSize}MB的图片，请重新选择`,
                   duration: 3000,
                 });
                 return;

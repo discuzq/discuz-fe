@@ -80,7 +80,7 @@ const Index = ({
       if (!item || !threadId) return;
 
       // downloading[index] = true;
-      // setDownloading([...downloading]); // 注释by贺重威：已有公共的文件loading显示，不需要单独的loading，该状态会造成音频附件的loading错误显示。
+      // setDownloading([...downloading]);
 
 
       if (isWeiXin()) {
@@ -95,7 +95,8 @@ const Index = ({
       }
 
       // downloading[index] = false;
-      // setDownloading([...downloading]);// 注释by贺重威：已有公共的文件loading显示，不需要单独的loading，该状态会造成音频附件的loading错误显示。
+      // setDownloading([...downloading]);
+
     } else {
       onPay();
     }

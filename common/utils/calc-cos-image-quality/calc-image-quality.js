@@ -2,7 +2,7 @@ import isSuportWebp from './is-support-webp';
 
 let supportWebp = isSuportWebp();
 
-
+const QUALITY_0 = '1';
 const QUALITY_1 = '10';
 const QUALITY_2 = '15';
 const QUALITY_3 = '20';
@@ -31,6 +31,7 @@ const LEVEL_4 = 4;
 const LEVEL_5 = 5;
 const LEVEL_6 = 6;
 const LEVEL_7 = 7;
+const LEVEL_100 = 100;
 const IMAGEMOGR2 = 'imageMogr2';
 const QUALITY_NAME = '/quality/';
 const INTERLACE = '/interlace/1';
@@ -122,6 +123,10 @@ function _level_7_quality(viewWidth, conversion) {
     return `${IMAGEMOGR2}${conversion ? _conversion(conversion) : ''}${QUALITY_NAME}${zoom}${INTERLACE}${ERROR_IGNORE}`;
 }
 
+function _level_100_quality(viewWidth, conversion) {
+    return `imageView2/2/w/500/h/500/format/webp/rq/1`;
+}
+
 export default function calcImageQuality(viewWidth, type, level) {
     let param;
     // 根据图片类型判断使用何种方式
@@ -142,6 +147,8 @@ export default function calcImageQuality(viewWidth, type, level) {
             case LEVEL_6: param = _level_6_quality(viewWidth, supportWebp ? 'webp' : null);
             break;
             case LEVEL_7: param = _level_7_quality(viewWidth, supportWebp ? 'webp' : null);
+            break;
+            case LEVEL_100: param = _level_100_quality(viewWidth, supportWebp ? 'webp' : null);
             break;
             default: param = _level_1_quality(viewWidth, supportWebp ? 'webp' : null);
         }

@@ -5,11 +5,12 @@ import { isLongImage } from '@common/utils/calc-image-type';
 import calcCosImageQuality from '@common/utils/calc-cos-image-quality';
 import { inject, observer } from 'mobx-react';
 
-const SmartImg = ({ level, type, src, onClick, noSmart = false, showLongPicture = true, postLoad = '' }) => {
+const SmartImg = ({ level, type, src, onClick, noSmart = false, showLongPicture = true, postLoad = '', size = 0 }) => {
   const [isLong, changeIsLong] = useState(false);
   const img = useRef(null);
 
   const imgSrc = useMemo(() => {
+    if (size / 1024 / 1024 > 5) return calcCosImageQuality(src, type, 100);
     if (noSmart) return calcCosImageQuality(src, type, 0);
     return calcCosImageQuality(src, type, level);
   }, [noSmart, src, type, level]);
