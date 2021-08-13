@@ -39,7 +39,10 @@ class IndexH5Page extends React.Component {
     this.handleScroll = this.handleScroll.bind(this);
     this.onRefresh = this.onRefresh.bind(this);
 
-    this.autoplay = new Autoplay({ platform: 'h5' });
+    const isAutoplay = this.props.site?.webConfig?.qcloud?.qcloudVodAutoPlay || false;
+    if (isAutoplay) {
+      this.autoplay = new Autoplay({ platform: 'h5' });
+    }
   }
 
   DynamicVListLoading = dynamic(() => import('./components/dynamic-vlist'), {
@@ -141,12 +144,12 @@ class IndexH5Page extends React.Component {
 
   // 视频播放
   checkVideoPlay = debounce((startNum, stopNum) => {
-    this.autoplay.checkVideoPlay(startNum, stopNum);
+    this.autoplay?.checkVideoPlay(startNum, stopNum);
   }, 1000);
 
   // 视频暂停
   checkVideoPlause = throttle(() => {
-    this.autoplay.checkVideoPlause();
+    this.autoplay?.checkVideoPlause();
   }, 50);
 
   handleScroll = ({ scrollTop = 0, startNum, stopNum } = {}) => {
