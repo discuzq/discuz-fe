@@ -41,6 +41,17 @@ class SearchResultPostH5Page extends React.Component {
     });
   }
 
+  async componentDidMount() {
+    const { search, router } = this.props;
+    const { keyword = '' } = router.query;
+    // 当服务器无法获取数据时，触发浏览器渲染
+    const hasThreads = !!search.threads;
+    if (!hasThreads || keyword !== search.currentKeyword) {
+      this.page = 1;
+      await search.getThreadList({ search: keyword, scope: '2' });
+    }
+  }
+
   render() {
     const { pageData, currentPage, totalPage } = this.props.search.threads || {};
     const { threadsError } = this.props.search || {}

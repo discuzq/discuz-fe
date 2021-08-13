@@ -7,12 +7,13 @@ import TopicItem from '@components/topic-item'
 import styles from './index.module.scss';
 
 @inject('search')
+@inject('baselayout')
 @observer
 class SearchResultTopicH5Page extends React.Component {
   constructor(props) {
     super(props);
 
-    const keyword = this.props.router.query.keyword || this.props.search.currentTopicKeyword || '';
+    const keyword = this.props.router.query.keyword || this.props.search.currentTopicKeyword || ''; // url中的关键词参数优先
 
     this.state = {
       keyword: keyword,
@@ -49,6 +50,23 @@ class SearchResultTopicH5Page extends React.Component {
     const { topicId = '' } = data
     this.props.router.push(`/topic/topic-detail/${topicId}`)
   };
+
+  async componentDidMount() {
+    const { search, router, baselayout } = this.props;
+    const { keyword = '' } = router.query;
+    // 当服务器无法获取数据时，触发浏览器渲染
+    const hasTopics = !!search.topics;
+
+    if (!hasTopics || (keyword && keyword !== search.currentTopicKeyword)) { // 缓存为空或者url参数与缓存不同，刷新
+      this.page = 1;
+      search.resetResultData();
+      baselayout.resultTopic = -1;
+      await search.getTopicsList({ search: keyword, perPage: this.perPage });
+    } else if (!search.currentTopicKeyword) { // 有缓存的关键词，需要回到原来位置
+      this.page = 1;
+      await search.getTopicsList({ search: search.currentTopicKeyword, perPage: this.perPage, hasTopics: hasTopics });
+    }
+  }
 
   render() {
     const { keyword } = this.state;

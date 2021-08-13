@@ -32,17 +32,6 @@ class Index extends React.Component {
     serverSearch && serverSearch.threads && search.setThreads(serverSearch.threads);
   }
 
-  async componentDidMount() {
-    const { search, router } = this.props;
-    const { keyword = '' } = router.query;
-    // 当服务器无法获取数据时，触发浏览器渲染
-    const hasThreads = !!search.threads;
-    if (!hasThreads || keyword !== search.currentKeyword || !search.currentUserKeyword) {
-      this.page = 1;
-      await search.getThreadList({ search: keyword || search.currentUserKeyword, scope: '2' });
-    }
-  }
-
   dispatch = async (type, keyword) => {
     const { search } = this.props;
    
