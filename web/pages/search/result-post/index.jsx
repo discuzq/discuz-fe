@@ -37,9 +37,9 @@ class Index extends React.Component {
     const { keyword = '' } = router.query;
     // 当服务器无法获取数据时，触发浏览器渲染
     const hasThreads = !!search.threads;
-    if (!hasThreads || keyword !== search.currentKeyword) {
+    if (!hasThreads || keyword !== search.currentKeyword || !search.currentUserKeyword) {
       this.page = 1;
-      await search.getThreadList({ search: keyword, scope: '2' });
+      await search.getThreadList({ search: keyword || search.currentUserKeyword, scope: '2' });
     }
   }
 

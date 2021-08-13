@@ -14,7 +14,7 @@ class SearchResultUserH5Page extends React.Component {
   constructor(props) {
     super(props);
 
-    const keyword = this.props.router.query.keyword || '';
+    const keyword = this.props.router.query.keyword || this.props.search.currentUserKeyword || '';
 
     this.state = {
       keyword,
@@ -55,7 +55,7 @@ class SearchResultUserH5Page extends React.Component {
     const { keyword } = this.state;
     const { users, usersError } = this.props.search;
     const { pageData = [], currentPage, totalPage } = users || { pageData: [] };
-    console.log(`keyword`, keyword)
+
     return (
       <BaseLayout
         onRefresh={this.fetchMoreData}
