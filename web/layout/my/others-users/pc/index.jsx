@@ -214,7 +214,7 @@ class PCMyPage extends React.Component {
             <div>
               <div className={styles.headerbox}>
                 <div className={styles.userHeader}>
-                  <UserCenterHeaderPc showHeaderLoading={fetchUserInfoLoading} />
+                  <UserCenterHeaderPc showHeaderLoading={fetchUserInfoLoading} isOtherPerson={true} />
                 </div>
               </div>
             </div>
