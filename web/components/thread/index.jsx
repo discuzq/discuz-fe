@@ -232,7 +232,7 @@ class Index extends React.Component {
     }
 
     render() {
-      const { data, card, className = '', site = {}, showBottomStyle = true,  collect = '', unifyOnClick = null, isShowIcon = false, user: users } = this.props;
+      const { data, card, className = '', site = {}, showBottomStyle = true,  collect = '', unifyOnClick = null, isShowIcon = false, user: users, onTextItemClick = null } = this.props;
       const { platform = 'pc' } = site;
 
       const { onContentHeightChange = noop, onImageReady = noop, onVideoReady = noop } = this.props;
@@ -292,6 +292,7 @@ class Index extends React.Component {
             platform={platform}
             onOpen={this.onOpen}
             updateViewCount={this.updateViewCount}
+            onTextItemClick={onTextItemClick}
           />
 
           <BottomEvent
