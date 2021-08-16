@@ -22,6 +22,7 @@ import config from '../../../app.config';
  * @prop {boolean}  useShowMore 是否需要"查看更多"
  * @prop {function} onRedirectToDetail 跳转到详情页面，当点击内容或查看更多内容超出屏幕时跳转到详情页面
  * @prop {function} onOpen 内容展开事件
+ * @prop {function} onTextItemClick 文本内容块点击事件（会覆盖内容里的a跳转）
  */
 
  const PostContent = ({
@@ -34,6 +35,7 @@ import config from '../../../app.config';
   setUseShowMore = noop,
   updateViewCount = noop,
   transformer = parsedDom => parsedDom,
+  onTextItemClick = null,
   ...props
 }) => {
   // 内容是否超出屏幕高度
@@ -206,6 +208,9 @@ import config from '../../../app.config';
               currentUrl={curImageUrl}
             />
           )}
+          {
+            onTextItemClick && <View className={styles.shade} onClick={onTextItemClick}></View>
+          }
         </View>
       </View>
       {useShowMore && showMore && (

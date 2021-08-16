@@ -30,7 +30,8 @@ const Index = (props) => {
     changeHeight = noop, 
     useShowMore = true, 
     setUseShowMore = noop,
-    updateViewCount
+    updateViewCount,
+    onTextItemClick
   } = props;
 
   const wrapperId= useRef(`thread-wrapper-${randomStr()}`)
@@ -67,6 +68,7 @@ const Index = (props) => {
             changeHeight={changeHeight}
             useShowMore={useShowMore}
             setUseShowMore={setUseShowMore}
+            onTextItemClick={onTextItemClick}
           />
         )}
         {videoData && (
