@@ -94,7 +94,7 @@ class Index extends React.Component {
           LoginHelper.saveAndRedirect(PARTNER_INVITE_URL);
           break;
         case JUMP_TO_SUPPLEMENTARY:// 跳转到扩展字段页
-          LoginHelper.saveAndRedirect('/subPages/user/supplementary/index');
+          LoginHelper.saveAndPush('/subPages/user/supplementary/index');
           break;
         case SITE_NO_INSTALL:// 未安装站点
           Router.push({ url: '/subPages/no-install/index' });
