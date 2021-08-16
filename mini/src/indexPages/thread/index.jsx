@@ -61,8 +61,18 @@ class Detail extends React.Component {
     }
     if (data.from === 'menu') {
       const isApproved = this.props?.thread?.threadData?.isApproved === 1;
-      if (!isApproved) {
-        Toast.info({ content: '内容正在审核中' });
+      const { thread, user } = this.props
+      const {nickname} = thread.threadData?.user || ''
+      const {avatar} = thread.threadData?.user || ''
+      // 处理匿名情况
+      if(thread.threadData?.isAnonymous) {
+        user.getShareData({nickname, avatar,threadId})
+        thread.threadData.user.nickname = '匿名用户'
+        thread.threadData.user.avatar = ''
+      }
+      // 这里要用一个定时器，防止出现灰色遮罩层
+      if(!isApproved) {
+        Toast.info({content: '内容正在审核中'})
         const promise = new Promise((resolve, reject) => {
           setTimeout(() => {
             reject();
