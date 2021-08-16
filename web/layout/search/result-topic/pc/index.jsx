@@ -17,7 +17,7 @@ class SearchResultTopicPCPage extends React.Component {
   constructor(props) {
     super(props);
 
-    const keyword = this.props.search.currentKeyword || '';
+    const keyword = this.props.router.query.keyword || this.props.search.currentKeyword || '';
 
     this.state = {
       keyword: keyword,
@@ -58,7 +58,7 @@ class SearchResultTopicPCPage extends React.Component {
     // 当服务器无法获取数据时，触发浏览器渲染
     const hasTopics = !!search.topics;
 
-    if (!hasTopics || (keyword && keyword !== search.currentKeyword)) {
+    if (!hasTopics || (keyword && search.currentKeyword && keyword !== search.currentKeyword)) {
       this.page = 1;
       await search.getTopicsList({ search: keyword, perPage: this.perPage });
     }

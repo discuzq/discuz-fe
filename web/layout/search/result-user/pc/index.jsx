@@ -16,7 +16,7 @@ class SearchResultUserPcPage extends React.Component {
   constructor(props) {
     super(props);
 
-    const keyword = this.props.search.currentKeyword || '';
+    const keyword = this.props.router.query.keyword || this.props.search.currentKeyword || '';
 
     this.state = {
       keyword,
@@ -93,7 +93,7 @@ class SearchResultUserPcPage extends React.Component {
     // 当服务器无法获取数据时，触发浏览器渲染
     const hasUsers = !!search.users;
 
-    if (!hasUsers || (keyword && keyword !== search.currentKeyword)) {
+    if (!hasUsers || (keyword && search.currentKeyword && keyword !== search.currentKeyword)) {
       this.page = 1;
       await search.getUsersList({ search: keyword, perPage: this.perPage });
     }
