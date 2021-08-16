@@ -649,7 +649,7 @@ class PostPage extends React.Component {
           const { orderSn } = orderInfo;
           this.setPostData({ orderInfo });
           if (orderSn) this.props.payBox.hide();
-          this.createThread(true);
+          this.createThread(true, false, true);
         },
         success: async () => {
           this.setIndexPageData();
@@ -679,7 +679,7 @@ class PostPage extends React.Component {
     }, 30000);
   }
 
-  async createThread(isDraft, isAutoSave = false) {
+  async createThread(isDraft, isAutoSave = false, isPay = false) {
     const { threadPost, thread, site } = this.props;
 
     // 图文混排：第三方图片转存
@@ -772,7 +772,7 @@ class PostPage extends React.Component {
 
     // 提交帖子数据
     let ret = {};
-    if (!isAutoSave) this.toastInstance = Toast.loading({ content: isDraft ? '保存草稿中' : '发布中...', hasMask: true });
+    if (!(isAutoSave || isPay)) this.toastInstance = Toast.loading({ content: isDraft ? '保存草稿中' : '发布中...', hasMask: true });
     if (threadPost.postData.threadId) ret = await threadPost.updateThread(threadPost.postData.threadId);
     else ret = await threadPost.createThread();
     const { code, data, msg } = ret;
