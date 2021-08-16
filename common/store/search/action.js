@@ -143,6 +143,42 @@ class SearchAction extends SearchStore {
     this.setThreads(null)
   }
 
+    /**
+   * 发现模块 - 重置主体模块报错信息
+    */
+    @action
+    resetTopicsError(type) {
+      if (type === 0) {
+        this.indexTopicsError = { isError: false, errorText: '' }
+        return;
+      }
+      this.searchTopicsError = { isError: false, errorText: '' }
+    }
+
+    /**
+   * 发现模块 - 重置用户模块报错信息
+    */
+    @action
+    resetUsersError(type) {
+      if (type === 0) {
+        this.indexUsersError = { isError: false, errorText: '' }
+        return;
+      }
+      this.searchUsersError = { isError: false, errorText: '' }
+    }
+
+    /**
+   * 发现模块 - 重置帖子模块报错信息
+    */
+    @action
+    resetThreadsError(type) {
+      if (type === 0) {
+        this.indexThreadsError = { isError: false, errorText: '' }
+        return;
+      }
+      this.searchThreadsError = { isError: false, errorText: '' }
+    }
+
   /**
    * 发现模块 - 首页数据
    * @param {object} search * 搜索值
@@ -202,8 +238,9 @@ class SearchAction extends SearchStore {
           this.searchTopicsError = { isError: true, errorText: msg || '加载失败' }
         }
       }
-      
-      type === 0 ? this.setIndexTopics(code === 0 ? data : {}) : this.setSearchTopics(code === 0 ? data : {});
+
+      this.resetTopicsError(type);
+      type === 0 ? this.setIndexTopics(code === 0 ? data : null) : this.setSearchTopics(code === 0 ? data : {});
     }
 
     if ( !hasUsers ) {
@@ -218,7 +255,8 @@ class SearchAction extends SearchStore {
         }
       }
 
-      type === 0 ? this.setIndexUsers(code === 0 ? data : {}) : this.setSearchUsers(code === 0 ? data : {});
+      this.resetUsersError(type);
+      type === 0 ? this.setIndexUsers(code === 0 ? data : null) : this.setSearchUsers(code === 0 ? data : {});
     }
 
     if ( !hasThreads ) {
@@ -233,7 +271,8 @@ class SearchAction extends SearchStore {
         }
       }
 
-      type === 0 ? this.setIndexThreads(code === 0 ? data : {}) : this.setSearchThreads(code === 0 ? data : {});
+      this.resetThreadsError(type);
+      type === 0 ? this.setIndexThreads(code === 0 ? data : null) : this.setSearchThreads(code === 0 ? data : {});
     }
   };
 
