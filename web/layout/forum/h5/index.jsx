@@ -110,7 +110,7 @@ class ForumH5Page extends React.Component {
                 <div className={layout.forum_member}>
                   {
                       usersPageData?.slice(0, 3).map(item => (
-                        <Avatar size='small' key={item.userId} text={item.nickname} className={layout.forum_member_img} image={item.avatar}/>
+                        <Avatar size='small' key={item.userId} name={item.nickname} className={layout.forum_member_img} image={item.avatar}/>
                       ))
                   }
                   <Icon size={10} color='#8590A6' name='RightOutlined'/>
