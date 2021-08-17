@@ -42,8 +42,16 @@
 
 .root{
   @include cursor-on-pc; 
+  margin:0 auto;
+
+  @media screen and (max-width: 343px)  {
+      .hongbao ,.xuanshang{
+        width: 282px!important;
+      }
+  }
 
   .hongbao{
+    margin:0 auto;
     width: rem(343);
     height:rem(91);
     background-image: linear-gradient(to bottom, #E33042 , #C61A2F);;
@@ -51,6 +59,17 @@
     display: flex;
     .left{
       flex:1;
+      padding-left: rem(25);
+      .top{
+        height:rem(56);
+        border-bottom: 0.5px dashed #FFEEA2 ;
+        font-family: "PingFang SC";
+        font-weight: normal;
+        font-size: 16px;
+        line-height: rem(60);
+        text-align: left;
+        color: #ffeea2;
+      }
     }
     .right{
       width: rem(80);
@@ -75,6 +94,8 @@
   }
 
   .xuanshang{
+  
+    margin:0 auto;
     width: rem(343);
     height:rem(74);
     background-color: #F66B25;
@@ -89,6 +110,7 @@
       border-radius: 4px;
       position: absolute;
       top:19px;
+      z-index: 9999;
     }
     &::before{
       left:-4px
@@ -98,6 +120,33 @@
     }
     .left{
       flex:1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .mid{
+        font-family: "PingFang SC";
+        font-weight: normal;
+        font-size: 16px;
+        line-height: 14px;
+        text-align: left;
+        color: #ffeea2;
+      }
+      .remain{
+        font-weight: normal;
+        font-size: 16px;
+        line-height: 24px;
+        text-align: center;
+        color: #ffeea2;
+      }
+      .cur{
+        font-family: "PingFang SC Light";
+        font-weight: 300;
+        font-size: 12px;
+        line-height: 18px;
+        text-align: center;
+        color: #ffeea2;
+        opacity: 0.8;
+      }
     }
     .right{
       width: rem(120);
@@ -119,25 +168,21 @@
         line-height: rem(42);
         text-align: center;
       }
-      &::after{
+      &::after ,&::before{
         width: 8px;
         height:8px;
         background-color: #fff;
         position: absolute;
-        top:-4px;
         left:-4px;
         content: '';
         border-radius: 50%;
+        z-index: 9999;
+      }
+      &::after{
+        top:-4px;
       }
       &::before{
-        width: 8px;
-        height:8px;
-        background-color: #fff;
-        position: absolute;
         bottom:-4px;
-        left:-4px;
-        content: '';
-        border-radius: 50%;
       }
 
     }

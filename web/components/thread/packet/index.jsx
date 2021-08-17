@@ -6,7 +6,8 @@ import styles from './index.module.scss';
  * @prop {string}  type 判断是红包还是悬赏
  * @prop {string}  condition 判断是集赞领红包还是评论领红包
  */
-const Index = ({ money = 0, type = 0, onClick, condition = 0 }) => {
+const Index = ({ money = 0, remainMoney = 0, type = 0, onClick, condition = 0 }) => {
+  console.log(money,remainMoney,type)
   const title = useMemo(() => {
     if (type === 0) {
       return condition === 0 ? '回复领红包' : '集赞领红包';
@@ -28,7 +29,6 @@ const Index = ({ money = 0, type = 0, onClick, condition = 0 }) => {
     return newNum.replace(regexp, '$1');
   }, [money]);
 
-  console.log(type);
   return (
     // <div className={styles.container} onClick={onClick}>
     //   <div className={styles.wrapper}>
@@ -37,19 +37,33 @@ const Index = ({ money = 0, type = 0, onClick, condition = 0 }) => {
     //     <span className={styles.money}>￥{formatMoney}</span>
     //   </div>
     // </div>
-    <div className={styles.root}>
+    <div className={styles.root}  onClick={onClick}>
       {
-        type === 1 ? (
+        type === 0 ? (
           <div className={styles.hongbao_box}>
             <div className={styles.hongbao}>
-            <div className={styles.left}></div>
+            <div className={styles.left}>
+              <div className={styles.top}> {condition === 0 ? '回复领红包' : '集赞领红包'}</div>
+              <div className={styles.bottom}></div>
+            </div>
               <div className={styles.right}><div className={styles.pie}><img src='/dzq-img/redpacket-mini.png'></img></div></div>
             </div>
           </div>
         ) : (
           <div className={styles.xuanshang_box}>
             <div className={styles.xuanshang}>
-              <div className={styles.left}></div>
+              <div className={styles.left}>
+                {
+                  money ? (
+                    <div>
+                        <div className={styles.remain}>剩余{remainMoney}元</div>
+                        <div className={styles.cur}>已发放{(money - remainMoney).toFixed(2)}元</div>
+                    </div>
+                  ) : (
+                    <div className={styles.mid}>评论领赏金</div>
+                  )
+                }
+              </div>
               <div className={styles.right}><div className={styles.shang}>赏</div></div>
             </div>
           </div>
