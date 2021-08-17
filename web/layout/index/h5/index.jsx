@@ -14,6 +14,8 @@ import classnames from 'classnames';
 // import DynamicVList from './components/dynamic-vlist';
 import dynamic from 'next/dynamic';
 import DynamicLoading from '@components/dynamic-loading';
+import { debounce, throttle } from '@common/utils/throttle-debounce.js';
+import Autoplay from '@common/utils/autoplay';
 
 @inject('site')
 @inject('user')
@@ -36,46 +38,54 @@ class IndexH5Page extends React.Component {
     this.enableVlist = true;
     this.handleScroll = this.handleScroll.bind(this);
     this.onRefresh = this.onRefresh.bind(this);
+
+    const isAutoplay = this.props.site?.webConfig?.qcloud?.qcloudVodAutoPlay || false;
+    if (isAutoplay) {
+      this.autoplay = new Autoplay({ platform: 'h5' });
+    }
   }
 
-  DynamicVListLoading = dynamic(
-    () => import('./components/dynamic-vlist'),
-    { loading: (res) => (
-            <div>
-                <HomeHeader ref={this.headerRef} />
-                <DynamicLoading data={res} style={{padding: '0 0 20px'}} loadComponent={
-                  <div style={{width: '100%'}}>
-                    <div className={styles.placeholder}>
-                      <div className={styles.header}>
-                        <div className={styles.avatar}/>
-                        <div className={styles.box}/>
-                      </div>
-                      <div className={styles.content}/>
-                      <div className={styles.content}/>
-                      <div className={styles.footer}>
-                        <div className={styles.box}/>
-                        <div className={styles.box}/>
-                        <div className={styles.box}/>
-                      </div>
-                    </div>
-                    <div className={styles.placeholder}>
-                      <div className={styles.header}>
-                        <div className={styles.avatar}/>
-                        <div className={styles.box}/>
-                      </div>
-                      <div className={styles.content}/>
-                      <div className={styles.content}/>
-                      <div className={styles.footer}>
-                        <div className={styles.box}/>
-                        <div className={styles.box}/>
-                        <div className={styles.box}/>
-                      </div>
-                    </div>
-                  </div>
-                }/>
+  DynamicVListLoading = dynamic(() => import('./components/dynamic-vlist'), {
+    loading: (res) => (
+      <div>
+        <HomeHeader ref={this.headerRef} />
+        <DynamicLoading
+          data={res}
+          style={{ padding: '0 0 20px' }}
+          loadComponent={
+            <div style={{ width: '100%' }}>
+              <div className={styles.placeholder}>
+                <div className={styles.header}>
+                  <div className={styles.avatar} />
+                  <div className={styles.box} />
+                </div>
+                <div className={styles.content} />
+                <div className={styles.content} />
+                <div className={styles.footer}>
+                  <div className={styles.box} />
+                  <div className={styles.box} />
+                  <div className={styles.box} />
+                </div>
+              </div>
+              <div className={styles.placeholder}>
+                <div className={styles.header}>
+                  <div className={styles.avatar} />
+                  <div className={styles.box} />
+                </div>
+                <div className={styles.content} />
+                <div className={styles.content} />
+                <div className={styles.footer}>
+                  <div className={styles.box} />
+                  <div className={styles.box} />
+                  <div className={styles.box} />
+                </div>
+              </div>
             </div>
-        ) },
-  )
+          }
+        />
+      </div>
+    ),
+  });
 
   componentDidMount() {
     // 是否有推荐
@@ -132,9 +142,23 @@ class IndexH5Page extends React.Component {
     return dispatch('moreData');
   };
 
-  handleScroll = ({ scrollTop = 0 } = {}) => {
+  // 视频播放
+  checkVideoPlay = debounce((startNum, stopNum) => {
+    this.autoplay?.checkVideoPlay(startNum, stopNum);
+  }, 1000);
+
+  // 视频暂停
+  checkVideoPlause = throttle(() => {
+    this.autoplay?.checkVideoPlause();
+  }, 50);
+
+  handleScroll = ({ scrollTop = 0, startNum, stopNum } = {}) => {
     const { height = 180 } = this.headerRef.current?.state || {};
     const { fixedTab } = this.state;
+
+    this.checkVideoPlause();
+    this.checkVideoPlay(startNum, stopNum);
+
     // 只需要滚到临界点触发setState，而不是每一次滚动都触发
     if (!fixedTab && scrollTop >= height) {
       this.setState({ fixedTab: true });
@@ -151,7 +175,10 @@ class IndexH5Page extends React.Component {
       <>
         {categories?.length > 0 && (
           <>
-            <div ref={this.listRef} className={`${styles.homeContent} ${!this.enableVlist && fixedTab && styles.fixed}`}>
+            <div
+              ref={this.listRef}
+              className={`${styles.homeContent} ${!this.enableVlist && fixedTab && styles.fixed}`}
+            >
               <Tabs
                 className={styles.tabsBox}
                 scrollable
@@ -212,26 +239,26 @@ class IndexH5Page extends React.Component {
         onClickTabBar={this.onClickTabBar}
         disabledList={this.enableVlist}
       >
-      <Fragment>
-        <div className={classnames(styles.vTabs, 'text', this.state.fixedTab && styles.vFixed)}>
-          {this.renderTabs()}
-        </div>
+        <Fragment>
+          <div className={classnames(styles.vTabs, 'text', this.state.fixedTab && styles.vFixed)}>
+            {this.renderTabs()}
+          </div>
 
-        <this.DynamicVListLoading
-          pageData={pageData}
-          sticks={sticks}
-          onScroll={this.handleScroll}
-          loadNextPage={this.onRefresh}
-          noMore={currentPage >= totalPage}
-          requestError={threadError.isError}
-          errorText={threadError.errorText}
-          platform={'h5'}
-        >
-          <HomeHeader ref={this.headerRef} />
-          <Observer>{() => this.renderTabs()}</Observer>
-          <Observer>{() => this.renderHeaderContent()}</Observer>
-        </this.DynamicVListLoading>
-      </Fragment>
+          <this.DynamicVListLoading
+            pageData={pageData}
+            sticks={sticks}
+            onScroll={this.handleScroll}
+            loadNextPage={this.onRefresh}
+            noMore={currentPage >= totalPage}
+            requestError={threadError.isError}
+            errorText={threadError.errorText}
+            platform={'h5'}
+          >
+            <HomeHeader ref={this.headerRef} />
+            <Observer>{() => this.renderTabs()}</Observer>
+            <Observer>{() => this.renderHeaderContent()}</Observer>
+          </this.DynamicVListLoading>
+        </Fragment>
 
         <FilterView
           data={currentCategories}
