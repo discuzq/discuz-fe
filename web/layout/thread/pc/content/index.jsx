@@ -250,8 +250,8 @@ export default inject('user')(observer((props) => {
                   condition={parseContent.RED_PACKET.condition}
                 /> */}
                 <Packet
-                  money={parseContent.REWARD.money}
-                  remainMoney={parseContent.REWARD.remainMoney}
+                  number={parseContent.RED_PACKET.number}
+                  remainNumber={parseContent.RED_PACKET.remainNumber}
                 />
                 {!!parseContent.RED_PACKET.condition && (
                   <div className={topic.redPacketLikeNum}>评论集{parseContent.RED_PACKET.likenum}赞领红包</div>
