@@ -26,6 +26,13 @@ class Index extends React.Component {
   }
 
   loadData = async () => {
+    const hasTopics = !!this.props.search.topics;
+    if(hasTopics) {
+      this.setState({
+        topics: this.props.search.topics,
+      });
+      return;
+    }
     try {
       const res = await this.props.search.getTopicsList();
       if (res) {
