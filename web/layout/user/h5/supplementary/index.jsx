@@ -20,7 +20,12 @@ import { InputType, CreateFunctions } from './components';
 class SupplementaryH5Page extends React.Component {
   async componentDidMount() {
     try {
+      this.target = Toast.loading({
+        hasMask: true,
+        duration: 0,
+      });
       const res = await getSignInFields();
+      this.target.hide();
       this.props.supplementary.fields = res.data;
       this.props.supplementary.values = this.props.supplementary.fields?.map((field) => {
         let defaultValue;

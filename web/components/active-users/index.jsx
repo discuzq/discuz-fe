@@ -30,6 +30,13 @@ class Index extends React.Component {
   };
 
   loadData = async () => {
+    const hasUsers = !!this.props.search.users;
+    if(hasUsers) {
+      this.setState({
+        users: this.props.search.users,
+      });
+      return ;
+    }
     try {
       const res = await this.props.search.getUsersList();
       if (res && res.code === 0 && res.data) {

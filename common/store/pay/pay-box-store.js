@@ -12,6 +12,7 @@ import {
   smsSend,
 } from '@server';
 import { STEP_MAP, PAY_MENT_MAP, ORDER_STATUS_MAP, PAY_BOX_ERROR_CODE_MAP } from '../../constants/payBoxStoreConstants';
+import locals from '@common/utils/local-bridge';
 
 const noop = () => { };
 
@@ -71,6 +72,9 @@ class PayBoxStore {
 
   // 确认支付成功弹窗是否可见
   @observable h5SureDialogVisible = false;
+
+  // ios h5外微信支付的 flag
+  @observable h5IOSPaidFlag = false;
 
   // 用户钱包信息
   @observable walletInfo = null;
@@ -152,6 +156,8 @@ class PayBoxStore {
   @action
   createOrder = async () => {
     try {
+      this.h5IOSPaidFlag = false;
+      locals.set('H5_IOS_PAID_FLAG', 'false');
       const data = {
         ...this.options,
         isAnonymous: this.isAnonymous,
@@ -161,6 +167,8 @@ class PayBoxStore {
       });
       if (get(createRes, 'code') === 0) {
         this.orderInfo = get(createRes, 'data', {});
+        locals.set('PAY_ORDER_INFO', JSON.stringify(this.orderInfo));
+        locals.set('PAY_ORDER_OPTIONS', JSON.stringify(this.options));
         if (this.onOrderCreated) {
           this.onOrderCreated(this.orderInfo);
         }
@@ -585,6 +593,8 @@ class PayBoxStore {
   clear = () => {
     clearInterval(this.timer);
     clearTimeout(this.qrCodeCheckTimer);
+    locals.set('PAY_ORDER_INFO', '');
+    locals.set('PAY_ORDER_OPTIONS', '');
     this.options = {};
     this.visible = false;
     this.orderInfo = null;

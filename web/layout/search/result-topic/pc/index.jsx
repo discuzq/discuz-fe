@@ -17,10 +17,10 @@ class SearchResultTopicPCPage extends React.Component {
   constructor(props) {
     super(props);
 
-    const keyword = this.props.router.query.keyword || '';
+    const keyword = this.props.router.query.keyword || this.props.search.currentKeyword || '';
 
     this.state = {
-      keyword,
+      keyword: keyword,
       refreshing: false,
     };
   }
@@ -46,9 +46,22 @@ class SearchResultTopicPCPage extends React.Component {
   };
 
   onSearch = (value) => {
+    this.props.search.currentKeyword = keyword;
     this.setState({ keyword: value }, () => {
       this.searchData(value);
     });
+  }
+
+  async componentDidMount() {
+    const { search, router } = this.props;
+    const { keyword = '' } = router.query;
+    // 当服务器无法获取数据时，触发浏览器渲染
+    const hasTopics = !!search.topics;
+
+    if (!hasTopics || (keyword && search.currentKeyword && keyword !== search.currentKeyword)) {
+      this.page = 1;
+      await search.getTopicsList({ search: keyword, perPage: this.perPage });
+    }
   }
 
   renderRight = () => {
@@ -74,6 +87,7 @@ class SearchResultTopicPCPage extends React.Component {
         onSearch={this.onSearch}
         right={this.renderRight}
         className="search-result-topic"
+        pageName="resultTopic"
       >
         <SidebarPanel
           title="潮流话题"

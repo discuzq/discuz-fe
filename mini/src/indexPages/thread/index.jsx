@@ -30,21 +30,21 @@ class Detail extends React.Component {
     };
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.router?.query?.id && this.props.router.query.id !== prevProps.router.query.id) {
+      this.props.thread.reset();
+      this.getPageDate(this.props.router.query.id);
+    }
+  }
+
   componentDidHide() {
     const { baselayout } = this.props;
 
     const playingAudioDom = baselayout?.playingAudioDom;
 
-    if(playingAudioDom) {
+    if (playingAudioDom) {
       baselayout.playingAudioDom.pause();
       baselayout.playingAudioDom = null;
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.router?.query?.id && this.props.router.query.id !== prevProps.router.query.id) {
-      this.props.thread.reset();
-      this.getPageDate(this.props.router.query.id);
     }
   }
 
@@ -59,21 +59,33 @@ class Detail extends React.Component {
         title: defalutTitle,
       };
     }
-    if (data.from === 'menu')  {
+    if (data.from === 'menu') {
       const isApproved = this.props?.thread?.threadData?.isApproved === 1;
+      const { thread, user } = this.props
+      const {nickname} = thread.threadData?.user || ''
+      const {avatar} = thread.threadData?.user || ''
+      // 处理匿名情况
+      if(thread.threadData?.isAnonymous) {
+        user.getShareData({nickname, avatar,threadId})
+        thread.threadData.user.nickname = '匿名用户'
+        thread.threadData.user.avatar = ''
+      }
+      // 这里要用一个定时器，防止出现灰色遮罩层
       if(!isApproved) {
         Toast.info({content: '内容正在审核中'})
         const promise = new Promise((resolve, reject) => {
           setTimeout(() => {
-            reject()
-          }, 1000)
-        })
-      return {promise}
+            reject();
+          }, 1000);
+        });
+        return { promise };
       }
-      return priceShare({isAnonymous, isPrice, path}) || {
-        title: defalutTitle,
-        path,
-      };
+      return (
+        priceShare({ isAnonymous, isPrice, path }) || {
+          title: defalutTitle,
+          path,
+        }
+      );
     }
     this.props.thread.shareThread(threadId, this.props.index, this.props.search, this.props.topic);
 
@@ -206,12 +218,12 @@ class Detail extends React.Component {
 
   // 获取指定评论位置的相关信息
   async getPositionComment(id, postId) {
-    if(!postId) {
-      this.props?.commentPosition?.reset()
+    if (!postId) {
+      this.props?.commentPosition?.reset();
     }
-    
+
     // 获取评论所在的页面位置
-    if (id && postId && (!this.props?.commentPosition?.postsPositionPage)) {
+    if (id && postId) {
       this.props.commentPosition.setPostId(Number(postId));
       const params = {
         threadId: id,

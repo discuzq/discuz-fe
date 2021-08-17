@@ -79,7 +79,8 @@ class Header extends React.Component {
 
   handleClickSearchIcon = () => {
     this.props.baselayout.search = -1
-    if(this.props.router.pathname.indexOf('/search') !== -1) return;
+    if (this.props.router.pathname.indexOf('/search') !== -1 &&
+        this.props.router.pathname.indexOf('/result-') === -1) return;
     this.props.search.resetIndexData();
     this.handleRouter('/search');
   }

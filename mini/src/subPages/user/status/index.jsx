@@ -74,9 +74,12 @@ class Index extends Component {
               <Image className={layout.icon__img} src='https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fcdn.duitang.com%2Fuploads%2Fitem%2F201408%2F30%2F20140830180834_XuWYJ.png&refer=http%3A%2F%2Fcdn.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1620908425&t=673ddda42973b103faf179fc02818b41' alt=""/>
             </View>
             <View className={layout.functionalRegion}>
-                <Text>
-                  { commonLogin.statusMessage || commonLogin.setStatusMessage(statusCode, statusMsg) }
-                </Text>
+                { statusCode === '2'
+                  ? (
+                    <><View>恭喜您！已成功登录。</View><View>先随便逛逛等待账号审核通过！</View></>
+                  )
+                  : (<Text>{commonLogin.statusMessage || (statusCode && commonLogin.setStatusMessage(statusCode, statusMsg))}</Text>)
+                }
             </View>
             <Button className={layout.button} type="primary" onClick={() => {this.operBtnAction()}}>
               {
