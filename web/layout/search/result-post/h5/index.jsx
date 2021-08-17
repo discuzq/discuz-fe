@@ -8,12 +8,13 @@ import styles from './index.module.scss';
 
 @inject('site')
 @inject('search')
+@inject('baselayout')
 @observer
 class SearchResultPostH5Page extends React.Component {
   constructor(props) {
     super(props);
 
-    const keyword = this.props.router.query.keyword || '';
+    const keyword = this.props.router.query.keyword || this.props.search.currentPostKeyword || ''; // url中的关键词参数优先
 
     this.state = {
       keyword,
@@ -40,10 +41,25 @@ class SearchResultPostH5Page extends React.Component {
   };
 
   onSearch = (keyword) => {
+    this.props.search.currentPostKeyword = keyword;
     this.setState({ keyword }, () => {
       this.refreshData();
     });
   };
+
+  async componentDidMount() {
+    const { search, router, baselayout } = this.props;
+    const { keyword = '' } = router.query;
+    // 当服务器无法获取数据时，触发浏览器渲染
+    const hasThreads = !!search.threads;
+
+    if (!hasThreads || (keyword && keyword !== search.currentPostKeyword)) { // 缓存为空或者url参数与缓存不同，刷新；否则，有缓存的关键词，需要回到原来位置
+      this.page = 1;
+      search.resetResultData();
+      baselayout.resultPost = -1;
+      await search.getThreadList({ search: keyword, perPage: this.perPage });
+    }
+  }
 
   render() {
     const { keyword } = this.state;
@@ -56,6 +72,7 @@ class SearchResultPostH5Page extends React.Component {
           noMore={currentPage >= totalPage}
           requestError={threadsError.isError}
           errorText={threadsError.errorText}
+          pageName="resultPost"
       >
         <div className={styles.topBox}>
           <SearchInput onSearch={this.onSearch} onCancel={this.onCancel} defaultValue={keyword} isShowBottom={false} searchWhileTyping/>

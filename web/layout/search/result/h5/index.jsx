@@ -33,14 +33,17 @@ class SearchResultH5Page extends React.Component {
   }
 
   redirectToSearchResultPost = () => {
+    this.props.search.currentPostKeyword = this.state.keyword;
     this.props.router.push(`/search/result-post?keyword=${this.state.keyword || ''}`);
   };
 
   redirectToSearchResultUser = () => {
+    this.props.search.currentUserKeyword = this.state.keyword;
     this.props.router.push(`/search/result-user?keyword=${this.state.keyword || ''}`);
   };
 
   redirectToSearchResultTopic = () => {
+    this.props.search.currentTopicKeyword = this.state.keyword;
     this.props.router.push(`/search/result-topic?keyword=${this.state.keyword || ''}`);
   };
 
@@ -71,6 +74,10 @@ class SearchResultH5Page extends React.Component {
     this.props.router.push(`/topic/topic-detail/${topicId}`)
   };
 
+  componentDidMount() {
+    this.props.search.resetResultData(); // 清空结果列表页缓存
+  }
+
   render() {
     const { keyword } = this.state;
     const { searchTopics, searchUsers, searchThreads, searchTopicsError, searchUsersError, searchThreadsError } = this.props.search;
@@ -81,7 +88,7 @@ class SearchResultH5Page extends React.Component {
     const { hasTopics, hasUsers, hasThreads, isShowAll } = this.props.search.dataSearchStatus
 
     return (
-      <BaseLayout allowRefresh={false}>
+      <BaseLayout allowRefresh={false} pageName="h5SearchResult">
         <SearchInput onSearch={this.onSearch} onCancel={this.onCancel} defaultValue={keyword} searchWhileTyping/>
 
         {(isShowAll || hasUsers) && <SidebarPanel
