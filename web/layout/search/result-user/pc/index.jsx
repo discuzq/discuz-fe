@@ -11,7 +11,6 @@ import { Toast } from '@discuzq/design';
 @inject('site')
 @inject('user')
 @inject('search')
-@inject('baselayout')
 @observer
 class SearchResultUserPcPage extends React.Component {
   constructor(props) {
@@ -89,7 +88,7 @@ class SearchResultUserPcPage extends React.Component {
   }
 
   async componentDidMount() {
-    const { search, router, baselayout } = this.props;
+    const { search, router } = this.props;
     const { keyword = '' } = router.query;
     // 当服务器无法获取数据时，触发浏览器渲染
     const hasUsers = !!search.users;
@@ -98,7 +97,6 @@ class SearchResultUserPcPage extends React.Component {
       this.page = 1;
       await search.getUsersList({ search: keyword, perPage: this.perPage });
     }
-    baselayout['resultTopic'] = -1; // 点击右侧栏活跃用户和潮流话题互相切换，回到页面顶部
   }
 
   render() {
