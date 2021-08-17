@@ -1,6 +1,6 @@
-# Discuz!Q（Web）
+# Discuz! Q（Web）
 
-Discuz!Q web站点项目工程
+Discuz! Q web站点项目工程
 
 ## 构建命令
 

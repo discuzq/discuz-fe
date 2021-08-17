@@ -6,8 +6,8 @@ import Taro from '@tarojs/taro';
  * @returns
  */
 function withShare() {
-  // 设置默认
-  const defalutTitle = 'Discuz!Q';
+  // 设置默认 
+  const defalutTitle = 'Discuz! Q';
   let defalutPath = 'pages/index/index';
   defalutPath = `/pages/index/index?path=${encodeURIComponent(defalutPath)}`;
   let menus = [];
