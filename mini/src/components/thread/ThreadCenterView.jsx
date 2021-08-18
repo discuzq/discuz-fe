@@ -31,7 +31,7 @@ const Index = (props) => {
     changeHeight = noop,
     useShowMore = true,
     setUseShowMore = noop,
-    updateViewCount,
+    updateViewCount = noop,
     onTextItemClick
   } = props;
 
@@ -117,7 +117,7 @@ const Index = (props) => {
         {fileData?.length ? <AttachmentView threadId={threadId} attachments={fileData} onPay={onPay} isPay={needPay} updateViewCount={updateViewCount} /> : null}
 
         {/* 投票帖子展示 */}
-        {voteData && <VoteDisplay voteData={voteData} threadId={threadId} />}
+        {voteData && <VoteDisplay voteData={voteData} updateViewCount={props.updateViewCount} threadId={threadId} />}
       </>
     );
   };

@@ -27,6 +27,7 @@
       text-align: right;
       font-size: $font-size-primary;
       color: $text-color-secondary;
+      word-break: break-all;
     }
   }
 
@@ -40,6 +41,7 @@
         justify-content: space-between;
         border-radius: $border-radius-small;
         background-color: $text-bg-color2;
+        word-break: break-all;
 
         &.is-checked {
 
@@ -54,9 +56,16 @@
     }
   }
 
+  .foldexpend {
+    .foldbtn,
+    .expandbtn {
+      margin-bottom: 0 !important;
+    }
+  }
   .content {
     .foldbtn {
       border-radius: $border-radius-small;
+      margin-bottom: $margin-4n;
 
       :global {
         .dzq-icon-RightOutlined {
@@ -67,6 +76,7 @@
 
     .expandbtn {
       border-radius: $border-radius-small;
+      margin-bottom: $margin-4n;
 
       :global {
         .dzq-icon-RightOutlined {
@@ -90,6 +100,7 @@
       font-size: $font-size-primary;
       color: $text-color-regular;
       line-height: $font-line-height-base;
+      word-break: break-all;
     }
 
     .item-header-right {

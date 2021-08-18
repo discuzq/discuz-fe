@@ -361,12 +361,6 @@ class ThreadPCPage extends React.Component {
             <VoteEditor
               pc
               visible={currentAttachOperation === THREAD_TYPE.vote}
-              onConfirm={
-                (data) => {
-                  this.props.handleSetState({ currentAttachOperation: false });
-                  this.props.setPostData({ vote: data });
-                }
-              }
               cancel={() => {
                 this.props.handleSetState({ currentAttachOperation: false });
                 this.props.threadPost.setCurrentSelectedToolbar(false);

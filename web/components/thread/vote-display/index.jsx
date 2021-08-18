@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { inject, observer } from 'mobx-react';
 import styles from './index.module.scss';
 import { Checkbox, Button, Icon, Radio, Progress, Toast } from '@discuzq/design';
@@ -29,9 +29,14 @@ const VoteDisplay = (props = {}) => {
   const isMutiple = choiceType === CHOICE_TYPE.mutiple;
   const typeText = isMutiple ? '多选' : '单选';
   const CheckboxRadio = isMutiple ? Checkbox : Radio;
-  const votedItem = subitems.filter(item => item.isVoted).map(item => item.id);
-  const defaultValue = isMutiple ? votedItem : (votedItem[0] || '');
 
+
+  
+
+  const votedItem = useMemo(() => {
+    return subitems.filter(item => item.isVoted).map(item => item.id);;
+  }, [voteData]);
+  const defaultValue = isMutiple ? votedItem : (votedItem[0] || '');
   let countDownIns = null;
   const [day, setDay] = useState(0);
   const [hour, setHour] = useState(0);
@@ -80,8 +85,8 @@ const VoteDisplay = (props = {}) => {
       Toast.info({ content: '投票成功' });
       const [tomId] = Object.keys(data);
       const [tomValue] = Object.values(data);
-      if (page === 'detail') thread.updateThread(tomId, tomValue);
-      else index.updateListThreadIndexes(threadId, tomId, tomValue);
+      thread.updateThread(tomId, tomValue);
+      index.updateListThreadIndexes(threadId, tomId, tomValue);
 
       const { code, data: threadData } = await props.thread.fetchThreadDetail(threadId);
       const { recomputeRowHeights = () => {} } = props;
@@ -89,15 +94,6 @@ const VoteDisplay = (props = {}) => {
     }
   }, 1000);
 
-  const UnfoldOrExpand = ({ text }) => (
-    <Button full type="primary"
-      className={!isFold ? styles.foldbtn : styles.expandbtn}
-      onClick={() => setIsFold(!isFold)}
-    >
-      <span className={styles['fold-expand']}>{!isFold ? '展开' : '收起'}{text}</span>
-      <Icon name="RightOutlined" size="10"></Icon>
-    </Button>
-  );
   return (
     <>
       <div className={styles.container}>
@@ -116,7 +112,7 @@ const VoteDisplay = (props = {}) => {
           && (
             <CheckboxRadio.Group
               defaultValue={defaultValue}
-              className={styles.content}
+              className={`${styles.content} ${styles.foldexpend}`}
               onChange={(val) => {
                 if (isMutiple) setValue(val);
                 else setValue([val]);
@@ -128,7 +124,16 @@ const VoteDisplay = (props = {}) => {
                 }
                 return null;
               })}
-              {subitems?.length > 5 && <UnfoldOrExpand text="投票" />}
+              {
+                subitems?.length > 5 && 
+                  <Button full type="primary"
+                    className={!isFold ? styles.foldbtn : styles.expandbtn}
+                    onClick={() => setIsFold(!isFold)}
+                  >
+                    <span className={styles['fold-expand']}>{!isFold ? '展开' : '收起'}投票</span>
+                    <Icon name="RightOutlined" size="10"></Icon>
+                  </Button>
+              }
             </CheckboxRadio.Group>
           )}
         {isVotedEnd && (
@@ -153,7 +158,16 @@ const VoteDisplay = (props = {}) => {
               }
               return null;
             })}
-            {/* {subitems?.length > 5 && <UnfoldOrExpand />} */}
+            {
+              subitems?.length > 5 && 
+              <Button full type="primary"
+                className={!isFold ? styles.foldbtn : styles.expandbtn}
+                onClick={() => setIsFold(!isFold)}
+              >
+                <span className={styles['fold-expand']}>{!isFold ? '展开' : '收起'}</span>
+                <Icon name="RightOutlined" size="10"></Icon>
+              </Button>
+            }
             <Button full disabled type="primary" className={styles.disabledbtn}>
               {isExpired ? '投票已结束' : '你已投票'}（{voteUsers}人参与投票）
             </Button>

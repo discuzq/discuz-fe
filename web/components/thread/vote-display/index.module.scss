@@ -9,6 +9,7 @@
     margin-bottom: $margin-4n;
     justify-content: space-between;
     line-height: $font-line-height-middle;
+    word-break: break-all;
     &-right {
       font-size: $font-size-middle;
       color: $text-color-primary;
@@ -23,6 +24,7 @@
       text-align: right;
       font-size: $font-size-primary;
       color: $text-color-secondary;
+      word-break: break-all;
     }
   }
   :global {
@@ -35,6 +37,7 @@
         justify-content: space-between;
         border-radius: $border-radius-small;
         background-color: $text-bg-color2;
+        word-break: break-all;
         &.is-checked {
 
           background-color: $primary-color10;
@@ -46,9 +49,17 @@
       }
     }
   }
+  .foldexpend {
+
+    .foldbtn,
+    .expandbtn {
+      margin-bottom: 0 !important;
+    }
+  }
   .content {
     .foldbtn {
       border-radius: $border-radius-small;
+      margin-bottom: $margin-4n;
       :global {
         .dzq-icon-RightOutlined {
           transform: rotateZ(90deg);
@@ -57,6 +68,7 @@
     }
     .expandbtn {
       border-radius: $border-radius-small;
+      margin-bottom: $margin-4n;
       :global {
         .dzq-icon-RightOutlined {
           transform: rotateZ(-90deg);
@@ -76,6 +88,7 @@
       font-size: $font-size-primary;
       color: $text-color-regular;
       line-height: $font-line-height-base;
+      word-break: break-all;
     }
     .item-header-right {
       max-width: 100px;

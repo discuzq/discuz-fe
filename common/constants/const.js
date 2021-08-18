@@ -130,7 +130,7 @@ export const attachIcon = [
     type: THREAD_TYPE.reward,
   },
   {
-    name: 'MenuOutlined',
+    name: 'VoteOutlined',
     active: activeColor,
     type: THREAD_TYPE.vote,
   },

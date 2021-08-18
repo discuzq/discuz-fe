@@ -41,12 +41,12 @@ export default class List extends React.Component {
             if (!displays[pageIndex] || `${displays[pageIndex]}` !== `${!isHidden}`) {
                 const newDisplays = displays.slice()
                 newDisplays[pageIndex] = !isHidden
-    
+
                 that.setState({
                     displays: newDisplays
                 })
             }
-            
+
         });
 
         if (this.observerObjs && this.observerObjs[pageIndex]) {
@@ -76,7 +76,7 @@ export default class List extends React.Component {
                         return (
                         <View id={`virtual-list-${index}`}>
                         {
-                            item?.map((subItem, subIndex) => (<Thread data={subItem} setData={this.props.setData} setVisible={this.props.setVisible} key={`${subItem.threadId}-${subItem.updatedAt}`} relativeToViewport={displays[index]} dispatch={dispatch}/>))
+                            item?.map((subItem, subIndex) => (<Thread data={subItem} setData={this.props.setData} setVisible={this.props.setVisible} key={`${subItem.threadId}-${subItem.updatedAt}-${subItem._time || ''}`} relativeToViewport={displays[index]} dispatch={dispatch}/>))
                         }
                         </View>
                     )})

@@ -7,7 +7,7 @@ import DatePicker from 'react-datepicker';
 import DatePickers from '@components/thread/date-picker'
 import { formatDate } from '@common/utils/format-date';
 
-const Index = ({ confirm, cancel, pc, visible, threadPost }) => {
+const Index = ({ cancel, pc, visible, threadPost }) => {
 
   const data = JSON.parse(JSON.stringify(threadPost.postData));
   const initSubitems = [{
@@ -23,17 +23,32 @@ const Index = ({ confirm, cancel, pc, visible, threadPost }) => {
   const [subitems, setSubitems] = useState(hasVoteData ? data.vote.subitems : initSubitems);
   const [title, setTitle] = useState(hasVoteData ? data.vote.voteTitle : '');
   const [type, setType] = useState(hasVoteData ? data.vote.choiceType : 1);
-  const [time, setTime] = useState(hasVoteData ? data.vote.expiredAt : formatDate(new Date(), 'yyyy/MM/dd hh:mm'));
+  const [time, setTime] = useState(hasVoteData ? data.vote.expiredAt : formatDate(new Date(new Date().getTime() + 60 * 60 * 1000), 'yyyy/MM/dd hh:mm'));
   const [show, setShow] = useState(false);
 
 
   const vote = () => {
+    let subitemsCopy = [...subitems];
+    subitemsCopy = subitemsCopy.filter(item => {
+      return !!item.content;
+    });
+
+    if (!title) {
+      Toast.info({ content: '标题不能为空' });
+      return;
+    }
+
+    if (subitemsCopy.length < 2) {
+      Toast.info({ content: '至少需要提供两个有效选项' });
+      return;
+    }
+
     threadPost.setPostData({
       vote: {
         voteId: '',
         voteTitle: title,
         choiceType: type,
-        expiredAt: formatDate(time, 'yyyy-MM-dd hh:mm:ss'),
+        expiredAt: formatDate(time, 'yyyy/MM/dd hh:mm:ss'),
         subitems: subitems,
       }
     });
@@ -46,7 +61,7 @@ const Index = ({ confirm, cancel, pc, visible, threadPost }) => {
       <div className={styles['line-box']}>
         <div className={styles.label}>标题</div>
         <div className={styles.item}>
-          <Input mode="text" placeholder="标题最多支持25个字" value={title} onChange={e => setTitle(e.target.value)} />
+          <Input mode="text" placeholder="标题最多支持25个字" value={title} onChange={e => setTitle(e.target.value.trim().substr(0, 25))} />
         </div>
       </div>
 
@@ -63,7 +78,7 @@ const Index = ({ confirm, cancel, pc, visible, threadPost }) => {
           <div className={styles.item}>
             <Input mode="text" value={item.content} onChange={e => {
               const arr = [...subitems];
-              arr[index].content = e.target.value;
+              arr[index].content = e.target.value.trim().substr(0, 20);
               setSubitems(arr);
             }} />
 
@@ -139,6 +154,7 @@ const Index = ({ confirm, cancel, pc, visible, threadPost }) => {
       {pc ? '' : (
         <>
           <DatePickers
+            time={time}
             onSelects={(e) => {
               setTime(e);
               setShow(false);
@@ -178,9 +194,10 @@ const Index = ({ confirm, cancel, pc, visible, threadPost }) => {
       visible={visible}
       className={styles.pc}
       onClose={cancel}
-      title="创建投票"
+      title={hasVoteData ? '编辑投票' : '创建投票'}
       onCacel={cancel}
       onConfirm={vote}
+      confirmText="发起投票"
     >
       {content}
     </DDialog>

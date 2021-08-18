@@ -343,14 +343,14 @@ class IndexAction extends IndexStore {
    * @returns
    */
   @action
-  updatePayThreadInfo(threadId, obj) {
+  updatePayThreadInfo(threadId, obj, isUpdatePay = true) {
     const targetThread = this.findAssignThread(threadId);
     if (!targetThread || targetThread.length === 0) return;
 
     const { index } = targetThread;
     if (this.threads?.pageData) {
       this.threads.pageData[index] = obj;
-      this.changeInfo = { type: 'pay', thread: threadId }
+      if (isUpdatePay) his.changeInfo = { type: 'pay', thread: threadId }
     }
   }
 
@@ -361,6 +361,7 @@ class IndexAction extends IndexStore {
    * @param {array|object}} tomValue 插件值
    * @returns
    */
+  @action
   combineThreadIndexes(sourceData, tomId, tomValue) {
     const { content = {} } = sourceData || {};
     const { indexes = {} } = content || {};
@@ -375,6 +376,7 @@ class IndexAction extends IndexStore {
    * @param {array|object} tomValue 插件值
    * @returns
    */
+  @action
   updateListThreadIndexes(threadId, tomId, tomValue) {
     const targetThread = this.findAssignThread(threadId);
     // 更新其他列表，个人中心
@@ -389,6 +391,7 @@ class IndexAction extends IndexStore {
     }
   }
 
+  @action
   updataThreadIndexesAllData(threadId, tomId, tomValue) {
     const [targetThread] = this.findAssignThreadInLists(threadId);
     if (!targetThread) return;
