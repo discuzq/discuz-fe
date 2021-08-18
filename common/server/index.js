@@ -118,3 +118,6 @@ export { default as createWalletCash } from './wallet/createWalletCash';
 // cos上传
 export { default as getCosTmpKey } from './common/getCosTmpKey';
 export { default as updateAttachment } from './common/updateAttachment';
+
+// 投票
+export { default as createVote } from './thread/create-vote';

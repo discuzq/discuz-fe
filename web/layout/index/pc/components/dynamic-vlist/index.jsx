@@ -87,7 +87,7 @@ export default class DynamicVList extends React.Component {
       loadNextPage,
       renderRight,
       renderLeft,
-      requestError, 
+      requestError,
       noMore,
       errorText,
       onScroll = () => {}

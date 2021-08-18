@@ -44,7 +44,7 @@ export const THREAD_TYPE = {
   // vote: 108, // 投票
   // queue: 109, // 排队接龙
   file: 108, // 附件
-  emoji: 109, // 小表情
+  emoji: 99, // 小表情
   // qaImage: 111, // 问答图片
   paid: 112, // 插入付费
   paidPost: 113, // 支付主题
@@ -55,6 +55,7 @@ export const THREAD_TYPE = {
   saveDraft: 118, // 保存草稿
   abandonDraft: 119, // 不保存草稿
   anonymity: 10001, // 匿名
+  vote: 109, // 投票贴
 };
 
 // 图片类型
