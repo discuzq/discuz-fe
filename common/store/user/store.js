@@ -102,6 +102,13 @@ class UserStore {
   // target user 数据表，以 user id 作为映射
   @observable targetUsers = {};
 
+  // 关注数据表，以 user id 作为映射
+  @observable followStore = {};
+
+  // 粉丝数据表，以 user id 作为映射
+  @observable fansStore = {};
+
+
   @computed get userStatus() {
     return get(this.userInfo, 'status');
   }

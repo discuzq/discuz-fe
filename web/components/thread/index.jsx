@@ -51,7 +51,6 @@ class Index extends React.Component {
           this.props.index.updateAssignThreadInfo(threadId, { updateType: 'share', updatedInfo: result.data, user: user.userInfo });
           this.props.search.updateAssignThreadInfo(threadId, { updateType: 'share', updatedInfo: result.data, user: user.userInfo });
           this.props.topic.updateAssignThreadInfo(threadId, { updateType: 'share', updatedInfo: result.data, user: user.userInfo });
-          this.props.user.updateAssignThreadInfo(threadId, { updateType: 'share', updatedInfo: result.data, user: user.userInfo });
 
           const { recomputeRowHeights = noop } = this.props;
           recomputeRowHeights();
@@ -101,7 +100,6 @@ class Index extends React.Component {
           this.props.index.updateAssignThreadInfo(threadId, { updateType: 'like', updatedInfo: result.data, user: user.userInfo });
           this.props.search.updateAssignThreadInfo(threadId, { updateType: 'like', updatedInfo: result.data, user: user.userInfo });
           this.props.topic.updateAssignThreadInfo(threadId, { updateType: 'like', updatedInfo: result.data, user: user.userInfo });
-          this.props.user.updateAssignThreadInfo(threadId, { updateType: 'like', updatedInfo: result.data, user: user.userInfo });
 
           const { recomputeRowHeights = noop } = this.props;
           recomputeRowHeights();
@@ -168,7 +166,6 @@ class Index extends React.Component {
       if (threadId !== '') {
         this.props.thread.isPositionToComment = false;
         this.props.router.push(`/thread/${threadId}`);
-
       } else {
         console.log('帖子不存在');
       }
@@ -220,14 +217,14 @@ class Index extends React.Component {
       const { openViewCount } = site?.webConfig?.setSite || {};
 
       const viewCountMode = Number(openViewCount);
-      if(viewCountMode === 1) return;
+      if (viewCountMode === 1) return;
 
       const threadIdNumber = Number(threadId);
       const viewCount = await updateViewCountInStorage(threadIdNumber);
-      if(viewCount) {
-        this.props.index.updateAssignThreadInfo(threadIdNumber, { updateType: 'viewCount', updatedInfo: { viewCount: viewCount } })
-        this.props.search.updateAssignThreadInfo(threadIdNumber, { updateType: 'viewCount', updatedInfo: { viewCount: viewCount } })
-        this.props.topic.updateAssignThreadInfo(threadIdNumber, { updateType: 'viewCount', updatedInfo: { viewCount: viewCount } })
+      if (viewCount) {
+        this.props.index.updateAssignThreadInfo(threadIdNumber, { updateType: 'viewCount', updatedInfo: { viewCount } });
+        this.props.search.updateAssignThreadInfo(threadIdNumber, { updateType: 'viewCount', updatedInfo: { viewCount } });
+        this.props.topic.updateAssignThreadInfo(threadIdNumber, { updateType: 'viewCount', updatedInfo: { viewCount } });
       }
     }
 

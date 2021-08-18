@@ -1,4 +1,5 @@
 import React from 'react';
+import { inject, observer } from 'mobx-react';
 import Spin from '@discuzq/design/dist/components/spin/index';
 import { View } from '@tarojs/components';
 import List from '@components/list';
@@ -13,6 +14,9 @@ import styles from './index.module.scss';
 import { followerAdapter } from './adapter';
 import throttle from '@common/utils/thottle.js';
 
+
+@inject('user')
+@observer
 class UserCenterFans extends React.Component {
   firstLoaded = false;
   containerRef = React.createRef(null);
@@ -57,45 +61,31 @@ class UserCenterFans extends React.Component {
   totalPage = 1;
 
   fetchFans = async () => {
-    const opts = {
-      params: {
-        page: this.props.sourcePage || this.page,
-        perPage: 20,
-        filter: {
-          userId: this.props.userId,
-        },
-      },
-    };
-
-    const fansRes = await getUserFans(opts);
+    const fansRes = await this.props.user.getUserFanses({
+      userId: this.props.userId || this.props.user.id,
+      page: this.page,
+    });
 
     if (fansRes.code !== 0) {
       console.error(fansRes);
+      Toast.error({
+        content: fansRes.msg,
+        duration: 2000,
+      });
       return;
     }
 
-    const pageData = get(fansRes, 'data.pageData', []);
     const totalPage = get(fansRes, 'data.totalPage', 1);
-    if (this.props.updateSourceTotalPage) {
-      this.props.updateSourceTotalPage(totalPage);
-    }
+
     this.totalPage = totalPage;
 
-    const newFans = Object.assign({}, this.props.dataSource || this.state.fans);
-
-    newFans[this.page] = pageData;
-
-    if (this.props.setDataSource) {
-      this.props.setDataSource(newFans);
-    }
-    this.setState({
-      fans: newFans,
+    this.props.user.setUserFanses({
+      userId: this.props.userId || this.props.user.id,
+      page: this.page,
+      fansData: fansRes,
     });
 
     if (this.page <= this.totalPage) {
-      if (this.props.updateSourcePage) {
-        this.props.updateSourcePage(this.props.sourcePage + 1);
-      }
       this.page += 1;
     }
   };
@@ -133,18 +123,15 @@ class UserCenterFans extends React.Component {
     });
   }
 
-  followUser = throttle(async ({ id: userId }) => {
+  followUser = async ({ id: userId }) => {
     const res = await createFollow({ data: { toUserId: userId } });
     if (res.code === 0 && res.data) {
       Toast.success({
         content: '操作成功',
         hasMask: false,
-        duration: 1000,
+        duration: 2000,
       });
-      this.setFansBeFollowed({
-        id: userId,
-        isMutual: res.data.isMutual,
-      });
+      this.props.user.followUser({ userId, followRes: res });
       return {
         msg: '操作成功',
         data: res.data,
@@ -161,17 +148,17 @@ class UserCenterFans extends React.Component {
       data: null,
       success: false,
     };
-  }, 1000);
+  };
 
-  unFollowUser = throttle(async ({ id }) => {
+  unFollowUser = async ({ id }) => {
     const res = await deleteFollow({ data: { id, type: 1 } });
     if (res.code === 0 && res.data) {
       Toast.success({
         content: '操作成功',
         hasMask: false,
-        duration: 1000,
+        duration: 2000,
       });
-      this.setFansBeUnFollowed(id);
+      this.props.user.unFollowUser({ userId: id });
       return {
         msg: '操作成功',
         data: res.data,
@@ -188,7 +175,7 @@ class UserCenterFans extends React.Component {
       data: null,
       success: false,
     };
-  }, 1000);
+  };
 
   async componentDidMount() {
     // 第一次加载完后，才允许加载更多页面
@@ -205,18 +192,6 @@ class UserCenterFans extends React.Component {
     if (prevProps.userId !== this.props.userId) {
       this.page = 1;
       this.totalPage = 1;
-      if (this.props.updateSourcePage) {
-        this.props.updateSourcePage(1);
-      }
-      if (this.props.updateSourceTotalPage) {
-        this.props.updateSourceTotalPage(1);
-      }
-      if (this.props.setDataSource) {
-        this.props.setDataSource({});
-      }
-      this.setState({
-        fans: {},
-      });
       await this.loadMore();
     }
   }
@@ -261,7 +236,8 @@ class UserCenterFans extends React.Component {
   };
 
   render() {
-    const isNoData = followerAdapter(this.props.dataSource || this.state.fans).length === 0 && !this.state.loading;
+    const dataSource = followerAdapter(this.props.user.fansStore[this.props.userId || this.props.user.id]?.data || {});
+    const isNoData = dataSource.length === 0 && !this.state.loading;
 
     return (
       <View>
@@ -273,7 +249,7 @@ class UserCenterFans extends React.Component {
           className={styles.userCenterFriends}
         >
           <View className={styles.fansBody}>
-            {followerAdapter(this.props.dataSource || this.state.fans).map((user, index) => {
+            {dataSource.map((user, index) => {
               if (index + 1 > this.props.limit) return null;
               return (
                 <View key={user.id}>

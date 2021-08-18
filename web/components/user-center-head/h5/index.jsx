@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import styles from './index.module.scss';
 import Avatar from '@components/avatar';
+import { computed } from 'mobx';
 import { Button, Icon, Toast, Spin, ImagePreviewer } from '@discuzq/design';
 import clearLoginStatus from '@common/utils/clear-login-status';
 import Router from '@discuzq/sdk/dist/router';
@@ -37,7 +38,7 @@ class index extends Component {
     const id = this.props.router.query?.id;
     if (isDeny) {
       await this.props.user.undenyUser(id);
-      this.props.user.setTargetUserNotBeDenied();
+      this.props.user.setTargetUserNotBeDenied({ userId: id });
       Toast.success({
         content: '解除屏蔽成功',
         hasMask: false,
@@ -45,7 +46,7 @@ class index extends Component {
       });
     } else {
       await this.props.user.denyUser(id);
-      this.props.user.setTargetUserDenied();
+      this.props.user.setTargetUserDenied({ userId: id });
       Toast.success({
         content: '屏蔽成功',
         hasMask: false,
@@ -63,7 +64,7 @@ class index extends Component {
           this.setState({
             isFollowedLoading: true,
           });
-          const cancelRes = await this.props.user.cancelFollow({ id: id, type: 1 });
+          const cancelRes = await this.props.user.cancelFollow({ id, type: 1 });
           if (!cancelRes.success) {
             Toast.error({
               content: cancelRes.msg || '取消关注失败',
@@ -73,7 +74,7 @@ class index extends Component {
               isFollowedLoading: false,
             });
           } else {
-            await this.props.user.getTargetUserInfo(id);
+            await this.props.user.getTargetUserInfo({ userId: id });
             Toast.success({
               content: '操作成功',
               hasMask: false,
@@ -108,7 +109,7 @@ class index extends Component {
               isFollowedLoading: false,
             });
           } else {
-            await this.props.user.getTargetUserInfo(id);
+            await this.props.user.getTargetUserInfo({ userId: id });
             Toast.success({
               content: '操作成功',
               hasMask: false,
@@ -205,9 +206,20 @@ class index extends Component {
     });
   };
 
+
+  @computed get targetUser() {
+    const { query } = this.props.router;
+
+    if (query.id) {
+      return this.props.user.targetUsers[query.id];
+    }
+
+    return {};
+  }
+
   render() {
     const { site } = this.props;
-    const { targetUser } = this.props.user;
+    const { targetUser } = this;
     const user = this.props.router.query?.id ? targetUser || {} : this.props.user;
     const isHideLogout = site.platform === 'h5' && browser.env('weixin') && site.isOffiaccountOpen; // h5下非微信浏览器访问时，若用户已登陆，展示退出按钮
     return (

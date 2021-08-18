@@ -6,7 +6,7 @@
             "@server/*": ["../common/server/*"],
             "@utils/*": ["../common/utils/*"],
             "@components/*": ["./components/*"],
-            "@layout/*": [".layout/*"],
+            "@layout/*": ["./layout/*"],
             "@store/*": ["../common/store/*"],
             "@middleware/*": ["./middleware/*"],
             "@config/*": ["../common/config/*"],
