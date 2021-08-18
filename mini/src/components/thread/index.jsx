@@ -86,7 +86,6 @@ class Index extends React.Component {
       this.updateViewCount();
       this.handlePraise();
     }
-
     handlePraise = debounce(() => {
 
       if(this.state.isSendingLike) return;
@@ -228,7 +227,7 @@ class Index extends React.Component {
     }
 
     render() {
-      const { data, className = '', site = {}, showBottomStyle = true, isShowIcon = false, unifyOnClick = null, relativeToViewport = true } = this.props;
+      const { data, className = '', site = {}, showBottomStyle = true, isShowIcon = false, unifyOnClick = null, relativeToViewport = true, onTextItemClick = null } = this.props;
       const { platform = 'pc' } = site;
       if (!data) {
         return <NoData />;
@@ -291,6 +290,7 @@ class Index extends React.Component {
               setUseShowMore={this.setUseShowMore}
               videoH={videoH}
               updateViewCount={this.updateViewCount}
+              onTextItemClick={onTextItemClick}
             />
 
             <BottomEvent

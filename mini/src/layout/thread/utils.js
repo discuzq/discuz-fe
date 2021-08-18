@@ -7,7 +7,7 @@ const typeMap = {
   106: 'RED_PACKET',
   107: 'REWARD',
   108: 'VOTE',
-  109: 'QUEUE',
+  109: 'VOTE_THREAD',
   110: 'FILE',
   111: 'QA_IMAGE',
 };

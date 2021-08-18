@@ -9,12 +9,13 @@ import styles from './index.module.scss';
 
 @inject('site')
 @inject('search')
+@inject('baselayout')
 @observer
 class SearchResultUserH5Page extends React.Component {
   constructor(props) {
     super(props);
 
-    const keyword = this.props.router.query.keyword || '';
+    const keyword = this.props.router.query.keyword || this.props.search.currentUserKeyword || ''; // url中的关键词参数优先
 
     this.state = {
       keyword,
@@ -41,6 +42,7 @@ class SearchResultUserH5Page extends React.Component {
   };
 
   onSearch = (keyword) => {
+    this.props.search.currentUserKeyword = keyword;
     this.setState({ keyword }, () => {
       this.refreshData();
     });
@@ -49,6 +51,20 @@ class SearchResultUserH5Page extends React.Component {
   onUserClick = (id) => {
     this.props.router.push(`/user/${id}`);
   };
+
+  async componentDidMount() {
+    const { search, router, baselayout } = this.props;
+    const { keyword = '' } = router.query;
+    // 当服务器无法获取数据时，触发浏览器渲染
+    const hasUsers = !!search.users;
+
+    if (!hasUsers || (keyword && keyword !== search.currentUserKeyword)) { // 缓存为空或者url参数与缓存不同，刷新；否则，有缓存的关键词，需要回到原来位置
+      this.page = 1;
+      search.resetResultData();
+      baselayout.resultUser = -1;
+      await search.getUsersList({ search: keyword, perPage: this.perPage });
+    }
+  }
 
   render() {
     const { keyword } = this.state;
@@ -61,6 +77,7 @@ class SearchResultUserH5Page extends React.Component {
         noMore={currentPage >= totalPage}
         requestError={usersError.isError}
         errorText={usersError.errorText}
+        pageName="resultUser"
       >
         <SearchInput onSearch={this.onSearch} onCancel={this.onCancel} defaultValue={keyword} searchWhileTyping/>
         {

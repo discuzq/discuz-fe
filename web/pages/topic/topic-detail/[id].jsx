@@ -10,6 +10,7 @@ import HOCFetchSiteData from '@middleware/HOCFetchSiteData';
 
 @inject('site')
 @inject('topic')
+@inject('baselayout')
 @observer
 class Index extends React.Component {
   page = 1;
@@ -36,7 +37,7 @@ class Index extends React.Component {
     // 初始化数据到store中
     serverTopic && serverTopic.topicDetail && topic.setTopicDetail(serverTopic.topicDetail);
     this.state = {
-      fetchTopicInfoLoading: true,
+      fetchTopicInfoLoading: false,
       isError: false,
       errorText: '加载失败',
     };
@@ -45,29 +46,26 @@ class Index extends React.Component {
   async componentDidMount() {
     const { topic, router } = this.props;
     const { id = '' } = router.query;
+    const topicId = topic?.topicDetail?.pageData[0]?.topicId || '';
     // 当服务器无法获取数据时，触发浏览器渲染
     const hasTopics = !!topic.topicDetail;
-    if (hasTopics) {
-      topic.setTopicDetail(null);
-    }
-    // this.toastInstance = Toast.loading({
-    //   content: '加载中...',
-    //   duration: 0,
-    // });
-
-    this.page = 1;
-    try {
-      await topic.getTopicsDetail({ topicId: id });
+    if (!hasTopics || Number(id) !== topicId) {
       this.setState({
-        fetchTopicInfoLoading: false,
+        fetchTopicInfoLoading: true,
       });
-    } catch (errMsg) {
-      this.setState({
-        isError: true,
-        errorText: errMsg,
-      });
+      this.props.baselayout['topicDetail'] = -1;
+      try {
+        await topic.getTopicsDetail({ topicId: id });
+        this.setState({
+          fetchTopicInfoLoading: false,
+        });
+      } catch (errMsg) {
+        this.setState({
+          isError: true,
+          errorText: errMsg,
+        });
+      }
     }
-    // this.toastInstance?.destroy();
   }
   render() {
     return <ViewAdapter

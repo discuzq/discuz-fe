@@ -164,6 +164,7 @@ function AttachmentToolbar(props) {
     if (item.type === THREAD_TYPE.video && postData?.video?.id) return activeCls;
     if (item.type === THREAD_TYPE.image && Object.values(postData?.images || []).length > 0) return activeCls;
     if (item.type === THREAD_TYPE.anonymity && postData?.anonymous) return activeCls;
+    if (item.type === THREAD_TYPE.vote && postData?.vote) return activeCls;
     return cls;
   };
 
@@ -171,7 +172,7 @@ function AttachmentToolbar(props) {
     const { permission } = props;
     if (props.pc && item.type === THREAD_TYPE.voice) return null;
     const clsName = getIconCls(item);
-    let isShow = permission[item.type];
+    let isShow = true || permission[item.type];
     if (item.type === THREAD_TYPE.video || item.type === THREAD_TYPE.voice) {
       isShow = permission[item.type] && props?.isOpenQcloudVod;
     }

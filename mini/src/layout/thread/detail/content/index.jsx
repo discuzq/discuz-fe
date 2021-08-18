@@ -9,6 +9,7 @@ import AudioPlay from '@components/thread/audio-play';
 import PostContent from '@components/thread/post-content';
 import ProductItem from '@components/thread/product-item';
 import VideoPlay from '@components/thread/video-play';
+import VoteDisplay from '@components/thread/vote-display';
 import PostRewardProgressBar, { POST_TYPE } from '@components/thread/post-reward-progress-bar';
 import Tip from '@components/thread/tip';
 import AttachmentView from '@components/thread/attachment-view';
@@ -242,6 +243,9 @@ const RenderThreadContent = inject('user')(
             <AttachmentView attachments={parseContent.VOTE} threadId={threadStore?.threadData?.threadId} />
           )}
 
+          {/* 投票 */}
+          {parseContent.VOTE_THREAD
+            && <VoteDisplay voteData={parseContent.VOTE_THREAD} threadId={threadStore?.threadData?.threadId} page="detail" />}
           {/* 付费附件 */}
           {needAttachmentPay && (
             <View style={{ textAlign: 'center' }} onClick={onContentClick}>
