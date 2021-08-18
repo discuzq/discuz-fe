@@ -15,7 +15,7 @@ class SearchResultPostH5Page extends React.Component {
   constructor(props) {
     super(props);
 
-    const keyword = this.props.router.query.keyword || '';
+    const keyword = this.props.router.query.keyword || this.props.search.currentKeyword || '';
 
     this.state = {
       keyword,
@@ -35,9 +35,21 @@ class SearchResultPostH5Page extends React.Component {
   };
 
   onSearch = (value) => {
+    this.props.search.currentKeyword = value;
     this.setState({ keyword: value }, () => {
       this.searchData(value);
     });
+  }
+
+  async componentDidMount() {
+    const { search, router } = this.props;
+    const { keyword = '' } = router.query;
+    // 当服务器无法获取数据时，触发浏览器渲染
+    const hasThreads = !!search.threads;
+    if (!hasThreads || (keyword && search.currentKeyword && keyword !== search.currentKeyword)) {
+      this.page = 1;
+      await search.getThreadList({ search: keyword, scope: '2' });
+    }
   }
 
   render() {
@@ -53,6 +65,7 @@ class SearchResultPostH5Page extends React.Component {
         isShowLayoutRefresh={!!pageData?.length}
         className="search-result-post"
         right={<><PopTopic /><Copyright/></>}
+        pageName="resultPost"
       >
         <SidebarPanel
           title="热门内容"

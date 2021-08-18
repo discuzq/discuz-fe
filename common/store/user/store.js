@@ -50,11 +50,11 @@ class UserStore {
   // 换绑 QRCode
   @observable rebindQRCode = null;
 
-  // 换绑 QRCode是否有效
-  @observable isQrCodeValid = true;
-
   // 用户注册扩展信息
   @observable userSigninFields = [];
+
+  // 换绑 QRCode是否有效
+  @observable isQrCodeValid = true;
 
   // 检索的目标用户，非自己
   @observable targetUser = null;
@@ -304,6 +304,7 @@ class UserStore {
       [defaultOperation.redpacket]: get(pm, 'insertRedPacket.enable'),
       [THREAD_TYPE.image]: get(pm, 'insertImage.enable'),
       [THREAD_TYPE.video]: get(pm, 'insertVideo.enable'),
+      [THREAD_TYPE.vote]: get(pm, 'insertVote.enable'),
       [THREAD_TYPE.voice]: get(pm, 'insertAudio.enable'),
       [THREAD_TYPE.goods]: get(pm, 'insertGoods.enable'),
       [THREAD_TYPE.reward]: get(pm, 'insertReward.enable'),

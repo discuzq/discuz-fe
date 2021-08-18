@@ -5,6 +5,7 @@ import AudioPlay from './audio-play';
 import PostContent from './post-content';
 import ProductItem from './product-item';
 import VideoPlay from './video-play';
+import VoteDisplay from './vote-display';
 import { handleAttachmentData } from './utils';
 import AttachmentView from './attachment-view';
 import ImageDisplay from './image-display';
@@ -23,14 +24,15 @@ import { getElementRect, randomStr, noop } from './utils'
 const Index = (props) => {
   const { title = '', payType, price, paid, attachmentPrice } = props.data || {};
   const needPay = useMemo(() => payType !== 0 && !paid, [paid, payType]);
-  const { 
-    onClick, 
-    onPay, 
-    relativeToViewport = true, 
-    changeHeight = noop, 
-    useShowMore = true, 
+  const {
+    onClick,
+    onPay,
+    relativeToViewport = true,
+    changeHeight = noop,
+    useShowMore = true,
     setUseShowMore = noop,
-    updateViewCount
+    updateViewCount = noop,
+    onTextItemClick
   } = props;
 
   const wrapperId= useRef(`thread-wrapper-${randomStr()}`)
@@ -53,20 +55,23 @@ const Index = (props) => {
       goodsData,
       redPacketData,
       rewardData,
+      voteData,
       fileData,
       threadId,
     } = handleAttachmentData(data);
+
     return (
       <>
         {text && (
-          <PostContent 
-            content={text} 
+          <PostContent
+            content={text}
             updateViewCount={updateViewCount}
-            onRedirectToDetail={onClick} 
+            onRedirectToDetail={onClick}
             relativeToViewport={relativeToViewport}
             changeHeight={changeHeight}
             useShowMore={useShowMore}
             setUseShowMore={setUseShowMore}
+            onTextItemClick={onTextItemClick}
           />
         )}
         {videoData && (
@@ -86,11 +91,11 @@ const Index = (props) => {
           </WrapperView>
         )}
         {imageData?.length ? (
-            <ImageDisplay 
-              platform="h5" 
-              imgData={imageData} 
-              isPay={needPay} 
-              onPay={onPay} 
+            <ImageDisplay
+              platform="h5"
+              imgData={imageData}
+              isPay={needPay}
+              onPay={onPay}
               onClickMore={onClick}
               relativeToViewport={relativeToViewport}
               updateViewCount={updateViewCount}
@@ -109,7 +114,10 @@ const Index = (props) => {
             />
         )}
         {audioData && <AudioPlay url={audioData.mediaUrl} isPay={needPay} onPay={onPay} updateViewCount={updateViewCount}/>}
-        {fileData?.length ? <AttachmentView threadId={threadId} attachments={fileData} onPay={onPay} isPay={needPay} updateViewCount={updateViewCount}/> : null}
+        {fileData?.length ? <AttachmentView threadId={threadId} attachments={fileData} onPay={onPay} isPay={needPay} updateViewCount={updateViewCount} /> : null}
+
+        {/* 投票帖子展示 */}
+        {voteData && <VoteDisplay voteData={voteData} updateViewCount={props.updateViewCount} threadId={threadId} />}
       </>
     );
   };

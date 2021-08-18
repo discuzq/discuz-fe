@@ -71,6 +71,8 @@ export const handleAttachmentData = (data) => {
     } else if (tomId === '108') {
       // 附件
       newData.fileData = item.body;
+    } else if (tomId === '109') { // 投票
+      newData.voteData = item.body;
     }
     newData.threadId = threadId;
   });
@@ -89,17 +91,19 @@ export const extensionList = [
   'EPS',
   'EXE',
   'IPA',
+  'M4A',
   'MP3',
   'MP4',
   'PDF',
   'PPT',
+  'PPTX',
   'PSD',
   'RAR',
   'TXT',
   'XLS',
   'XLSX',
   'ZIP',
-  'JPG',
+  'JPEG',
   'WAV',
 ];
 

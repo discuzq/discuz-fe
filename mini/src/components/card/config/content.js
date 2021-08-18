@@ -188,7 +188,7 @@ const handleLookMore = (baseHeight = 0, contentTextHeight = {}, imagesHeight = {
 
 const handleCategories = (thread, baseHeight, { renderedTextHeight = 0 }, { renderedImgHeight = 0 }, overHeight) => {
   // 分组内容
-  const categoryType = thread.categoryName;
+  const categoryType = thread.parentCategoryName;
   let categoryLength = getByteLen(categoryType) * 12;
   if (categoryLength > 650) {
     categoryLength = 650;

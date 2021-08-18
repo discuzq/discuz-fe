@@ -10,6 +10,7 @@ export default function DDialog(props) {
     onConfirm = () => { },
     isCustomBtn = false,
     className,
+    confirmText = '确定',
     ...other
   } = props;
   const header = (
@@ -35,7 +36,7 @@ export default function DDialog(props) {
       {!isCustomBtn && (
         <div className={styles.btn}>
           <Button onClick={() => onCacel()}>取消</Button>
-          <Button type="primary" onClick={() => onConfirm()}>确定</Button>
+          <Button type="primary" onClick={() => onConfirm()}>{confirmText}</Button>
         </div>
       )}
     </Dialog>

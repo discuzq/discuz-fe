@@ -20,6 +20,16 @@ class IndexAction extends IndexStore {
    * 设置跳回页面头部
    */
   @action
+  resetSearchResultScrolltop() {
+    this.resultTopic = -1;
+    this.resultUser = -1;
+    this.resultPost = -1;
+  }
+
+  /**
+   * 设置跳回页面头部
+   */
+  @action
   removeJumpingToTop() {
     this.isJumpingToTop = false;
   }
