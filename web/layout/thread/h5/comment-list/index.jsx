@@ -220,7 +220,7 @@ class RenderCommentList extends React.Component {
       goToLoginPage({ url: '/user/login' });
       return;
     }
-    if (!this.props.canPublish()) return;
+    if (!this.props.canPublish()) return ;
     this.commentData = comment;
     this.replyData = null;
     const userName = comment?.user?.nickname || comment?.user?.userName;
@@ -237,7 +237,7 @@ class RenderCommentList extends React.Component {
       goToLoginPage({ url: '/user/login' });
       return;
     }
-    if (!this.props.canPublish()) return;
+    if (!this.props.canPublish()) return ;
     this.commentData = null;
     this.replyData = reply;
     this.replyData.commentId = comment.id;
@@ -282,7 +282,7 @@ class RenderCommentList extends React.Component {
 
     if (imageList?.length) {
       params.attachments = imageList
-        .filter((item) => item.status === 'success' && item.response)
+        .filter(item => item.status === 'success' && item.response)
         .map((item) => {
           const { id } = item.response;
           return {
@@ -401,8 +401,7 @@ class RenderCommentList extends React.Component {
     }
 
     // 是否作者自己
-    const isSelf =
-      this.props.user?.userInfo?.id && this.props.user?.userInfo?.id === this.props.thread?.threadData?.userId;
+    const isSelf =    this.props.user?.userInfo?.id && this.props.user?.userInfo?.id === this.props.thread?.threadData?.userId;
     const isReward = this.props.thread?.threadData?.displayTag?.isReward;
     const { indexes } = this.props.thread?.threadData?.content || {};
 
@@ -436,9 +435,9 @@ class RenderCommentList extends React.Component {
                 deleteClick={() => this.deleteClick(val)}
                 editClick={() => this.editClick(val)}
                 replyAvatarClick={(reply, floor) => this.replyAvatarClick(reply, val, floor)}
-                replyLikeClick={debounce((reply) => this.replyLikeClick(reply, val), 500)}
-                replyReplyClick={(reply) => this.replyReplyClick(reply, val)}
-                replyDeleteClick={(reply) => this.replyDeleteClick(reply, val)}
+                replyLikeClick={debounce(reply => this.replyLikeClick(reply, val), 500)}
+                replyReplyClick={reply => this.replyReplyClick(reply, val)}
+                replyDeleteClick={reply => this.replyDeleteClick(reply, val)}
                 onCommentClick={() => this.onCommentClick(val)}
                 onAboptClick={() => this.onAboptClick(val)}
                 isShowOne={true}
@@ -446,10 +445,9 @@ class RenderCommentList extends React.Component {
                   // 是帖子作者 && 是悬赏帖 && 评论人不是作者本人
                   isSelf && isReward && this.props.thread?.threadData?.userId !== val.userId
                 }
-                isSelf={isSelf}
-                active={val.id === postId}
                 threadId={this.props.thread?.threadData?.userId}
-              ></CommentList>
+                active={val.id === postId}
+                ></CommentList>
             </div>
           ))}
         </div>
@@ -483,7 +481,7 @@ class RenderCommentList extends React.Component {
             remainMoney={Number(parseContent.REWARD.remainMoney)} // 需要传入剩余悬赏金额
             visible={this.state.showAboptPopup}
             onCancel={() => this.onAboptCancel()}
-            onOkClick={(data) => this.onAboptOk(data)}
+            onOkClick={data => this.onAboptOk(data)}
           ></AboptPopup>
         )}
       </Fragment>

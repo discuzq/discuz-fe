@@ -1,6 +1,10 @@
 import { observable, computed } from 'mobx';
-class IndexStore {
-  constructor() {}
+import ListStore from './list';
+
+class IndexStore extends ListStore {
+  constructor(props) {
+    super(props);
+  }
 
   @observable categories = null;
 

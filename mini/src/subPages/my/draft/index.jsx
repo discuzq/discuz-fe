@@ -22,8 +22,13 @@ class Index extends Component {
     super(props);
     Taro.hideShareMenu();
   }
+
   componentDidShow() {
     this.fetchData();
+  }
+
+  componentWillUnmount() {
+    this.props.index.drafts = null;
   }
 
   fetchData = async (isMore) => {
@@ -60,22 +65,17 @@ class Index extends Component {
   };
 
   // 渲染草稿单项
-  renderItem = ({ item, isLast }) => {
-    return (
-      <View
-        className={classNames(styles.item, { [styles['border-none']]: isLast })}
-        onClick={() => this.handleEdit(item)}
-      >
+  renderItem = ({ item, isLast }) => (
+      <View className={classNames(styles.item, { [styles['border-none']]: isLast })}>
         <ThreadCenterView data={item} onClick={() => this.handleEdit(item)} />
-        <View className={styles['item-time']}>编辑于&nbsp;{item.updatedAt}</View>
+        <View className={styles['item-time']} onClick={() => this.handleEdit(item)}>
+          编辑于&nbsp;{item.updatedAt}
+        </View>
       </View>
     );
-  };
 
   // 处理列表数据
-  getRenderList = (data = []) => {
-    return data.map((item) => ({ id: item.threadId, ...item }));
-  };
+  getRenderList = (data = []) => data.map((item) => ({ id: item.threadId, ...item }));
 
   render() {
     const { currentPage, totalPage, totalCount, pageData } = this.props.index?.drafts || {};

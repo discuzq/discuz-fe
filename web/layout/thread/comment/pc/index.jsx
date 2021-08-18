@@ -374,9 +374,9 @@ class CommentPCPage extends React.Component {
                   isFirstDivider={true}
                   isShowInput={this.state.commentId === commentData.id}
                   onSubmit={(value, imageList) => this.createReply(value, imageList)}
+                  threadId={this.props.thread?.threadData?.userId}
                   postId={this.props.comment.postId}
                   positionRef={this.positionRef}
-                  threadId={this.props.thread?.threadData?.userId}
                 ></CommentList>
               ) : (
                 <LoadingTips type="init"></LoadingTips>

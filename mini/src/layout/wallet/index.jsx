@@ -349,18 +349,16 @@ class WalletH5Page extends React.Component {
   };
 
   // 渲染顶部title
-  renderTitleContent = () => {
-    return (
-      <View className={layout.topBarTitle}>
-        <View onClick={this.handleBack} className={layout.customCapsule} style={this.getTopBarBtnStyle()}>
-          <Icon size={18} name="LeftOutlined" />
-        </View>
-        <View style={this.getTopBarTitleStyle()} className={layout.fullScreenTitle}>
-          我的钱包
-        </View>
+  renderTitleContent = () => (
+    <View className={layout.topBarTitle}>
+      <View onClick={this.handleBack} className={layout.customCapsule} style={this.getTopBarBtnStyle()}>
+        <Icon size={18} name="LeftOutlined" />
       </View>
-    );
-  };
+      <View style={this.getTopBarTitleStyle()} className={layout.fullScreenTitle}>
+        我的钱包
+      </View>
+    </View>
+  );
 
   render() {
     const tabList = [
@@ -410,7 +408,7 @@ class WalletH5Page extends React.Component {
         <BaseLayout
           noMore={this.state.page > this.state.totalPage}
           onRefresh={this.loadMore}
-          className={layout.container}
+          listClassName={layout.walletWrapper}
           immediateCheck
           showHeader={false}
           showLoadingInCenter={!this.getWalletList().length}
@@ -437,14 +435,19 @@ class WalletH5Page extends React.Component {
           </View>
           {/* 列表展示区 */}
           <View className={layout.tabs}>
-            <Tabs scrollable={true} className={layout.tabList} onActive={this.onTabActive}>
+            <Tabs scrollable className={layout.tabList} onActive={this.onTabActive}>
               {tabList.map(([id, label, icon]) => (
                 <Tabs.TabPanel key={id} id={id} label={label} name={icon.name}></Tabs.TabPanel>
               ))}
             </Tabs>
             {this.state.tabsType === 'income' &&
               this.getWalletList().map((value, index) => (
-                <IncomeList key={value.id} incomeVal={value} itemKey={index} dataLength={this.getWalletList().length} />
+                <IncomeList
+                  key={value.id}
+                  incomeVal={value}
+                  itemKey={index}
+                  dataLength={this.getWalletList().length}
+                />
               ))}
             {this.state.tabsType === 'pay' &&
               this.getWalletList().map((value, index) => (
@@ -460,29 +463,27 @@ class WalletH5Page extends React.Component {
                 />
               ))}
           </View>
-          <View className={layout.footer}>
-            <Button className={layout.button} onClick={this.toWithrawal} type="primary">
-              提现
-            </Button>
-          </View>
-          {/* 条件过滤 */}
-          <FilterView
-            value={this.state.selectType}
-            data={this.renderSelectContent()}
-            title={this.renderSelectTitle()}
-            visible={this.state.visibleshow}
-            handleCancel={this.handleStateCancel}
-            handleSubmit={this.handleTypeChange}
-          />
         </BaseLayout>
+        <View className={layout.footer}>
+          <Button className={layout.button} onClick={this.toWithrawal} type="primary">
+            提现
+          </Button>
+        </View>
+        {/* 条件过滤 */}
+        <FilterView
+          value={this.state.selectType}
+          data={this.renderSelectContent()}
+          title={this.renderSelectTitle()}
+          visible={this.state.visibleshow}
+          handleCancel={this.handleStateCancel}
+          handleSubmit={this.handleTypeChange}
+        />
         {/* 时间选择器 */}
         <DatePickers
           ref={this.timeRef}
           onConfirm={this.handleMoneyTime}
           initValue={this.state.initValue}
-          disabledTime={true}
-          wrap-class="my-class"
-          select-item-class="mySelector"
+          disabledTime
           type="wallet"
         />
       </Page>

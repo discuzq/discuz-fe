@@ -7,7 +7,7 @@
   width: 100vw;
   align-items: flex-start;
   justify-content: flex-start;
-  background: var(--comment-content-bg-color);
+  background: $comment-bg-color;
 }
 
 .header {
@@ -28,7 +28,7 @@
     flex-grow: 1;
     flex-shrink: 1;
     flex-basis: 0%;
-    display: flex;
+    // display: flex;
     flex-direction: column;
   }
 }

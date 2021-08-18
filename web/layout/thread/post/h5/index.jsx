@@ -33,6 +33,8 @@ import VideoDisplay from '@components/thread-post/video-display';
 import MoneyDisplay from '@components/thread-post/money-display';
 import toolbarStyles from '@components/editor/toolbar/index.module.scss';
 import TagLocalData from '@components/thread-post/tag-localdata';
+import VoteWidget from '@components/thread-post/vote-widget';
+import VoteEditor from '@components/thread-post/vote-editor';
 
 function judgeDeviceType() {
   const ua = window.navigator.userAgent.toLowerCase();
@@ -237,8 +239,13 @@ class ThreadCreate extends React.Component {
   render() {
     const { threadPost, user, site } = this.props;
     const { threadExtendPermissions, permissions } = user;
-    const { webConfig = {} } = site;
     const { postData, setPostData } = threadPost;
+
+    const { webConfig = {} } = site;
+    const { setAttach, qcloud } = webConfig;
+    const { supportImgExt, supportMaxSize } = setAttach;
+    const { qcloudCosBucketName, qcloudCosBucketArea, qcloudCosSignUrl, qcloudCos } = qcloud;
+
 
     const { emoji, topic, atList, currentDefaultOperation, currentAttachOperation, categoryChooseShow } = this.props;
 
@@ -280,6 +287,14 @@ class ThreadCreate extends React.Component {
           {/* 图片 */}
           {(currentAttachOperation === THREAD_TYPE.image || Object.keys(postData.images).length > 0) && (
             <ImageUpload
+              cosOptions={{
+                supportImgExt,
+                supportMaxSize,
+                qcloudCosBucketName,
+                qcloudCosBucketArea,
+                qcloudCosSignUrl,
+                qcloudCos,
+              }}
               className={styles.imageUpload}
               fileList={Object.values(postData.images)}
               onChange={fileList => this.props.handleUploadChange(fileList, THREAD_TYPE.image)}
@@ -336,6 +351,11 @@ class ThreadCreate extends React.Component {
               onComplete={(ret, file) => this.props.handleUploadComplete(ret, file, THREAD_TYPE.file)}
               beforeUpload = {(cloneList, showFileList) => this.props.beforeUpload(cloneList, showFileList, THREAD_TYPE.file)}
             />
+          )}
+
+          {/* 投票组件 */}
+          {(postData?.vote?.voteTitle) && (
+            <VoteWidget onDelete={() => this.props.setPostData({ vote: {} })} />
           )}
 
           {/* 商品组件 */}
@@ -493,6 +513,24 @@ class ThreadCreate extends React.Component {
             data={postData.rewardQa}
           />
         )}
+
+        {/* 投票编辑 */}
+        {currentAttachOperation === THREAD_TYPE.vote && (
+          <VoteEditor
+            visible={currentAttachOperation === THREAD_TYPE.vote}
+            onConfirm={
+              (data) => {
+                this.props.handleSetState({ currentAttachOperation: false });
+                this.props.setPostData({ vote: data });
+              }
+            }
+            cancel={() => {
+              this.props.handleSetState({ currentAttachOperation: false });
+              this.props.threadPost.setCurrentSelectedToolbar(false);
+            }}
+          />
+        )}
+
         {/* 插入红包 */}
         {currentDefaultOperation === defaultOperation.redpacket && (
           <RedpacketSelect

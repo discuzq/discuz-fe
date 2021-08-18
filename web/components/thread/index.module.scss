@@ -10,7 +10,8 @@
 // }
 .title {
   @include cursor-on-pc;
-  display: inline-flex;
+  @include text-ellipsis;
+  display: inline-block;
   font-size: rem($font-size-middle);
   font-weight: bold;
   line-height: rem(22);

@@ -122,7 +122,7 @@
 }
 
 .pc {
-  z-index: var(--zindex-dialog);
+  z-index: $zindex-dialog;
   .redpacket-box {
     position: static;
     width: 100%;

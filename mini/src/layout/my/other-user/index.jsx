@@ -16,11 +16,11 @@ import ImagePreviewer from '@discuzq/design/dist/components/image-previewer/inde
 
 @inject('site')
 @inject('user')
+@inject('index')
 @observer
 class H5OthersPage extends React.Component {
   constructor(props) {
     super(props);
-    this.props.user.cleanTargetUserThreads();
     this.state = {
       fetchUserInfoLoading: true,
     };
@@ -39,6 +39,13 @@ class H5OthersPage extends React.Component {
     // 监听
     eventCenter.on(onShowEventId, this.onShow);
   }
+
+  setNavigationBarStyle = () => {
+    Taro.setNavigationBarColor({
+      frontColor: '#ffffff',
+      backgroundColor: '#ffffff',
+    });
+  };
 
   updatePreviewImageStatus = (bol) => {
     this.isPreivewImage = bol;
@@ -82,11 +89,20 @@ class H5OthersPage extends React.Component {
         fetchUserInfoLoading: false,
       });
 
-      await this.props.user.getTargetUserThreads(this.targetUserId);
+      const targetUserThreadsList = await this.props.index.fetchList({
+        namespace: `user/${this.targetUserId}`,
+        filter: {
+          toUserId: this.targetUserId,
+          complex: 5,
+        },
+      });
+
+      this.props.index.setList({ namespace: `user/${this.targetUserId}`, data: targetUserThreadsList });
     }
   };
 
   componentDidMount = async () => {
+    this.setNavigationBarStyle();
     const { id = '' } = getCurrentInstance().router.params;
     const myId = this.props.user?.id;
     if (String(myId) === id) {
@@ -104,7 +120,14 @@ class H5OthersPage extends React.Component {
   fetchTargetUserThreads = async () => {
     const { id = '' } = getCurrentInstance().router.params;
     if (id) {
-      await this.props.user.getTargetUserThreads(id);
+      const targetUserThreadsList = await this.props.index.fetchList({
+        namespace: `user/${id}`,
+        filter: {
+          toUserId: id,
+          complex: 5,
+        },
+      });
+      this.props.index.setList({ namespace: `user/${id}`, data: targetUserThreadsList });
     }
     return;
   };
@@ -181,15 +204,37 @@ class H5OthersPage extends React.Component {
   render() {
     const { site, user } = this.props;
     const { platform } = site;
-    const { targetUserThreads, targetUserThreadsTotalCount, targetUserThreadsPage, targetUserThreadsTotalPage } = user;
+    const { targetUserId } = this;
+    const { index } = this.props;
+    const { lists } = index;
+
+    const userThreadsList = index.getList({
+      namespace: `user/${targetUserId}`,
+    });
+
+    const totalPage = index.getAttribute({
+      namespace: `user/${targetUserId}`,
+      key: 'totalPage',
+    });
+
+    const totalCount = index.getAttribute({
+      namespace: `user/${targetUserId}`,
+      key: 'totalCount',
+    });
+
+    const currentPage = index.getAttribute({
+      namespace: `user/${targetUserId}`,
+      key: 'currentPage',
+    });
+
     return (
       <BaseLayout
         showHeader={false}
         showTabBar={false}
         immediateCheck
         onRefresh={this.fetchTargetUserThreads}
-        noMore={targetUserThreadsTotalPage < targetUserThreadsPage}
-        showLoadingInCenter={!this.formatUserThreadsData(targetUserThreads).length}
+        noMore={totalPage < currentPage}
+        showLoadingInCenter={!userThreadsList.length}
       >
         <View className={styles.mobileLayout}>
           {this.renderTitleContent()}
@@ -221,13 +266,12 @@ class H5OthersPage extends React.Component {
             </View> */}
 
             <View className={styles.threadHeader}>
-              <SectionTitle title="主题" isShowMore={false} leftNum={`${targetUserThreadsTotalCount || 0}个主题`} />
+              <SectionTitle title="主题" isShowMore={false} leftNum={`${totalCount || 0}个主题`} />
             </View>
 
             <View className={styles.threadItemContainer}>
-              {this.formatUserThreadsData(targetUserThreads) &&
-                this.formatUserThreadsData(targetUserThreads).length > 0 && (
-                  <UserCenterThreads showBottomStyle={false} data={this.formatUserThreadsData(targetUserThreads)} />
+              {userThreadsList.length > 0 && (
+                  <UserCenterThreads showBottomStyle={false} data={userThreadsList} />
                 )}
             </View>
           </View>

@@ -1,8 +1,8 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'next/router';
-import { Popup, Icon, Avatar } from '@discuzq/design';
-import '@discuzq/design/dist/styles/index.scss';
+import { Popup, Icon } from '@discuzq/design';
+import Avatar from '@components/avatar';
 import HomeHeader from '@components/home-header';
 import Header from '@components/header';
 import List from '@components/list';
@@ -92,12 +92,13 @@ class ForumH5Page extends React.Component {
               <div className={layout.label}>站长</div>
               <div className={layout.right}>
                 <div className={layout.forum_agent}>
-                  {
-                    siteAuthor.avatar
-                      ? <Avatar size='small' className={layout.forum_agent_img} image={siteAuthor.avatar}/>
-                      : <></>
-                  }
-                  <span className={layout.forum_agent_name}>{siteAuthor.username}</span>
+                  <Avatar
+                    size='small'
+                    className={layout.forum_agent_img}
+                    image={siteAuthor.avatar}
+                    name={siteAuthor.nickname}
+                  />
+                  <span className={layout.forum_agent_name}>{siteAuthor.nickname}</span>
                 </div>
               </div>
             </div>
@@ -109,7 +110,7 @@ class ForumH5Page extends React.Component {
                 <div className={layout.forum_member}>
                   {
                       usersPageData?.slice(0, 3).map(item => (
-                        <Avatar size='small' key={item.userId} text={item.nickname?.substring(0, 1)?.toUpperCase()} className={layout.forum_member_img} image={item.avatar}/>
+                        <Avatar size='small' key={item.userId} name={item.nickname} className={layout.forum_member_img} image={item.avatar}/>
                       ))
                   }
                   <Icon size={10} color='#8590A6' name='RightOutlined'/>

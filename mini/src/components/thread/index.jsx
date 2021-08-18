@@ -105,7 +105,10 @@ class Index extends React.Component {
           this.props.topic.updateAssignThreadInfo(threadId, { updateType: 'like', updatedInfo: result.data, user: user.userInfo });
           this.props.user.updateAssignThreadInfo(threadId, { updateType: 'like', updatedInfo: result.data, user: user.userInfo });
         }
-        this.setState({ isSendingLike: false });
+        this.setState({ isSendingLike: false, minHeight: 0 }, () => {
+          // 点赞更新完数据后，重新修正帖子高度
+          this.changeHeight()
+        });
       });
     }, 1000)
 
@@ -217,15 +220,14 @@ class Index extends React.Component {
       const threadIdNumber = Number(threadId);
       const viewCount = await updateViewCountInStorage(threadIdNumber);
       if(viewCount) {
-        this.props.index.updateAssignThreadInfo(threadIdNumber, { updateType: 'viewCount', updatedInfo: { viewCount: viewCount } })
-        this.props.search.updateAssignThreadInfo(threadIdNumber, { updateType: 'viewCount', updatedInfo: { viewCount: viewCount } })
-        this.props.topic.updateAssignThreadInfo(threadIdNumber, { updateType: 'viewCount', updatedInfo: { viewCount: viewCount } })
+        this.props.index.updateAssignThreadInfo(threadIdNumber, { updateType: 'viewCount', updatedInfo: { viewCount } })
+        this.props.search.updateAssignThreadInfo(threadIdNumber, { updateType: 'viewCount', updatedInfo: { viewCount } })
+        this.props.topic.updateAssignThreadInfo(threadIdNumber, { updateType: 'viewCount', updatedInfo: { viewCount } })
       }
     }
 
     render() {
-      const { data, className = '', site = {}, showBottomStyle = true, isShowIcon = false, unifyOnClick = null, relativeToViewport = true } = this.props;
-
+      const { data, className = '', site = {}, showBottomStyle = true, isShowIcon = false, unifyOnClick = null, relativeToViewport = true, onTextItemClick = null } = this.props;
       const { platform = 'pc' } = site;
       if (!data) {
         return <NoData />;
@@ -251,7 +253,6 @@ class Index extends React.Component {
       const {getShareData, getShareContent} = this.props.user
       const {shareNickname, shareAvatar, shareThreadid, shareContent} = this.props.user
       const { minHeight, useShowMore, videoH } = this.state
-
       return (
         <View className={`${styles.container} ${className} ${showBottomStyle && styles.containerBottom} ${platform === 'pc' && styles.containerPC}`} style={{ minHeight: `${minHeight}px` }} id={this.threadStyleId}>
           {
@@ -289,6 +290,7 @@ class Index extends React.Component {
               setUseShowMore={this.setUseShowMore}
               videoH={videoH}
               updateViewCount={this.updateViewCount}
+              onTextItemClick={onTextItemClick}
             />
 
             <BottomEvent

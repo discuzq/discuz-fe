@@ -31,6 +31,20 @@ export default class commonLoginStore {
     @observable protocolVisible = false;
     @observable protocolStatus = 'register';
     @observable loginLoading = true;
+    @observable loginToken = '';
+
+    @action getLoginToken() {
+      let loginToken;
+      if (typeof window === 'object') {
+        loginToken = window?.sessionStorage?.getItem('loginToken') || this.loginToken ||  '';
+      }
+      return loginToken;
+    }
+
+    @action setLoginToken(loginToken) {
+      this.loginToken = loginToken;
+      typeof window === 'object' && window.sessionStorage?.setItem('loginToken', loginToken);
+    }
 
     @action
     setLoginLoading(loginLoading) {

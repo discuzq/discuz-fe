@@ -496,8 +496,8 @@ class RenderCommentList extends React.Component {
                   // 是帖子作者 && 是悬赏帖 && 评论人不是作者本人
                   isSelf && isReward && this.props.thread?.threadData?.userId !== val.userId
                 }
-                active={val.id === postId}
                 threadId={this.props.thread.threadData.userId}
+                active={val.id === postId}
               ></CommentList>
             </div>
           ))}

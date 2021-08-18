@@ -250,8 +250,8 @@ class CommentList extends React.Component {
                       <ReplyList
                         data={this.needReply[0]}
                         key={this.needReply[0].id}
-                        isShowOne={true}
-                        avatarClick={(floor) => this.replyAvatarClick(this.needReply[0], floor)}
+                        isShowOne
+                        avatarClick={(floor) => this.replyAvatarClick(this.needReply[0],floor)}
                         likeClick={() => this.replyLikeClick(this.needReply[0])}
                         replyClick={() => this.replyReplyClick(this.needReply[0])}
                         deleteClick={() => this.replyDeleteClick(this.needReply[0])}
@@ -268,8 +268,8 @@ class CommentList extends React.Component {
                             replyClick={() => this.replyReplyClick(val)}
                             deleteClick={() => this.replyDeleteClick(val)}
                             toCommentDetail={() => this.toCommentDetail()}
-                            isSelf={this.props.isSelf}
                             active={val.id === this.props.postId}
+                            threadId={this.props.threadId}
                           ></ReplyList>
                         </View>
                       ))

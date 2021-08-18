@@ -1,18 +1,32 @@
 @import '@common/styles/index.scss';
 
 .inputClick {
+  flex: 1;
   :global {
     .dzq-input.is-disabled .dzq-input__inner {
       background-color: $body-bg-color;
       -webkit-appearance: none; // ios下去除上面阴影
+      .input-placeholder {
+        font-size: 14px;
+        line-height: 24px;
+        text-align: left;
+        color: #4F5A70;
+      }
+    }
+    .dzq-input__inner {
+      border-radius: 18px;
+      background-color: #fafafb !important;
+      border: 1px solid #fefefe !important;
+      padding-left: 42px !important;
     }
     .dzq-icon {
       line-height: 36px;
-      color: $disabled-color;
+      color: $text-color-regular;
+      width: 48px;
     }
   }
   .input {
-    width: 176px;
+    width: 100%;
   }
 }
 
@@ -74,4 +88,15 @@
   padding: 0;
   border: none !important;
   overflow: initial;
+}
+.content {
+  position: absolute;
+  font-size: 12px;
+  text-align: left;
+  color: #8590a6;
+  line-height: 17px;
+  width: 26px;
+  background-color: #fff;
+  left: 10px;
+  bottom: 12px;
 }

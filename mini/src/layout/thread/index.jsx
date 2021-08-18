@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
 import { View, Text, ScrollView } from '@tarojs/components';
 
-import Taro from '@tarojs/taro';
+import Taro, { eventCenter, getCurrentInstance } from '@tarojs/taro';
 
 import layout from './layout.module.scss';
 import footer from './footer.module.scss';
@@ -62,6 +62,7 @@ class ThreadH5Page extends React.Component {
       // inputValue: '', // 评论内容
       inputText: '请输入内容', // 默认回复框placeholder内容
       toView: '', // 接收元素id用来滚动定位
+      stateFlag: true,
     };
 
     this.perPage = 20;
@@ -85,11 +86,17 @@ class ThreadH5Page extends React.Component {
     // 举报内容选项
     this.reportContent = ['广告垃圾', '违规内容', '恶意灌水', '重复发帖'];
     this.inputText = '其他理由...';
+    this.$instance = getCurrentInstance()
 
     this.positionRef = React.createRef();
     this.isPositioned = false;
   }
 
+  componentWillMount () {
+    const onShowEventId = this.$instance.router.onShow
+    // 监听
+    eventCenter.on(onShowEventId, this.onShow.bind(this))
+  }
   componentDidMount() {
     // 当内容加载完成后，获取评论区所在的位置
     // this.position = this.commentDataRef?.current?.offsetTop - 50;
@@ -137,6 +144,9 @@ class ThreadH5Page extends React.Component {
     this.props?.payBox?.hide();
     // 清空@ren数据
     this.props.thread.setCheckUser([]);
+    const onShowEventId = this.$instance.router.onShow
+    // 卸载
+    eventCenter.off(onShowEventId, this.onShow)
   }
 
   // 滚动事件
@@ -147,7 +157,7 @@ class ThreadH5Page extends React.Component {
     }
 
     if (this.flag) {
-      this.nextPosition = e.detail?.scrollTop || 0;
+      this.nextPosition = 0;
     }
     this.currentPosition = e.detail?.scrollTop || 0;
 
@@ -188,6 +198,7 @@ class ThreadH5Page extends React.Component {
       }
       this.flag = !this.flag;
     }
+    this.setState({ stateFlag: this.flag})
   }
 
   // 点击收藏icon
@@ -377,6 +388,11 @@ class ThreadH5Page extends React.Component {
     if (type === 'posterShare') {
       this.onPosterShare();
     }
+
+    // wx分享
+    if (type === 'wxShare') {
+      this.onWxShare();
+    }
   };
 
   // 生成海报
@@ -391,6 +407,28 @@ class ThreadH5Page extends React.Component {
     });
   }
 
+  // wx分享
+  onWxShare() {
+    const { thread, user } = this.props
+    const {nickname} = thread.threadData?.user || ''
+    const {avatar} = thread.threadData?.user || ''
+    const threadId = thread?.threadData?.id
+    if(thread.threadData?.isAnonymous) {
+      user.getShareData({nickname, avatar,threadId})
+      thread.threadData.user.nickname = '匿名用户'
+      thread.threadData.user.avatar = ''
+    }
+  }
+  onShow() {
+    const { thread, user } = this.props
+    if(user.shareThreadid === thread?.threadData?.id) {
+      if(thread.threadData?.isAnonymous){
+          thread.threadData.user.nickname = user.shareNickname
+          thread.threadData.user.avatar = user.shareAvatar
+          user.getShareData({})
+      }
+    }
+  }
   // 确定举报
   async onReportOk(val) {
     if (!val) return;
@@ -880,7 +918,8 @@ class ThreadH5Page extends React.Component {
         this.setState({ showAboptPopup: false });
 
         // 重新获取帖子详细
-        this.props.thread.fetchThreadDetail(params.threadId);
+        await this.props.thread.fetchThreadDetail(params.threadId);
+        this.props.thread.updateListStore(this.props.index, this.props.search, this.props.topic);
 
         Toast.success({
           content: `悬赏${data}元`,
@@ -1000,7 +1039,7 @@ class ThreadH5Page extends React.Component {
                     {isCommentReady && isShowCommentList && (
                       <Fragment>
                         <RenderCommentList
-                          isPositionComment={true}
+                          isPositionComment
                           router={this.props.router}
                           sort={(flag) => this.onSortChange(flag)}
                           replyAvatarClick={(comment, reply, floor) => this.replyAvatarClick(comment, reply, floor)}
@@ -1063,15 +1102,27 @@ class ThreadH5Page extends React.Component {
               {/* 操作区 */}
               <View className={footer.operate}>
                 <View className={footer.icon} onClick={() => this.onMessageClick()}>
-                  {totalCount > 0 ? (
+                  {this.state.stateFlag ? 
+                    totalCount > 0 ? (
                     <View className={classNames(footer.badge, totalCount < 10 && footer.isCricle)}>
                       {totalCount > 99 ? '99+' : `${totalCount || '0'}`}
                     </View>
                   ) : (
                     ''
+                  ) : (
+                    <View className={footer.content}>
+                      正文
+                    </View>
                   )}
                   <Icon size="20" name="MessageOutlined"></Icon>
                 </View>
+                <Icon
+                  color={this.props.thread?.threadData?.isLike ? styleVar['--color-primary'] : ''}
+                  className={footer.icon}
+                  onClick={debounce(() => this.onLikeClick(), 500)}
+                  size="20"
+                  name="LikeOutlined"
+                ></Icon>
                 <Icon
                   color={this.props.thread?.isFavorite ? styleVar['--color-primary'] : ''}
                   className={footer.icon}

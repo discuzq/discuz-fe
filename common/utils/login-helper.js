@@ -142,6 +142,14 @@ class LoginHelper {
     });
   };
 
+  // 保存当前地址，并跳转目标地址targetUrl（非重定向保留原有路由）
+  saveAndPush = (targetUrl) => {
+    this.saveCurrentUrl();
+    Router.push({
+      url: targetUrl,
+    });
+  };
+
   // 自动记录当前的地址，再跳转登录页
   saveAndLogin = () => {
     this.saveCurrentUrl();
@@ -156,10 +164,10 @@ class LoginHelper {
     this.gotoLogin();
   };
 
-  // 恢复登录前的跳转。优先级：记录页 > defaultPage > 主页
-  restore = (defaultPage) => {
-    const url = this.getUrl() || defaultPage || (isWeb() ? HOME_PAGE_PC : HOME_PAGE_MINI);
-    this.clear();
+  // 恢复登录前的跳转。优先级：记录页 > 主页
+  restore = (clearUrl = true) => {
+    const url = this.getUrl() || (isWeb() ? HOME_PAGE_PC : HOME_PAGE_MINI);
+    clearUrl && this.clear();
 
     Router.redirect({
       url,

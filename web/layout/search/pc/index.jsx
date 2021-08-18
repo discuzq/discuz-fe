@@ -37,15 +37,33 @@ class SearchPCPage extends React.Component {
   }
 
   redirectToSearchResultPost = () => {
-    this.props.router.push(`/search/result-post?keyword=${this.state.value || ''}`);
+    const { site, searchNoData } = this.props;
+
+    if (searchNoData && site.platform === 'pc') {
+      this.props.router.push('/search/result-post');
+    } else {
+      this.props.router.push(`/search/result-post?keyword=${this.state.value || ''}`);
+    }
   };
 
   redirectToSearchResultUser = () => {
-    this.props.router.push(`/search/result-user?keyword=${this.state.value || ''}`);
+    const { site, searchNoData } = this.props;
+
+    if (searchNoData && site.platform === 'pc') {
+      this.props.router.push('/search/result-user');
+    } else {
+      this.props.router.push(`/search/result-user?keyword=${this.state.value || ''}`);
+    }
   };
 
   redirectToSearchResultTopic = () => {
-    this.props.router.push(`/search/result-topic?keyword=${this.state.value || ''}`);
+    const { site, searchNoData } = this.props;
+
+    if (searchNoData && site.platform === 'pc') {
+      this.props.router.push('/search/result-topic');
+    } else {
+      this.props.router.push(`/search/result-topic?keyword=${this.state.value || ''}`);
+    }
   };
 
   onUserClick = ({ userId } = {}) => {

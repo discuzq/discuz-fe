@@ -30,7 +30,7 @@ class AtSelect extends Component {
   }
 
   componentDidMount() {
-    this.fetchFollow();
+    this.onScrollBottom();
   }
 
   async fetchFollow() {
@@ -50,8 +50,8 @@ class AtSelect extends Component {
 
   async fetchAllUser() {
     const { search } = this.props;
-    const { page, perPage, keywords } = this.state;
-    const ret = await search.getUsersList({ search: keywords, type: 'nickname', page, perPage });
+    const { page, perPage } = this.state;
+    const ret = await search.getUsersList({ search: this.getSearchKeyword(), type: 'nickname', page, perPage });
     const { code, data } = ret;
     if (code === 0) {
       this.setState({
@@ -83,9 +83,7 @@ class AtSelect extends Component {
     }, 300);
   }
 
-  onScrollBottom = () => {
-    return this.state.keywords ? this.fetchAllUser() : this.fetchFollow();
-  }
+  onScrollBottom = () => (this.getSearchKeyword() ? this.fetchAllUser() : this.fetchFollow())
 
   // 取消选择
   handleCancel = () => {
@@ -98,6 +96,7 @@ class AtSelect extends Component {
       return;
     }
     this.props.getAtList(this.state.checkUser);
+    this.props.threadPost.setEditorHintAtKey('');
     this.props.onCancel();
   }
 
@@ -107,8 +106,10 @@ class AtSelect extends Component {
     return stringToColor(character);
   }
 
+  getSearchKeyword = () => this.state.keywords || this.props.threadPost.editorHintAtKey;
+
   formatData = (item) => {
-    const isFollow = this.state.keywords === '';
+    const isFollow = !this.getSearchKeyword();
     const avatar = isFollow ? item?.user?.avatar : item.avatar;
     const username = isFollow ? item?.user?.userName : item.username;
     const nickname = isFollow ? item?.user?.nickName : item.nickname;
@@ -119,7 +120,8 @@ class AtSelect extends Component {
 
   renderItem() {
     const { threadPost, search } = this.props;
-    const data = this.state.keywords ? (search.users?.pageData || []) : (threadPost.follows || []);
+    const data = this.getSearchKeyword()
+      ? (search.users?.pageData || []) : (threadPost.follows || []);
 
     if (data.length === 0) return null;
     return data.map((item) => {
@@ -152,9 +154,10 @@ class AtSelect extends Component {
   }
 
   render() {
-    const { pc, visible, style = {} } = this.props;
+    const { pc, visible, style = {}, threadPost } = this.props;
     const { keywords, checkUser, finish } = this.state;
     const platform = pc ? 'pc' : 'h5';
+    const searchWord = keywords || threadPost.editorHintAtKey;
     const content = (
       <div className={styles.wrapper} onClick={e => e.stopPropagation()}>
 
@@ -165,12 +168,12 @@ class AtSelect extends Component {
               <Icon className={styles['search-icon']} name="SearchOutlined" size={16}></Icon>
             </div>}
             <Input
-              value={keywords}
+              value={searchWord}
               placeholder='选择好友或直接输入圈友'
               onChange={e => this.updateKeywords(e.target.value)}
             />
-            {!pc && keywords &&
-              <div className={styles['icon-box']} onClick={() => this.updateKeywords()}>
+            {!pc && searchWord
+              && <div className={styles['icon-box']} onClick={() => this.updateKeywords()}>
                 <Icon className={styles['delete-icon']} name="WrongOutlined" size={16}></Icon>
               </div>
             }

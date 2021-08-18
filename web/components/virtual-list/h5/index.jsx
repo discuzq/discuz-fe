@@ -13,6 +13,9 @@ import BacktoTop from '@components/list/backto-top';
 const immutableHeightMap = {}; // 不可变的高度
 let preScrollTop = 0;
 let scrollTimer;
+let startNum;
+let stopNum;
+
 // 增强cache实例
 function extendCache(instance) {
   instance.getDefaultHeight = ({ index, data }) => {
@@ -107,7 +110,7 @@ function VList(props, ref) {
       if (list.length <= 2) {
         return winHeight - 230 - 65 + 10; // +10 底部tab栏高度计算修正
       }
-      return 125;
+      return 131;
     }
     return cache.rowHeight({ index, data });
   };
@@ -133,7 +136,6 @@ function VList(props, ref) {
             data={data}
             isLast={index === list?.length - 2}
             measure={measure}
-            index={index}
             recomputeRowHeights={(data) => recomputeRowHeights(index, data)}
           />
         );
@@ -182,7 +184,7 @@ function VList(props, ref) {
     scrollTimer = setTimeout(() => {
       setFlag(true);
     }, 100);
-    props.onScroll && props.onScroll({ scrollTop, clientHeight, scrollHeight });
+    props.onScroll && props.onScroll({ scrollTop, clientHeight, scrollHeight, startNum, stopNum });
     if (scrollTop !== 0) {
       props.vlist.setPosition(scrollTop);
     }
@@ -221,14 +223,16 @@ function VList(props, ref) {
 
   // 自定义扫描数据范围
   const overscanIndicesGetter = ({ cellCount, scrollDirection, overscanCellsCount, startIndex, stopIndex }) => {
+    startNum = startIndex;
+    stopNum = stopIndex;
+
     // 往回滚动
     if (scrollDirection === -1) {
       return {
-        overscanStartIndex: Math.max(0, startIndex - overscanCellsCount),
+        overscanStartIndex: Math.max(0, startIndex),
         overscanStopIndex: Math.min(cellCount - 1, stopIndex + overscanCellsCount),
       };
     }
-
     return {
       overscanStartIndex: Math.max(0, startIndex - overscanCellsCount),
       overscanStopIndex: Math.min(cellCount - 1, stopIndex),
@@ -258,7 +262,7 @@ function VList(props, ref) {
                 rowHeight={getRowHeight}
                 rowRenderer={rowRenderer}
                 width={width}
-                // overscanIndicesGetter={overscanIndicesGetter}
+                overscanIndicesGetter={overscanIndicesGetter}
               />
             )}
           </AutoSizer>

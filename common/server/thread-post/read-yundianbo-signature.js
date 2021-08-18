@@ -6,7 +6,6 @@ import { readYundianboSign } from '@discuzq/sdk/dist/api/other/read-yundianbo-si
 export default async function _readYundianboSignature(params = {}) {
   const res = await readYundianboSign({
     data: params,
-    timeout: 5000,
   });
   return res;
 }

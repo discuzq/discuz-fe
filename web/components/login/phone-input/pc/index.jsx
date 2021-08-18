@@ -1,7 +1,6 @@
 import React from 'react';
 import layout from './index.module.scss';
 import { Input } from '@discuzq/design';
-import '@discuzq/design/dist/styles/index.scss';
 
 class PhoneInputPC extends React.Component {
   setCaptcha = (e) => {

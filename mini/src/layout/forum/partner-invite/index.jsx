@@ -1,6 +1,5 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import '@discuzq/design/dist/styles/index.scss';
 import HomeHeader from '@components/home-header';
 import List from '@components/list';
 import { View, Button } from '@tarojs/components';
@@ -37,6 +36,7 @@ class PartnerInviteH5Page extends React.Component {
       invitorName: '',
       invitorAvatar: '/dzq-img/login-user.png',
       isHot: false,
+      isRenew: !!this.props.user?.userInfo?.isRenew, // 是否续费
     };
   }
 
@@ -49,15 +49,8 @@ class PartnerInviteH5Page extends React.Component {
 
   async componentDidMount() {
     this.setNavigationBarStyle();
-    
-    try {
-      // 若用户已登录，实时刷新站点付费及用户是否付费信息
-      const {site, user} = this.props;
-      if (user.isLogin()) {
-        user.updateUserInfo(user.id);
-        site.getSiteInfo();
-      }
 
+    try {
       await Promise.all([
         this.initInviteCode(),
         this.initUserList(),
@@ -142,8 +135,7 @@ class PartnerInviteH5Page extends React.Component {
           // data 中传递后台参数
           amount: sitePrice,
           title: siteName,
-          // type: user?.userInfo?.expiredAt ? 8 : 1, // 续费传8，新付费传1.站点付费注册
-          type: 1
+          type: this.state.isRenew ? 8 : 1 // 续费传8，新付费传1.站点付费注册
         },
         isAnonymous: false, // 是否匿名
         success: async () => {
@@ -168,7 +160,7 @@ class PartnerInviteH5Page extends React.Component {
     const { webConfig } = site;
     const { setSite: { siteMode, siteExpire, sitePrice, siteMasterScale } = {} } = webConfig;
     const { usersPageData = [], threadsPageData = [], isLoading } = forum;
-    const { invitorName, invitorAvatar, isHot } = this.state;
+    const { invitorName, invitorAvatar, isHot, isRenew } = this.state;
 
     const icon = { type: 3, name: isHot ? 'HotOutlined' : 'WonderfulOutlined' };
     const title = `${isHot ? '热门' : '精彩'}内容预览`
@@ -212,7 +204,7 @@ class PartnerInviteH5Page extends React.Component {
               onShowMore={this.handleJoinSite}
             />
             {!isLoading && threadsPageData?.length ? (
-              <PopularContents data={threadsPageData} onItemClick={this.handleJoinSite} unifyOnClick={this.handleJoinSite} />
+              <PopularContents data={threadsPageData} onTextItemClick={this.handleJoinSite} unifyOnClick={this.handleJoinSite} />
             ) : (
               <></>
             )}
@@ -257,7 +249,7 @@ class PartnerInviteH5Page extends React.Component {
                 <></>
               }
               <Button className={layout.bottom_button} onClick={this.handleJoinSite}>
-                { user.isLogin() ? `${siteMode === 'pay' ? `¥${sitePrice} ` : ''}立即加入` : '登录浏览更多内容'}
+                { user.isLogin() ? `${siteMode === 'pay' ? `¥${sitePrice} ` : ''}${this.state.isRenew ? '续费' : '立即'}加入` : '登录浏览更多内容'}
               </Button>
             </View>
           </View>

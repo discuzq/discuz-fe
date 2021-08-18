@@ -22,6 +22,7 @@ import config from '../../../app.config';
  * @prop {boolean}  useShowMore 是否需要"查看更多"
  * @prop {function} onRedirectToDetail 跳转到详情页面，当点击内容或查看更多内容超出屏幕时跳转到详情页面
  * @prop {function} onOpen 内容展开事件
+ * @prop {function} onTextItemClick 文本内容块点击事件（会覆盖内容里的a跳转）
  */
 
  const PostContent = ({
@@ -34,6 +35,7 @@ import config from '../../../app.config';
   setUseShowMore = noop,
   updateViewCount = noop,
   transformer = parsedDom => parsedDom,
+  onTextItemClick = null,
   ...props
 }) => {
   // 内容是否超出屏幕高度
@@ -41,10 +43,9 @@ import config from '../../../app.config';
   const [cutContentForDisplay, setCutContentForDisplay] = useState('');
   const [showMore, setShowMore] = useState(false); // 根据文本长度显示"查看更多"
   const [imageVisible, setImageVisible] = useState(false);
-
-  const [appPageLinks, setAppPageLinks] = useState([]);
   const [imageUrlList, setImageUrlList] = useState([]);
   const [curImageUrl, setCurImageUrl] = useState("");
+  const [appPageLinks, setAppPageLinks] = useState([]);
   const ImagePreviewerRef = useRef(null); // 富文本中的图片也要支持预览
   const contentWrapperRef = useRef(null);
   const clickedImageId = useRef(null);
@@ -114,7 +115,7 @@ import config from '../../../app.config';
     updateViewCount();
     if(node?.attribs?.src) {
       setImageVisible(true);
-      setCurImageUrl(`${decodeURIComponent(node.attribs.src)}`);
+      setCurImageUrl(node.attribs.src);
       clickedImageId.current = event?.target?.id;
     }
   }
@@ -131,6 +132,16 @@ import config from '../../../app.config';
     setCutContentForDisplay(ctnSubstring);
   };
 
+  const getImagesFromText = (text) => {
+    const _text = replaceStringInRegex(text, "emoj", '');
+    const images = _text.match(/<img\s+[^<>]*src=[\"\'\\]+([^\"\']*)/gm) || [];
+
+    for(let i = 0; i < images.length; i++) {
+      images[i] = images[i].replace(/<img\s+[^<>]*src=[\"\'\\]+/gm, "") || "";
+    }
+    return images;
+  }
+
   const generateAppRelativePageLinks = () => {
     const pageLinks = [];
     for(const pkg of config.subPackages) {
@@ -142,27 +153,12 @@ import config from '../../../app.config';
     setAppPageLinks(pageLinks);
   }
 
-  const getImagesFromText = (text) => {
-    const _text = replaceStringInRegex(text, "emoj", '');
-    const images = _text.match(/<img\s+[^<>]*src=[\"\'\\]+([^\"\']*)/gm) || [];
-
-    for(let i = 0; i < images.length; i++) {
-      images[i] = images[i].replace(/<img\s+[^<>]*src=[\"\'\\]+/gm, "") || "";
-      images[i] = decodeURIComponent(images[i]);
-      images[i] = images[i].replace(/&lt;/g, "<")
-                            .replace(/&gt;/g, ">")
-                            .replace(/&amp;/g, "&")
-                            .replace(/&quot;/g, '"')
-                            .replace(/&apos;/g, "'");
-    }
-    return images;
-  }
-
   useEffect(() => {
     const lengthInLine = parseInt((contentWrapperRef.current.offsetWidth || 704) / 32);
 
     const length = fuzzyCalcContentLength(filterContent, lengthInLine); // 大致计算文本长度
     const maxContentLength = lengthInLine * 6; // 如果默认长度是704，一共可容纳264个字符
+
     if (length < maxContentLength && length <= 1200) {
       // 显示6行内容
       setShowMore(false);
@@ -177,14 +173,15 @@ import config from '../../../app.config';
       setContentTooLong(false);
     }
 
-    generateAppRelativePageLinks();
     const imageUrlList = getImagesFromText(filterContent);
     if(imageUrlList.length) {
       setImageUrlList(imageUrlList);
     }
 
-  }, [filterContent]);
+    generateAppRelativePageLinks();
 
+  }, [filterContent]);
+  
   return (
     <View className={styles.container} {...props}>
       <View
@@ -211,6 +208,9 @@ import config from '../../../app.config';
               currentUrl={curImageUrl}
             />
           )}
+          {
+            onTextItemClick && <View className={styles.shade} onClick={onTextItemClick}></View>
+          }
         </View>
       </View>
       {useShowMore && showMore && (

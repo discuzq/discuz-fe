@@ -21,10 +21,10 @@
       max-width: 300px;
       min-width: 75px;
       padding: 8px 10px;
-      font-size: var(--font-size-primary);
+      font-size: $font-size-primary;
       font-weight: normal;
       color: var(--color-text-primary);
-      line-height: var(--font-line-height-primary);
+      line-height: $font-line-height-primary;
       background: var(--background-color-text2);
       border: none;
       border-radius: 5px;
@@ -35,10 +35,10 @@
   }
 
   .title {
-    margin-top: var(--margin-4n);
-    font-size: var(--font-size-middle);
+    margin-top: $margin-4n;
+    font-size: $font-size-middle;
     color: var(--color-text-primary);
-    font-weight: var(--font-weight-regular);
+    font-weight: $font-weight-regular;
     line-height: 18px;
     text-align: left;
   }
@@ -59,7 +59,7 @@
   }
 
   .content-parent {
-    padding: var(--padding-4n) 0;
+    padding: $padding-4n 0;
     border-bottom: 1px solid $border-color;
     .active {
       color: #fff;
@@ -68,7 +68,7 @@
   }
 
   .content-child {
-    padding: var(--margin-4n) 0;
+    padding: $margin-4n 0;
     border-bottom: 1px solid $border-color;
 
     .active {
@@ -80,7 +80,7 @@
   .btn {
     height: 44px;
     line-height: 44px;
-    font-size: var(--font-size-primary);
+    font-size: $font-size-primary;
     color: #4f5a70;
     text-align: center;
     @include ios-safe-area-inset-bottom;

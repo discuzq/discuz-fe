@@ -12,6 +12,7 @@ import { debounce } from '@common/utils/throttle-debounce.js';
 import styles from './index.module.scss';
 import IndexTabs from './components/tabs'
 import ThreadList from '@components/virtual-list'
+
 @inject('site')
 @inject('user')
 @inject('index')
@@ -26,13 +27,19 @@ class IndexH5Page extends React.Component {
       currentIndex: 'all',
       isFinished: true,
       isClickTab: false,
-      windowHeight: 0
+      windowHeight: 0,
     };
     this.tabsRef = createRef(null);
     this.headerRef = createRef(null);
     this.isNormal = false
   }
 
+  setNavigationBarStyle = () => {
+    Taro.setNavigationBarColor({
+      frontColor: '#ffffff',
+      backgroundColor: '#000000'
+    })
+  }
   componentDidMount() {
     // 是否有推荐
     const isDefault = this.props.site.checkSiteIsOpenDefautlThreadListData();
@@ -61,7 +68,6 @@ class IndexH5Page extends React.Component {
       this.changeFilter()
     }
   }
-
   changeFilter = (params) => {
     this.props.index.resetErrorInfo()
     this.setState({ isClickTab: true })
@@ -125,7 +131,6 @@ class IndexH5Page extends React.Component {
     const { isFinished, isClickTab } = this.state;
     const { threads = {}, currentCategories, filter, threadError } = index;
     const { currentPage = 1, totalPage, pageData } = threads || {};
-
     return (
       <BaseLayout
         showHeader={false}
@@ -151,7 +156,7 @@ class IndexH5Page extends React.Component {
 
           {
             !this.isNormal ? (
-              <ThreadList data={pageData} isClickTab={isClickTab} wholePageIndex={currentPage - 1} />
+              <ThreadList data={pageData} isClickTab={isClickTab} wholePageIndex={currentPage - 1}/>
             ) : (
               pageData?.map((item, index) => (
                 <ThreadContent

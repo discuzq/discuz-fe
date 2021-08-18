@@ -18,11 +18,11 @@ const NEED_BIND_OR_REGISTER_USER = -7016;
 class WeixinAuth extends React.Component {
   async componentDidMount() {
     const { router, invite } = this.props;
-    const { code, sessionId, sessionToken, state, loginType, action, nickname } = router.query;
+    const { code, sessionId, sessionToken, state, loginType, action, nickname, jumpType } = router.query;
 
     // 如果要进行绑定逻辑，跳转绑定相关的页面
     if (action === 'wx-bind') {
-      window.location.href = `/user/wx-bind?code=${code}&sessionId=${sessionId}&sessionToken=${sessionToken}&state=${state}&nickname=${nickname}&loginType=${loginType}`;
+      window.location.href = `/user/wx-bind?code=${code}&sessionId=${sessionId}&sessionToken=${sessionToken}&state=${state}&nickname=${nickname}&loginType=${loginType}&jumpType=${jumpType}`;
       return;
     }
 

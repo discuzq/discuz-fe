@@ -14,6 +14,7 @@ import ImagePreviewer from '@discuzq/design/dist/components/image-previewer/inde
 import classnames from 'classnames';
 
 @inject('user')
+@inject('index')
 @observer
 export default class index extends Component {
   constructor(props) {
@@ -21,7 +22,7 @@ export default class index extends Component {
     this.state = {
       isLoading: true,
       isPreviewBgVisible: false, // 是否预览背景图片
-      isNormalTitle: false, // 是否显示不透明 title 
+      isNormalTitle: false, // 是否显示不透明 title
     };
   }
 
@@ -35,10 +36,27 @@ export default class index extends Component {
     eventCenter.on(onShowEventId, this.onShow);
   }
 
+  componentDidMount() {
+    this.setNavigationBarStyle();
+  }
+
+  setNavigationBarStyle = () => {
+    Taro.setNavigationBarColor({
+      frontColor: '#ffffff',
+      backgroundColor: '#ffffff',
+    });
+  };
+
   fetchUserThreads = async () => {
     try {
-      const userThreadsList = await this.props.user.getUserThreads();
-      this.props.user.setUserThreads(userThreadsList);
+      const userThreadsList = await this.props.index.fetchList({
+        namespace: 'my',
+        filter: {
+          toUserId: 0,
+          complex: 5,
+        },
+      });
+      this.props.index.setList({ namespace: 'my', data: userThreadsList });
     } catch (err) {
       console.error(err);
       let errMessage = '加载用户列表失败';
@@ -79,16 +97,11 @@ export default class index extends Component {
 
   // 处理页面栈退出后，数据没有重置
   componentWillUnmount() {
-    this.props.user.clearUserThreadsInfo();
+    this.props.index.clearList({ namespace: 'my' });
     const onShowEventId = this.$instance.router.onShow;
     // 卸载
     eventCenter.off(onShowEventId, this.onShow);
   }
-
-  formatUserThreadsData = (userThreads) => {
-    if (Object.keys(userThreads).length === 0) return [];
-    return Object.values(userThreads).reduce((fullData, pageData) => [...fullData, ...pageData]);
-  };
 
   onRefresh = async () => {
     const { isLoading } = this.state;
@@ -120,7 +133,7 @@ export default class index extends Component {
         justifyContent: 'center',
         alignItems: 'center',
         paddingTop: `${this.getStatusBarHeight() - 8}px`,
-      }
+      };
     }
 
     return {
@@ -173,26 +186,51 @@ export default class index extends Component {
   render() {
     const { isLoading } = this.state;
     const { user } = this.props;
-    const { userThreads, userThreadsTotalCount, userThreadsPage, userThreadsTotalPage } = user;
-    const formattedUserThreads = this.formatUserThreadsData(userThreads);
+
+    const { index } = this.props;
+    const { lists } = index;
+
+    const myThreadsList = index.getList({
+      namespace: 'my',
+    });
+
+    const totalPage = index.getAttribute({
+      namespace: 'my',
+      key: 'totalPage',
+    });
+
+    const totalCount = index.getAttribute({
+      namespace: 'my',
+      key: 'totalCount',
+    });
+
+    const currentPage = index.getAttribute({
+      namespace: 'my',
+      key: 'currentPage',
+    });
+
+    const requestError = index.getListRequestError({ namespace: 'my' });
+
     return (
       <BaseLayout
-        onScroll={e => {
+        onScroll={(e) => {
           const currentScrollTop = e.detail.scrollTop;
           if (currentScrollTop > 170) {
             this.setState({
-              isNormalTitle: true
-            })
+              isNormalTitle: true,
+            });
           } else {
             this.setState({
-              isNormalTitle: false
-            })
+              isNormalTitle: false,
+            });
           }
         }}
         showHeader={false}
         showTabBar
-        noMore={!isLoading && userThreadsPage >= userThreadsTotalPage}
+        noMore={!isLoading && currentPage >= totalPage}
         onRefresh={this.onRefresh}
+        requestError={requestError.isError}
+        errorText={requestError.errorText}
         curr="my"
       >
         <View className={styles.mobileLayout}>
@@ -214,13 +252,13 @@ export default class index extends Component {
               <SectionTitle
                 title="主题"
                 isShowMore={false}
-                leftNum={`${userThreadsTotalCount || formattedUserThreads.length}个主题`}
+                leftNum={`${totalCount || myThreadsList.length}个主题`}
               />
             </View>
 
             {!isLoading &&
-              formattedUserThreads?.map((item, index) => (
-                <Thread data={item} key={`${item.threadId}-${item.updatedAt}`} />
+              myThreadsList?.map((item, index) => (
+                <Thread data={item} key={`${item.threadId}-${item.updatedAt}-${item.user.avatar}`} />
               ))}
           </View>
         </View>

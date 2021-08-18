@@ -2,7 +2,6 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'next/router';
 import { Icon, Toast, Avatar, Spin } from '@discuzq/design';
-import '@discuzq/design/dist/styles/index.scss';
 import layout from './index.module.scss';
 import NoData from '@components/no-data';
 import BaseLayout from '@components/user-center-base-laout-pc';

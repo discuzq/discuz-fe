@@ -1,8 +1,29 @@
 /**
  * 业务中用到的颜色以及字体、层级关系、间距等都从此变量文件中获取，不要直接在业务中存在css变量的使用
  */
+// TODO: 待去掉
 // ------ Font 字体 --------
-$font-family: "-apple-system","BlinkMacSystemFont","Segoe UI","Roboto","Helvetica Neue","Arial","Noto Sans","Liberation Sans","sans-serif","Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+$font-family:
+  '-apple-system',
+  'BlinkMacSystemFont',
+  'Segoe UI',
+  'Roboto',
+  'Helvetica Neue',
+  'Arial',
+  'Noto Sans',
+  'Liberation Sans',
+  'sans-serif',
+  'Apple Color Emoji',
+  'Segoe UI Emoji',
+  'Segoe UI Symbol',
+  'Noto Color Emoji';
+// 代码块的字体
+$font-family-code: 'SFMono-Regular',
+  'Menlo,Monaco',
+  'Consolas',
+  'Liberation Mono',
+  'Courier New',
+  'monospace' !important;
 
 $font-size-small: 12px;
 $font-size-base: 14px;
@@ -31,11 +52,26 @@ $font-weight-bold: 800;
 
 // ------ Colors 颜色 ------------
 $primary-color: var(--color-primary) !default;
+$primary-color2: var(--color-primary2) !default;
+$primary-color3: var(--color-primary3) !default;
+$primary-disabled-color: var(--color-primary5) !default;
+$primary-color6: var(--color-primary6) !default;
+$primary-color7: var(--color-primary7) !default;
+$primary-color8: var(--color-primary8) !default;
+$primary-color9: var(--color-primary9) !default;
+$primary-color10: var(--color-primary10) !default;
+
+$primary-color20: var(--color-primary20);
+
 $info-color: var(--color-info) !default;
+
 $success-color: var(--color-success) !default;
+$success-color6: var(--color-success6) !default;
+$success-color9: var(--color-success9) !default;
+
 $warn-color: var(--color-warn) !default;
-$error-color: var(--color-error) !default;
-$h5-copyright-color: var(--color-h5-copyright) !default;
+$warn-color6: var(--color-warn6) !default;
+$warn-color9: var(--color-warn9) !default;
 
 $primary-color3: var(--color-primary3);
 $primary-color2: var(--color-primary2);
@@ -43,32 +79,42 @@ $primary-color6: var(--color-primary6);
 $primary-color10: var(--color-primary10);
 $disabled-color: var(--color-disabled);
 $disabled-color2: var(--color-disabled2);
+$error-color: var(--color-error) !default;
+$error-color2: var(--color-error2) !default;
+$error-color6: var(--color-error6) !default;
+$error-color9: var(--color-error9) !default;
 
-$warn-color9: var(--color-warn9);
-$success-color9: var(--color-success9);
+$orange-color: var(--color-orange) !default;
 
-$primary-disabled-color: var(--color-primary5);
+$disabled-color: var(--color-disabled) !default;
+$disabled-color2: var(--color-disabled2) !default;
+$disabled-color3: var(--color-disabled3) !default;
+$disabled-color5: var(--color-disabled5) !default;
 
 $black: var(--color-black) !default;
 $white: var(--color-white) !default;
 
 // ------ Background Color 背景 -----
 // 全局背景色，pc移动端一致，另外评论框，评论，附件，语音，模块与模块之间的间距背景色也是
-$body-bg-color: var(--background-color);
+$body-bg-color: var(--background-color) !default;
+
+// ---- mask color ----
+$mask-bg-color: var(--mask-background-color) !default;
 
 // ------ text color -------
-$text-color-primary: var(--color-text-primary);
-$text-color-regular: var(--color-text-regular);
-$text-color-secondary: var(--color-text-secondary);
+$text-color-primary: var(--color-text-primary) !default; // 正文主色
+$text-color-regular: var(--color-text-regular) !default; // 二级内容文字颜色
+$text-color-secondary: var(--color-text-secondary) !default; // 次要文字颜色
+
 // border hover 的颜色还有 loading 文字和这个一致
-$text-color-placeholder: var(--color-text-placeholder);
+$text-color-placeholder: var(--color-text-placeholder) !default;
 
 $text-color-primary-color: $primary-color;
 $text-color-error: $error-color;
 
-$text-bg-color: var(--background-color-text);
+$text-bg-color: var(--background-color-text) !default;
 // 灰色标签（编辑器付费、红包设置之后的显示的背景色），灰色按钮（取消）背景色
-$text-bg-color2: var(--background-color-text2);
+$text-bg-color2: var(--background-color-text2) !default;
 
 // ------ icon color ------------
 $icon-color-light: $text-color-secondary;
@@ -78,25 +124,26 @@ $icon-primary-color: $primary-color;
 $icon-success-color: $success-color;
 
 // ----- boder color ----
-$border-color: var(--border-line-color);
+$border-color: var(--border-line-color) !default;
 $border-color-hover: $text-color-placeholder;
 
 // ---- border shadow color ----
-$border-shadow-color: var(--shadow-color);
-$border-shadow-color2: var(--shadow-color2);
+$border-shadow-color: var(--shadow-color) !default;
+$border-shadow-color2: var(--shadow-color2) !default;
+
 $shadow-color: 0 0 8px $border-shadow-color;
-$shadow-color2: 0 0 8px var(--shadow-color2);
+$shadow-color2: 0 0 8px $border-shadow-color2;
 
-$border-shadow-color-8: 0 0 8px 0 var(--shadow-color2);
-
-// ---- mask color ----
-$mask-bg-color: var(--mask-background-color);
+$border-shadow-color-8: 0 0 8px 0 $border-shadow-color2;
 
 // ---- loading color ----
 $loading-text-color: $text-color-placeholder;
 
+// ---- copyright color ----
+$copyright-text-color: $text-color-placeholder;
+
 // ---- tag color： 悬赏、付费 ------
-$tag-text-color1: var(--color-orange);
+$tag-text-color1: $orange-color;
 $tag-text-color2: $warn-color;
 $tag-text-color3: $success-color;
 
@@ -114,12 +161,13 @@ $button-info-bg-color: $text-bg-color2;
 $button-primary-bg-color: $primary-color;
 $button-primary-light-bg-color: $primary-color10;
 $button-primary-disabled-bg-color: $primary-disabled-color;
+
 // 关闭按钮背景，小程序顶部胶囊按钮背景
-$button-close-bg: var(--color-primary20);
-$button-capsule-bg: var(--color-primary20);
+$button-close-bg: $primary-color20;
+$button-capsule-bg: $button-close-bg;
 
 // ----- checkbox color -----
-$checkbox-checked-bg-color: var(--color-primary8);
+$checkbox-checked-bg-color: $primary-color8;
 
 // ------ border ----------
 $border-radius-small: 5px;
@@ -165,15 +213,16 @@ $zindex-backtotop: 1000;
 $zindex-tooltip: 1200;
 $zindex-popup: 1400;
 $zindex-dialog: 1600;
+$zindex-previewer: 1700;
 $zindex-toast: 1800;
 
 // ------  paybox ------------
 $paybox-pay-text-font-size: 30px;
-$paybox-border-line-color: var(--border-line-color);
+$paybox-border-line-color: $border-color;
 
-
+// ------  placeholder ------------
 $box-color-placeholder: var(--color-box-placeholder);
 
 // ------ blockquote -----------
-$blockquote-border: var(--border-color-blockquote);
-$blockquote-text-color: var(--color-text-blockquote);
+$blockquote-border: var(--border-color-blockquote) !default;
+$blockquote-text-color: var(--color-text-blockquote) !default;

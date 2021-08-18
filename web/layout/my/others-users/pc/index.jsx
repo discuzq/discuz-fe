@@ -13,6 +13,7 @@ import UserCenterThreads from '@components/user-center-threads';
 import UserCenterHeaderPc from '@components/user-center/header-pc';
 
 @inject('site')
+@inject('index')
 @inject('user')
 @observer
 class PCMyPage extends React.Component {
@@ -90,7 +91,14 @@ class PCMyPage extends React.Component {
   fetchTargetUserThreads = async () => {
     const { query } = this.props.router;
     if (query.id) {
-      await this.props.user.getTargetUserThreads(query.id);
+      const targetUserThreadsList = await this.props.index.fetchList({
+        namespace: `user/${query.id}`,
+        filter: {
+          toUserId: query.id,
+          complex: 5,
+        },
+      });
+      this.props.index.setList({ namespace: `user/${query.id}`, data: targetUserThreadsList });
       this.setState({
         fetchUserThreadsLoading: false,
       });
@@ -132,8 +140,21 @@ class PCMyPage extends React.Component {
 
   renderContent = () => {
     const { fetchUserThreadsLoading } = this.state;
-    const { user } = this.props;
-    const { targetUserThreads, targetUserThreadsTotalCount, targetUserThreadsPage, targetUserThreadsTotalPage } = user;
+    const { index } = this.props;
+    const { lists } = index;
+
+    const { query = {} } = this.props.router;
+
+    const userThreadsList = index.getList({
+      namespace: `user/${query.id}`,
+    });
+
+    const totalCount = index.getAttribute({
+      namespace: `user/${query.id}`,
+      key: 'totalCount',
+    });
+
+    const requestError = index.getListRequestError({ namespace: `user/${query.id}` });
 
     return (
       <div className={styles.userContent}>
@@ -143,14 +164,13 @@ class PCMyPage extends React.Component {
           bigSize={true}
           isShowMore={false}
           isLoading={fetchUserThreadsLoading}
-          leftNum={`${targetUserThreadsTotalCount}个主题`}
-          noData={!this.formatUserThreadsData(targetUserThreads)?.length}
+          leftNum={totalCount !== undefined ? `${totalCount}个主题` : ''}
+          noData={!userThreadsList?.length}
           mold="plane"
+          isError={requestError.isError}
+          errorText={requestError.errorText}
         >
-          {this.formatUserThreadsData(targetUserThreads)
-            && this.formatUserThreadsData(targetUserThreads).length > 0 && (
-              <UserCenterThreads data={this.formatUserThreadsData(targetUserThreads)} />
-          )}
+          {userThreadsList.length > 0 && <UserCenterThreads data={userThreadsList} />}
         </SidebarPanel>
       </div>
     );
@@ -158,25 +178,43 @@ class PCMyPage extends React.Component {
 
   render() {
     const { fetchUserInfoLoading } = this.state;
-    const { user } = this.props;
-    const { targetUserThreadsPage, targetUserThreadsTotalPage, targetUserThreads } = user;
+    const { index } = this.props;
+    const { lists } = index;
+
+    const { query = {} } = this.props.router;
+
+    const userThreadsList = index.getList({
+      namespace: `user/${query.id}`,
+    });
+
+    const totalPage = index.getAttribute({
+      namespace: `user/${query.id}`,
+      key: 'totalPage',
+    });
+
+    const currentPage = index.getAttribute({
+      namespace: `user/${query.id}`,
+      key: 'currentPage',
+    });
+
     return (
       <>
         <BaseLayout
           isOtherPerson={true}
           allowRefresh={false}
           onRefresh={this.fetchTargetUserThreads}
-          noMore={targetUserThreadsTotalPage < targetUserThreadsPage}
+          noMore={totalPage < currentPage}
+          showRefresh={false}
           onSearch={this.onSearch}
           immediateCheck={true}
-          showRefresh={false}
-          isShowLayoutRefresh={!!this.formatUserThreadsData(targetUserThreads)?.length && !fetchUserInfoLoading}
+          isShowLayoutRefresh={!!userThreadsList?.length && !fetchUserInfoLoading}
+          showHeaderLoading={fetchUserInfoLoading}
         >
           <div>
             <div>
               <div className={styles.headerbox}>
                 <div className={styles.userHeader}>
-                  <UserCenterHeaderPc showHeaderLoading={fetchUserInfoLoading} />
+                  <UserCenterHeaderPc showHeaderLoading={fetchUserInfoLoading} isOtherPerson={true} />
                 </div>
               </div>
             </div>

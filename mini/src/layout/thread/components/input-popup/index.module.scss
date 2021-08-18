@@ -15,7 +15,7 @@
   background: $mask-bg-color;
   top: 0;
   left: 0;
-  z-index: var(--zindex-popup);
+  z-index: $zindex-popup;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -109,6 +109,7 @@
 
 .input {
   width: 100% !important;
+  
   // height: 64px;
 }
 

@@ -1,6 +1,5 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import '@discuzq/design/dist/styles/index.scss';
 import { Spin, Toast } from '@discuzq/design';
 import ThreadContent from '@components/thread';
 import layout from './index.module.scss';
@@ -77,7 +76,7 @@ class PartnerInviteHot extends React.Component {
           <SectionTitle isShowMore={false} icon={icon} title={title} onShowMore={this.redirectToSearchResultPost} />
           {
             !isLoading && threadsPageData?.length
-              ? <PopularContents data={threadsPageData} unifyOnClick={unifyOnClick} />
+              ? <PopularContents onTextItemClick={unifyOnClick} data={threadsPageData} unifyOnClick={unifyOnClick} />
               : <></>
           }
           {
@@ -103,7 +102,13 @@ class PartnerInviteHot extends React.Component {
         {
           threadsPageData?.length
             ? threadsPageData.map((item, index) => (
-              <ThreadContent unifyOnClick={unifyOnClick} className={layout.threadContent} data={item} key={index} />
+              <ThreadContent
+                onTextItemClick={unifyOnClick}
+                unifyOnClick={unifyOnClick}
+                className={layout.threadContent}
+                data={item}
+                key={index}
+              />
             ))
             : <></>
         }

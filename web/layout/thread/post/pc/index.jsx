@@ -16,6 +16,7 @@ import FileUpload from '@components/thread-post/file-upload';
 import { THREAD_TYPE } from '@common/constants/thread-post';
 import Product from '@components/thread-post/product';
 import ProductSelect from '@components/thread-post/product-select';
+import VoteEditor from '@components/thread-post/vote-editor';
 import AllPostPaid from '@components/thread/all-post-paid';
 import AtSelect from '@components/thread-post/at-select';
 import TopicSelect from '@components/thread-post/topic-select';
@@ -25,6 +26,7 @@ import ForTheForm from '@components/thread/for-the-form';
 import VideoDisplay from '@components/thread-post/video-display';
 import MoneyDisplay from '@components/thread-post/money-display';
 import TagLocalData from '@components/thread-post/tag-localdata';
+import VoteWidget from '@components/thread-post/vote-widget';
 
 @inject('threadPost')
 @inject('index')
@@ -105,6 +107,9 @@ class ThreadPCPage extends React.Component {
     } = this.props;
     const { postData } = threadPost;
     const { webConfig = {} } = site;
+    const { setAttach, qcloud } = webConfig;
+    const { supportImgExt, supportMaxSize } = setAttach;
+    const { qcloudCosBucketName, qcloudCosBucketArea, qcloudCosSignUrl, qcloudCos } = qcloud;
 
     return (
       <div className={styles.container}>
@@ -136,7 +141,6 @@ class ThreadPCPage extends React.Component {
                   hintCustom={(type, key, textareaPosition, lastindex, vditor) =>
                     this.hintCustom(type, key, textareaPosition, lastindex, vditor)}
                   hintHide={this.hintHide}
-                  site={site}
                 />
 
                 <div ref={this.pluginContainer}>
@@ -169,6 +173,14 @@ class ThreadPCPage extends React.Component {
                   {(currentAttachOperation === THREAD_TYPE.image
                     || Object.keys(postData.images).length > 0) && (
                     <ImageUpload
+                      cosOptions={{
+                        supportImgExt,
+                        supportMaxSize,
+                        qcloudCosBucketName,
+                        qcloudCosBucketArea,
+                        qcloudCosSignUrl,
+                        qcloudCos,
+                      }}
                       className={styles['no-padding']}
                       fileList={Object.values(postData.images)}
                       onChange={fileList => this.props.handleUploadChange(fileList, THREAD_TYPE.image)}
@@ -204,12 +216,25 @@ class ThreadPCPage extends React.Component {
                   {(currentDefaultOperation === defaultOperation.attach || Object.keys(postData.files).length > 0) && (
                     <FileUpload
                       limit={9}
+                      cosOptions={{
+                        supportImgExt,
+                        supportMaxSize,
+                        qcloudCosBucketName,
+                        qcloudCosBucketArea,
+                        qcloudCosSignUrl,
+                        qcloudCos,
+                      }}
                       className={styles['no-padding']}
                       fileList={Object.values(postData.files)}
                       onChange={fileList => this.props.handleUploadChange(fileList, THREAD_TYPE.file)}
                       onComplete={(ret, file) => this.props.handleUploadComplete(ret, file, THREAD_TYPE.file)}
                       beforeUpload = {(cloneList, showFileList) => this.props.beforeUpload(cloneList, showFileList, THREAD_TYPE.file)}
                     />
+                  )}
+
+                  {/* 投票组件 */}
+                  {(postData?.vote?.voteTitle) && (
+                    <VoteWidget onDelete={() => this.props.setPostData({ vote: {} })} />
                   )}
 
                   {/* 商品组件 */}
@@ -323,6 +348,23 @@ class ThreadPCPage extends React.Component {
                 (data) => {
                   this.props.handleSetState({ currentAttachOperation: false });
                   this.props.setPostData({ product: data });
+                }
+              }
+              cancel={() => {
+                this.props.handleSetState({ currentAttachOperation: false });
+                this.props.threadPost.setCurrentSelectedToolbar(false);
+              }}
+            />
+          )}
+          {/* 插入投票 - 弹框 */}
+          {currentAttachOperation === THREAD_TYPE.vote && (
+            <VoteEditor
+              pc
+              visible={currentAttachOperation === THREAD_TYPE.vote}
+              onConfirm={
+                (data) => {
+                  this.props.handleSetState({ currentAttachOperation: false });
+                  this.props.setPostData({ vote: data });
                 }
               }
               cancel={() => {

@@ -3,7 +3,12 @@
   height: 100vh;
   width: 100vw;
   background: $white;
-
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: 0%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
   .header {
     height: 50px;
     display: flex;
@@ -37,12 +42,51 @@
   }
 
   .body {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0%;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
     height: 100%;
     overflow-y: auto;
   }
 }
-.footer {
+// .footer {
+//   position: fixed;
+//   bottom: 0;
+//   width: 100%;
+// }
+.inputFooterContainer {
+  height: 50px;
+  width: 100%;
+  flex:0 0 50px;
+  background: $white;
+}
+
+.inputFooter {
   position: fixed;
   bottom: 0;
+  bottom: constant(safe-area-inset-bottom); ///兼容 IOS<11.2/
+  bottom: env(safe-area-inset-bottom); ///兼容 IOS>11.2/
+  left: 0;
   width: 100%;
+  z-index: $zindex-backtotop;
+  min-height: 50px;
+  padding-left: $padding-4n;
+  padding-right: $padding-4n;
+  box-sizing: border-box;
+  background: $white;
+  border-top: $border-solid-1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
+.zindex {
+  z-index: -1;
+}
+
+.box {
+  height: env(safe-area-inset-bottom)
+}
+

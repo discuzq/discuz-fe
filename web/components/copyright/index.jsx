@@ -11,8 +11,8 @@ class CopyRight extends React.Component {
   }
 
   render() {
-    const { site, center, line, className, mode, marginTop, marginBottom} = this.props;
-    if ( !site?.webConfig?.setSite ) {
+    const { site, center, line, className, mode, marginTop, marginBottom } = this.props;
+    if (!site?.webConfig?.setSite) {
       return null;
     }
 
@@ -30,8 +30,8 @@ class CopyRight extends React.Component {
     })
 
     const style = {};
-    marginTop !== undefined && (style.marginTop =  `${marginTop}${isNaN(marginTop) ? '' : 'px'}`);
-    marginBottom !== undefined && (style.marginBottom =  `${marginBottom}${isNaN(marginBottom) ? '' : 'px'}`);
+    marginTop !== undefined && (style.marginTop = `${marginTop}${isNaN(marginTop) ? '' : 'px'}`);
+    marginBottom !== undefined && (style.marginBottom = `${marginBottom}${isNaN(marginBottom) ? '' : 'px'}`);
 
     const curSiteUrl = window.location.origin;
     const curYear = new Date().getFullYear();
@@ -40,19 +40,24 @@ class CopyRight extends React.Component {
       <div className={clsName} style={style}>
         <div className={styles.text}>
           <a href="https://discuz.chat" target="_blank">
-            Powered By Discuz！Q
-          </a>
-        </div>
-        <div className={styles.text}>
-          <a href={curSiteUrl} target="_blank">
-            &copy; {curYear} {setSite.siteName}
+            Powered By Discuz! Q  <br /> Copyright &copy; {curYear} {setSite.siteName}
           </a>
         </div>
         {
-          setSite.siteRecordCode && (
+          setSite.siteRecord && (
             <div className={styles.text}>
               <a href="https://beian.miit.gov.cn/" target="_blank">
                 {setSite.siteRecord}
+              </a>
+            </div>
+          )
+        }
+        {
+          setSite.siteRecordCode && (
+            <div className={`${styles.text} ${styles.beian}`}>
+              <a href='http://www.beian.gov.cn/portal/registerSystemInfo' target="_blank" rel='nofollow noopener noreferrer'>
+                <img src="/dzq-img/beian.png" alt="" />
+                {setSite.siteRecordCode}
               </a>
             </div>
           )

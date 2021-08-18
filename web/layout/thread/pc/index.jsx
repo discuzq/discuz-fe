@@ -797,9 +797,9 @@ class ThreadPCPage extends React.Component {
               )}
 
               <RenderCommentList
+                canPublish={canPublish}
                 positionRef={this.positionRef}
                 showHeader={!isShowCommentList}
-                canPublish={canPublish}
                 router={this.props.router}
                 sort={flag => this.onSortChange(flag)}
                 onEditClick={comment => this.onEditClick(comment)}
@@ -851,9 +851,7 @@ class ThreadPCPage extends React.Component {
         <div className={layout.qrcode}>
           <QcCode></QcCode>
         </div>
-        <div className={layout.copyright}>
-          <Copyright></Copyright>
-        </div>
+        <Copyright className={layout.copyright}></Copyright>
       </div>
     );
   }

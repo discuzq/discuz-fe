@@ -53,6 +53,7 @@ const Index = ({ message, user }) => {
         chatPerson = sender;
       }
       newList.push({
+        iid: id,
         id: `${id}${dialogMessage?.createdAt}`,
         createdAt: dialogMessage?.createdAt,
         dialogId: dialogMessage?.dialogId,
@@ -92,7 +93,7 @@ const Index = ({ message, user }) => {
           type='chat'
           onPullDown={onPullDown}
           onScrollBottom={handleScrollBottom}
-          onBtnClick={(item) => deleteDialog(item.id)}
+          onBtnClick={(item) => deleteDialog(item.iid)}
         />
       </View>
       <BottomNavBar fixed={false} curr={'message'} />

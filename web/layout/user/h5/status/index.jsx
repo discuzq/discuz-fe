@@ -2,7 +2,6 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'next/router';
 import { Button } from '@discuzq/design';
-import '@discuzq/design/dist/styles/index.scss';
 import HomeHeader from '@components/home-header';
 import Header from '@components/header';
 import layout from './index.module.scss';
@@ -75,7 +74,9 @@ class StatusH5Page extends React.Component {
           </div>
           <div className={platform === 'h5' ? layout.functionalRegion : layout.pc_functionalRegion}>
               <span>
-                { commonLogin.statusMessage || (statusCode && commonLogin.setStatusMessage(statusCode, statusMsg)) }
+                { statusCode === '2' ? (
+                  <>恭喜您！已成功登录。<br/>先随便逛逛等待账号审核通过！</>
+                ) : (commonLogin.statusMessage || (statusCode && commonLogin.setStatusMessage(statusCode, statusMsg)))}
               </span>
           </div>
           <Button className={platform === 'h5' ? layout.button : layout.pc_button } type="primary" onClick={() => this.handleClick()}>

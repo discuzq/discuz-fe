@@ -1,6 +1,5 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import '@discuzq/design/dist/styles/index.scss';
 import SectionTitle from '@components/section-title';
 import NoData from '@components/no-data';
 import { simpleRequest } from '@common/utils/simple-request';

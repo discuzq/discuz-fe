@@ -8,8 +8,10 @@ import Router from '@discuzq/sdk/dist/router';
 import { withRouter } from 'next/router';
 import { fixImageOrientation } from '@common/utils/exif';
 import throttle from '@common/utils/thottle.js';
+import { updateMyThreadAvatar } from '@common/store/index/list-business';
 
 @inject('user')
+@inject('index')
 @observer
 class index extends Component {
   constructor(props) {
@@ -26,9 +28,11 @@ class index extends Component {
 
   avatarUploaderRef = React.createRef(null);
   backgroundUploaderRef = React.createRef(null);
+
   handleAvatarUpload = () => {
     this.avatarUploaderRef.current.click();
   };
+
   onAvatarChange = async (fileList) => {
     if (!fileList.target.files[0]) return;
     this.setState({
@@ -38,9 +42,14 @@ class index extends Component {
     this.props.user
       .updateAvatar(fixedImg)
       .then((res) => {
-        const id = this.props.user.id;
+        const { id } = this.props.user;
         if (id === res.id && res.avatarUrl) {
           // this.user.editAvatarUrl = res.avatarUrl;
+          updateMyThreadAvatar({
+            avatarUrl: res.avatarUrl,
+            indexStore: this.props.index,
+          });
+
           Toast.success({
             content: '上传头像成功',
             hasMask: false,
@@ -52,6 +61,7 @@ class index extends Component {
         }
       })
       .catch((err) => {
+        console.log(err);
         Toast.error({
           content: err.Msg || '上传头像失败',
           hasMask: false,
@@ -74,7 +84,7 @@ class index extends Component {
     this.props.user
       .updateBackground(fixedImg)
       .then((res) => {
-        const id = this.props.user.id;
+        const { id } = this.props.user;
         if (id === res.id && res.backgroundUrl) {
           Toast.success({
             content: '上传成功',
@@ -102,7 +112,7 @@ class index extends Component {
           this.setState({
             isFollowedLoading: true,
           });
-          const cancelRes = await this.props.user.cancelFollow({ id: id, type: 1 });
+          const cancelRes = await this.props.user.cancelFollow({ id, type: 1 });
           if (!cancelRes.success) {
             Toast.error({
               content: cancelRes.msg || '取消关注失败',

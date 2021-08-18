@@ -36,9 +36,9 @@
 
     .itself {
       .msgContent {
-        background-color: var(--comment-box-bg-color);
+        background-color: $comment-bg-color;
         &:before {
-          border-right-color: var(--comment-box-bg-color);
+          border-right-color: $comment-bg-color;
         }
       }
     }

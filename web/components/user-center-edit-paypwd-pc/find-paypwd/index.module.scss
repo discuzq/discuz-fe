@@ -1,5 +1,5 @@
 @import '@common/styles/index.scss';
-@import '@common/styles/_variable.scss';
+@import '@common/styles/index.scss';
 @mixin captchaBtn {
   position: absolute;
   right: 8px;
@@ -27,7 +27,7 @@
     text-align: center;
     font-size: rem($font-size-middle);
     color: $text-color-primary;
-    font-weight: var(--font-weight-regular);
+    font-weight: $font-weight-regular;
     letter-spacing: 1px;
   }
   .inputItem {

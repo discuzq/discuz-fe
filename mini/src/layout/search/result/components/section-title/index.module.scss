@@ -22,7 +22,7 @@
   }
 }
 .title {
-  font-weight: var(--font-weight-regular);
+  font-weight: $font-weight-regular;
   font-size: rem($font-size-middle);
   line-height: rem($font-line-height-primary);
   text-align: left;

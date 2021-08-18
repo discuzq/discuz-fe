@@ -85,7 +85,7 @@ function AttachmentToolbar(props) {
     const { onUploadComplete } = props;
     if (item.type === THREAD_TYPE.video) {
       file = files[0];
-      const isUpload = onVideoUpload();
+      const isUpload = onVideoUpload(true);
       if (!isUpload) return false;
       tencentVodUpload({
         file,
@@ -164,6 +164,7 @@ function AttachmentToolbar(props) {
     if (item.type === THREAD_TYPE.video && postData?.video?.id) return activeCls;
     if (item.type === THREAD_TYPE.image && Object.values(postData?.images || []).length > 0) return activeCls;
     if (item.type === THREAD_TYPE.anonymity && postData?.anonymous) return activeCls;
+    if (item.type === THREAD_TYPE.vote && postData?.vote) return activeCls;
     return cls;
   };
 
@@ -171,7 +172,7 @@ function AttachmentToolbar(props) {
     const { permission } = props;
     if (props.pc && item.type === THREAD_TYPE.voice) return null;
     const clsName = getIconCls(item);
-    let isShow = permission[item.type];
+    let isShow = true || permission[item.type];
     if (item.type === THREAD_TYPE.video || item.type === THREAD_TYPE.voice) {
       isShow = permission[item.type] && props?.isOpenQcloudVod;
     }
@@ -187,13 +188,12 @@ function AttachmentToolbar(props) {
       ) : null;
     }
     return isShow ? (
-      <div
-        key={item.name}
-        onClick={() => trggerInput(item)}
-        className={clsName}
-      >
+      <div key={item.name} className={clsName}>
         <Icon
-          onClick={e => handleAttachClick(e, item)}
+          onClick={e => {
+            handleAttachClick(e, item);
+            trggerInput(item);
+          }}
           name={item.name}
           size="20" />
         <input

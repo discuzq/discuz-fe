@@ -205,8 +205,8 @@ export default function HOCFetchSiteData(Component, _isPass) {
       const { user, site } = this.props;
       const { userInfo } = user;
       const { webConfig: { setSite } } = site;
-      const { siteName, siteIntroduction, siteHeaderLogo } = setSite;
-      const { nickname, avatarUrl, signature, id } = userInfo;
+      const { siteName, siteIntroduction, siteHeaderLogo, siteFavicon } = setSite;
+      const { nickname, avatarUrl, signature, id } = userInfo || {};
 
       // 默认分享标题
       let title = document.title;
@@ -217,7 +217,7 @@ export default function HOCFetchSiteData(Component, _isPass) {
       // 默认分享链接
       let link = window.location.href;
       // 默认分享图片
-      let img = siteHeaderLogo;
+      let img = siteHeaderLogo || siteFavicon;
 
       /**
        * 不适用默认分享，需要特殊处理的页面

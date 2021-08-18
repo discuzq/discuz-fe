@@ -11,13 +11,16 @@ import Audio from '@discuzq/design/dist/components/audio/index';
 import Toast from '@discuzq/design/dist/components/toast/index';
 import { Units } from '@components/common';
 import styles from './index.module.scss';
-import locals from '@common/utils/local-bridge';
-import constants from '@common/constants';
 import { THREAD_TYPE } from '@common/constants/thread-post';
+import commonUpload from '@common/utils/common-upload';
 
 export default inject('threadPost', 'site')(observer(({ type, threadPost, site, audioUpload, children, pageScrollTo }) => {
   const { postData, setPostData } = threadPost;
-  const { webConfig, envConfig } = site;
+  const { webConfig = {}, envConfig } = site;
+  const { setAttach, qcloud } = webConfig;
+  const { supportImgExt, supportMaxSize } = setAttach;
+  const { qcloudCosBucketName, qcloudCosBucketArea, qcloudCosSignUrl, qcloudCos } = qcloud;
+
   const localData = JSON.parse(JSON.stringify(postData));
 
   const { images, files, audio } = localData;
@@ -27,11 +30,18 @@ export default inject('threadPost', 'site')(observer(({ type, threadPost, site, 
     Taro.showLoading({ title: '上传中', mask: true });
 
     let isAllLegal = true; // 状态：此次上传图片是否全部合法
-    const uploadPromise = [];
+    // const uploadPromise = [];
     const { supportFileExt, supportImgExt, supportMaxSize } = webConfig?.setAttach;
     const supportExt = isImage ? supportImgExt : supportFileExt; // 支持的文件格式
     const showList = isImage ? images : files; // 已上传文件列表
     const remainLength = 9 - Object.keys(showList).length; // 剩余可传数量
+
+
+
+    let photoMaxSize = supportMaxSize;
+    if (isImage && qcloudCos) {
+      photoMaxSize = supportMaxSize > 15 ? 15 : supportMaxSize;
+    }
 
     // 1 删除多余文件
     cloneList.splice(remainLength, cloneList.length - remainLength);
@@ -43,103 +53,70 @@ export default inject('threadPost', 'site')(observer(({ type, threadPost, site, 
       const isLegalType = supportExt.toLocaleLowerCase().includes(fileType);
       const isLegalSize = fileSize > 0 && fileSize < supportMaxSize * 1024 * 1024;
 
-      if (isLegalType && isLegalSize) {
-        uploadPromise.push(upload(cloneList[i]));
-      } else {
+      if (!(isLegalType && isLegalSize)) {
         cloneList.splice(i, 1);
         i--;
         isAllLegal = false;
       }
     }
 
-    // 3 等待上传完成
-    Promise.all(uploadPromise)
-      .then((res) => {
-        Taro.hideLoading();
-        pageScrollTo({ selector: isImage ? "#thread-post-image" : "#thread-post-file" });
-
-        let count = 0;
-        res.forEach((item) => {
-          if (item.statusCode !== 200 || JSON.parse(item.data).Code !== 0) {
-            count++;
-          }
-        });
-
-        if (count > 0 && isAllLegal) {
-          Toast.error({
-            content: `${count} 张照片上传失败`,
-          });
-        }
-
-        if (!isAllLegal) {
-          Toast.error({
-            content: `仅支持${supportExt}格式，且0~${supportMaxSize}MB的${isImage ? '图片' : '文件'}`,
-          });
-        }
-      })
-  }
-
-  // 执行上传
-  const upload = (file) => {
-    return new Promise((resolve, reject) => {
-      const tempFilePath = file.path || file.tempFilePath;
-      const token = locals.get(constants.ACCESS_TOKEN_NAME);
-      const formData = {
-        'type': (() => {
-          switch (type) {
-            case THREAD_TYPE.image: return 1;
-            case THREAD_TYPE.file: return 0;
-          }
-        })(),
-      };
-      if (type === THREAD_TYPE.file) {
-        formData.name = file.name; // 附件文件名，用于后端替换file中的临时文件名
-      }
-      Taro.uploadFile({
-        url: `${envConfig.COMMON_BASE_URL}/apiv3/attachments`,
-        filePath: tempFilePath,
-        name: 'file',
-        header: {
-          'authorization': `Bearer ${token}`
-        },
-        formData: formData,
-        success(res) {
-          if (res.statusCode === 200) {
-            const ret = JSON.parse(res.data);
-            if (ret.Code === 0) {
-              const data = ret.Data;
-              switch (type) {
-                case THREAD_TYPE.image:
-                  images[data.id] = {
-                    thumbUrl: tempFilePath,
-                    ...data,
-                  };
-                  setPostData({ images });
-                  break;
-                case THREAD_TYPE.file:
-                  files[data.id] = {
-                    thumbUrl: tempFilePath,
-                    name: file.name,
-                    size: file.size,
-                    ...data,
-                  };
-                  setPostData({ files });
-                  break;
-              }
-            }
-          } else {
-            console.log(res);
-            const msg = res.statusCode === 413 ? '上传大小超过了服务器限制' : res.msg;
-            Toast.error({ content: `上传失败：${msg}` });
-          }
-          resolve(res);
-        },
-        fail(res) {
-          console.log(res);
-        }
+    // 3 开始进行上传
+    const type = isImage ? 1 : 0;
+    let res = [];
+    try {
+      res = await commonUpload({
+        files: cloneList,
+        type,
+        qcloudCos,
+        qcloudCosBucketName,
+        qcloudCosBucketArea,
+        qcloudCosSignUrl,
+        supportImgExt,
+        supportMaxSize,
+        host: envConfig.COMMON_BASE_URL
       });
+    } catch (error) {
+      Taro.hideLoading();
+    }
+
+    Taro.hideLoading();
+    pageScrollTo({ selector: isImage ? "#thread-post-image" : "#thread-post-file" });
+    let count = 0;
+    res.forEach((item) => {
+      const { code, data } = item;
+      if (code === 0) {
+
+        if (isImage) {
+          images[data.id] = {
+            ...data,
+          };
+          setPostData({ images });
+        } else {
+          files[data.id] = {
+            name: data.fileName,
+            size: data.fileSize,
+            ...data,
+          };
+          setPostData({ files });
+        }
+      } else {
+        count++;
+      }
     });
-  };
+
+    if (count > 0 && isAllLegal) {
+      Toast.error({
+        content: `${count} ${isImage ? '张照片' : '个文件'}上传失败`,
+      });
+    }
+
+    if (!isAllLegal) {
+      Toast.error({
+        content: `仅支持${supportExt}格式，且0~${photoMaxSize}MB的${isImage ? '图片' : '文件'}`,
+      });
+    }
+
+  }
 
   // 选择图片
   const chooseImage = () => {

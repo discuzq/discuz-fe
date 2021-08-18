@@ -1,7 +1,7 @@
 @import '@common/styles/index.scss';
 
 .wrap {
-  border-bottom: rem(10) solid var(--comment-content-bg-color); // todo 这个颜色未定义scss变量
+  border-bottom: rem(10) solid $comment-bg-color; // todo 这个颜色未定义scss变量
   padding-bottom: rem($padding-4n);
 }
 .site{

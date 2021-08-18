@@ -5,7 +5,6 @@ import TrendingTopics from './components/trending-topics';
 import ActiveUsers from './components/active-users';
 import ThreadContent from '@components/thread';
 import BaseLayout from '@components/base-layout';
-import '@discuzq/design/dist/styles/index.scss';
 import SidebarPanel from '@components/sidebar-panel';
 import Taro from '@tarojs/taro';
 
@@ -42,7 +41,7 @@ class SearchH5Page extends React.Component {
   onPostClick = data => console.log('post click', data);
 
   onCancel = () => {
-    Taro.navigateBack({ delta: 1 })  
+    Taro.navigateBack({ delta: 1 })
   };
 
   render() {
@@ -54,8 +53,8 @@ class SearchH5Page extends React.Component {
       <BaseLayout showHeader={false} allowRefresh={false} curr='search' showTabBar>
         <SearchInput onSearch={this.onSearch} onCancel={this.onCancel} isShowBottom={false}/>
         <SidebarPanel
-          icon={{ type: 1, name: 'StrongSharpOutlined' }} 
-          title="潮流话题" 
+          icon={{ type: 1, name: 'StrongSharpOutlined' }}
+          title="潮流话题"
           onShowMore={this.redirectToSearchResultTopic}
           isLoading={!topicsPageData}
           noData={!topicsPageData?.length}
@@ -70,7 +69,7 @@ class SearchH5Page extends React.Component {
 
         <SidebarPanel
           icon={{ type: 2, name: 'MemberOutlined' }}
-          title="活跃用户" 
+          title="活跃用户"
           onShowMore={this.redirectToSearchResultUser}
           isLoading={!usersPageData}
           noData={!usersPageData?.length}
@@ -85,7 +84,7 @@ class SearchH5Page extends React.Component {
 
         <SidebarPanel
           icon={{ type: 3, name: 'HotOutlined' }}
-          title="热门内容" 
+          title="热门内容"
           onShowMore={this.redirectToSearchResultPost}
           isLoading={!threadsPageData}
           noData={!threadsPageData?.length}

@@ -30,7 +30,9 @@ const config = {
     '@store': path.resolve(__dirname, '../../common/server'),
     '@constants': path.resolve(__dirname, '../src/constants'),
     '@discuzq/design/dist': path.resolve(__dirname, '../node_modules', '@discuzq/design/dist-pure'),
+    // '@discuzq/design/dist': path.resolve(__dirname, '../node_modules', '@discuzq/design/dist'),
     '@discuzq/sdk/dist': path.resolve(__dirname, '../node_modules', '@discuzq/sdk/dist-pure'),
+    // '@discuzq/sdk/dist': path.resolve(__dirname, '../node_modules', '@discuzq/sdk/dist'),
     'regenerator-runtime': path.resolve(__dirname, '../node_modules', 'regenerator-runtime'),
   },
   copy: {

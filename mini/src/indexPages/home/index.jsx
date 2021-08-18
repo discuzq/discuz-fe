@@ -38,7 +38,7 @@ class Index extends React.Component {
     const { site, user } = this.props
     const siteName = site.webConfig?.setSite?.siteName || ''    
     const defalutPath = 'pages/index/index'
-    const { nickname } = user?.userInfo || ''
+    const nickname = user?.userInfo?.nickname || ''
     const defalutTitle = `${nickname}邀请你加入${siteName}`
     if (data.from === 'timeLine') {
       return {

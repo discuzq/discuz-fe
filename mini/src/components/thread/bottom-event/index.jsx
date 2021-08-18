@@ -4,12 +4,10 @@ import Tip from '../tip';
 import Icon from '@discuzq/design/dist/components/icon/index';
 import { View, Text } from '@tarojs/components'
 import ShareButton from '../share-button'
-import Popup from '@discuzq/design/dist/components/popup/index';
 import goToLoginPage from '@common/utils/go-to-login-page';
 import Taro from '@tarojs/taro'
 import Toast from '@discuzq/design/dist/components/toast';
 import { noop } from '../utils';
-
 /**
  * 帖子底部内容
  * @prop {array}    userImgs 点赞分享用户信息
@@ -29,15 +27,12 @@ const Index = ({
   isSendingLike = false,
   tipData,
   data,
-  platform,
   index,
+  user,
   shareThreadid,
   shareNickname,
   shareAvatar,
   getShareData,
-  getShareContent,
-  shareContent,
-  user,
   unifyOnClick = null,
   onShare = () => {},
   onComment = () => {},
@@ -76,16 +71,10 @@ const Index = ({
     }
     setShow(true)
   }
-
   useEffect(() => {
     index.setHiddenTabBar(show)
   }, [show])
-
-  const onClose = () => {
-    setShow(false)
-  }
   const needHeight = useMemo(() => userImgs.length !== 0 || comment > 0 || sharing > 0, [userImgs, comment, sharing])
-  const thread = index
   return (
     <View>
       <View className={needHeight ? styles.user : styles.users}>
@@ -147,7 +136,17 @@ const Index = ({
           ))
         }
       </View>
-      <ShareButton show={show} data={data} setShow={setShow} tipData={tipData} shareThreadid={shareThreadid} shareAvatar={shareAvatar} shareNickname={shareNickname} getShareData={getShareData}></ShareButton>
+      {show && (
+        <ShareButton 
+          show={show} 
+          data={data} 
+          setShow={setShow} 
+          shareThreadid={shareThreadid} 
+          shareAvatar={shareAvatar} 
+          shareNickname={shareNickname} 
+          getShareData={getShareData}
+        ></ShareButton>
+      )}
     </View>
   );
 };
