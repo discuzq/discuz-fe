@@ -60,7 +60,6 @@ export const tags = {
   },
 };
 function parse(text) {
-  console.log(text,3)
   for (const tag in tags) {
     if (tag === 'emotion') {
       const storage = new Storage({ storageType: 'local' })
@@ -69,8 +68,6 @@ function parse(text) {
     } else {
       text = tags[tag](text);
     }
-
-    console.log(text,tag);
   }
 
   return text;
