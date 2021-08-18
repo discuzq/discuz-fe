@@ -23,17 +23,17 @@ import { getElementRect, randomStr, noop } from './utils'
 const Index = (props) => {
   const { title = '', payType, price, paid, attachmentPrice } = props.data || {};
   const needPay = useMemo(() => payType !== 0 && !paid, [paid, payType]);
-  const { 
-    onClick, 
-    onPay, 
-    relativeToViewport = true, 
-    changeHeight = noop, 
-    useShowMore = true, 
+  const {
+    onClick,
+    onPay,
+    relativeToViewport = true,
+    changeHeight = noop,
+    useShowMore = true,
     setUseShowMore = noop,
     updateViewCount
   } = props;
 
-  const wrapperId= useRef(`thread-wrapper-${randomStr()}`)
+  const wrapperId = useRef(`thread-wrapper-${randomStr()}`)
 
   // 标题显示37个字符
   const newTitle = useMemo(() => {
@@ -59,10 +59,10 @@ const Index = (props) => {
     return (
       <>
         {text && (
-          <PostContent 
-            content={text} 
+          <PostContent
+            content={text}
             updateViewCount={updateViewCount}
-            onRedirectToDetail={onClick} 
+            onRedirectToDetail={onClick}
             relativeToViewport={relativeToViewport}
             changeHeight={changeHeight}
             useShowMore={useShowMore}
@@ -86,30 +86,39 @@ const Index = (props) => {
           </WrapperView>
         )}
         {imageData?.length ? (
-            <ImageDisplay 
-              platform="h5" 
-              imgData={imageData} 
-              isPay={needPay} 
-              onPay={onPay} 
-              onClickMore={onClick}
-              relativeToViewport={relativeToViewport}
-              updateViewCount={updateViewCount}
-            />
+          <ImageDisplay
+            platform="h5"
+            imgData={imageData}
+            isPay={needPay}
+            onPay={onPay}
+            onClickMore={onClick}
+            relativeToViewport={relativeToViewport}
+            updateViewCount={updateViewCount}
+          />
         ) : null}
-        {rewardData && <Packet type={1} money={rewardData.money} onClick={onClick}/>}
+        {rewardData && (
+          <Packet
+            type={1}
+            // money={rewardData.money}
+            onClick={onClick} />
+        )}
         {redPacketData && (
-          <Packet money={redPacketData.money || 0} onClick={onClick} condition={redPacketData.condition}/>
+          <Packet
+            // money={redPacketData.money || 0} 
+            onClick={onClick}
+            condition={redPacketData.condition}
+          />
         )}
         {goodsData && (
-            <ProductItem
-              image={goodsData.imagePath}
-              amount={goodsData.price}
-              title={goodsData.title}
-              onClick={onClick}
-            />
+          <ProductItem
+            image={goodsData.imagePath}
+            amount={goodsData.price}
+            title={goodsData.title}
+            onClick={onClick}
+          />
         )}
-        {audioData && <AudioPlay url={audioData.mediaUrl} isPay={needPay} onPay={onPay} updateViewCount={updateViewCount}/>}
-        {fileData?.length ? <AttachmentView threadId={threadId} attachments={fileData} onPay={onPay} isPay={needPay} updateViewCount={updateViewCount}/> : null}
+        {audioData && <AudioPlay url={audioData.mediaUrl} isPay={needPay} onPay={onPay} updateViewCount={updateViewCount} />}
+        {fileData?.length ? <AttachmentView threadId={threadId} attachments={fileData} onPay={onPay} isPay={needPay} updateViewCount={updateViewCount} /> : null}
       </>
     );
   };
