@@ -33,8 +33,6 @@ const Index = ({ cancel, pc, visible, threadPost }) => {
       return !!item.content;
     });
 
-    setSubitems(subitemsCopy);
-
     if (!title) {
       Toast.info({ content: '标题不能为空' });
       return;
@@ -44,6 +42,8 @@ const Index = ({ cancel, pc, visible, threadPost }) => {
       Toast.info({ content: '至少需要提供两个有效选项' });
       return;
     }
+
+    setSubitems(subitemsCopy);
 
     threadPost.setPostData({
       vote: {
