@@ -41,7 +41,7 @@ const InputPop = (props) => {
   }, [initValue]);
   useEffect(() => {
     setFocus(true)
-    if(props.showEmojis) {
+    if (props.showEmojis) {
       setFocus(false);
       setShowEmojis(props.showEmojis);
     }
@@ -59,7 +59,7 @@ const InputPop = (props) => {
   }, [props.showEmojis]);
   useEffect(() => {
     setFocus(true)
-    if(props.showPicture) {
+    if (props.showPicture) {
       setFocus(false);
       setShowPicture(props.showPicture);
     }
@@ -70,8 +70,8 @@ const InputPop = (props) => {
   });
   // 获取底部安全距离
   const getBottomSafeArea = () => {
-    const {screenHeight} = Taro.getSystemInfoSync();
-    const {bottom} = Taro.getSystemInfoSync().safeArea;
+    const { screenHeight } = Taro.getSystemInfoSync();
+    const { bottom } = Taro.getSystemInfoSync().safeArea;
 
     return screenHeight - bottom
   };
@@ -165,7 +165,7 @@ const InputPop = (props) => {
     textareaRef.current.focus();
     // setFocus(true)
 
-    setShowEmojis(false);
+    // setShowEmojis(false);//fix:注释 修复 不能连续点击表情输入的问题
   };
 
   useEffect(() => {
@@ -188,10 +188,10 @@ const InputPop = (props) => {
 
   const handleUploadChange = async (list) => {
     setImageList([...list]);
-    if (list.length > 0 && isDisabled ) {
+    if (list.length > 0 && isDisabled) {
       setDisabled(false);
     }
-    if (list.length === 0 && !isDisabled  && value.length === 0) {
+    if (list.length === 0 && !isDisabled && value.length === 0) {
       setDisabled(true);
     }
   };
@@ -270,7 +270,7 @@ const InputPop = (props) => {
     if (e.target.value.length > 0 && isDisabled) {
       setDisabled(false);
     }
-    if (e.target.value.length === 0 && !isDisabled  && imageList.length === 0) {
+    if (e.target.value.length === 0 && !isDisabled && imageList.length === 0) {
       setDisabled(true);
     }
   };
@@ -301,7 +301,7 @@ const InputPop = (props) => {
                 focus={focus}
                 fixed
                 adjustPosition={false}
-                // autoHeight={false}
+              // autoHeight={false}
               ></Textarea>
               {/* </ScrollView> */}
 
