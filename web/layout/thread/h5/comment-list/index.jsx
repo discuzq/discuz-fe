@@ -404,7 +404,7 @@ class RenderCommentList extends React.Component {
     const isSelf =    this.props.user?.userInfo?.id && this.props.user?.userInfo?.id === this.props.thread?.threadData?.userId;
     const isReward = this.props.thread?.threadData?.displayTag?.isReward;
     const { indexes } = this.props.thread?.threadData?.content || {};
-
+    const { isAnonymous } = this.props.thread?.threadData || '';
     const parseContent = parseContentData(indexes);
 
     return (
@@ -447,6 +447,7 @@ class RenderCommentList extends React.Component {
                 }
                 threadId={this.props.thread?.threadData?.userId}
                 active={val.id === postId}
+                isAnonymous={isAnonymous}
                 ></CommentList>
             </div>
           ))}

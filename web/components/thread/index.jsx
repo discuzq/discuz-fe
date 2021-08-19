@@ -299,6 +299,7 @@ class Index extends React.Component {
                 this.props.recomputeRowHeights(data);
               }
             }}
+            onTextItemClick={onTextItemClick}
           />
 
           <BottomEvent

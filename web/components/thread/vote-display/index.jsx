@@ -11,8 +11,9 @@ const CHOICE_TYPE = {
   single: 1, // 单选
 };
 const VoteDisplay = (props = {}) => {
-  const [isFold, setIsFold] = useState(false);
   const { voteData, threadId, page } = props;
+  const isDetail = page === 'detail';
+  const [isFold, setIsFold] = useState(isDetail);
   const [voteObj] = voteData;
   const {
     choiceType,
@@ -117,7 +118,7 @@ const VoteDisplay = (props = {}) => {
                 return null;
               })}
               {
-                subitems?.length > 5 &&
+                (subitems?.length > 5 && !isDetail) &&
                   <Button full type="primary"
                     className={!isFold ? styles.foldbtn : styles.expandbtn}
                     onClick={() => setIsFold(!isFold)}
@@ -141,7 +142,8 @@ const VoteDisplay = (props = {}) => {
                         {item.isVoted && <span className={styles.primaryText}>（已选）</span>}
                       </div>
                       <div className={styles['item-header-right']}>
-                        {item.voteCount || 0}票 {item.voteRate}
+                        {item.voteCount || 0}票
+                        <span style={{marginLeft: '8px'}}>{item.voteRate}</span>
                       </div>
                     </div>
                     <Progress percent={voteCount}></Progress>
@@ -151,7 +153,7 @@ const VoteDisplay = (props = {}) => {
               return null;
             })}
             {
-              subitems?.length > 5 &&
+              (subitems?.length > 5 && !isDetail) &&
               <Button full type="primary"
                 className={!isFold ? styles.foldbtn : styles.expandbtn}
                 onClick={() => setIsFold(!isFold)}
@@ -171,7 +173,7 @@ const VoteDisplay = (props = {}) => {
           <div className={styles.left}>
             <div className={styles['left-type']}>{typeText}</div>
             <div className={styles['left-time']}>
-              <span className={styles['time-primary']}>{ day }</span>天<span className={styles['time-primary']}>{hour}</span>小时<span className={styles['time-primary']}>{minute}</span>分
+              距结束 ：<span className={styles['time-primary']}>{ day }</span>天<span className={styles['time-primary']}>{hour}</span>小时<span className={styles['time-primary']}>{minute}</span>分
             </div>
           </div>
           <Button type="primary" className={styles.vote} onClick={handleVote}>投票</Button>

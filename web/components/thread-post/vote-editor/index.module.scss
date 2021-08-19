@@ -68,7 +68,7 @@
     .dzq-input {
       display: inline-block;
       margin-right: 3px;
-      width: rem(270);
+      width: rem(260);
       .dzq-input__inner {
         border: none;
         padding: 0;
@@ -233,11 +233,17 @@
 
 .add-btn {
   justify-content: center !important;
+  border-bottom: none !important;
+  span {
+    margin-left: 8px;
+  }
   :global {
     .dzq-button {
       width: rem(160px);
       @include button-default;
       height: rem(36px);
+      display: flex;
+      align-item: center;
 
       &.is-mouseenter {
         color: $text-color-regular;

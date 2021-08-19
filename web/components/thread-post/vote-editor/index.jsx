@@ -60,9 +60,9 @@ const Index = ({ cancel, pc, visible, threadPost }) => {
   const content = (
     <div className={styles['vote-editor']} onClick={e => e.stopPropagation()} style={ pc ? {} : {overflow: 'auto', paddingBottom: '59px'}}>
 
-      <div className={styles['line-box']}>
+      <div className={styles['line-box']} style={{justifyContent: 'unset'}}>
         <div className={styles.label}>标题</div>
-        <div className={styles.item}>
+        <div className={styles.item} style={{marginLeft: '16px'}}>
           <Input mode="text" placeholder="标题最多支持25个字" value={title} onChange={e => setTitle(e.target.value.trim().substr(0, 25))} />
         </div>
       </div>
@@ -75,9 +75,9 @@ const Index = ({ cancel, pc, visible, threadPost }) => {
       </div>
 
       {subitems.map((item, index) => (
-        <div className={styles['line-box']} key={index}>
+        <div className={styles['line-box']} key={index} style={{justifyContent: 'unset'}}>
           <div className={styles.label}>{`${index + 1}.`}</div>
-          <div className={styles.item}>
+          <div className={styles.item} style={{marginLeft: '16px'}}>
             <Input mode="text" value={item.content} onChange={e => {
               const arr = [...subitems];
               arr[index].content = e.target.value.trim().substr(0, 20);
@@ -111,7 +111,8 @@ const Index = ({ cancel, pc, visible, threadPost }) => {
             });
             setSubitems(arr);
           }}>
-          添加选项
+          <Icon name="PlusOutlined" size={10} />
+          <span>添加选项</span>
         </Button>
       </div>
 
