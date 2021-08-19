@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useRef } from 'react'
 import Taro from '@tarojs/taro';
 import { View, Text } from '@tarojs/components';
 import Radio from '@discuzq/design/dist/components/radio/index';
@@ -38,8 +38,14 @@ const Index = ({ threadPost }) => {
   const [subitems, setSubitems] = useState(hasVoteData ? data.vote.subitems : initSubitems);
   const [title, setTitle] = useState(hasVoteData ? data.vote.voteTitle : '');
   const [type, setType] = useState(hasVoteData ? data.vote.choiceType : 1);
-  const [time, setTime] = useState(hasVoteData ? data.vote.expiredAt : formatDate(new Date(new Date().getTime() + 60 * 60 * 1000), 'yyyy/MM/dd hh:mm'));
-  const [show, setShow] = useState(false);
+  const [time, setTime] = useState(hasVoteData ? data.vote.expiredAt : formatDate(new Date(new Date().getTime() + 60 * 60 * 1000), 'yyyy/MM/dd hh:mm:ss'));
+
+  const timeRef = useRef();
+
+  const openTimePicker = () => { // 开启时间选择框
+    const { openModal } = timeRef.current;
+    openModal(time);
+  }
 
   const cancel = () => {
     Taro.navigateBack();
@@ -158,13 +164,10 @@ const Index = ({ threadPost }) => {
           <Text className={styles.left}>结束时间</Text>
           <View className={styles.right}>
             <View
-              // className={classNames(
-              //   styles['selected-time'],
-              //   !times && styles['default-time']
-              // )}
-              onClick={() => {}}
+              style={{ textAlign: 'right', width: '100%' }}
+              onClick={openTimePicker}
             >
-              {time || '请选择悬赏时间'}
+              {time}
             </View>
             <View className={styles['time-arrow']}>
               <Icon name="RightOutlined" size={10} />
@@ -174,8 +177,10 @@ const Index = ({ threadPost }) => {
 
         {/* 时间选择弹框 */}
         <DateTimePicker
-          // ref={this.timeRef}
-          onConfirm={() => {}}
+          ref={timeRef}
+          onConfirm={(val) => {
+            setTime(formatDate(val, 'yyyy/MM/dd hh:mm:ss'));
+          }}
           initValue={() => {}}
           wrap-class="my-class"
           select-item-class="mySelector"

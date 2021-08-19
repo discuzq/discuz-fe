@@ -30,13 +30,6 @@ const VoteDisplay = (props = {}) => {
   const typeText = isMutiple ? '多选' : '单选';
   const CheckboxRadio = isMutiple ? Checkbox : Radio;
 
-
-  
-
-  const votedItem = useMemo(() => {
-    return subitems.filter(item => item.isVoted).map(item => item.id);;
-  }, [voteData]);
-  const defaultValue = isMutiple ? votedItem : (votedItem[0] || '');
   let countDownIns = null;
   const [day, setDay] = useState(0);
   const [hour, setHour] = useState(0);
@@ -111,7 +104,6 @@ const VoteDisplay = (props = {}) => {
         {!isVotedEnd
           && (
             <CheckboxRadio.Group
-              defaultValue={defaultValue}
               className={`${styles.content} ${styles.foldexpend}`}
               onChange={(val) => {
                 if (isMutiple) setValue(val);
@@ -125,7 +117,7 @@ const VoteDisplay = (props = {}) => {
                 return null;
               })}
               {
-                subitems?.length > 5 && 
+                subitems?.length > 5 &&
                   <Button full type="primary"
                     className={!isFold ? styles.foldbtn : styles.expandbtn}
                     onClick={() => setIsFold(!isFold)}
@@ -159,7 +151,7 @@ const VoteDisplay = (props = {}) => {
               return null;
             })}
             {
-              subitems?.length > 5 && 
+              subitems?.length > 5 &&
               <Button full type="primary"
                 className={!isFold ? styles.foldbtn : styles.expandbtn}
                 onClick={() => setIsFold(!isFold)}

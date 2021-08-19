@@ -54,9 +54,10 @@
     }
 
     .dzq-input {
+      width: 100%;
       .dzq-input__inner {
         padding: $padding-2n;
-        text-align: right;
+        text-align: left;
         border: none;
       }
 
@@ -77,7 +78,7 @@
     }
 
     .left {
-      width: 100px;
+      // width: 100px;
       color: $text-color-regular;
       line-height: 18px;
       text-align: left;
@@ -92,10 +93,9 @@
     .right {
       flex: 1;
       @include flex();
-      justify-content: flex-end;
+      // justify-content: flex-end;
 
       .delete-icon {
-        margin-bottom: 2px;
         font-size: 16px;
       }
     }

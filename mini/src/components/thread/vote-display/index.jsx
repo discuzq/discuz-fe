@@ -94,12 +94,6 @@ const VoteDisplay = (props = {}) => {
   const typeText = isMutiple ? '多选' : '单选';
   const CheckboxRadio = isMutiple ? Checkbox : Radio;
 
-  const votedItem = useMemo(() => {
-    return subitems.filter(item => item.isVoted).map(item => item.id);;
-  }, [voteData]);
-  const defaultValue = isMutiple ? votedItem : (votedItem[0] || '');
-
-
   return (
     <>
       <View className={styles.container}>
@@ -116,7 +110,7 @@ const VoteDisplay = (props = {}) => {
         </View>
         {!isVotedEnd
           && (
-            <CheckboxRadio.Group defaultValue={defaultValue} className={`${styles.content} ${styles.foldexpend}`} onChange={(val) => {
+            <CheckboxRadio.Group className={`${styles.content} ${styles.foldexpend}`} onChange={(val) => {
               if (isMutiple) setValue(val);
               else setValue([val]);
             }}>

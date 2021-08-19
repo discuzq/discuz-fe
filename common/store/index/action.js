@@ -379,25 +379,25 @@ class IndexAction extends IndexStore {
   @action
   updateListThreadIndexes(threadId, tomId, tomValue) {
     const targetThread = this.findAssignThread(threadId);
-    // 更新其他列表，个人中心
     this.updataThreadIndexesAllData(threadId, tomId, tomValue);
-    if (!targetThread || targetThread?.length === 0) return;
-
+    if (!targetThread) return;
     const { index, data } = targetThread;
     const threadData = this.combineThreadIndexes(data, tomId, tomValue);
     if (this.threads?.pageData) {
       this.threads.pageData[index] = threadData;
       this.threads.pageData = [...this.threads.pageData];
     }
+    this.updateAssignThreadAllData(threadId, threadData);
   }
 
   @action
   updataThreadIndexesAllData(threadId, tomId, tomValue) {
-    const [targetThread] = this.findAssignThreadInLists(threadId);
+    const id = typeofFn.isNumber(threadId) ? threadId : +threadId;
+    const [targetThread] = this.findAssignThreadInLists({ threadId: id });
     if (!targetThread) return;
-    const { index, data } = targetThread;
+    const { data } = targetThread;
     const threadData = this.combineThreadIndexes(data, tomId, tomValue);
-    this.updateAssignThreadInfoInLists({ threadId, threadData });
+    this.updateAssignThreadInfoInLists({ threadId: id, threadInfo: threadData });
   }
 
   /**

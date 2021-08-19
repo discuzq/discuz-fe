@@ -278,9 +278,9 @@ class Index extends Component {
         break;
       case THREAD_TYPE.vote:
         this.resetOperationType();
-        // if (!this.state.canEditRedpacket) {
-        //   return this.postToast('再编辑时不可操作红包');
-        // }
+        if (postData.vote.isVoted) {
+          return this.postToast('投票已生效，不允许编辑');
+        }
         nextRoute = '/indexPages/thread/voteEditor/index';
         break;
       case THREAD_TYPE.paid:

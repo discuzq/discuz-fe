@@ -333,7 +333,7 @@ class ThreadPostAction extends ThreadPostStore {
     let video = {};
     const images = {};
     const files = {};
-    const vote = {};
+    let vote = {};
     // 插件格式化
     Object.keys(contentindexes).forEach((index) => {
       const tomId = Number(contentindexes[index].tomId);
@@ -353,6 +353,9 @@ class ThreadPostAction extends ThreadPostStore {
         audio = contentindexes[index].body || {};
         const audioId = audio.id || audio.threadVideoId;
         audio.id = audioId;
+      }
+      if (tomId === THREAD_TYPE.vote) {
+        vote = contentindexes[index].body[0] || {};
       }
       if (tomId === THREAD_TYPE.goods) product = contentindexes[index].body;
       if (tomId === THREAD_TYPE.video) {

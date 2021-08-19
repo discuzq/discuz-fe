@@ -33,6 +33,8 @@ const Index = ({ cancel, pc, visible, threadPost }) => {
       return !!item.content;
     });
 
+    setSubitems(subitemsCopy);
+
     if (!title) {
       Toast.info({ content: '标题不能为空' });
       return;
@@ -48,15 +50,15 @@ const Index = ({ cancel, pc, visible, threadPost }) => {
         voteId: '',
         voteTitle: title,
         choiceType: type,
-        expiredAt: formatDate(time, 'yyyy/MM/dd hh:mm:ss'),
-        subitems: subitems,
+        expiredAt: formatDate(new Date(time), 'yyyy/MM/dd hh:mm:ss'),
+        subitems: subitemsCopy,
       }
     });
     cancel();
   };
 
   const content = (
-    <div className={styles['vote-editor']} onClick={e => e.stopPropagation()}>
+    <div className={styles['vote-editor']} onClick={e => e.stopPropagation()} style={ pc ? {} : {overflow: 'auto', paddingBottom: '59px'}}>
 
       <div className={styles['line-box']}>
         <div className={styles.label}>标题</div>
@@ -154,7 +156,7 @@ const Index = ({ cancel, pc, visible, threadPost }) => {
       {pc ? '' : (
         <>
           <DatePickers
-            time={time}
+            // time={time}
             onSelects={(e) => {
               setTime(e);
               setShow(false);
@@ -162,7 +164,7 @@ const Index = ({ cancel, pc, visible, threadPost }) => {
             isOpen={show}
             onCancels={() => setShow(false)}
           />
-          <div className={styles.btn}>
+          <div className={styles.btn} style={{position: pc ? 'absolute' : 'fixed'}}>
             <Button onClick={() => cancel()}>取消</Button>
             <Button type="primary" onClick={() => {}}>确定</Button>
           </div>
@@ -172,7 +174,7 @@ const Index = ({ cancel, pc, visible, threadPost }) => {
 
       {/* 按钮 */}
       {!pc && (
-        <div className={styles.btn}>
+        <div className={styles.btn} style={{position: pc ? 'absolute' : 'fixed'}}>
           <Button onClick={() => {
             cancel();
           }}>
