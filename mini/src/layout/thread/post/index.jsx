@@ -556,6 +556,7 @@ class Index extends Component {
       // 等待支付
       PayBox.createPayBox({
         data: { ...options, title, type },
+        currentPage: { type: 2 },
         orderCreated: async (orderInfo) => {
           const { orderSn } = orderInfo;
           setPostData({ orderInfo });

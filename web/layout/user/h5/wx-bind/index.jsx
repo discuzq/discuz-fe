@@ -10,6 +10,7 @@ import setAccessToken from '@common/utils/set-access-token';
 import { get } from '@common/utils/get';
 import { MOBILE_LOGIN_STORE_ERRORS } from '@common/store/login/mobile-login-store';
 import { isExtFieldsOpen } from '@common/store/login/util';
+import loginHelper from '@common/utils/login-helper';
 
 let bindLoading = false;
 const NEED_BIND_OR_REGISTER_USER = -7016;
@@ -27,8 +28,7 @@ class WeixinBindH5Page extends React.Component {
     }
   }
   render() {
-    const { sessionToken, loginType, code, sessionId, state, nickname = '', jumpType = '' }  = this.props.router.query;
-    const { status } = this.state;
+    const { sessionToken, loginType, code, sessionId, state, nickname = '' }  = this.props.router.query;
     const { site } = this.props;
     const { platform } = site;
     return (
@@ -38,7 +38,6 @@ class WeixinBindH5Page extends React.Component {
           <div className={layout.title}>绑定微信号</div>
           <div className={layout.tips}>
             {nickname ? `${nickname}，` : ''}{this.props.h5QrCode.bindTitle}
-            { jumpType === '1' && status === 'success' && <><br/>请返回原页面继续支付</>}
           </div>
           {
             this.props.h5QrCode.isBtn
@@ -76,7 +75,6 @@ class WeixinBindH5Page extends React.Component {
       if (bindLoading) {
         return;
       }
-      const { jumpType = '' }  = this.props.router.query;
       const { router } = this.props;
       bindLoading = true;
       const res = await h5WechatCodeBind(opts);
@@ -88,7 +86,7 @@ class WeixinBindH5Page extends React.Component {
         router.push({ pathname: 'wx-select', query: { sessionToken, nickname } });
         return;
       }
-      const { loginType, bindPhone = '' }  = this.props.router.query;
+      const { loginType, bindPhone = '', toPage }  = this.props.router.query;
       if (res.code === 0) {
         this.props.h5QrCode.bindTitle = '已成功绑定';
         this.props.h5QrCode.isBtn = false;
@@ -96,7 +94,8 @@ class WeixinBindH5Page extends React.Component {
           status: 'success'
         });
       }
-      if (res.code === 0 && loginType === 'h5' && jumpType !== '1') {
+      toPage && loginHelper.setUrl(decodeURIComponent(toPage));
+      if (res.code === 0 && loginType === 'h5') {
         const accessToken = get(res, 'data.accessToken');
         const uid = get(res, 'data.uid');
         // 注册成功后，默认登录
@@ -110,7 +109,7 @@ class WeixinBindH5Page extends React.Component {
           return;
         }
         this.props.h5QrCode.bindTitle = '已成功绑定，正在跳转到首页';
-        window.location.href = '/';
+        loginHelper.restore();
         return;
       }
       if (res.code === 0) {
@@ -137,7 +136,7 @@ class WeixinBindH5Page extends React.Component {
           this.props.router.push('/user/supplementary');
           return;
         }
-        return window.location.href = '/';
+        loginHelper.restore();
       }
 
       // 跳转状态页
