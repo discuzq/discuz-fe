@@ -83,9 +83,9 @@ const Index = ({ cancel, pc, visible, threadPost }) => {
               arr[index].content = e.target.value.trim().substr(0, 20);
               setSubitems(arr);
             }} />
-
-            {/* 删除选项按钮 */}
-            <Icon
+          </div>
+          {/* 删除选项按钮 */}
+          <Icon
               style={{visibility: subitems.length > 2 ? 'visible' : 'hidden'}}
               name="DeleteOutlined"
               className={styles['delete-icon']}
@@ -95,8 +95,6 @@ const Index = ({ cancel, pc, visible, threadPost }) => {
                 setSubitems(arr);
               }}
             />
-
-          </div>
         </div>
       ))}
 

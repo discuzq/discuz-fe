@@ -114,12 +114,14 @@
 
   .add-btn {
     justify-content: center !important;
+    border-bottom: none !important;
     :global {
       .dzq-button {
         width: rem(160px);
         @include button-default;
         height: rem(36px);
         line-height: rem(36px);
+        display: flex;
 
         &.is-mouseenter {
           color: $text-color-regular;

@@ -18,6 +18,7 @@ const CHOICE_TYPE = {
 };
 const VoteDisplay = (props = {}) => {
   const { voteData, threadId, page, updateViewCount = () => {} } = props;
+  const isDetail = page === 'detail';
   const [voteObj] = voteData;
   const {
     choiceType,
@@ -30,7 +31,7 @@ const VoteDisplay = (props = {}) => {
     voteId,
   } = voteObj;
 
-  const [isFold, setIsFold] = useState(false);
+  const [isFold, setIsFold] = useState(isDetail);
   const [day, setDay] = useState(0);
   const [hour, setHour] = useState(0);
   const [minute, setMinute] = useState(0);
@@ -121,7 +122,7 @@ const VoteDisplay = (props = {}) => {
                 return null;
               })}
               {
-                subitems?.length > 5 &&
+                (subitems?.length > 5 && !isDetail) &&
                 <Button full type="primary"
                   className={!isFold ? styles.foldbtn : styles.expandbtn}
                   onClick={() => setIsFold(!isFold)}
@@ -145,7 +146,8 @@ const VoteDisplay = (props = {}) => {
                         {item.isVoted && <Text className={styles.primaryText}>（已选）</Text>}
                       </View>
                       <View className={styles['item-header-right']}>
-                        {item.voteCount || 0}票 {item.voteRate}
+                        {item.voteCount || 0}票
+                        <Text style={{marginLeft: '8px'}}>{item.voteRate}</Text>
                       </View>
                     </View>
                     <Progress percent={voteCount}></Progress>
@@ -155,7 +157,7 @@ const VoteDisplay = (props = {}) => {
               return null;
             })}
             {
-              subitems?.length > 5 &&
+              (subitems?.length > 5 && !isDetail) &&
               <Button full type="primary"
                 className={!isFold ? styles.foldbtn : styles.expandbtn}
                 onClick={() => setIsFold(!isFold)}
@@ -175,7 +177,7 @@ const VoteDisplay = (props = {}) => {
           <View className={styles.left}>
             <View className={styles['left-type']}>{typeText}</View>
             <View className={styles['left-time']}>
-              <Text className={styles['time-primary']}>{day}</Text>天<Text className={styles['time-primary']}>{hour}</Text>小时<Text className={styles['time-primary']}>{minute}</Text>分
+            距结束 ：<Text className={styles['time-primary']}>{day}</Text>天<Text className={styles['time-primary']}>{hour}</Text>小时<Text className={styles['time-primary']}>{minute}</Text>分
             </View>
           </View>
           <Button type="primary" className={styles.vote} onClick={handleVote}>投票</Button>

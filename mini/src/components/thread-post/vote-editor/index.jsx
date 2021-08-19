@@ -150,11 +150,12 @@ const Index = ({ threadPost }) => {
               });
               setSubitems(arr);
             }}>
-            添加选项
+            <Icon name="PlusOutlined" size={10} />
+            <Text style={{marginLeft: '8px'}}>添加选项</Text>
           </Button>
         </View>
 
-        <View className={styles['reward-item']}>
+        <View className={styles['reward-item']} style={{borderTop: 'none'}}>
           <Text className={styles.left}>投票方式</Text>
           <View className={styles.right}>
             <Radio.Group value={type} onChange={item => setType(item)}>

@@ -99,14 +99,14 @@
     }
   }
 
+  .delete-icon {
+    margin-bottom: 2px;
+    font-size: 16px;
+    position: absolute;
+    right: 24px;
+  }
+
   .item {
-
-    .delete-icon {
-      margin-bottom: 2px;
-      font-size: 16px;
-    }
-
-
     :global {
       .react-datepicker__tab-loop {
         width: 0;
