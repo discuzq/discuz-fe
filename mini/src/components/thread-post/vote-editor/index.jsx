@@ -39,12 +39,14 @@ const Index = ({ threadPost }) => {
   const [title, setTitle] = useState(hasVoteData ? data.vote.voteTitle : '');
   const [type, setType] = useState(hasVoteData ? data.vote.choiceType : 1);
   const [time, setTime] = useState(hasVoteData ? data.vote.expiredAt : formatDate(new Date(new Date().getTime() + 60 * 60 * 1000), 'yyyy/MM/dd hh:mm:ss'));
+  const [isTimeShow, setIsTimeShow] = useState(false);
 
   const timeRef = useRef();
 
   const openTimePicker = () => { // 开启时间选择框
     const { openModal } = timeRef.current;
     openModal(time);
+    setIsTimeShow(true);
   }
 
   const cancel = () => {
@@ -67,13 +69,15 @@ const Index = ({ threadPost }) => {
       return;
     }
 
+    setSubitems(subitemsCopy);
+
     threadPost.setPostData({
       vote: {
         voteId: '',
         voteTitle: title,
         choiceType: type,
         expiredAt: formatDate(time, 'yyyy/MM/dd hh:mm:ss'),
-        subitems: subitems,
+        subitems: subitemsCopy,
       }
     });
     cancel();
@@ -81,7 +85,7 @@ const Index = ({ threadPost }) => {
 
   const content = (
     <>
-      <View className={styles.wrapper} onClick={e => e.stopPropagation()}>
+      <View className={styles.wrapper} onClick={e => e.stopPropagation()} style={{overflow: 'hidden', height: isTimeShow ? '100vh' : ''}}>
 
         <View className={styles['reward-item']}>
           <Text className={styles.left}>标题</Text>
@@ -177,8 +181,13 @@ const Index = ({ threadPost }) => {
 
         {/* 时间选择弹框 */}
         <DateTimePicker
+          style={{position: 'fixed'}}
           ref={timeRef}
+          onCancel={() => {
+            setIsTimeShow(false);
+          }}
           onConfirm={(val) => {
+            setIsTimeShow(false);
             setTime(formatDate(val, 'yyyy/MM/dd hh:mm:ss'));
           }}
           initValue={() => {}}

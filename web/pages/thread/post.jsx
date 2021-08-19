@@ -314,6 +314,12 @@ class PostPage extends React.Component {
       Toast.info({ content: '悬赏内容不可编辑' });
       return false;
     }
+
+    if (item.type === THREAD_TYPE.vote && postData?.vote?.isVoted) {
+      Toast.info({ content: '投票已生效，不允许编辑' });
+      return false;
+    }
+
     if (item.type === THREAD_TYPE.anonymity) {
       if (postData.anonymous) this.setPostData({ anonymous: 0 });
       else this.setPostData({ anonymous: 1 });
