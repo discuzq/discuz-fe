@@ -31,6 +31,7 @@ import {
   REVIEWING_USER_WHITE_LIST_WEB,
 } from '@common/constants/site';
 import LoginHelper from '@common/utils/login-helper';
+import { USER_STATUS } from '@common/constants/login';
 
 // 获取全站数据
 export default function HOCFetchSiteData(Component, _isPass) {
@@ -374,7 +375,7 @@ export default function HOCFetchSiteData(Component, _isPass) {
           }
           // 绑定昵称：没有昵称
           if (router.asPath !== '/user/bind-nickname' && !user.nickname) {
-            commonLogin.needToCompleteExtraInfo = (user.userStatus === 10);
+            commonLogin.needToCompleteExtraInfo = (user.userStatus === USER_STATUS.SUPPLEMENTARY);
             LoginHelper.saveAndRedirect( '/user/bind-nickname' );
             return false;
           }
