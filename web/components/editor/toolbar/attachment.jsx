@@ -172,7 +172,7 @@ function AttachmentToolbar(props) {
     const { permission } = props;
     if (props.pc && item.type === THREAD_TYPE.voice) return null;
     const clsName = getIconCls(item);
-    let isShow = true || permission[item.type];
+    let isShow = permission[item.type];
     if (item.type === THREAD_TYPE.video || item.type === THREAD_TYPE.voice) {
       isShow = permission[item.type] && props?.isOpenQcloudVod;
     }
