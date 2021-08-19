@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import { Button, Textarea, Icon, Input } from '@discuzq/design';
+import React, { useState, useEffect, useRef } from 'react';
+import { Button, Textarea, Icon, Input, Toast } from '@discuzq/design';
 import { inject, observer } from 'mobx-react';
 import Emoji from '@components/editor/emoji';
 import styles from './index.module.scss';
@@ -14,8 +14,11 @@ const InteractionBox = (props) => {
     doSubmitClick,
     typingValue,
     site: { isPC },
+    forum,
     scrollEnd,
   } = props;
+  const { otherPermissions, setOtherPermissions } = forum;
+  const { disabledChat = false } = otherPermissions || {};
 
   const [cursorPosition, setCursorPosition] = useState(0);
 
@@ -50,6 +53,10 @@ const InteractionBox = (props) => {
     setCursorPosition(cursorPosition + emoji.code.length);
   };
 
+  useEffect(() => {
+    !otherPermissions && setOtherPermissions();
+  }, [])
+
   return (
     <>
       {!isPC && (
@@ -58,7 +65,8 @@ const InteractionBox = (props) => {
             <div className={styles.inputWrapper}>
               <Input
                 value={typingValue}
-                placeholder=" 请输入内容"
+                placeholder={disabledChat ? ' 私信已被禁用' : ' 请输入内容'}
+                disabled={disabledChat}
                 onChange={(e) => {
                   setTypingValue(e.target.value);
                   recordCursor(e);
@@ -82,18 +90,24 @@ const InteractionBox = (props) => {
                 <div>
                   <Icon name="SmilingFaceOutlined" size={20} onClick={(e) => {
                     e.stopPropagation();
+                    if (disabledChat) {
+                      return Toast.info({ content: `私信已被禁用` });
+                    }
                     setShowEmoji(!showEmoji);
                   }} />
                 </div>
                 <div className={styles.pictureUpload}>
                   <Icon name="PictureOutlinedBig" size={20} onClick={() => {
+                    if (disabledChat) {
+                      return Toast.info({ content: `私信已被禁用` });
+                    }
                     uploadImage();
                   }} />
                 </div>
               </div>
             </div>
             <div className={styles.submit}>
-              <Button type="primary" onClick={doSubmitClick}>
+              <Button type="primary" disabled={disabledChat} onClick={doSubmitClick}>
                 发送
               </Button>
             </div>
@@ -120,12 +134,20 @@ const InteractionBox = (props) => {
             />
             <div>
               <Icon name="SmilingFaceOutlined" size={20} onClick={(e) => {
+                if (disabledChat) {
+                  return Toast.info({ content: `私信已被禁用` });
+                }
                 e.stopPropagation();
                 setShowEmoji(!showEmoji);
               }} />
             </div>
             <div className={styles.pictureUpload}>
-              <Icon name="PictureOutlinedBig" size={20} onClick={uploadImage} />
+              <Icon name="PictureOutlinedBig" size={20} onClick={() => {
+                if (disabledChat) {
+                  return Toast.info({ content: `私信已被禁用` });
+                }
+                uploadImage();
+              }} />
             </div>
           </div>
           <Textarea
@@ -142,10 +164,11 @@ const InteractionBox = (props) => {
               recordCursor(e);
             }}
             onKeyDown={doPressEnter}
-            placeholder={' 请输入内容'}
+            placeholder={disabledChat ? ' 私信已被禁用' : ' 请输入内容'}
+            disabled={disabledChat}
           />
           <div className={styles.submit}>
-            <Button className={styles.submitBtn} type="primary" onClick={doSubmitClick}>
+            <Button className={styles.submitBtn} type="primary" disabled={disabledChat} onClick={doSubmitClick}>
               发送
             </Button>
           </div>
@@ -155,4 +178,4 @@ const InteractionBox = (props) => {
   );
 };
 
-export default inject('threadPost', 'site')(observer(InteractionBox));
+export default inject('threadPost', 'forum', 'site')(observer(InteractionBox));

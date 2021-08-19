@@ -365,7 +365,7 @@ function DVditor(props) {
             for (let i = 0; i < files.length; i++) {
               const file = files[i];
               const name = file.name;
-              const nameType = name.substr(name.indexOf('.') + 1);
+              const nameType = name.split('.').pop().toUpperCase();
               const fileType = file.type;
 
 
@@ -377,7 +377,7 @@ function DVditor(props) {
                 return;
               }
 
-              const types = supportImgExt.split(',');
+              const types = supportImgExt.toUpperCase().split(',');
               if (!types.includes(nameType)) {
                 Toast.error({
                   content: `仅支持上传格式为${supportImgExt}的图片，请重新选择`,
