@@ -776,17 +776,17 @@ class ThreadPCPage extends React.Component {
                   <RenderCommentList
                     isPositionComment={true}
                     router={this.props.router}
-                    sort={(flag) => this.onSortChange(flag)}
+                    sort={flag => this.onSortChange(flag)}
                     replyAvatarClick={(comment, reply, floor) => this.replyAvatarClick(comment, reply, floor)}
                   ></RenderCommentList>
                   {!isCommentPositionNoMore && (
-                    // <BottomView
-                    //   onClick={() => this.onLoadMoreClick()}
-                    //   noMoreType="line"
-                    //   loadingText="点击加载更多"
-                    //   isError={isCommentListError}
-                    //   noMore={isCommentPositionNoMore}
-                    // ></BottomView>
+                  // <BottomView
+                  //   onClick={() => this.onLoadMoreClick()}
+                  //   noMoreType="line"
+                  //   loadingText="点击加载更多"
+                  //   isError={isCommentListError}
+                  //   noMore={isCommentPositionNoMore}
+                  // ></BottomView>
 
                     <div className={layout.showMore} onClick={() => this.onLoadMoreClick()}>
                       <div className={layout.hidePercent}>展开更多评论</div>
@@ -860,7 +860,7 @@ class ThreadPCPage extends React.Component {
     const { isCommentReady, isNoMore } = this.props.thread;
     const { thread: threadStore } = this.props;
     const { isReady } = threadStore;
-    console.log(this.props.thread.threadData);
+
     // 是否审核通过
     const isApproved = (threadStore?.threadData?.isApproved || 0) === 1;
     // TODO:目前还不清楚这块代码的作用，可能会对过滤代码块有影响
@@ -920,6 +920,7 @@ class ThreadPCPage extends React.Component {
               onSubmit={value => this.onPublishClick(value)}
               initValue={this.state.inputValue}
               threadId={this.props.thread?.threadData?.userId}
+              isAnonymous = {isAnonymous}
             ></CommentInput>
           </div>
         </Popup>

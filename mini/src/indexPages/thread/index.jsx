@@ -30,21 +30,21 @@ class Detail extends React.Component {
     };
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.router?.query?.id && this.props.router.query.id !== prevProps.router.query.id) {
+      this.props.thread.reset();
+      this.getPageDate(this.props.router.query.id);
+    }
+  }
+
   componentDidHide() {
     const { baselayout } = this.props;
 
     const playingAudioDom = baselayout?.playingAudioDom;
 
-    if(playingAudioDom) {
+    if (playingAudioDom) {
       baselayout.playingAudioDom.pause();
       baselayout.playingAudioDom = null;
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.router?.query?.id && this.props.router.query.id !== prevProps.router.query.id) {
-      this.props.thread.reset();
-      this.getPageDate(this.props.router.query.id);
     }
   }
 
@@ -59,21 +59,33 @@ class Detail extends React.Component {
         title: defalutTitle,
       };
     }
-    if (data.from === 'menu')  {
+    if (data.from === 'menu') {
       const isApproved = this.props?.thread?.threadData?.isApproved === 1;
+      const { thread, user } = this.props
+      const {nickname} = thread.threadData?.user || ''
+      const {avatar} = thread.threadData?.user || ''
+      // 处理匿名情况
+      if(thread.threadData?.isAnonymous) {
+        user.getShareData({nickname, avatar,threadId})
+        thread.threadData.user.nickname = '匿名用户'
+        thread.threadData.user.avatar = ''
+      }
+      // 这里要用一个定时器，防止出现灰色遮罩层
       if(!isApproved) {
         Toast.info({content: '内容正在审核中'})
         const promise = new Promise((resolve, reject) => {
           setTimeout(() => {
-            reject()
-          }, 1000)
-        })
-      return {promise}
+            reject();
+          }, 1000);
+        });
+        return { promise };
       }
-      return priceShare({isAnonymous, isPrice, path}) || {
-        title: defalutTitle,
-        path,
-      };
+      return (
+        priceShare({ isAnonymous, isPrice, path }) || {
+          title: defalutTitle,
+          path,
+        }
+      );
     }
     this.props.thread.shareThread(threadId, this.props.index, this.props.search, this.props.topic);
 
@@ -152,6 +164,8 @@ class Detail extends React.Component {
   }
 
   async getPageDate(id, postId) {
+    // 如果存在缓存且和路由id不同,先清除缓存
+    this.canUseCache();
     // 先尝试从列表store中获取帖子数据
     this.getThreadDataFromList(id);
 
@@ -176,19 +190,20 @@ class Detail extends React.Component {
         });
         return;
       }
+    }
 
-      // 判断是否审核通过
-      const isApproved = (this.props.thread?.threadData?.isApproved || 0) === 1;
-      if (!isApproved) {
-        const currentUserId = this.props.user?.userInfo?.id; // 当前登录用户
-        const userId = this.props.thread?.threadData?.user?.userId; // 帖子作者
-        // 不是作者自己。跳回首页
-        if (!currentUserId || !userId || currentUserId !== userId) {
-          Taro.redirectTo({
-            url: `/indexPages/home/index`,
-          });
-          return;
-        }
+    // 判断是否审核通过
+    const isApproved = (this.props.thread?.threadData?.isApproved || 0) === 1;
+    if (!isApproved) {
+      const currentUserId = this.props.user?.userInfo?.id; // 当前登录用户
+      const userId = this.props.thread?.threadData?.user?.userId; // 帖子作者
+      // 不是作者自己。跳回首页
+      if (!currentUserId || !userId || currentUserId !== userId) {
+        Toast.info({ content: '内容正在审核中，审核通过后才能正常显示!' });
+        Taro.redirectTo({
+          url: `/indexPages/home/index`,
+        });
+        return;
       }
     }
 
@@ -204,14 +219,25 @@ class Detail extends React.Component {
     }
   }
 
+  // 判断缓存是否可用
+  canUseCache() {
+    const oldId = this.props?.thread?.threadData?.threadId;
+    if (!oldId) return;
+
+    const { id } = getCurrentInstance().router.params;
+    if (id && oldId && Number(id) === oldId) return;
+
+    this.props.thread.reset();
+  }
+
   // 获取指定评论位置的相关信息
   async getPositionComment(id, postId) {
-    if(!postId) {
-      this.props?.commentPosition?.reset()
+    if (!postId) {
+      this.props?.commentPosition?.reset();
     }
-    
+
     // 获取评论所在的页面位置
-    if (id && postId && (!this.props?.commentPosition?.postsPositionPage)) {
+    if (id && postId) {
       this.props.commentPosition.setPostId(Number(postId));
       const params = {
         threadId: id,

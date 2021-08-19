@@ -17,7 +17,7 @@ import { tencentVodUpload } from '@common/utils/tencent-vod';
 import { plus } from '@common/utils/calculate';
 import { defaultOperation } from '@common/constants/const';
 import ViewAdapter from '@components/view-adapter';
-import { attachmentUploadMultiple } from '@common/utils/attachment-upload';
+import commonUpload from '@common/utils/common-upload';
 import { formatDate } from '@common/utils/format-date';
 
 @inject('site')
@@ -403,6 +403,12 @@ class PostPage extends React.Component {
     if (!webConfig) return false;
     // 站点支持的文件类型、文件大小
     const { supportFileExt, supportImgExt, supportMaxSize } = webConfig.setAttach;
+    const { qcloudCos } = webConfig.qcloud;
+
+    let photoMaxSize = supportMaxSize;
+    if (type === THREAD_TYPE.image && qcloudCos) {
+      photoMaxSize = supportMaxSize > 15 ? 15 : supportMaxSize;
+    }
 
     const remainLength = 9 - showFileList.length; // 剩余可传数量
     cloneList.splice(remainLength, cloneList.length - remainLength);
@@ -414,7 +420,7 @@ class PostPage extends React.Component {
       const isLegalType = type === THREAD_TYPE.image
         ? this.checkFileType(cloneList[i], supportImgExt)
         : this.checkFileType(cloneList[i], supportFileExt);
-      const isLegalSize = imageSize > 0 && imageSize < supportMaxSize * 1024 * 1024;
+      const isLegalSize = imageSize > 0 && imageSize < photoMaxSize * 1024 * 1024;
 
       // 存在不合法图片时，从上传图片列表删除
       if (!isLegalType || !isLegalSize) {
@@ -427,7 +433,7 @@ class PostPage extends React.Component {
     const supportExt = type === THREAD_TYPE.image ? supportImgExt : supportFileExt;
     const name = type === THREAD_TYPE.file ? '附件' : '图片';
     !isAllLegalType && Toast.info({ content: `仅支持${supportExt}类型的${name}` });
-    !isAllLegalSize && Toast.info({ content: `大小在0到${supportMaxSize}MB之间` });
+    !isAllLegalSize && Toast.info({ content: `大小在0到${photoMaxSize}MB之间` });
     if (type === THREAD_TYPE.file) this.fileList = [...cloneList];
     if (type === THREAD_TYPE.image) this.imageList = [...cloneList];
 
@@ -643,7 +649,7 @@ class PostPage extends React.Component {
           const { orderSn } = orderInfo;
           this.setPostData({ orderInfo });
           if (orderSn) this.props.payBox.hide();
-          this.createThread(true);
+          this.createThread(true, false, true);
         },
         success: async () => {
           this.setIndexPageData();
@@ -673,10 +679,15 @@ class PostPage extends React.Component {
     }, 30000);
   }
 
-  async createThread(isDraft, isAutoSave = false) {
-    const { threadPost, thread } = this.props;
+  async createThread(isDraft, isAutoSave = false, isPay = false) {
+    const { threadPost, thread, site } = this.props;
 
     // 图文混排：第三方图片转存
+    const { webConfig: { setAttach, qcloud } } = site;
+    const { supportImgExt, supportMaxSize } = setAttach;
+    const { qcloudCosBucketName, qcloudCosBucketArea, qcloudCosSignUrl, qcloudCos } = qcloud;
+
+
     const errorTips = '帖子内容中，有部分图片转存失败，请先替换相关图片再重新发布';
     const vditorEl = document.getElementById('dzq-vditor');
     if (vditorEl) {
@@ -693,7 +704,7 @@ class PostPage extends React.Component {
 
     let contentText = threadPost.postData.contentText;
     const images = contentText.match(/<img.*?\/>/g)?.filter(image => (!image.match('alt="attachmentId-') && !image.includes('emoji')));
-    if (images) {
+    if (images && images.length) {
       const fileurls = images.map(img => {
         const src = img.match(/\"(.*?)\"/);
         if (src) return src[1];
@@ -705,7 +716,16 @@ class PostPage extends React.Component {
         hasMask: true,
         duration: 0,
       });
-      const res = await attachmentUploadMultiple(fileurls);
+      const res = await commonUpload({
+        files: fileurls,
+        type: 1,
+        supportImgExt,
+        supportMaxSize,
+        qcloudCosBucketName,
+        qcloudCosBucketArea,
+        qcloudCosSignUrl,
+        qcloudCos,
+      });
       const sensitiveArr = [];
       const uploadError = [];
       res.forEach((ret, index) => {
@@ -718,6 +738,7 @@ class PostPage extends React.Component {
           contentText = contentText.replace(images[index], images[index].replace('alt=\"\"', 'alt=\"uploadError\"'));
         } else {
           uploadError.push('');
+          contentText = contentText.replace(images[index], images[index].replace('alt=\"\"', 'alt=\"uploadError\"'));
         }
       });
       threadPost.setPostData({ contentText });
@@ -751,7 +772,7 @@ class PostPage extends React.Component {
 
     // 提交帖子数据
     let ret = {};
-    if (!isAutoSave) this.toastInstance = Toast.loading({ content: isDraft ? '保存草稿中' : '发布中...', hasMask: true });
+    if (!(isAutoSave || isPay)) this.toastInstance = Toast.loading({ content: isDraft ? '保存草稿中' : '发布中...', hasMask: true });
     if (threadPost.postData.threadId) ret = await threadPost.updateThread(threadPost.postData.threadId);
     else ret = await threadPost.createThread();
     const { code, data, msg } = ret;

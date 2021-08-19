@@ -9,7 +9,7 @@ export default class VerificationCode extends React.Component {
     super(props);
     this.state = {
       initTimeText: props.text ? props.text : '获取验证码',
-      buttonDisabled: false, //初始设置按钮是可以点击的
+      buttonDisabled: false, // 初始设置按钮是可以点击的
       interval: null,
       initTimeValue: props.initTimeValue,
       initTime: 60,
@@ -20,7 +20,7 @@ export default class VerificationCode extends React.Component {
     if (state.initTimeValue !== props.initTimeValue) {
       return {
         initTimeValue: props.initTimeValue,
-        initTime: props.initTimeValue
+        initTime: props.initTimeValue,
       };
     }
   }
@@ -50,7 +50,7 @@ export default class VerificationCode extends React.Component {
           initTime: initTimeValue,
           initTimeText: '重新获取',
           buttonDisabled: false,
-          initTimeValue: null
+          initTimeValue: null,
         });
         if (this.interval !== null) {
           clearInterval(this.interval);
@@ -67,24 +67,18 @@ export default class VerificationCode extends React.Component {
     if (this.state.buttonDisabled) {
       return false;
     }
-    this.setState(
-      {
-        buttonDisabled: true,
+
+    this.props.getVerifyCode({
+      calback: (err) => {
+        if (err) {
+          this.setState({
+            buttonDisabled: false,
+          });
+          return;
+        }
+        this.setTimeChecker();
       },
-      () => {
-        this.props.getVerifyCode({
-          calback: (err) => {
-            if (err) {
-              this.setState({
-                buttonDisabled: false,
-              });
-              return;
-            }
-            this.setTimeChecker();
-          },
-        });
-      },
-    );
+    });
   };
 
   render() {
@@ -106,8 +100,8 @@ export default class VerificationCode extends React.Component {
 }
 
 VerificationCode.defaultProps = {
-  getVerifyCode: function () {},
-  valuePassCheck: true, //校验是否可以点击
+  getVerifyCode() {},
+  valuePassCheck: true, // 校验是否可以点击
   initTimeValue: null, // 默认倒计时间
 };
 VerificationCode.propTypes = {};

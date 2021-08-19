@@ -235,7 +235,7 @@ http.interceptors.response.use((res) => {
       } else {
         url = '/subPages/user/supplementary/index';
       }
-      LoginHelper.saveAndRedirect(url);
+      LoginHelper.saveAndPush(url);
       break;
     }
     case OPERATING_FREQUENCY: {

@@ -1,5 +1,6 @@
 import { PAY_BOX_ERROR_CODE_MAP, PAY_MENT_MAP, WX_PAY_STATUS } from '../../constants/payBoxStoreConstants';
 import { get } from '../../utils/get';
+import browser from '@common/utils/browser';
 import Router from '@discuzq/sdk/dist/router';
 
 export const onBridgeReady = data => new Promise((resolve, reject) => {

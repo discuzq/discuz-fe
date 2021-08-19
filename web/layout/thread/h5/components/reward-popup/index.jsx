@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Popup, Button, Input, Divider, Toast } from '@discuzq/design';
 import styles from './index.module.scss';
 import className from 'classnames';
+import browser from '@common/utils/browser';
 
 const InputPop = (props) => {
   const { visible, onOkClick } = props;
@@ -53,6 +54,18 @@ const InputPop = (props) => {
     }
   };
 
+  // 当弹框达到一定高度，在ios上会出现部分内容被键盘遮住现象
+  const scrollToBottom = () => {
+    const scrollHeight = document.body.scrollHeight;
+    window.scrollTo(0, scrollHeight);
+  }
+
+  const handleFocus = () => {
+    if (browser.env('ios')) {
+      setTimeout(() => scrollToBottom(), 100);
+    }
+  }
+
   return (
     <Popup position="bottom" visible={visible} onClose={onCancel}>
       <div className={styles.container}>
@@ -66,6 +79,7 @@ const InputPop = (props) => {
             className={styles.input}
             value={value}
             onChange={(e) => onInputChange(e.target.value)}
+            onFocus={() => handleFocus()}
           />
           <span className={styles.append}>元</span>
         </div>

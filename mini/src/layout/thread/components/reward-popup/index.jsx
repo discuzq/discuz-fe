@@ -83,7 +83,7 @@ const InputPop = (props) => {
             placeholderClass={styles.inputPlaceholder}
             fixed={true}
             adjustPosition={true}
-            cursorSpacing={200}
+            cursorSpacing={216}
           />
           <Text className={styles.append}>元</Text>
         </View>

@@ -9,6 +9,8 @@ import HOCFetchSiteData from '@middleware/HOCFetchSiteData';
 
 @inject('site')
 @inject('search')
+@inject('topic')
+@inject('baselayout')
 @observer
 class Index extends React.Component {
   static async getInitialProps(ctx) {
@@ -50,7 +52,7 @@ class Index extends React.Component {
   }
 
   async componentDidMount() {
-    const { search, router } = this.props;
+    const { search, router, topic, baselayout } = this.props;
     const { keyword = '' } = router?.query;
 
     const { platform } = this.props.site || {};
@@ -66,6 +68,9 @@ class Index extends React.Component {
       const hasIndexThreads = !!search.indexThreads;
       search.getSearchData({ hasTopics: hasIndexTopics, hasUsers: hasIndexUsers, hasThreads: hasIndexThreads, search: keyword });
     }
+    baselayout.resetSearchResultScrolltop();
+    topic.resetTopicsData();
+    search.resetResultData();
   }
 
   // 获取数据状态

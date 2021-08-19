@@ -237,8 +237,13 @@ class ThreadCreate extends React.Component {
   render() {
     const { threadPost, user, site } = this.props;
     const { threadExtendPermissions, permissions } = user;
-    const { webConfig = {} } = site;
     const { postData, setPostData } = threadPost;
+
+    const { webConfig = {} } = site;
+    const { setAttach, qcloud } = webConfig;
+    const { supportImgExt, supportMaxSize } = setAttach;
+    const { qcloudCosBucketName, qcloudCosBucketArea, qcloudCosSignUrl, qcloudCos } = qcloud;
+
 
     const { emoji, topic, atList, currentDefaultOperation, currentAttachOperation, categoryChooseShow } = this.props;
 
@@ -280,6 +285,14 @@ class ThreadCreate extends React.Component {
           {/* 图片 */}
           {(currentAttachOperation === THREAD_TYPE.image || Object.keys(postData.images).length > 0) && (
             <ImageUpload
+              cosOptions={{
+                supportImgExt,
+                supportMaxSize,
+                qcloudCosBucketName,
+                qcloudCosBucketArea,
+                qcloudCosSignUrl,
+                qcloudCos,
+              }}
               className={styles.imageUpload}
               fileList={Object.values(postData.images)}
               onChange={fileList => this.props.handleUploadChange(fileList, THREAD_TYPE.image)}

@@ -24,7 +24,7 @@ class SiteStore {
   @observable isUserLoginVisible = null;
   @observable errPageType = null;
   @computed get isRegister() {
-    return !this.isSmsOpen && this.wechatEnv === 'none';
+    return !this.isSmsOpen && this.wechatEnv === 'none' && this.registerClose;
   }
 
   @computed get isPC() {
@@ -76,6 +76,11 @@ class SiteStore {
   // 注册协议内容
   @computed get agreementRegisterContent() {
     return get(this.webConfig, 'agreement.registerContent', '');
+  }
+
+  // 注册协议内容
+  @computed get registerClose() {
+    return get(this.webConfig, 'setReg.registerClose', '');
   }
 
   // 隐私协议开关

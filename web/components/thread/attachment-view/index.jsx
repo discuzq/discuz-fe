@@ -78,8 +78,8 @@ const Index = ({
     if (!isPay) {
       if(!item || !threadId) return;
 
-      downloading[index] = true;
-      setDownloading([...downloading]);
+      // downloading[index] = true;
+      // setDownloading([...downloading]);
 
 
       if(isWeiXin()) {
@@ -93,8 +93,8 @@ const Index = ({
         });
       }
 
-      downloading[index] = false;
-      setDownloading([...downloading]);
+      // downloading[index] = false;
+      // setDownloading([...downloading]);
 
     } else {
       onPay();

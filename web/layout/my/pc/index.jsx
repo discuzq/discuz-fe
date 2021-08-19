@@ -1,44 +1,67 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
+import classnames from 'classnames';
 import styles from './index.module.scss';
 import clearLoginStatus from '@common/utils/clear-login-status';
 import UserCenterPost from '@components/user-center-post-pc';
 import UserCenterAction from '@components/user-center-action-pc';
-import UserBaseLaout from '@components/user-center-base-laout-pc';
 import SidebarPanel from '@components/sidebar-panel';
 import Avatar from '@components/avatar';
 import Copyright from '@components/copyright';
-import List from '@components/list';
 import Router from '@discuzq/sdk/dist/router';
-import UserCenterFollowPopup from '@components/user-center-follow-popup';
-import UserCenterThreads from '@components/user-center-threads';
-import NoData from '@components/no-data';
 import UserCenterFansPc from '@components/user-center/fans-pc';
 import UserCenterFollowsPc from '../../../components/user-center/follows-pc';
 import Thread from '@components/thread';
-import SectionTitle from '@components/section-title';
-import BaseLayout from '../../../components/user-center-base-laout-pc';
+import BaseLayout from '@components/base-layout';
 import { Toast } from '@discuzq/design';
+import { withRouter } from 'next/router';
+import UserCenterHeaderPc from '@components/user-center/header-pc';
 
 @inject('site')
 @inject('user')
+@inject('index')
 @observer
 class PCMyPage extends React.Component {
   constructor(props) {
     super(props);
     this.isUnmount = false;
+
+    const myThreadsList = this.props.index.getList({
+      namespace: 'my',
+    });
+
     this.state = {
       showFansPopup: false, // 是否弹出粉丝框
       showFollowPopup: false, // 是否弹出关注框
-      isLoading: true,
+      isLoading: false,
     };
+
+    if (myThreadsList.length === 0) {
+     this.state.isLoading = true; 
+    }
   }
+
+  beforeRouterChange = (url) => {
+    if (url === '/my') {
+      return;
+    }
+    // 如果不是进入 thread 详情页面
+    if (!/thread\//.test(url)) {
+      this.props.index.clearList({ namespace: 'my' })
+    }
+  };
 
   fetchUserThreads = async () => {
     try {
-      const userThreadsList = await this.props.user.getUserThreads();
+      const userThreadsList = await this.props.index.fetchList({
+        namespace: 'my',
+        filter: {
+          toUserId: 0,
+          complex: 5,
+        },
+      });
       if (!this.unMount) {
-        this.props.user.setUserThreads(userThreadsList);
+        this.props.index.setList({ namespace: 'my', data: userThreadsList });
       }
     } catch (err) {
       console.error(err);
@@ -53,20 +76,21 @@ class PCMyPage extends React.Component {
         hasMask: false,
       });
     }
-  }
+  };
 
   async componentDidMount() {
+    this.props.router.events.on('routeChangeStart', this.beforeRouterChange);
+
     await this.props.user.updateUserInfo(this.props.user.id);
     await this.fetchUserThreads();
 
     this.setState({ isLoading: false });
   }
 
-
   componentWillUnmount = () => {
     this.unMount = true;
-    this.props.user.clearUserThreadsInfo();
-  }
+    this.props.router.events.off('routeChangeStart', this.beforeRouterChange);
+  };
 
   loginOut() {
     clearLoginStatus();
@@ -84,11 +108,6 @@ class PCMyPage extends React.Component {
 
   onContainerClick = ({ id }) => {
     Router.push({ url: `/user/${id}` });
-  };
-
-  formatUserThreadsData = (userThreads) => {
-    if (Object.keys(userThreads).length === 0) return [];
-    return Object.values(userThreads).reduce((fullData, pageData) => [...fullData, ...pageData]);
   };
 
   renderRight = () => {
@@ -119,7 +138,7 @@ class PCMyPage extends React.Component {
             <div className={styles.userInfoWrapper}>
               <div className={styles.userInfoKey}>微信</div>
               <div className={`${styles.userInfoValue} ${styles.wxContent}`}>
-                <Avatar size="small" image={this.props.user.wxHeadImgUrl} name={this.props.user.wxNickname}/>
+                <Avatar size="small" image={this.props.user.wxHeadImgUrl} name={this.props.user.wxNickname} />
                 <span className={styles.wecahtNickname}>{this.props.user.wxNickname}</span>
               </div>
             </div>
@@ -146,12 +165,21 @@ class PCMyPage extends React.Component {
 
   renderContent = () => {
     const { isLoading } = this.state;
-    const { user } = this.props;
-    const { userThreads, userThreadsTotalCount } = user;
-    const formattedUserThreads = this.formatUserThreadsData(userThreads);
+    const { user, index } = this.props;
+    const { lists } = index;
+
+    const myThreadsList = index.getList({
+      namespace: 'my',
+    });
+
+    const totalCount = index.getAttribute({
+      namespace: 'my',
+      key: 'totalCount',
+    });
+
     let showUserThreadsTotalCount = true;
 
-    if (userThreadsTotalCount === undefined || userThreadsTotalCount === null) {
+    if (totalCount === undefined || totalCount === null) {
       showUserThreadsTotalCount = false;
     }
 
@@ -168,15 +196,15 @@ class PCMyPage extends React.Component {
           title="主题"
           type="normal"
           isShowMore={false}
-          noData={!formattedUserThreads?.length}
+          noData={!myThreadsList?.length}
           isLoading={isLoading}
-          leftNum={showUserThreadsTotalCount ? `${userThreadsTotalCount}个主题` : ''}
+          leftNum={showUserThreadsTotalCount ? `${totalCount}个主题` : ''}
           mold="plane"
         >
-          {formattedUserThreads?.map((item, index) => (
+          {myThreadsList?.map((item, index) => (
             <Thread
               data={item}
-              key={`${item.threadId}-${item.updatedAt}`}
+              key={`${item.threadId}-${item.updatedAt}-${item.user.avatar}`}
               className={index === 0 && styles.threadStyle}
             />
           ))}
@@ -187,14 +215,30 @@ class PCMyPage extends React.Component {
 
   render() {
     const { isLoading } = this.state;
-    const { user } = this.props;
-    const { userThreadsPage, userThreadsTotalPage, getUserThreads, userThreads } = user;
-    const formattedUserThreads = this.formatUserThreadsData(userThreads);
+    const { index } = this.props;
+    const { lists } = index;
+
+    const myThreadsList = index.getList({
+      namespace: 'my',
+    });
+
+    const totalPage = index.getAttribute({
+      namespace: 'my',
+      key: 'totalPage',
+    });
+
+    const currentPage = index.getAttribute({
+      namespace: 'my',
+      key: 'currentPage',
+    });
+
+    const requestError = index.getListRequestError({ namespace: 'my' });
+
     // 判断用户信息loading状态
     const IS_USER_INFO_LOADING = !this.props.user?.username;
     // store中，userThreadsPage会比真实页数多1
-    let currentPageNum = userThreadsPage;
-    if (userThreadsTotalPage > 1) {
+    let currentPageNum = currentPage;
+    if (totalPage > 1) {
       currentPageNum -= 1;
     }
 
@@ -202,18 +246,38 @@ class PCMyPage extends React.Component {
       <>
         <BaseLayout
           showRefresh={false}
-          right={this.renderRight}
+          onSearch={this.onSearch}
+          // right={this.renderRight}
           immediateCheck={false}
-          noMore={userThreadsTotalPage <= currentPageNum}
+          curr={'my'}
+          pageName="my"
+          noMore={totalPage <= currentPage}
           onRefresh={this.fetchUserThreads}
-          showLayoutRefresh={!isLoading && !!formattedUserThreads?.length}
+          isShowLayoutRefresh={!isLoading && !!myThreadsList?.length}
           showHeaderLoading={IS_USER_INFO_LOADING}
         >
-          {this.renderContent()}
+          <div>
+            <div>
+              <div className={styles.headerbox}>
+                <div className={styles.userHeader}>
+                  <UserCenterHeaderPc showHeaderLoading={IS_USER_INFO_LOADING} />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className={styles.userCenterBody}>
+            <div className={classnames(styles.userCenterBodyItem, styles.userCenterBodyLeftItem)}>
+              {this.renderContent()}
+            </div>
+            <div className={classnames(styles.userCenterBodyItem, styles.userCenterBodyRightItem)}>
+              {this.renderRight()}
+            </div>
+          </div>
         </BaseLayout>
       </>
     );
   }
 }
 
-export default PCMyPage;
+export default withRouter(PCMyPage);

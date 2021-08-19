@@ -142,6 +142,14 @@ class LoginHelper {
     });
   };
 
+  // 保存当前地址，并跳转目标地址targetUrl（非重定向保留原有路由）
+  saveAndPush = (targetUrl) => {
+    this.saveCurrentUrl();
+    Router.push({
+      url: targetUrl,
+    });
+  };
+
   // 自动记录当前的地址，再跳转登录页
   saveAndLogin = () => {
     this.saveCurrentUrl();

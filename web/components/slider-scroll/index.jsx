@@ -11,6 +11,7 @@ import throttle from '@common/utils/thottle';
 import PropTypes from 'prop-types';
 import Header from '@components/header';
 import List from '@components/list';
+import { inject, observer } from 'mobx-react';
 
 /**
  * 左滑列表项
@@ -20,7 +21,6 @@ import List from '@components/list';
  * @prop {object} RenderItem 列表项渲染组件
  * @prop {function} onBtnClick 处理左滑按钮点击
  */
-
 class SlierItem extends PureComponent {
   constructor(props) {
     super(props);
@@ -128,20 +128,30 @@ SlierItem.defaultProps = {
  * 左滑列表容器
  * @prop {array} list 列表数据
  */
+ @inject('baselayout')
+ @observer
 class Index extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      currentId: 0,
-      isTop: true, // 列表位置
-      damping: 80, // 下拉距离，下拉时将动态改变
-      isFinished: true, // 下拉刷新是否结束
-    }
-  }
+   constructor(props) {
+     super(props);
+     this.state = {
+       currentId: 0,
+       isTop: true, // 列表位置
+       damping: 80, // 下拉距离，下拉时将动态改变
+       isFinished: true, // 下拉刷新是否结束
+     };
+   }
+
+  listRef = React.createRef(null);
 
   componentDidMount() {
     // 监听消息项之外的地方的click
     window.addEventListener('click', this.resetSliderId);
+
+    if (this.props.baselayout.draft > 0) {
+      if (!this.listRef) return;
+      this.listRef.current.jumpToScrollTop(this.props.baselayout.draft);
+      this.props.baselayout.draft = -1;
+    }
   }
 
   componentWillUnmount() {
@@ -154,6 +164,7 @@ class Index extends Component {
   };
 
   onScroll = ({ scrollTop }) => {
+    this.props.baselayout.draft = scrollTop;
     const { isTop } = this.state;
     const _isTop = scrollTop === 0;
     isTop !== _isTop && this.setState({
@@ -195,6 +206,7 @@ class Index extends Component {
           damping={damping}
         >
           <List
+            ref={this.listRef}
             className={styles.list}
             noMore={noMore}
             onScroll={throttle(this.onScroll, 10)}
@@ -208,7 +220,7 @@ class Index extends Component {
             {topCard}
             {/* show list */}
             <div className={styles.slider}>
-              <div className={styles['slider__inner']}>
+              <div className={styles.slider__inner}>
                 {list.map((item, index) => (
                   <SlierItem
                     key={item.id}
@@ -217,7 +229,7 @@ class Index extends Component {
                     isLast={list.length === (index + 1)}
                     currentId={currentId}
                     isFinished={isFinished}
-                    onSliderTouch={(id) => this.setState({ currentId: id })}
+                    onSliderTouch={id => this.setState({ currentId: id })}
                     {...other}
                   />
                 ))}
@@ -228,7 +240,7 @@ class Index extends Component {
       </div>
     );
   }
-}
+ }
 
 Index.propsTypes = {
   noMore: PropTypes.bool,
@@ -238,7 +250,7 @@ Index.propsTypes = {
   list: PropTypes.array,
   onPullDown: PropTypes.func,
   onScrollBottom: PropTypes.func,
-}
+};
 
 Index.defaultProps = {
   noMore: false,
@@ -248,6 +260,6 @@ Index.defaultProps = {
   list: [],
   onPullDown: () => Promise.resolve(true),
   onScrollBottom: () => { },
-}
+};
 
 export default Index;

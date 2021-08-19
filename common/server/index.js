@@ -55,6 +55,7 @@ export { default as h5WechatCodeBind } from './h5WechatCodeBind';
 export { default as miniQrcodeLogin } from './login/miniQrcodeLogin';
 export { default as miniQrcodeBind } from './login/miniQrcodeBind';
 export { default as genMiniScheme } from './genMiniScheme';
+export { default as genMiniBindScheme } from './genMiniBindScheme';
 export { default as miniBind } from './login/miniBind';
 export { default as miniLogin } from './login/miniLogin';
 export { default as usernameAutoBind } from './wx-username-auto-bind';
@@ -113,3 +114,7 @@ export { default as readWalletUser } from './wallet/read-walletUser';
 export { default as readWalletLog } from './wallet/read-walletLog';
 export { default as readWalletCash } from './wallet/read-walletCash';
 export { default as createWalletCash } from './wallet/createWalletCash';
+
+// cos上传
+export { default as getCosTmpKey } from './common/getCosTmpKey';
+export { default as updateAttachment } from './common/updateAttachment';

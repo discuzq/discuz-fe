@@ -73,6 +73,7 @@ export class MessageIndex extends Component {
         chatPerson = sender;
       }
       newList.push({
+        iid: id,
         id: `${id}${dialogMessage?.createdAt}`,
         createdAt: dialogMessage?.createdAt,
         dialogId: dialogMessage?.dialogId,
@@ -89,7 +90,7 @@ export class MessageIndex extends Component {
 
   handleDelete = (item) => {
     const { message } = this.props;
-    message.deleteDialog(item.id);
+    message.deleteDialog(item.iid);
   };
 
   // 跳转其它消息类型

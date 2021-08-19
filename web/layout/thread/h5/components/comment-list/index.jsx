@@ -153,7 +153,7 @@ class CommentList extends React.Component {
                   <div className={styles.commentListName}>
                     {this.props.data?.user?.nickname || this.props.data?.user?.userName || '用户异常'}
                   </div>
-                  {isSelf && (
+                  {(isSelf && !this.props.isAnonymous) && (
                     <div className={styles.masterBox}>
                       <span className={styles.masterText}>楼主</span>
                     </div>
@@ -226,6 +226,7 @@ class CommentList extends React.Component {
                   <div className={styles.replyList}>
                     {this.state.isShowOne ? (
                       <ReplyList
+                        isAnonymous={this.props.isAnonymous}
                         data={this.needReply[0]}
                         key={this.needReply[0].id}
                         isShowOne={true}
@@ -240,9 +241,10 @@ class CommentList extends React.Component {
                       (this.needReply || []).map((val, index) => (
                         <div key={val.id || index} ref={val.id === this.props.postId ? this.props.positionRef : null}>
                           <ReplyList
+                            isAnonymous={this.props.isAnonymous}
                             data={val}
                             key={val.id || index}
-                            avatarClick={(floor) => this.replyAvatarClick(val, floor)}
+                            avatarClick={floor => this.replyAvatarClick(val, floor)}
                             likeClick={() => this.replyLikeClick(val)}
                             replyClick={() => this.replyReplyClick(val)}
                             deleteClick={() => this.replyDeleteClick(val)}
