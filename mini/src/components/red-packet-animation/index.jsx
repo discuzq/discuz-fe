@@ -15,8 +15,13 @@ const [start, setStart] = useState(false)
 const handleClick = () => {
     setStart(true)
 };
+const handleClose = () => {
+    if (typeof onClose === 'function') {
+        onClose()
+    }
+}
 return (
-    <View className={style.masking} >
+    <View className={style.masking} onClick={handleClose}>
         <View className={style.container}>
             <View className={style.moneyText} style={start ? moneyTextStyle : {}}>
                 <View className={style.text}>恭喜您，领到了</View>

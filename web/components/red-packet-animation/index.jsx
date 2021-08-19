@@ -13,8 +13,13 @@ const Index = ({ onClose, money = '0.00' }) => {
     const moneyText = document.querySelector('#moneyText');
     moneyText.style = 'opacity: 1';
   };
+  const handleClose = () => {
+    if (typeof onClose === 'function') {
+      onClose();
+    }
+  };
   return (
-    <div className={style.masking}>
+    <div className={style.masking} onClick={e => handleClose(e)}>
         <div className={style.container}>
             <div className={style.moneyText} id='moneyText'>
                 <div className={style.text}>恭喜您，领到了</div>
