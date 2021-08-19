@@ -8,13 +8,15 @@ import Toast from '@discuzq/design/dist/components/toast/index';
 import Page from '@components/page';
 import { get } from '@common/utils/get';
 import { BANNED_USER, REVIEWING, REVIEW_REJECT, checkUserStatus, isExtFieldsOpen } from '@common/store/login/util';
-import layout from './index.module.scss';
-import { getParamCode, getUserProfile } from '../common/utils';
 import { MOBILE_LOGIN_STORE_ERRORS } from '@common/store/login/mobile-login-store';
 import LoginHelper from '@common/utils/login-helper';
+import setAccessToken from '@common/utils/set-access-token';
+import { getParamCode, getUserProfile } from '../common/utils';
+import layout from './index.module.scss';
 // const MemoToastProvider = React.memo(ToastProvider);
 
 @inject('site')
+@inject('user')
 @inject('miniBind')
 @inject('h5QrCode')
 @inject('commonLogin')
@@ -37,7 +39,7 @@ class WXBind extends Component {
   }
 
   getUserProfileCallback = async (params) => {
-    const { scene: sessionToken } = getCurrentInstance().router.params;
+    const { scene: sessionToken, bindPhone = '', loginType, jumpType } = getCurrentInstance().router.params;
 
     try {
       const res = await this.props.miniBind.mobilebrowserBind({
@@ -45,7 +47,7 @@ class WXBind extends Component {
         iv: params.iv,
         encryptedData: params.encryptedData,
         sessionToken,
-        type: 'pc'
+        type: loginType
       });
       this.props.commonLogin.setLoginLoading(true);
       checkUserStatus(res);
@@ -55,6 +57,25 @@ class WXBind extends Component {
         this.setState({
           status: 'success'
         });
+      }
+      if (res.code === 0 && loginType === 'h5' && jumpType !== '1') {
+        const accessToken = get(res, 'data.accessToken');
+        const uid = get(res, 'data.uid');
+        // 注册成功后，默认登录
+        setAccessToken({
+          accessToken,
+        });
+        const userData = await this.props.user.updateUserInfo(uid);
+        const mobile = get(userData, 'mobile', '');
+        if (bindPhone && !mobile) { // 需要绑定手机，但是用户未绑定手机时，跳转到绑定手机页面
+          redirectTo({ url: '/subPages/user/bind-phone/index' });
+          return;
+        }
+        this.props.h5QrCode.bindTitle = '已成功绑定，正在跳转到首页';
+        LoginHelper.gotoIndex();
+        return;
+      }
+      if (res.code === 0) {
         return;
       }
       throw {

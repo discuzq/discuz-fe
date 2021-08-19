@@ -48,6 +48,11 @@ class SiteStore {
     return Boolean(get(this.webConfig, 'other.publishNeedBindPhone', false));
   }
 
+  // 发布帖子时是否需要绑定微信
+  @computed get publishNeedBindWechat() {
+    return Boolean(get(this.webConfig, 'other.publishNeedBindWechat', false));
+  }
+
   // 公众平台是否开启
   @computed get isOffiaccountOpen() {
     return Boolean(get(this.webConfig, 'passport.offiaccountOpen', true));
