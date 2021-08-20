@@ -261,8 +261,7 @@ class H5OthersPage extends React.Component {
           )}
           <View
             style={{
-              visibility: !this.state.fetchUserInfoLoading ? 'visible' : 'hidden',
-              height: !this.state.fetchUserInfoLoading ? 'auto' : '0px',
+              display: !this.state.fetchUserInfoLoading ? 'block' : 'none'
             }}
           >
             <View onClick={this.handlePreviewBgImage}>

@@ -92,7 +92,7 @@ const Index = ({ threadPost }) => {
           <View className={styles.right}>
             <Input
               value={title}
-              miniType="digit"
+              miniType="text"
               mode="text"
               placeholder="标题最多支持25个字"
               maxLength={25}
@@ -114,7 +114,7 @@ const Index = ({ threadPost }) => {
             <View className={styles.right}>
               <Input
                 value={item.content}
-                miniType="digit"
+                miniType="text"
                 mode="text"
                 maxLength={20}
                 onChange={e => {

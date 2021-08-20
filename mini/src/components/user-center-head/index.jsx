@@ -14,6 +14,7 @@ import { View, Text } from '@tarojs/components';
 import styles from './index.module.scss';
 import throttle from '@common/utils/thottle.js';
 import LoginHelper from '@common/utils/login-helper';
+import MemberShipCard from '@components/MemberShipCard';
 
 @inject('site')
 @inject('user')
@@ -230,6 +231,12 @@ class index extends Component {
     this.showPreviewerRef();
   };
 
+  // 点击去到续费页面
+  onRenewalFeeClick = () => {
+    Router.push({
+      url: '/subPages/my/renew/index',
+    });
+  };
 
   @computed get targetUser() {
     if (this.targetUserId) {
@@ -246,7 +253,11 @@ class index extends Component {
       <View className={styles.h5box}>
         {/* 上 */}
         <View className={styles.h5boxTop}>
-          <View className={styles.headImgBox} key={user.avatarUrl || new Date()} onClick={user.avatarUrl && this.handlePreviewAvatar}>
+          <View
+            className={styles.headImgBox}
+            key={user.avatarUrl || new Date()}
+            onClick={user.avatarUrl && this.handlePreviewAvatar}
+          >
             <Avatar image={user.avatarUrl} size="big" name={user.nickname} />
           </View>
           {/* 粉丝|关注|点赞 */}
@@ -321,6 +332,9 @@ class index extends Component {
             </>
           )}
         </View>
+        {this.props.site?.siteMode === 'pay' && !this.props.isOtherPerson && (
+          <MemberShipCard onRenewalFeeClick={this.onRenewalFeeClick} />
+        )}
         {/* 右上角屏蔽按钮 */}
         {this.props.isOtherPerson && (
           <View

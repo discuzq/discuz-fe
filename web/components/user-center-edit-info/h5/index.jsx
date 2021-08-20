@@ -149,7 +149,7 @@ class index extends Component {
     const IS_WECHAT_HAS_BIND = Boolean(this.user.wxNickname);
     const ISEXT_FIELD_OPENS = isExtFieldsOpen(this.props?.site);
     return (
-      <div>
+      <div id={styles.editInfoWrapper}>
         <div className={styles.mainContent}>
           <div>
             {/* 头部 */}
@@ -164,8 +164,7 @@ class index extends Component {
               </div>
               <div className={styles.userCenterEditItem}>
                 <div className={styles.userCenterEditLabel}>
-                  <label>用户名</label>
-
+                  <label className={styles.userLabelName}>用户名</label>
                   <div className={styles.userCenterEditValue} onClick={this.handleGoToEditUserName}>
                     <div className={styles.ucText}>{this.user.username}</div>
                     <Icon name="RightOutlined" />
@@ -175,7 +174,7 @@ class index extends Component {
               {this.props.site?.isSmsOpen && (
                 <div className={styles.userCenterEditItem}>
                   <div className={styles.userCenterEditLabel}>
-                    <label>手机号码</label>
+                    <label className={styles.userLabelName}>手机号码</label>
                   </div>
                   <div className={styles.userCenterEditValue} onClick={this.handleGoToEditMobile}>
                     <div className={styles.ucText}>{this.user.mobile || '去绑定'}</div>
@@ -185,7 +184,7 @@ class index extends Component {
               )}
               <div className={styles.userCenterEditItem}>
                 <div className={styles.userCenterEditLabel}>
-                  <label>账户密码</label>
+                  <label className={styles.userLabelName}>账户密码</label>
                 </div>
                 <div className={styles.userCenterEditValue} onClick={this.handleGoToEditAccountPwd}>
                   <div className={styles.ucText}>{this.props.user?.hasPassword ? '修改' : '设置'}</div>
@@ -196,12 +195,12 @@ class index extends Component {
               {IS_WECHAT_ACCESSABLE && (
                 <div className={styles.userCenterEditItem}>
                   <div className={styles.userCenterEditLabel}>
-                    <label>微信</label>
+                    <label className={styles.userLabelName}>微信</label>
                     <div className={styles.userCenterEditWeChat}>
                       {IS_WECHAT_HAS_BIND && (
                         <Avatar size="small" image={this.user.wxHeadImgUrl} name={this.user.wxNickname} />
                       )}
-                      {IS_WECHAT_HAS_BIND ? <span>{this.user.wxNickname}</span> : '未绑定'}
+                      {IS_WECHAT_HAS_BIND ? <span className={styles.wxNickname}>{this.user.wxNickname}</span> : '未绑定'}
                       {IS_WECHAT_HAS_BIND && (
                         <div
                           className={styles.linkText}
@@ -253,10 +252,10 @@ class index extends Component {
           <Copyright />
         </div>
         <div className={styles.userCenterEditBtn}>
-          <Button full onClick={this.handleCancel}>
+          <Button full onClick={this.handleCancel} className={styles.btn}>
             取消
           </Button>
-          <Button disabled={isConfirm} full onClick={this.handleUpdateEditedUserInfo} type="primary">
+          <Button className={styles.btn} disabled={isConfirm} full onClick={this.handleUpdateEditedUserInfo} type="primary">
             {isConfirm ? <Spin type="spinner">保存中...</Spin> : '保存'}
           </Button>
         </div>

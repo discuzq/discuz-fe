@@ -107,3 +107,9 @@
   border-top-right-radius: rem($border-radius-small);
   background: var(--color-white);
 }
+
+.MemberShipCardWrapperPc {
+  margin: 0 0 rem($margin-10);
+  height: rem(169);
+  padding: rem($padding-6n) rem($padding-4n);
+}

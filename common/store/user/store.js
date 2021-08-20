@@ -291,6 +291,21 @@ class UserStore {
     return get(this.userInfo, 'group.pid') === 1;
   }
 
+  // 用户角色分类
+  @computed get groupName() {
+    return get(this.userInfo, 'group.groupName')
+  }
+
+  // 站点到期天数
+  @computed get expiredDays() {
+    return get(this.userInfo, 'expiredDays')
+  }
+
+  // 站点剩余时间
+  @computed get expiredAt() {
+    return get(this.userInfo, 'expiredAt')
+  }
+
   // 发帖扩展的权限
   @computed get threadExtendPermissions() {
     const { permissions: pm } = this;
