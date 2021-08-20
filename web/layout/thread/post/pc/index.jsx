@@ -234,7 +234,7 @@ class ThreadPCPage extends React.Component {
 
                   {/* 投票组件 */}
                   {(postData?.vote?.voteTitle) && (
-                    <VoteWidget onDelete={() => this.props.setPostData({ vote: {} })} />
+                    <VoteWidget isPc={true} onDelete={() => this.props.setPostData({ vote: {} })} />
                   )}
 
                   {/* 商品组件 */}
