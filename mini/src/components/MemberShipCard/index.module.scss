@@ -52,10 +52,16 @@
       letter-spacing: 1px;
       height: 20px;
       line-height: 20px;
+      width: 100%;
+      text-align: right;
       .feeDay {
         font-size: $font-size-h1;
         color: $primary-color;
         font-weight: $font-weight-regular;
+      }
+      .noTimeDate {
+        text-align: right;
+        display: block;
       }
     }
   }
