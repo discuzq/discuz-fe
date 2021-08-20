@@ -278,7 +278,7 @@ class Index extends Component {
         break;
       case THREAD_TYPE.vote:
         this.resetOperationType();
-        if (postData.vote.isVoted) {
+        if (postData.vote.voteUsers > 0) {
           return this.postToast('投票已生效，不允许编辑');
         }
         nextRoute = '/indexPages/thread/voteEditor/index';

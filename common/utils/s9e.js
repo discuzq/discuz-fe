@@ -80,6 +80,16 @@ function parse(text) {
   return text;
 }
 
+// 把一段字符串中的表情符号转换成可渲染的html
+function parseEmoji(text) {
+  const storage = new Storage({ storageType: 'local' })
+  const emojis = JSON.parse(storage.get('DZQ_EMOJI') || `{}`);
+  text = tags.emotion(text, emojis);
+  return text;
+}
+
+
+
 const handleEmoji = (value, emojis) => {
   const config = getConfig() || {}
   const url = config.COMMON_BASE_URL || window.location.origin
@@ -108,4 +118,4 @@ const handleEmoji = (value, emojis) => {
 
 }
 
-export default { parse };
+export default { parse, parseEmoji };

@@ -350,7 +350,7 @@ class IndexAction extends IndexStore {
     const { index } = targetThread;
     if (this.threads?.pageData) {
       this.threads.pageData[index] = obj;
-      if (isUpdatePay) his.changeInfo = { type: 'pay', thread: threadId }
+      if (isUpdatePay) this.changeInfo = { type: 'pay', thread: threadId }
     }
   }
 

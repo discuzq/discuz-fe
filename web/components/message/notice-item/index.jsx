@@ -114,7 +114,7 @@ class Index extends Component {
       _content = tip + _content;
     }
 
-    let t = xss(s9e.parse(this.filterTag(_content)));
+    let t = xss(s9e.parseEmoji(this.filterTag(_content)));
     t = (typeof t === 'string') ? t : '';
 
     return t;

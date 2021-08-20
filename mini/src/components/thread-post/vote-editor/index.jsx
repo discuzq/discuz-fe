@@ -34,6 +34,7 @@ const Index = ({ threadPost }) => {
   }];
 
   const hasVoteData = data?.vote?.voteTitle;
+  const voteId = data?.vote?.voteId || '';
 
   const [subitems, setSubitems] = useState(hasVoteData ? data.vote.subitems : initSubitems);
   const [title, setTitle] = useState(hasVoteData ? data.vote.voteTitle : '');
@@ -73,7 +74,7 @@ const Index = ({ threadPost }) => {
 
     threadPost.setPostData({
       vote: {
-        voteId: '',
+        voteId: voteId,
         voteTitle: title,
         choiceType: type,
         expiredAt: formatDate(time, 'yyyy/MM/dd hh:mm:ss'),

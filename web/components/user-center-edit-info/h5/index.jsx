@@ -191,7 +191,15 @@ class index extends Component {
                   <Icon name="RightOutlined" />
                 </div>
               </div>
-
+              <div className={styles.userCenterEditItem}>
+                <div className={styles.userCenterEditLabel}>
+                  <label>支付密码</label>
+                </div>
+                <div className={styles.userCenterEditValue} onClick={this.handleGoToEditPayPwd}>
+                  <div className={styles.ucText}>{this.props.user?.canWalletPay ? '修改' : '设置'}</div>
+                  <Icon name="RightOutlined" />
+                </div>
+              </div>
               {IS_WECHAT_ACCESSABLE && (
                 <div className={styles.userCenterEditItem}>
                   <div className={styles.userCenterEditLabel}>

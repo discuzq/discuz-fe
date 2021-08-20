@@ -315,7 +315,7 @@ class PostPage extends React.Component {
       return false;
     }
 
-    if (item.type === THREAD_TYPE.vote && postData?.vote?.isVoted) {
+    if (item.type === THREAD_TYPE.vote && postData?.vote?.voteUsers > 0) {
       Toast.info({ content: '投票已生效，不允许编辑' });
       return false;
     }

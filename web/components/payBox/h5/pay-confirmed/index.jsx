@@ -82,9 +82,11 @@ export default class PayBox extends React.Component {
         </Button>
       );
     }
+
     if (Number(this.props.payBox?.walletAvaAmount) < Number(amount)) {
       return <p className={styles.subText}>余额不足</p>;
     }
+
     return (
       <>
         {this.props.payBox?.walletAvaAmount ? (
@@ -192,25 +194,8 @@ export default class PayBox extends React.Component {
 
   gotoBind = () => {
     this.props.payBox.visible = false;
-    const { currentPage: { type, threadId = '' } } = this.props.payBox;
-    let path = '';
-    if (this.props.site.wechatEnv === 'miniProgram') {
-      // 跳小程序绑定后继续访问的页面路径
-      switch(type) {
-        case 1: // 帖子详情
-          path = `/indexPages/thread/index?id=${threadId}`;
-          break;
-        case 2: // 发帖
-          path = '/indexPages/thread/post/index';
-          break;
-      }
-    }
-    if (this.props.site.wechatEnv === 'openPlatform') {
-      loginHelper.saveCurrentUrl();
-      path = loginHelper.getUrl();
-    }
-    Router.push({ url: `/user/wx-bind-qrcode?toPage=${encodeURIComponent(path)}` });
-  }
+    Router.push({ url: '/user/wx-bind-qrcode?jumpType=1' });
+  };
 
   renderRightChoices = (item) => {
     const { options = {} } = this.props.payBox;
@@ -218,7 +203,12 @@ export default class PayBox extends React.Component {
 
     if (item.paymentType === PAYWAY_MAP.WALLET) {
       if (canWalletPay && Number(this.props.payBox?.walletAvaAmount) >= Number(options.amount)) {
-        return <Radio name={item.paymentType} />;
+        return (
+          <>
+            {this.walletPaySubText()}
+            <Radio name={item.paymentType} />
+          </>
+        );
       }
 
       // return this.walletPaySubText();
