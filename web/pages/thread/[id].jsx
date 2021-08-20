@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter } from 'next/router';
 import { inject, observer } from 'mobx-react';
-import { readThreadDetail, readCommentList } from '@server';
+import { readThreadDetail, readCommentList, getRedPacketInfo } from '@server';
 import ThreadH5Page from '@layout/thread/h5';
 import ThreadPCPage from '@layout/thread/pc';
 import HOCFetchSiteData from '@middleware/HOCFetchSiteData';
@@ -230,6 +230,9 @@ class Detail extends React.Component {
         });
         return;
       }
+
+      const resRedp = await this.props.thread.getRedPacketInfo(id);
+      console.log(resRedp, 1311);
 
       // 判断是否审核通过
       const isApproved = (this.props.thread?.threadData?.isApproved || 0) === 1;

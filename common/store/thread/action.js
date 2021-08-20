@@ -5,6 +5,7 @@ import {
   operateThread,
   readCommentList,
   readThreadDetail,
+  getRedPacketInfo,
   readThreadAttachmentUrl,
   shareThread,
   readUser,
@@ -91,6 +92,20 @@ class ThreadAction extends ThreadStore {
     const ret = await readThreadDetail({ params });
     const { code, data } = ret;
     if (code === 0) this.setThreadData(data);
+    return ret;
+  }
+
+  /**
+ * 获取帖子红包信息
+ * @param {number} id 帖子id
+ * @returns 帖子详细信息
+ */
+  @action
+  async getRedPacketInfo(id) {
+    const params = { threadId: id };
+    const ret = await getRedPacketInfo({ params });
+    const { code, data } = ret;
+    //  if (code === 0) this.setThreadData(data);
     return ret;
   }
   /**
@@ -365,7 +380,7 @@ class ThreadAction extends ThreadStore {
   }
 
   // TODO:帖子支付
-  async pay() {}
+  async pay() { }
 
   /**
    * 帖子删除
