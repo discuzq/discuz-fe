@@ -75,7 +75,7 @@ export const extensionList = [
   'CAD', 'CDR',
   'DOC', 'DOCX',
   'EPS', 'EXE', 'IPA',
-  'MP3', 'MP4', 'PDF', 'PPT', 'PSD', 'RAR', 'TXT', 'XLS', 'XLSX', 'ZIP', 'JPG', 'WAV',
+  'M4A', 'MP3', 'MP4', 'PDF', 'PPT', 'PPTX', 'PSD', 'RAR', 'TXT', 'XLS', 'XLSX', 'ZIP', 'JPEG', 'WAV',
 ];
 
 export const isPromise = obj => !!obj && (typeof obj === 'object' || typeof obj === 'function') && typeof obj.then === 'function';

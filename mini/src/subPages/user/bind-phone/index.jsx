@@ -116,7 +116,7 @@ class BindPhoneH5Page extends React.Component {
       commonLogin.setLoginLoading(true);
 
       Toast.success({
-        content: IS_FROM_BIND_SOURCE ? '绑定成功' : '登录成功',
+        content: '绑定成功',
         hasMask: false,
         duration: 2000,
         onClose: () => {
@@ -197,9 +197,7 @@ class BindPhoneH5Page extends React.Component {
               && (
                 <View className={layout.functionalRegion}>
                   <Text className={layout.clickBtn} onClick={() => {
-                    redirectTo({
-                      url: `/indexPages/home/index`
-                    });
+                    LoginHelper.restore();
                   }} >跳过</Text>
                 </View>
               )

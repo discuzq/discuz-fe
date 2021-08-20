@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
+import { computed } from 'mobx';
 import styles from './index.module.scss';
 import Avatar from '@components/avatar';
 import { Button, Icon, Toast, Spin } from '@discuzq/design';
@@ -74,9 +75,11 @@ class index extends Component {
         // this.user.editAvatarUrl = this.user.avatarUrl;
       });
   };
+
   handleBackgroundUpload = async () => {
     this.backgroundUploaderRef.current.click();
   };
+
   onBackgroundChange = async (fileList) => {
     if (!fileList.target.files[0]) return;
     this.props.handleSetBgLoadingStatus(true);
@@ -103,6 +106,7 @@ class index extends Component {
         this.props.handleSetBgLoadingStatus(false);
       });
   };
+
   // 点击关注
   handleChangeAttention = throttle(async (follow) => {
     const id = this.props.router.query?.id;
@@ -122,7 +126,7 @@ class index extends Component {
               isFollowedLoading: false,
             });
           } else {
-            await this.props.user.getTargetUserInfo(id);
+            await this.props.user.getTargetUserInfo({ userId: id });
             Toast.success({
               content: '操作成功',
               hasMask: false,
@@ -157,7 +161,7 @@ class index extends Component {
               isFollowedLoading: false,
             });
           } else {
-            await this.props.user.getTargetUserInfo(id);
+            await this.props.user.getTargetUserInfo({ userId: id });
             Toast.success({
               content: '操作成功',
               hasMask: false,
@@ -203,13 +207,14 @@ class index extends Component {
     }
     return { icon, text };
   };
+
   // 点击屏蔽
   handleChangeShield = throttle(async (isDeny) => {
     const { query } = this.props.router;
     try {
       if (isDeny) {
         await this.props.user.undenyUser(query.id);
-        this.props.user.setTargetUserNotBeDenied();
+        this.props.user.setTargetUserNotBeDenied({ userId: query.id });
         Toast.success({
           content: '解除屏蔽成功',
           hasMask: false,
@@ -217,7 +222,7 @@ class index extends Component {
         });
       } else {
         await this.props.user.denyUser(query.id);
-        this.props.user.setTargetUserDenied();
+        this.props.user.setTargetUserDenied({ userId: query.id });
         Toast.success({
           content: '屏蔽成功',
           hasMask: false,
@@ -235,15 +240,28 @@ class index extends Component {
       }
     }
   }, 1000);
+
+  @computed get targetUser() {
+    const { query } = this.props.router;
+
+    if (query.id) {
+      return this.props.user.targetUsers[query.id];
+    }
+
+    return {};
+  }
+
   // 点击发送私信
   handleMessage = () => {
-    const { username, nickname } = this.props.user.targetUser;
+    const { username, nickname } = this.targetUser;
     Router.push({ url: `/message?page=chat&username=${username}&nickname=${nickname}` });
   };
+
   render() {
-    const { targetUser } = this.props.user;
-    const user = this.props.router.query?.id ? targetUser || {} : this.props.user;
+    const { targetUsers } = this.props.user;
+    const user = this.props.router.query?.id ? targetUsers[this.props.router.query?.id] || {} : this.props.user;
     const { isUploadAvatarUrl } = this.state;
+
     return (
       <div className={styles.box}>
         <div className={styles.boxTop}>
