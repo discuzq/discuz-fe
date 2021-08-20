@@ -222,7 +222,7 @@ class HomeHeader extends React.Component {
               </View>
             </View>
           )}
-          <SiteShare show={this.state.show} onShareClose={this.onShareClose} site={site}></SiteShare>
+          {this.state.show && <SiteShare show={this.state.show} onShareClose={this.onShareClose} site={site}></SiteShare>}
           {mode === 'join' && (
             <view className={`${styles.siteInfo} ${styles.joinInfo}`}>
               <view className={styles.item}>
