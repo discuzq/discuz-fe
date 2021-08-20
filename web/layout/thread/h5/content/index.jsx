@@ -16,12 +16,16 @@ import UserInfo from '@components/thread/user-info';
 import styles from './index.module.scss';
 import { debounce } from '@common/utils/throttle-debounce';
 import Packet from '@components/thread/packet';
+import PacketOpen from '@components/red-packet-animation';
+
 
 // 帖子内容
 const RenderThreadContent = inject('user')(observer((props) => {
   const { store: threadStore } = props;
   const { text, indexes } = threadStore?.threadData?.content || {};
   const { parentCategoryName, categoryName } = threadStore?.threadData;
+  const { hasRedPacket } = threadStore; // 是否有红包领取的数据
+
   const tipData = {
     postId: threadStore?.threadData?.postId,
     threadId: threadStore?.threadData?.threadId,
@@ -66,6 +70,10 @@ const RenderThreadContent = inject('user')(observer((props) => {
   const canFreeViewPost = threadStore?.threadData?.ability.canFreeViewPost;
 
   const parseContent = parseContentData(indexes);
+
+  if (parseContent.RED_PACKET?.condition === 1) { // 如果是集赞红包则查询一下红包领取状态
+    threadStore.getRedPacketInfo(parseContent.RED_PACKET.threadId);
+  }
 
   const onContentClick = async () => {
     typeof props.onPayClick === 'function' && props.onPayClick();
@@ -328,6 +336,11 @@ const RenderThreadContent = inject('user')(observer((props) => {
           )}
         </div>
       )}
+
+      {
+        hasRedPacket > 0
+        && <PacketOpen onClose={() => threadStore.setRedPacket(0)} money={hasRedPacket} />
+      }
     </div>
   );
 }));

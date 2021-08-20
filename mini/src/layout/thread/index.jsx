@@ -92,7 +92,7 @@ class ThreadH5Page extends React.Component {
     this.isPositioned = false;
   }
 
-  componentWillMount () {
+  componentWillMount() {
     const onShowEventId = this.$instance.router.onShow
     // 监听
     eventCenter.on(onShowEventId, this.onShow.bind(this))
@@ -198,7 +198,7 @@ class ThreadH5Page extends React.Component {
       }
       this.flag = !this.flag;
     }
-    this.setState({ stateFlag: this.flag})
+    this.setState({ stateFlag: this.flag })
   }
 
   // 点击收藏icon
@@ -410,22 +410,22 @@ class ThreadH5Page extends React.Component {
   // wx分享
   onWxShare() {
     const { thread, user } = this.props
-    const {nickname} = thread.threadData?.user || ''
-    const {avatar} = thread.threadData?.user || ''
+    const { nickname } = thread.threadData?.user || ''
+    const { avatar } = thread.threadData?.user || ''
     const threadId = thread?.threadData?.id
-    if(thread.threadData?.isAnonymous) {
-      user.getShareData({nickname, avatar,threadId})
+    if (thread.threadData?.isAnonymous) {
+      user.getShareData({ nickname, avatar, threadId })
       thread.threadData.user.nickname = '匿名用户'
       thread.threadData.user.avatar = ''
     }
   }
   onShow() {
     const { thread, user } = this.props
-    if(user.shareThreadid === thread?.threadData?.id) {
-      if(thread.threadData?.isAnonymous){
-          thread.threadData.user.nickname = user.shareNickname
-          thread.threadData.user.avatar = user.shareAvatar
-          user.getShareData({})
+    if (user.shareThreadid === thread?.threadData?.id) {
+      if (thread.threadData?.isAnonymous) {
+        thread.threadData.user.nickname = user.shareNickname
+        thread.threadData.user.avatar = user.shareAvatar
+        user.getShareData({})
       }
     }
   }
@@ -591,7 +591,7 @@ class ThreadH5Page extends React.Component {
         });
     }
 
-    const { success, msg, isApproved } = await this.props.comment.createComment(params, this.props.thread);
+    const { success, msg, isApproved, redPacketAmount } = await this.props.comment.createComment(params, this.props.thread);
     if (success) {
       // 更新帖子中的评论数据
       this.props.thread.updatePostCount(this.props.thread.totalCount);
@@ -602,6 +602,10 @@ class ThreadH5Page extends React.Component {
       if (isRedPack) {
         // 评论获得红包帖，更新帖子数据
         await this.props.thread.fetchThreadDetail(id);
+      }
+
+      if (redPacketAmount && redPacketAmount > 0) {
+        this.props.thread.setRedPacket(redPacketAmount);
       }
 
       // 更新列表store数据
@@ -1102,18 +1106,18 @@ class ThreadH5Page extends React.Component {
               {/* 操作区 */}
               <View className={footer.operate}>
                 <View className={footer.icon} onClick={() => this.onMessageClick()}>
-                  {this.state.stateFlag ? 
+                  {this.state.stateFlag ?
                     totalCount > 0 ? (
-                    <View className={classNames(footer.badge, totalCount < 10 && footer.isCricle)}>
-                      {totalCount > 99 ? '99+' : `${totalCount || '0'}`}
-                    </View>
-                  ) : (
-                    ''
-                  ) : (
-                    <View className={footer.content}>
-                      正文
-                    </View>
-                  )}
+                      <View className={classNames(footer.badge, totalCount < 10 && footer.isCricle)}>
+                        {totalCount > 99 ? '99+' : `${totalCount || '0'}`}
+                      </View>
+                    ) : (
+                      ''
+                    ) : (
+                      <View className={footer.content}>
+                        正文
+                      </View>
+                    )}
                   <Icon size="20" name="MessageOutlined"></Icon>
                 </View>
                 <Icon

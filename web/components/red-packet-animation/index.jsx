@@ -20,17 +20,17 @@ const Index = ({ onClose, money = '0.00' }) => {
   };
   return (
     <div className={style.masking} onClick={e => handleClose(e)}>
-        <div className={style.container}>
-            <div className={style.moneyText} id='moneyText'>
-                <div className={style.text}>恭喜您，领到了</div>
-                <div className={style.money}>{money}元</div>
-            </div>
-            <div className={style.button} id='button' onClick={handleClick}>
-                <div className={style.open} id='open'>开</div>
-            </div>
-            <img src="/dzq-img/up.png" id='bottom' className={style.animationUp}/>
-            <img src="/dzq-img/bottom.gif" id='up' className={style.animationBottom}/>
+      <div className={style.container} onClick={e => e.stopPropagation()}>
+        <div className={style.moneyText} id='moneyText'>
+          <div className={style.text}>恭喜您，领到了</div>
+          <div className={style.money}>{money}元</div>
         </div>
+        <div className={style.button} id='button' onClick={handleClick}>
+          <div className={style.open} id='open'>开</div>
+        </div>
+        <img src="/dzq-img/up.png" id='bottom' className={style.animationUp} />
+        <img src="/dzq-img/bottom.gif" id='up' className={style.animationBottom} />
+      </div>
     </div>);
 };
 export default Index;

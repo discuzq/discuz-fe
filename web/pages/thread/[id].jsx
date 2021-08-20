@@ -231,9 +231,6 @@ class Detail extends React.Component {
         return;
       }
 
-      const resRedp = await this.props.thread.getRedPacketInfo(id);
-      console.log(resRedp, 1311);
-
       // 判断是否审核通过
       const isApproved = (this.props.thread?.threadData?.isApproved || 0) === 1;
       if (!isApproved) {
