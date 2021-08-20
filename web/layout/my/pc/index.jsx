@@ -40,7 +40,7 @@ class PCMyPage extends React.Component {
     };
 
     if (myThreadsList.length === 0) {
-     this.state.isLoading = true;
+      this.state.isLoading = true;
     }
   }
 
@@ -127,12 +127,17 @@ class PCMyPage extends React.Component {
     });
   };
 
+  // 是否显示续费卡片
+  whetherIsShowRenewalCard = () => {
+    return this.props.site?.siteMode === 'pay' && !this.props.user?.isAdmini;
+  };
+
   renderRight = () => {
     // 条件都满足时才显示微信
     const IS_WECHAT_ACCESSABLE = this.props.site.wechatEnv !== 'none' && !!this.props.user.wxNickname;
     return (
       <>
-        {this.props.site?.siteMode === 'pay' && (
+        {this.whetherIsShowRenewalCard() && (
           <MemberShipCard
             shipCardClassName={styles.MemberShipCardWrapperPc}
             onRenewalFeeClick={this.onRenewalFeeClick}

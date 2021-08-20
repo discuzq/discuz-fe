@@ -207,6 +207,11 @@ class index extends Component {
     });
   };
 
+  // 是否显示续费卡片
+  whetherIsShowRenewalCard = () => {
+    return this.props.site?.siteMode === 'pay' && !this.props.user?.isAdmini && !this.props.isOtherPerson
+  }
+
   // 点击去到续费页面
   onRenewalFeeClick = () => {
     Router.push({
@@ -312,7 +317,7 @@ class index extends Component {
             </>
           )}
         </div>
-        {this.props.site?.siteMode === 'pay' && !this.props.isOtherPerson && (
+        {this.whetherIsShowRenewalCard() && (
           <MemberShipCard onRenewalFeeClick={this.onRenewalFeeClick} />
         )}
         {/* 右上角屏蔽按钮 */}
