@@ -41,6 +41,9 @@ const Index = ({ onClose = () => {}, money = '0.00' }) => {
               },
             )}/>
         </div>
+        <div className={style.button} id='button' onClick={handleClick}>
+          <div className={style.open} id='open'>开</div>
+        </div>
     </div>);
 };
 export default Index;

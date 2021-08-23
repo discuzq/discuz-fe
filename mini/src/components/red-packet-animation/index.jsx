@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import style from './index.module.scss';
 import { View, Image } from '@tarojs/components'
 import upImg from '../../public/dzq-img/up.png'
@@ -10,16 +10,16 @@ const buttonStyle = {transform: 'rotateY(360deg)', visibility: 'hidden'};
 const openStyle = {visibility: 'hidden'};
 const moneyTextStyle = {opacity: '1'}
 
-const [start, setStart] = useState(false) 
-const handleClick = () => {
+  const [start, setStart] = useState(false)
+  const handleClick = () => {
     setStart(true)
 };
 const handleClose = () => {
     if (typeof onClose === 'function' && start) {
         onClose()
     }
-}
-return (
+  }
+  return (
     <View className={style.masking} onClick={handleClose}>
         <View className={style.container}>
             <View className={style.moneyText} style={start ? moneyTextStyle : {}}>

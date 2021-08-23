@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter } from 'next/router';
 import { inject, observer } from 'mobx-react';
-import { readThreadDetail, readCommentList } from '@server';
+import { readThreadDetail, readCommentList, getRedPacketInfo } from '@server';
 import ThreadH5Page from '@layout/thread/h5';
 import ThreadPCPage from '@layout/thread/pc';
 import HOCFetchSiteData from '@middleware/HOCFetchSiteData';

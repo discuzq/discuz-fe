@@ -18,50 +18,48 @@ import styles from './index.module.scss';
  */
 
 const Index = (props) => {
+  const {
+    title = '',
+    payType,
+    price,
+    paid,
+    attachmentPrice,
+    openedMore,
+  } = props.data || {};
+
+  const needPay = useMemo(() => payType !== 0 && !paid, [paid, payType]);
+
+  const {
+    onClick,
+    onPay,
+    onOpen,
+    platform,
+    updateViewCount,
+  } = props;
+
+  // 标题显示37个字符
+  const newTitle = useMemo(() => {
+    if (title.length > 100) {
+      return `${title.slice(0, 100)}...`;
+    }
+    return title;
+  }, [title]);
+
+  // 帖子属性内容
+  const renderThreadContent = ({ content: data, attachmentPrice, payType, paid } = {}) => {
     const {
-        title = '',
-        payType,
-        price,
-        paid,
-        attachmentPrice,
-        openedMore,
-    } = props.data || {};
+      text,
+      imageData,
+      audioData,
+      videoData,
+      goodsData,
+      redPacketData,
+      rewardData,
+      fileData,
+      threadId,
+    } = handleAttachmentData(data);
 
-    const needPay = useMemo(() => {
-      return payType !== 0 && !paid
-    }, [paid, payType])
-
-    const {
-      onClick,
-      onPay,
-      onOpen,
-      platform,
-      updateViewCount
-    } = props
-
-    // 标题显示37个字符
-    const newTitle = useMemo(() => {
-      if (title.length > 100) {
-        return `${title.slice(0, 100)}...`
-      }
-      return title
-    }, [title])
-
-    // 帖子属性内容
-    const renderThreadContent = ({ content: data, attachmentPrice, payType, paid } = {}) => {
-        const {
-          text,
-          imageData,
-          audioData,
-          videoData,
-          goodsData,
-          redPacketData,
-          rewardData,
-          fileData,
-          threadId,
-        } = handleAttachmentData(data);
-
-        return (
+    return (
           <>
               {text && <PostContent
                 onContentHeightChange={props.onContentHeightChange}
@@ -86,26 +84,30 @@ const Index = (props) => {
                     updateViewCount={updateViewCount}
                   />
                 </WrapperView>
-                
+
               )}
               {imageData?.length > 0 && (
                   <ImageDisplay
-                      platform={props.platform} 
-                      imgData={imageData} 
+                      platform={props.platform}
+                      imgData={imageData}
                       isPay={needPay}
                       onPay={onPay}
-                      onClickMore={onClick} 
+                      onClickMore={onClick}
                       onImageReady={props.onImageReady}
                       updateViewCount={updateViewCount}
                   />
-                  )
+              )
               }
               {rewardData && <Packet
                 type={1}
-                money={rewardData.money}
+                // money={rewardData.money}
                 onClick={onClick}
               />}
-              {redPacketData && <Packet money={redPacketData.money || 0} onClick={onClick} condition={redPacketData.condition} />}
+              {redPacketData && <Packet
+              // money={redPacketData.money || 0} 
+              onClick={onClick}
+              condition={redPacketData.condition}
+              />}
               {goodsData && <ProductItem
                   image={goodsData.imagePath}
                   amount={goodsData.price}
@@ -115,40 +117,38 @@ const Index = (props) => {
               {audioData && <AudioPlay url={audioData.mediaUrl} isPay={needPay} onPay={onPay} updateViewCount={updateViewCount}/>}
               {fileData?.length > 0 && <AttachmentView threadId={threadId} attachments={fileData} onPay={onPay} isPay={needPay} updateViewCount={updateViewCount}/>}
           </>
-        );
-    }
+    );
+  };
 
-    return (
+  return (
         <>
           <div className={`${platform === 'h5' ? styles.wrapper : styles.wrapperPC}`}>
             {title && <div className={styles.title} onClick={onClick}>{newTitle}</div>}
 
             {renderThreadContent(props.data)}
           </div>
-            
+
           {
               needPay && (
                 <div className={styles.pay}>
                   <Button className={styles.button} type="primary" onClick={onPay}>
                       <Icon className={styles.payIcon} name="GoldCoinOutlined" size={16}></Icon>
                       {payType === 1 ? <p className={styles.payText}>{`支付${price}元查看剩余内容`}</p> : <p className={styles.payText}>{`支付${attachmentPrice}元查看附件内容`}</p>}
-                  </Button>                  
+                  </Button>
                 </div>
-                
+
               )
           }
         </>
-    )
-}
+  );
+};
 
-export default React.memo(Index)
+export default React.memo(Index);
 
 // 处理
-const WrapperView = ({ children, onClick }) => {
-  return (
+const WrapperView = ({ children, onClick }) => (
     <div className={styles.wrapperView}>
       {children}
       <div className={styles.placeholder} onClick={onClick}></div>
     </div>
-  )
-}
+);
