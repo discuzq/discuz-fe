@@ -67,7 +67,8 @@
       // line-height: $font-line-height-middle;
       line-height: 1.6;
       font-size: $font-size-middle;
-      line-break: anywhere;
+      line-break: strict;
+      word-break: break-word;
     }
     p {
       margin-bottom: $margin-4n;
