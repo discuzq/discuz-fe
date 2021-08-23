@@ -1,15 +1,18 @@
 import React from 'react';
 import styles from './index.module.scss';
 import { inject, observer } from 'mobx-react';
+import { withRouter } from 'next/router';
 
 @inject('user')
 @observer
 class UserCenterHeaderImage extends React.Component {
   render() {
+    const { query } = this.props.router;
+
     let backgroundUrl = this.props.user?.backgroundUrl;
 
-    if (this.props.isOtherPerson) {
-      backgroundUrl = this.props.user.targetUserBackgroundUrl;
+    if (query.id) {
+      backgroundUrl = this.props.user.targetUsers[query.id]?.backgroundUrl;
     }
 
     return (
@@ -24,4 +27,4 @@ class UserCenterHeaderImage extends React.Component {
   }
 }
 
-export default UserCenterHeaderImage;
+export default withRouter(UserCenterHeaderImage);

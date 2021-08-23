@@ -24,6 +24,12 @@ class H5OthersPage extends React.Component {
     this.state = {
       fetchUserInfoLoading: true,
     };
+
+    const { id = '' } = getCurrentInstance().router.params;
+
+    if (this.props.user.targetUsers[id]) {
+      this.state.fetchUserInfoLoading = false;
+    }
     // 因为这里的 onShow 的 flag 是路由，导致如果进入多个用户信息页面，重复触发了
     // 一个页面只负责一个用户 id，用此 flag 来解决重复加载的问题
     this.targetUserId = null;
@@ -74,16 +80,13 @@ class H5OthersPage extends React.Component {
         return;
       }
 
-      this.setState({
-        fetchUserInfoLoading: true,
-      });
+      if (!this.props.user.targetUsers[this.targetUserId]) {
+        this.setState({
+          fetchUserInfoLoading: true,
+        });
+      }
 
-      // FIXME: 缓存所有加载的用户，利用缓存特性进行加载，避免此类问题
-      // TODO: 需要重新进行存储的设计
-      // 清空操作在 onshow 时再进行，避免数据更新导致的视图错误
-      this.props.user.removeTargetUserInfo();
-
-      await this.props.user.getTargetUserInfo(this.targetUserId);
+      await this.props.user.getTargetUserInfo({ userId: this.targetUserId });
 
       this.setState({
         fetchUserInfoLoading: false,
@@ -166,24 +169,39 @@ class H5OthersPage extends React.Component {
 
   // 渲染顶部title
   renderTitleContent = () => {
+    const { id = '' } = getCurrentInstance().router.params;
     const { user } = this.props;
+
+    if (user.targetUsers[id]) {
+      return (
+        <View className={styles.topBar}>
+          <View onClick={this.handleBack} className={styles.customCapsule} style={this.getTopBarBtnStyle()}>
+            <Icon size={18} name="LeftOutlined" />
+          </View>
+          <View style={this.getTopBarTitleStyle()} className={styles.fullScreenTitle}>
+            {user.targetUsers[id]?.nickname}的主页
+          </View>
+        </View>
+      );
+    }
+
     return (
       <View className={styles.topBar}>
         <View onClick={this.handleBack} className={styles.customCapsule} style={this.getTopBarBtnStyle()}>
           <Icon size={18} name="LeftOutlined" />
-        </View>
-        <View style={this.getTopBarTitleStyle()} className={styles.fullScreenTitle}>
-          {user.targetUser?.nickname}的主页
         </View>
       </View>
     );
   };
 
   getBackgroundUrl = () => {
+    const { id = '' } = getCurrentInstance().router.params;
+    
     let backgroundUrl = null;
-    if (this.props.user?.targetOriginalBackGroundUrl) {
-      backgroundUrl = this.props.user.targetOriginalBackGroundUrl;
+    if (id && this.props.user?.targetUsers[id]) {
+      backgroundUrl = this.props.user.targetUsers[id].originalBackGroundUrl;
     }
+    
     if (!backgroundUrl) return false;
     return backgroundUrl;
   };
@@ -238,7 +256,9 @@ class H5OthersPage extends React.Component {
       >
         <View className={styles.mobileLayout}>
           {this.renderTitleContent()}
-          {this.state.fetchUserInfoLoading && <BottomView className={styles.loadingBox} isBox loadingText="加载中..." />}
+          {this.state.fetchUserInfoLoading && (
+            <BottomView className={styles.loadingBox} isBox loadingText="加载中..." />
+          )}
           <View
             style={{
               display: !this.state.fetchUserInfoLoading ? 'block' : 'none'
@@ -269,9 +289,7 @@ class H5OthersPage extends React.Component {
             </View>
 
             <View className={styles.threadItemContainer}>
-              {userThreadsList.length > 0 && (
-                  <UserCenterThreads showBottomStyle={false} data={userThreadsList} />
-                )}
+              {userThreadsList.length > 0 && <UserCenterThreads showBottomStyle={false} data={userThreadsList} />}
             </View>
           </View>
         </View>

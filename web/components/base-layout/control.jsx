@@ -3,7 +3,6 @@ import { inject, observer } from 'mobx-react';
 import { noop } from '@components/thread/utils';
 import { throttle } from '@common/utils/throttle-debounce.js';
 
-
 import H5BaseLayout from './h5';
 import PCBaseLayout from './pc';
 

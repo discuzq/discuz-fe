@@ -395,7 +395,6 @@ class ThreadAction extends ThreadStore {
       IndexStore?.deleteThreadsData && IndexStore.deleteThreadsData({ id }, SiteStore);
       SearchStore?.deleteThreadsData && SearchStore.deleteThreadsData({ id });
       TopicStore?.deleteThreadsData && TopicStore.deleteThreadsData({ id });
-      UserStore?.deleteUserThreads && UserStore?.deleteUserThreads(id);
 
       return {
         code: res.code,
