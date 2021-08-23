@@ -538,24 +538,25 @@ class Index extends Component {
     const amount = rewardAmount + redAmount;
     const options = { amount };
     if (!isDraft && amount > 0) {
-      let type = ORDER_TRADE_TYPE.RED_PACKET;
+      let type = ORDER_TRADE_TYPE.ORDER_TYPE_REDPACKET;
       let title = '支付红包';
       if (redAmount) {
         options.redAmount = redAmount;
       }
       if (rewardAmount) {
-        type = ORDER_TRADE_TYPE.POST_REWARD;
+        type = ORDER_TRADE_TYPE.ORDER_TYPE_QUESTION_REWARD;
         title = '支付悬赏';
         options.rewardAmount = rewardAmount;
       }
       if (rewardAmount && redAmount) {
-        type = ORDER_TRADE_TYPE.COMBIE_PAYMENT;
+        type = ORDER_TRADE_TYPE.ORDER_TYPE_MERGE;
         title = '支付红包和悬赏';
       }
 
       // 等待支付
       PayBox.createPayBox({
         data: { ...options, title, type },
+        currentPage: { type: 2 },
         orderCreated: async (orderInfo) => {
           const { orderSn } = orderInfo;
           setPostData({ orderInfo });

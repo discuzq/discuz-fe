@@ -16,6 +16,8 @@ import BaseLayout from '@components/base-layout';
 import { Toast } from '@discuzq/design';
 import { withRouter } from 'next/router';
 import UserCenterHeaderPc from '@components/user-center/header-pc';
+import MemberShipCard from '@components/MemberShipCard';
+import RenewalFee from '@components/user-center/renewal-fee';
 
 @inject('site')
 @inject('user')
@@ -34,10 +36,11 @@ class PCMyPage extends React.Component {
       showFansPopup: false, // 是否弹出粉丝框
       showFollowPopup: false, // 是否弹出关注框
       isLoading: false,
+      isRenewalFeeVisible: false, // 是否弹出续费弹窗
     };
 
     if (myThreadsList.length === 0) {
-     this.state.isLoading = true;
+      this.state.isLoading = true;
     }
   }
 
@@ -47,7 +50,7 @@ class PCMyPage extends React.Component {
     }
     // 如果不是进入 thread 详情页面
     if (!/thread\//.test(url)) {
-      this.props.index.clearList({ namespace: 'my' })
+      this.props.index.clearList({ namespace: 'my' });
     }
   };
 
@@ -110,11 +113,36 @@ class PCMyPage extends React.Component {
     Router.push({ url: `/user/${id}` });
   };
 
+  // 点击续费弹窗
+  onRenewalFeeClick = () => {
+    this.setState({
+      isRenewalFeeVisible: true,
+    });
+  };
+
+  // 关闭续费弹窗
+  onRenewalFeeClose = () => {
+    this.setState({
+      isRenewalFeeVisible: false,
+    });
+  };
+
+  // 是否显示续费卡片
+  whetherIsShowRenewalCard = () => {
+    return this.props.site?.siteMode === 'pay' && !this.props.user?.isAdmini;
+  };
+
   renderRight = () => {
     // 条件都满足时才显示微信
     const IS_WECHAT_ACCESSABLE = this.props.site.wechatEnv !== 'none' && !!this.props.user.wxNickname;
     return (
       <>
+        {this.whetherIsShowRenewalCard() && (
+          <MemberShipCard
+            shipCardClassName={styles.MemberShipCardWrapperPc}
+            onRenewalFeeClick={this.onRenewalFeeClick}
+          />
+        )}
         <SidebarPanel
           platform="h5"
           type="normal"
@@ -275,6 +303,7 @@ class PCMyPage extends React.Component {
             </div>
           </div>
         </BaseLayout>
+        <RenewalFee visible={this.state.isRenewalFeeVisible} onClose={this.onRenewalFeeClose} />
       </>
     );
   }

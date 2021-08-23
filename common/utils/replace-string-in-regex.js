@@ -44,6 +44,7 @@ export default function replaceStringInRegex(text, type, newSubstr) {
       const CODE_PLACEHOLDER = `#$#break#$#`;
       let noCodeText = newText.replace(/<code>[\s\S]*?<\/code>/g, CODE_PLACEHOLDER); // 用占位符替代代码块
       for(let i = 0; i < codeBlocks.length; i++) {
+        // 把代码块中的<br>换成*br*从而不参与计算长度，并换回占位符
         noCodeText = noCodeText.replace(CODE_PLACEHOLDER, codeBlocks[i].replace(/<br[^<>]*>/g, newSubstr));
       }
       newText = noCodeText;

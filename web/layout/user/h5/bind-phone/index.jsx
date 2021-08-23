@@ -13,6 +13,7 @@ import { get } from '@common/utils/get';
 import HOCTencentCaptcha from '@middleware/HOCTencentCaptcha';
 import { isExtFieldsOpen } from '@common/store/login/util';
 import { MOBILE_LOGIN_STORE_ERRORS } from '@common/store/login/mobile-login-store';
+import loginHelper from '@common/utils/login-helper';
 
 
 @inject('site')
@@ -38,7 +39,7 @@ class BindPhoneH5Page extends React.Component {
 
   handleBindButtonClick = async () => {
     try {
-      const { commonLogin, router: { query } } = this.props;
+      const { commonLogin, router: { query }, user } = this.props;
       if (!commonLogin.loginLoading) {
         return;
       }
@@ -46,16 +47,16 @@ class BindPhoneH5Page extends React.Component {
       commonLogin.loginLoading = false;
       const resp = await this.props.mobileBind.bind(sessionToken);
       const uid = get(resp, 'uid', '');
-      this.props.user.updateUserInfo(uid);
+      user.updateUserInfo(uid || user.id);
       Toast.success({
-        content: '登录成功',
+        content: '绑定成功',
         hasMask: false,
         duration: 1000,
+        onClose: () => {
+          commonLogin.loginLoading = true;
+          loginHelper.restore();
+        }
       });
-      setTimeout(() => {
-        commonLogin.loginLoading = true;
-        window.location.href = '/';
-      }, 1000);
     } catch (e) {
       this.props.commonLogin.loginLoading = true;
       // 跳转补充信息页
@@ -64,7 +65,7 @@ class BindPhoneH5Page extends React.Component {
           this.props.commonLogin.needToCompleteExtraInfo = true;
           return this.props.router.push('/user/supplementary');
         }
-        return window.location.href = '/';
+        return loginHelper.restore();
       }
 
       // 跳转状态页
@@ -143,7 +144,7 @@ class BindPhoneH5Page extends React.Component {
             wechatEnv === 'miniProgram'
               ? <div className={platform === 'h5' ? layout.functionalRegion : layout.pc_functionalRegion}>
                   <span className={layout.clickBtn} onClick={() => {
-                    window.location.href = '/';
+                    loginHelper.restore();
                   }} >跳过</span>
                 </div>
               : <div className={platform === 'h5' ? layout.functionalRegion : layout.pc_functionalRegion}>

@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 import { Avatar } from '@discuzq/design';
 import classNames from 'classnames';
 import calcCosImageQuality from '@common/utils/calc-cos-image-quality';
+
 @inject('site')
 @inject('user')
 @inject('card')

@@ -1,4 +1,5 @@
 import React from 'react';
+import { inject, observer } from 'mobx-react';
 import Spin from '@discuzq/design/dist/components/spin/index';
 import Toast from '@discuzq/design/dist/components/toast/index';
 import { createFollow, deleteFollow, getUserFollow } from '@server';
@@ -13,6 +14,8 @@ import styles from './index.module.scss';
 import { followerAdapter } from './adapter';
 import throttle from '@common/utils/thottle.js';
 
+@inject('user')
+@observer
 class UserCenterFollows extends React.Component {
   firstLoaded = false;
   containerRef = React.createRef(null);
@@ -56,139 +59,118 @@ class UserCenterFollows extends React.Component {
   totalPage = 1;
 
   fetchFollows = async () => {
-    const opts = {
-      params: {
+    try {
+      const followRes = await this.props.user.getUserFollowers({
+        userId: this.props.userId || this.props.user.id,
         page: this.page,
-        perPage: 20,
-        filter: {
-          userId: this.props.userId,
-        },
-      },
-    };
+        searchValue: this.state.searchValue,
+      });
 
-    const followRes = await getUserFollow(opts);
-
-    if (followRes.code !== 0) {
-      console.error(followRes);
-      return;
-    }
-
-    const pageData = get(followRes, 'data.pageData', []);
-    const totalPage = get(followRes, 'data.totalPage', 1);
-
-    if (this.props.updateSourceTotalPage) {
-      this.props.updateSourceTotalPage(totalPage);
-    }
-    this.totalPage = totalPage;
-
-    const newFollows = Object.assign({}, this.props.dataSource || this.state.follows);
-
-    newFollows[this.page] = pageData;
-
-    if (this.props.setDataSource) {
-      this.props.setDataSource(newFollows);
-    }
-    this.setState({
-      follows: newFollows,
-    });
-
-    if (this.page <= this.totalPage) {
-      if (this.props.updateSourcePage) {
-        this.props.updateSourcePage(this.props.sourcePage + 1);
+      if (followRes.code !== 0) {
+        console.error(followRes);
+        Toast.error({
+          content: followRes.msg,
+          duration: 2000,
+        });
+        return;
       }
-      this.page += 1;
+
+      this.props.user.setUserFollowers({
+        userId: this.props.userId || this.props.user.id,
+        page: this.page,
+        followersData: followRes,
+      });
+
+      const totalPage = get(followRes, 'data.totalPage', 1);
+
+      this.totalPage = totalPage;
+
+      if (this.page <= this.totalPage) {
+        this.page += 1;
+      }
+    } catch (error) {
+      console.error(error);
+      if (error.code) {
+        Toast.error({
+          content: error.msg,
+          duration: 2000,
+        });
+      }
     }
   };
 
-  setFansBeFollowed({ id, isMutual }) {
-    const targetFollows = deepClone(this.props.dataSource || this.state.follows);
-    Object.keys(targetFollows).forEach((key) => {
-      targetFollows[key].forEach((user) => {
-        if (get(user, 'user.pid') !== id) return;
-        user.userFollow.isMutual = isMutual;
-        user.userFollow.isFollow = true;
-      });
-    });
-    if (this.props.setDataSource) {
-      this.props.setDataSource(targetFollows);
-    }
-    this.setState({
-      follows: targetFollows,
-    });
-  }
-
-  setFansBeUnFollowed(id) {
-    const targetFollows = deepClone(this.props.dataSource || this.state.follows);
-    Object.keys(targetFollows).forEach((key) => {
-      targetFollows[key].forEach((user) => {
-        if (get(user, 'user.pid') !== id) return;
-        user.userFollow.isFollow = false;
-      });
-    });
-    if (this.props.setDataSource) {
-      this.props.setDataSource(targetFollows);
-    }
-    this.setState({
-      follows: targetFollows,
-    });
-  }
-
-  followUser = throttle(async ({ id: userId }) => {
-    const res = await createFollow({ data: { toUserId: userId } });
-    if (res.code === 0 && res.data) {
-      Toast.success({
-        content: '操作成功',
+  followUser = async ({ id: userId }) => {
+    try {
+      const res = await createFollow({ data: { toUserId: userId } });
+      if (res.code === 0 && res.data) {
+        Toast.success({
+          content: '操作成功',
+          hasMask: false,
+          duration: 2000,
+        });
+        this.props.user.followUser({ userId, followRes: res });
+        return {
+          msg: '操作成功',
+          data: res.data,
+          success: true,
+        };
+      }
+      Toast.error({
+        content: res.msg || '关注失败',
         hasMask: false,
-        duration: 1000,
+        duration: 2000,
       });
-      this.setFansBeFollowed({
-        id: userId,
-        isMutual: res.data.isMutual,
-      });
-      return {
-        msg: '操作成功',
-        data: res.data,
-        success: true,
-      };
-    }
-    Toast.error({
-      content: res.msg || '关注失败',
-      hasMask: false,
-      duration: 2000,
-    });
-    return {
-      msg: res.msg,
-      data: null,
-      success: false,
-    };
-  }, 1000);
 
-  unFollowUser = throttle(async ({ id }) => {
-    const res = await deleteFollow({ data: { id, type: 1 } });
-    if (res.code === 0 && res.data) {
-      Toast.success({
-        content: '操作成功',
-        hasMask: false,
-        duration: 1000,
-      });
-      this.setFansBeUnFollowed(id);
       return {
-        msg: '操作成功',
-        data: res.data,
-        success: true,
+        msg: res.msg,
+        data: null,
+        success: false,
       };
+    } catch (error) {
+      console.error(error);
+      Toast.error({
+        content: '网络错误',
+        duration: 2000,
+      });
     }
-    Toast.error({
-      content: res.msg || '取消关注失败',
-      hasMask: false,
-      duration: 2000,
-    });
-    return {
-      msg: res.msg,
-      data: null,
-      success: false,
-    };
-  }, 1000);
+  };
+
+  unFollowUser = async ({ id }) => {
+    try {
+      const res = await deleteFollow({ data: { id, type: 1 } });
+      if (res.code === 0 && res.data) {
+        Toast.success({
+          content: '操作成功',
+          hasMask: false,
+          duration: 2000,
+        });
+        this.props.user.unFollowUser({ userId: id });
+        return {
+          msg: '操作成功',
+          data: res.data,
+          success: true,
+        };
+      }
+
+      Toast.error({
+        content: res.msg || '取消关注失败',
+        hasMask: false,
+        duration: 2000,
+      });
+
+      return {
+        msg: res.msg,
+        data: null,
+        success: false,
+      };
+    } catch (error) {
+      console.error(error);
+      Toast.error({
+        content: '网络错误',
+        duration: 2000,
+      });
+    }
+  };
 
   async componentDidMount() {
     // 第一次加载完后，才允许加载更多页面
@@ -212,18 +194,6 @@ class UserCenterFollows extends React.Component {
     if (prevProps.userId !== this.props.userId) {
       this.page = 1;
       this.totalPage = 1;
-      if (this.props.updateSourcePage) {
-        this.props.updateSourcePage(1);
-      }
-      if (this.props.updateSourceTotalPage) {
-        this.props.updateSourceTotalPage(1);
-      }
-      if (this.props.setDataSource) {
-        this.props.setDataSource({});
-      }
-      this.setState({
-        follows: {},
-      });
       await this.loadMore();
     }
   }
@@ -260,6 +230,8 @@ class UserCenterFollows extends React.Component {
   };
 
   render() {
+    const dataSource = followerAdapter(this.props.user.followStore[this.props.userId || this.props.user.id]?.data || {});
+
     return (
       <View>
         <List
@@ -270,7 +242,7 @@ class UserCenterFollows extends React.Component {
           className={styles.userCenterFriends}
         >
           <View className={styles.followBody}>
-            {followerAdapter(this.props.dataSource || this.state.follows).map((user, index) => {
+            {dataSource.map((user, index) => {
               if (index + 1 > this.props.limit) return null;
               return (
                 <View key={user.id}>

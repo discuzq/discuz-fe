@@ -14,6 +14,7 @@ import {
   mode,
 } from '../../../../../common/store/pay/weixin-h5-backend';
 import throttle from '@common/utils/thottle.js';
+import loginHelper from '@common/utils/login-helper';
 
 @inject('site')
 @inject('user')
@@ -210,7 +211,7 @@ export default class PayBox extends React.Component {
         );
       }
 
-      return this.walletPaySubText();
+      // return this.walletPaySubText();
     }
 
     if (item.paymentType === PAYWAY_MAP.WX) {
@@ -251,7 +252,10 @@ export default class PayBox extends React.Component {
                     <Icon className={styles.icon} name={item.icon} color={item.color} size={20} />
                     <p className={styles.text}>{item.name}</p>
                   </div>
-                  <div className={styles.right}>{this.renderRightChoices(item)}</div>
+                  <div className={styles.right}>
+                    {item.paymentType === PAYWAY_MAP.WALLET && this.walletPaySubText()}
+                    {this.renderRightChoices(item)}
+                  </div>
                 </div>
               );
             })}

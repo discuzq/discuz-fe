@@ -13,7 +13,7 @@ export default observer((props) => {
 
   const measure = () => {
     try {
-      typeof props.measure === 'function' && props.measure();
+      typeof props.measure === 'function' && props.measure(ref?.current?.clientHeight);
     } catch (error) {
       // console.log(error);
     }
@@ -45,7 +45,7 @@ export default observer((props) => {
   }, [ref]);
 
   return (
-    <div ref={ref}>
+    <div ref={ref} style={{ display: 'inline-block', width: '100%' }}>
       <ThreadContent
         onContentHeightChange={measure}
         onImageReady={measure}
