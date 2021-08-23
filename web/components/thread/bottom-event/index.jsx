@@ -23,6 +23,7 @@ const Index = ({
   comment = 0,
   sharing = 0,
   isLiked = false,
+  isCommented = false,
   isSendingLike = false,
   tipData,
   platform,
@@ -35,33 +36,41 @@ const Index = ({
   updateViewCount = noop,
 }) => {
   const postList = useMemo(() => {
-    const praise =  {
+    const praise = {
       icon: 'LikeOutlined',
       name: '赞',
       event: onPraise,
       type: 'like',
+      num: wholeNum,
+      actived: isLiked,
     };
 
-    return [praise, {
-      icon: 'MessageOutlined',
-      name: '评论',
-      event: onComment,
-      type: 'commonet',
-    },
-    {
-      icon: 'ShareAltOutlined',
-      name: '分享',
-      event: null,
-      type: 'share',
-    }];
-  }, [isLiked]);
+    return [
+      praise,
+      {
+        icon: 'MessageOutlined',
+        name: '评论',
+        event: onComment,
+        type: 'commonet',
+        num: comment,
+        actived: isCommented,
+      },
+      {
+        icon: 'ShareAltOutlined',
+        name: '分享',
+        event: null,
+        type: 'share',
+        num: sharing,
+      },
+    ];
+  }, [isLiked, isCommented, wholeNum, comment, sharing]);
 
   // TODO：此处逻辑需要移植到thread/index中，方便逻辑复用
   const handleClick = () => {
     updateViewCount();
 
     if (platform === 'pc') {
-      onShare()
+      onShare();
     } else {
       if (!user.isLogin()) {
         goToLoginPage({ url: '/user/login' });
@@ -70,7 +79,7 @@ const Index = ({
       setShow(true);
     }
   };
-  
+
   const [show, setShow] = useState(false);
   const onClose = () => {
     setShow(false);
@@ -84,59 +93,57 @@ const Index = ({
     card.setThreadData(data);
     Router.push({ url: `/card?threadId=${threadId}` });
   };
-  const needHeight = useMemo(() => userImgs.length !== 0 || comment > 0 || sharing > 0, [userImgs, comment, sharing]);
+  const needHeight = useMemo(() => userImgs.length !== 0, [userImgs]);
   return (
     <div>
       <div className={needHeight ? styles.user : styles.users}>
-        {userImgs.length !== 0 ? <div className={styles.userImg}>
-          <div className={styles.portrait}>
-            <Tip
-              tipData={tipData}
-              imgs={userImgs}
-              wholeNum={wholeNum}
-              showCount={ platform === 'pc' ? 10 : 5 }
-              platform={platform}
-              updateViewCount={updateViewCount}
-            ></Tip>
+        {userImgs.length !== 0 ? (
+          <div className={styles.userImg}>
+            <div className={styles.portrait}>
+              <Tip
+                tipData={tipData}
+                imgs={userImgs}
+                wholeNum={wholeNum}
+                showCount={platform === 'pc' ? 10 : 5}
+                platform={platform}
+                updateViewCount={updateViewCount}
+              ></Tip>
+            </div>
+            {/* {wholeNum !== 0 && <p className={styles.numText}>{wholeNum}</p>} */}
           </div>
-          {
-            wholeNum !== 0 && (
-              <p className={styles.numText}>
-                {wholeNum}
-              </p>
-            )
-          }
-        </div> : <div></div>}
-        <div className={styles.commentSharing}>
+        ) : (
+          <div></div>
+        )}
+        {/* <div className={styles.commentSharing}>
           {comment > 0 && <p className={styles.commentNum}>{`${comment}条评论`}</p>}
           {comment > 0 && sharing > 0 && <p className={styles.division}>·</p>}
           {sharing > 0 && <p className={styles.commentNum}>{`${sharing}次分享`}</p>}
-        </div>
+        </div> */}
       </div>
 
       <div className={needHeight ? styles.operation : styles.operations}>
-        {
-          postList.map((item, index) => (
-              <div key={index} className={styles.fabulous} onClick={item.name === '分享' ? handleClick : item.event}>
-                <Icon
-                  className={`${styles.icon} ${item.type} ${isLiked && item.name === '赞' ? styles.likedColor : styles.dislikedColor}`}
-                  name={item.icon}
-                  size={16}>
-                </Icon>
-                <span className={isLiked && item.name ===  '赞' ? styles.fabulousCancel : styles.fabulousPost}>
-                  {item.name}
-                </span>
-              </div>
-          ))
-        }
+        {postList.map((item, index) => (
+          <div key={index} className={styles.fabulousContainer}>
+            <div className={styles.fabulous} onClick={item.name === '分享' ? handleClick : item.event}>
+              <Icon
+                className={`${styles.icon} ${item.type} ${item.actived ? styles.likedColor : styles.dislikedColor}`}
+                name={item.icon}
+                size={16}
+              ></Icon>
+              <span className={item.actived ? styles.fabulousCancel : styles.fabulousPost}>
+                {item.num ? item.num : item.name}
+              </span>
+            </div>
+          </div>
+        ))}
       </div>
       <MorePopop
         show={show}
         fromThread
         handleH5Share={handleH5Share}
         onClose={onClose}
-        createCard={createCard}>
-      </MorePopop>
+        createCard={createCard}
+      ></MorePopop>
     </div>
   );
 };

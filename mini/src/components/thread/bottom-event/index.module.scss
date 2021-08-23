@@ -56,7 +56,18 @@
   @include cursor-on-pc;
   display: flex;
   align-items: center;
+  justify-content: center;
   padding: $padding-10 0;
+  flex: 1;
+
+  &:first-child {
+    justify-content: flex-start;
+  }
+
+  &:last-child {
+    justify-content: flex-end;
+  }
+
   .fabulousIcon {
     height: 35px;
     display: flex;

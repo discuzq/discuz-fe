@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { withRouter } from 'next/router';
 import { Icon, Toast } from '@discuzq/design';
 import { inject, observer } from 'mobx-react';
@@ -14,7 +14,11 @@ import { throttle } from '@common/utils/throttle-debounce';
 import { debounce } from './utils';
 import { noop } from '@components/thread/utils';
 import { updateViewCountInStorage } from '@common/utils/viewcount-in-storage';
-
+import RenderCommentList from './comment-list';
+import HOCFetchSiteData from '@middleware/HOCFetchSiteData';
+import ViewMore from '@components/view-more';
+import LoadingTips from '@components/thread-detail-pc/loading-tips';
+import BottomView from '@components/list/BottomView';
 
 @inject('site')
 @inject('index')
@@ -25,9 +29,10 @@ import { updateViewCountInStorage } from '@common/utils/viewcount-in-storage';
 @inject('card')
 @observer
 class Index extends React.Component {
-    state = {
-      isSendingLike: false,
-    }
+  state = {
+    isSendingLike: false,
+    showCommentList: false,
+  };
 
     // 分享
     onShare = (e) => {
@@ -62,7 +67,7 @@ class Index extends React.Component {
     }, 500)
 
     // 评论
-    onComment = (e) => {
+    onComment = async (e) => {
       e && e.stopPropagation();
 
       // 判断是否可以进入详情页
@@ -70,9 +75,21 @@ class Index extends React.Component {
         return;
       }
 
-      const { threadId = '' } = this.props.data || {};
+      const { threadId = '', likeReward } = this.props.data || {};
 
       if (threadId !== '') {
+        // 请求评论数据
+        if (likeReward.postCount > 0) {
+          if (this.props.enableCommentList) {
+            this.setState({
+              showCommentList: !this.state.showCommentList,
+            });
+            if (!this.state.showCommentList) {
+              await this.props.index.getThreadCommentList(threadId);
+            }
+            return;
+          }
+        }
         this.props.thread.positionToComment();
         this.props.router.push(`/thread/${threadId}`);
       } else {
@@ -175,7 +192,7 @@ class Index extends React.Component {
 
       // 执行外部传进来的点击事件
       const { onClick } = this.props;
-      if (typeof(onClick) === 'function') {
+      if (typeof onClick === 'function') {
         onClick(this.props.data);
       }
     }, 1000);
@@ -212,7 +229,39 @@ class Index extends React.Component {
         return false;
       }
       return true;
+    };
+
+  // 点击评论列表中查看更多
+  onViewMoreClick = () => {
+    // 判断是否可以进入详情页
+    if (!this.allowEnter()) {
+      return;
     }
+
+    const { threadId = '' } = this.props.data || {};
+
+    if (threadId !== '') {
+      this.props.thread.positionToComment();
+      this.props.router.push(`/thread/${threadId}`);
+    } else {
+      console.log('帖子不存在');
+    }
+  };
+
+  // 删除评论
+  deleteComment = () => {
+    const postCount = this.props.data?.likeReward?.postCount;
+
+    if (postCount > 0) {
+      this.props.data.likeReward.postCount = postCount - 1;
+
+      if (this.props.data.likeReward.postCount === 0) {
+        this.setState({
+          showCommentList: false,
+        });
+      }
+    }
+  };
 
     updateViewCount = async () => {
       const { data, site } = this.props;
@@ -255,6 +304,7 @@ class Index extends React.Component {
         payType,
         isAnonymous,
         diffTime,
+        commentList = [],
       } = data || {};
       const { isEssence, isPrice, isRedPack, isReward } = displayTag || {};
 
@@ -314,15 +364,49 @@ class Index extends React.Component {
             onComment={unifyOnClick || this.onComment}
             onPraise={unifyOnClick || this.onPraise}
             isLiked={isLike}
+            isCommented={this.state.showCommentList}
             isSendingLike={this.state.isSendingLike}
             tipData={{ postId, threadId, platform, payType }}
             platform={platform}
             updateViewCount={this.updateViewCount}
           />
+
+          {/* 评论列表 */}
+          {this.props.enableCommentList && this.state.showCommentList && (
+            <Fragment>
+              {commentList?.length > 0 && (
+                <RenderCommentList
+                  thread={{
+                    threadData: {
+                      id: data.threadId,
+                      ...data,
+                    },
+                  }}
+                  canPublish={this.props.canPublish}
+                  commentList={commentList}
+                  deleteComment={this.deleteComment}
+                ></RenderCommentList>
+              )}
+
+              {data.isLoading ? (
+                <LoadingTips type="init"></LoadingTips>
+              ) : (
+                data?.requestError?.isError && <BottomView err isError={data.requestError.isError}></BottomView>
+              )}
+
+              {data?.likeReward?.postCount > 10 && (
+                <ViewMore className={styles.viewMore} onClick={this.onViewMoreClick}></ViewMore>
+              )}
+            </Fragment>
+          )}
         </div>
       );
     }
 }
 
+Index.defaultProps = {
+  enableCommentList: false, // 是否开启评论列表
+};
+
 // eslint-disable-next-line new-cap
-export default withRouter(Index);
+export default HOCFetchSiteData(withRouter(Index));

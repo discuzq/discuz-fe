@@ -44,6 +44,13 @@ const Index = ({ cancel, pc, visible, threadPost }) => {
       return;
     }
 
+    if (new Date(time) < new Date()) {
+      Toast.info({ content: '投票结束时间必须大于当前时间' });
+      return;
+    }
+
+
+
     setSubitems(subitemsCopy);
     threadPost.setPostData({
       vote: {

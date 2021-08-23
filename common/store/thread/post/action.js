@@ -112,6 +112,7 @@ class ThreadPostAction extends ThreadPostStore {
 
   @action.bound
   async fetchTopic(options = {}) {
+    this.showNewTopic = false;
     this.setLoadingStatus(LOADING_TOTAL_TYPE.topic, true);
     const params = {
       page: 1,
@@ -120,9 +121,9 @@ class ThreadPostAction extends ThreadPostStore {
     };
     const ret = await readTopics({ params });
     const { code, data } = ret;
-    const { pageData = [], totalCount = 0 } = data || {};
+    const { pageData = [], totalCount = 0, isNewTopic = false } = data || {};
     if (code === 0) {
-      if (params.page === 1) this.setTopic(pageData || [], totalCount);
+      if (params.page === 1) this.setTopic(pageData || [], totalCount, isNewTopic);
       else this.appendTopic(pageData || [], totalCount);
     }
     this.setLoadingStatus(LOADING_TOTAL_TYPE.topic, false);
@@ -163,9 +164,10 @@ class ThreadPostAction extends ThreadPostStore {
 
   // 设置话题列表
   @action.bound
-  setTopic(data, totalCount) {
+  setTopic(data, totalCount, isNewTopic) {
     this.topics = data;
     this.topicTotalCount = totalCount;
+    this.showNewTopic = isNewTopic;
   }
 
   // 附加话题列表

@@ -55,6 +55,7 @@ export default observer((props) => {
         data={data}
         // className={styles.listItem}
         recomputeRowHeights={(data) => recomputeRowHeights(data)}
+        enableCommentList={props.enableCommentList}
       />
     </div>
   );

@@ -102,7 +102,7 @@ class TopicSelect extends Component {
   );
 
   render() {
-    const { topics = [] } = this.props.threadPost;
+    const { topics = [], showNewTopic } = this.props.threadPost;
     const { keywords, finish } = this.state;
 
     return (
@@ -135,7 +135,7 @@ class TopicSelect extends Component {
           onRefresh={() => this.fetchTopics()}
           hasOnScrollToLower={true}
         >
-          {keywords && topics.map(item => item.content).indexOf(keywords) === -1 && this.renderItem({ content: keywords, newTopic: '新话题' })}
+          {showNewTopic && this.renderItem({ content: keywords, newTopic: '新话题' })}
           {topics.map(item => (
             <React.Fragment key={item.topicId}>
               {this.renderItem(item)}

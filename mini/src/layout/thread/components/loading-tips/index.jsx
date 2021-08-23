@@ -7,7 +7,7 @@ import classNames from 'classnames';
 
 // 加载提示
 export default function LoadingTips(props) {
-  const { type, isError } = props;
+  const { type, isError, onErrorClick = ()=>{} } = props;
 
   let elem =
     type === 'init' ? (
@@ -22,9 +22,9 @@ export default function LoadingTips(props) {
 
   if (isError) {
     elem = (
-      <View className={styles.error}>
+      <View className={styles.error} onClick={onErrorClick}>
         <Icon name="TipsOutlined"></Icon>
-        <Text className={styles.text}>数据加载失败，请稍后再试</Text>
+        <Text className={styles.text}>数据加载失败，请稍后点击重试</Text>
       </View>
     );
   }
