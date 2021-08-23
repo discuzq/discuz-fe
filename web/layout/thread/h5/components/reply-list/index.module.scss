@@ -34,7 +34,7 @@
             padding-left: rem($padding-2n);
             .masterText {
               border-radius: rem(4) 0;
-              background: #ff9700;
+              background: $primary-color;
               display: inline-block;
               font-size: rem(12);
               -webkit-text-size-adjust:none;
@@ -117,7 +117,7 @@
             align-items: center;
             .masterText {
               border-radius: rem(4) 0;
-              background: #ff9700;
+              background: $primary-color;
               display: inline-block;
               font-size: rem(12);
               -webkit-text-size-adjust:none;
