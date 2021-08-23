@@ -53,10 +53,16 @@
       letter-spacing: rem(1);
       height: rem(20);
       line-height: rem(20);
+      width: 100%;
+      text-align: right;
       .feeDay {
         font-size: rem($font-size-h1);
         color: $primary-color;
         font-weight: $font-weight-regular;
+      }
+      .noTimeDate {
+        text-align: right;
+        display: block;
       }
     }
   }

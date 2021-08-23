@@ -26,23 +26,27 @@ class RenewalFee extends Component {
     const siteStore = this.props.site;
     try {
       await renewPay({ sitePrice, siteName, userStore, siteStore });
+      this.onClose();
     } catch (error) {
-      console.error(error)
+      console.error(error);
+      this.onClose();
     }
   };
 
   // 获取日期格式
   getDateFormat = () => {
     if (time.isCurrentYear(this.props.user?.expiredAt)) {
-      return 'MM月DD日'
+      return 'MM月DD日';
     } else {
-      return 'YYYY年MM月DD日'
+      return 'YYYY年MM月DD日';
     }
-  }
+  };
 
   renderFeeDateContent = () => {
     if (this.props.user?.expiredDays === 0) {
       return `有效期：${0}天`;
+    } else if (this.props.user?.isIndefiniteDuration) {
+      return `无限期`;
     } else {
       return `有效期：${this.props.user?.expiredDays}天•${time.formatDate(
         this.props.user?.expiredAt,
@@ -88,9 +92,11 @@ class RenewalFee extends Component {
               </div>
             </div>
             <div className={styles.feeBtn}>
-              <Button type="primary" className={styles.btn} onClick={this.handleRenewPay}>
-                ￥{this.props.site?.sitePrice} 立即续费
-              </Button>
+              {!this.props.user?.isIndefiniteDuration && (
+                <Button type="primary" className={styles.btn} onClick={this.handleRenewPay}>
+                  ￥{this.props.site?.sitePrice} 立即续费
+                </Button>
+              )}
               <div className={styles.effectTimer}>{this.renderFeeDateContent()}</div>
             </div>
           </div>

@@ -34,6 +34,8 @@ export default class MemberShipCard extends Component {
           <Text className={styles.feeDay}>{this.props.user?.expiredDays}</Text>天
         </>
       );
+    } else if (this.props.user?.isIndefiniteDuration) {
+      return <Text className={styles.noTimeDate}>无限期</Text>;
     } else {
       return (
         <>
@@ -52,9 +54,11 @@ export default class MemberShipCard extends Component {
           <View className={styles.roleType}>{this.props.user?.groupName}</View>
           <View className={styles.tagline}>访问海量站点内容•发布内容</View>
           <View className={styles.RenewalFee}>
-            <Button onClick={this.handleRenewalFee} type="primary" className={styles.btn}>
-              续费
-            </Button>
+            {!this.props.user?.isIndefiniteDuration && (
+              <Button onClick={this.handleRenewalFee} type="primary" className={styles.btn}>
+                续费
+              </Button>
+            )}
             <Text className={styles.feeTimer}>{this.renderFeeDateContent()}</Text>
           </View>
         </View>

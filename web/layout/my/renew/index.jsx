@@ -36,6 +36,8 @@ class RenewalFee extends Component {
   renderFeeDateContent = () => {
     if (this.props.user?.expiredDays === 0) {
       return `有效期：${0}天`;
+    } else if (this.props.user?.isIndefiniteDuration) {
+      return `无限期`;
     } else {
       return `有效期：${this.props.user?.expiredDays}天•${time.formatDate(
         this.props.user?.expiredAt,
@@ -80,11 +82,13 @@ class RenewalFee extends Component {
               <div className={styles.menuValue}>{this.renderFeeDateContent()}</div>
             </div>
           </div>
-          <div className={styles.feeBtn}>
-            <Button type="primary" className={styles.btn} onClick={this.handleRenewPay}>
-              ￥{this.props.site?.sitePrice} 立即续费
-            </Button>
-          </div>
+          {!this.props.user?.isIndefiniteDuration && (
+            <div className={styles.feeBtn}>
+              <Button type="primary" className={styles.btn} onClick={this.handleRenewPay}>
+                ￥{this.props.site?.sitePrice} 立即续费
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     );
