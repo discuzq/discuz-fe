@@ -8,6 +8,7 @@ export { default as genMiniQrcode } from './login/genMiniQrcode';
 export { default as smsSend } from './smsSend';
 export { default as smsLogin } from './login/smsLogin';
 export { default as readThreadDetail } from './thread/readThreadDetail';
+export { default as getRedPacketInfo } from './thread/getRedPacketInfo';
 export { default as readThreadAttachmentUrl } from './thread/readThreadAttachmentUrl';
 export { default as updateThreads } from './thread/updateThreads';
 export { default as readCommentList } from './thread/readCommentList';
