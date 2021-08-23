@@ -58,7 +58,7 @@ class CommentList extends React.Component {
   // 点击评论回复
   replyClick() {
     const userName = this.props.data?.user?.nickname || this.props.data?.user?.userName;
-   
+
     this.setState({
       isShowInput: !this.state.isShowInput,
       replyId: null,
@@ -136,6 +136,7 @@ class CommentList extends React.Component {
   render() {
     const { canDelete, canEdit, canLike, canHide } = this.generatePermissions(this.props.data);
     const { groups } = this.props.data?.user || {};
+    console.log(this.props.isAnonymous);
     // 评论内容是否通过审核
     const isApproved = this.props?.data?.isApproved === 1;
     const isSelf = this.props.threadId === this.props?.data?.userId;
@@ -184,7 +185,7 @@ class CommentList extends React.Component {
                   <div className={styles.commentListName}>
                     {this.props.data?.user?.nickname || this.props.data?.user?.userName || '用户异常'}
                   </div>
-                  {isSelf && (
+                  {(isSelf && !this.props.isAnonymous) && (
                     <div className={styles.masterBox}>
                       <span className={styles.masterText}>楼主</span>
                     </div>
@@ -307,6 +308,7 @@ class CommentList extends React.Component {
                         onSubmit={(value, imageList) => this.onSubmit(value, imageList)}
                         isShowInput={this.state.replyId && this.state.replyId === this.needReply[0].id}
                         canPublish={this.props.canPublish}
+                        isAnonymous={this.props.isAnonymous}
                       ></ReplyList>
                     ) : (
                       (this.needReply || []).map((val, index) => (
@@ -315,7 +317,7 @@ class CommentList extends React.Component {
                             threadId={this.props.threadId}
                             data={val}
                             key={val.id || index}
-                            avatarClick={(floor) => this.replyAvatarClick(val, floor)}
+                            avatarClick={floor => this.replyAvatarClick(val, floor)}
                             likeClick={() => this.replyLikeClick(val)}
                             replyClick={() => this.replyReplyClick(val)}
                             deleteClick={() => this.replyDeleteClick(val)}
@@ -324,6 +326,7 @@ class CommentList extends React.Component {
                             isShowInput={this.state.replyId && this.state.replyId === val.id}
                             active={this.props.postId === val.id}
                             canPublish={this.props.canPublish}
+                            isAnonymous={this.props.isAnonymous}
                           ></ReplyList>
                         </div>
                       ))

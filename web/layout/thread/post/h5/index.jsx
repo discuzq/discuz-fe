@@ -33,6 +33,8 @@ import VideoDisplay from '@components/thread-post/video-display';
 import MoneyDisplay from '@components/thread-post/money-display';
 import toolbarStyles from '@components/editor/toolbar/index.module.scss';
 import TagLocalData from '@components/thread-post/tag-localdata';
+import VoteWidget from '@components/thread-post/vote-widget';
+import VoteEditor from '@components/thread-post/vote-editor';
 
 function judgeDeviceType() {
   const ua = window.navigator.userAgent.toLowerCase();
@@ -351,6 +353,11 @@ class ThreadCreate extends React.Component {
             />
           )}
 
+          {/* 投票组件 */}
+          {(postData?.vote?.voteTitle) && (
+            <VoteWidget onDelete={() => this.props.setPostData({ vote: {} })} />
+          )}
+
           {/* 商品组件 */}
           {postData.product && postData.product.readyContent && (
             <Product
@@ -506,6 +513,18 @@ class ThreadCreate extends React.Component {
             data={postData.rewardQa}
           />
         )}
+
+        {/* 投票编辑 */}
+        {currentAttachOperation === THREAD_TYPE.vote && (
+          <VoteEditor
+            visible={currentAttachOperation === THREAD_TYPE.vote}
+            cancel={() => {
+              this.props.handleSetState({ currentAttachOperation: false });
+              this.props.threadPost.setCurrentSelectedToolbar(false);
+            }}
+          />
+        )}
+
         {/* 插入红包 */}
         {currentDefaultOperation === defaultOperation.redpacket && (
           <RedpacketSelect

@@ -44,7 +44,7 @@ export const THREAD_TYPE = {
   // vote: 108, // 投票
   // queue: 109, // 排队接龙
   file: 108, // 附件
-  emoji: 109, // 小表情
+  emoji: 99, // 小表情
   // qaImage: 111, // 问答图片
   paid: 112, // 插入付费
   paidPost: 113, // 支付主题
@@ -55,24 +55,17 @@ export const THREAD_TYPE = {
   saveDraft: 118, // 保存草稿
   abandonDraft: 119, // 不保存草稿
   anonymity: 10001, // 匿名
+  vote: 109, // 投票贴
 };
 
 // 图片类型
 // https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Image_types
-export const ACCEPT_IMAGE_TYPES = [
-  'image/*',
-];
+export const ACCEPT_IMAGE_TYPES = ['image/*'];
 
-export const ACCEPT_VIDEO_TYPES = [
-  'video/mp4',
-  'video/x-m4v',
-  'video/*',
-];
+export const ACCEPT_VIDEO_TYPES = ['video/mp4', 'video/x-m4v', 'video/*'];
 
 // 附件类型
-export const ACCEPT_FILE_TYPES = [
-  '*/*',
-];
+export const ACCEPT_FILE_TYPES = ['*/*'];
 
 export const THREAD_STATUS = {
   // 新建
@@ -87,4 +80,54 @@ export const THREAD_STATUS = {
 export const AUDIO_FORMAT = ['WAV', 'MP3', 'M4A'];
 
 // 附件文档类型
-export const FILE_PREVIEW_FORMAT = ['PPTX', 'PPT', 'POT', 'POTX', 'PPS', 'PPSX', 'DPS', 'DPT', 'PPTM', 'POTM', 'PPSM', 'DOC', 'DOT', 'WPS', 'WPT', 'DOCX', 'DOTX', 'DOCM', 'DOTM', 'XLS', 'XLT', 'ET', 'ETT', 'XLSX', 'XLTX', 'CSV', 'XLSB', 'XLSM', 'XLTM', 'ETS', 'PDF', 'LRC', 'C', 'CPP', 'H', 'ASM', 'S', 'JAVA', 'ASP', 'BAT', 'BAS', 'PRG', 'CMD', 'RTF', 'TXT', 'LOG', 'XML', 'HTM', 'HTML'];
+export const FILE_PREVIEW_FORMAT = [
+  'PPTX',
+  'PPT',
+  'POT',
+  'POTX',
+  'PPS',
+  'PPSX',
+  'DPS',
+  'DPT',
+  'PPTM',
+  'POTM',
+  'PPSM',
+  'DOC',
+  'DOT',
+  'WPS',
+  'WPT',
+  'DOCX',
+  'DOTX',
+  'DOCM',
+  'DOTM',
+  'XLS',
+  'XLT',
+  'ET',
+  'ETT',
+  'XLSX',
+  'XLTX',
+  'CSV',
+  'XLSB',
+  'XLSM',
+  'XLTM',
+  'ETS',
+  'PDF',
+  'LRC',
+  'C',
+  'CPP',
+  'H',
+  'ASM',
+  'S',
+  'JAVA',
+  'ASP',
+  'BAT',
+  'BAS',
+  'PRG',
+  'CMD',
+  'RTF',
+  'TXT',
+  'LOG',
+  'XML',
+  'HTM',
+  'HTML',
+];

@@ -10,6 +10,7 @@ import HomeHeader from '@components/home-header';
 import Header from '@components/header';
 import { toJS, set, observable, action } from 'mobx';
 import { InputType, CreateFunctions } from './components';
+import LoginHelper from '@common/utils/login-helper';
 
 @inject('site')
 @inject('user')
@@ -146,7 +147,7 @@ class SupplementaryH5Page extends React.Component {
                     if (statusMsg && statusCode) {
                       return this.props.router.push(`/user/status?statusCode=${statusCode}&statusMsg=${statusMsg}`);
                     }
-                    window.location.href = '/';
+                    LoginHelper.restore();
                   });
               } catch (e) {
                 // todo 优化错误处理

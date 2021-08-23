@@ -1,9 +1,11 @@
 @import '@common/styles/index.scss';
-.friendsWrapper {
-    overflow: hidden !important;
-    margin: 0 rem(-16);
-  }
-
 .borderRadius {
   border-radius: $border-radius-small;
+}
+
+.usersWrapper {
+  overflow: hidden !important;
+  margin: 0 rem(-16);
+  padding-top: rem(8);
+  padding-bottom: rem(8);
 }

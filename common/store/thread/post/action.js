@@ -200,7 +200,7 @@ class ThreadPostAction extends ThreadPostStore {
    */
   @action
   gettContentIndexes() {
-    const { images, video, files, product, audio, redpacket, rewardQa, orderInfo = {} } = this.postData;
+    const { images, video, files, product, audio, redpacket, rewardQa, orderInfo = {}, vote = {} } = this.postData;
     const imageIds = Object.values(images).map(item => item.id);
     const docIds = Object.values(files).map(item => item.id);
     const contentIndexes = {};
@@ -250,6 +250,15 @@ class ThreadPostAction extends ThreadPostStore {
         body: { expiredAt: rewardQa.times, price: rewardQa.value, type: 0, orderSn: orderInfo.orderSn },
       };
     }
+
+    if (vote.voteTitle) {
+      contentIndexes[THREAD_TYPE.vote] = {
+        tomId: THREAD_TYPE.vote,
+        body: { ...vote },
+      };
+    }
+
+
     return contentIndexes;
   }
 
@@ -324,6 +333,7 @@ class ThreadPostAction extends ThreadPostStore {
     let video = {};
     const images = {};
     const files = {};
+    let vote = {};
     // 插件格式化
     Object.keys(contentindexes).forEach((index) => {
       const tomId = Number(contentindexes[index].tomId);
@@ -343,6 +353,9 @@ class ThreadPostAction extends ThreadPostStore {
         audio = contentindexes[index].body || {};
         const audioId = audio.id || audio.threadVideoId;
         audio.id = audioId;
+      }
+      if (tomId === THREAD_TYPE.vote) {
+        vote = contentindexes[index].body[0] || {};
       }
       if (tomId === THREAD_TYPE.goods) product = contentindexes[index].body;
       if (tomId === THREAD_TYPE.video) {
@@ -382,6 +395,7 @@ class ThreadPostAction extends ThreadPostStore {
       product,
       redpacket,
       video,
+      vote,
       images,
       files,
       freeWords: freewords,

@@ -8,7 +8,7 @@ class UserCenterThreads extends React.Component {
       <div className={styles.threadsContainer}>
         {this.props.data.map((itemInfo, index, arr) => (
           <Thread
-            key={`${itemInfo.threadId}-${itemInfo.updatedAt}`}
+            key={`${itemInfo.threadId}-${itemInfo.updatedAt}-${itemInfo._time}`}
             data={itemInfo}
             showBottomStyle={index !== arr.length - 1}
           />

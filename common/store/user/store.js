@@ -50,11 +50,11 @@ class UserStore {
   // 换绑 QRCode
   @observable rebindQRCode = null;
 
-  // 换绑 QRCode是否有效
-  @observable isQrCodeValid = true;
-
   // 用户注册扩展信息
   @observable userSigninFields = [];
+
+  // 换绑 QRCode是否有效
+  @observable isQrCodeValid = true;
 
   // 检索的目标用户，非自己
   @observable targetUser = null;
@@ -101,6 +101,13 @@ class UserStore {
 
   // target user 数据表，以 user id 作为映射
   @observable targetUsers = {};
+
+  // 关注数据表，以 user id 作为映射
+  @observable followStore = {};
+
+  // 粉丝数据表，以 user id 作为映射
+  @observable fansStore = {};
+
 
   @computed get userStatus() {
     return get(this.userInfo, 'status');
@@ -284,6 +291,25 @@ class UserStore {
     return get(this.userInfo, 'group.pid') === 1;
   }
 
+  // 用户角色分类
+  @computed get groupName() {
+    return get(this.userInfo, 'group.groupName')
+  }
+
+  // 站点到期天数
+  @computed get expiredDays() {
+    return get(this.userInfo, 'expiredDays')
+  }
+
+  // 站点剩余时间
+  @computed get expiredAt() {
+    return get(this.userInfo, 'expiredAt')
+  }
+
+  @computed get isIndefiniteDuration() {
+    return Number(get(this.userInfo, 'expiredDays')) >= 10000
+  }
+
   // 发帖扩展的权限
   @computed get threadExtendPermissions() {
     const { permissions: pm } = this;
@@ -297,6 +323,7 @@ class UserStore {
       [defaultOperation.redpacket]: get(pm, 'insertRedPacket.enable'),
       [THREAD_TYPE.image]: get(pm, 'insertImage.enable'),
       [THREAD_TYPE.video]: get(pm, 'insertVideo.enable'),
+      [THREAD_TYPE.vote]: get(pm, 'insertVote.enable'),
       [THREAD_TYPE.voice]: get(pm, 'insertAudio.enable'),
       [THREAD_TYPE.goods]: get(pm, 'insertGoods.enable'),
       [THREAD_TYPE.reward]: get(pm, 'insertReward.enable'),

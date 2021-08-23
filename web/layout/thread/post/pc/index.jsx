@@ -16,6 +16,7 @@ import FileUpload from '@components/thread-post/file-upload';
 import { THREAD_TYPE } from '@common/constants/thread-post';
 import Product from '@components/thread-post/product';
 import ProductSelect from '@components/thread-post/product-select';
+import VoteEditor from '@components/thread-post/vote-editor';
 import AllPostPaid from '@components/thread/all-post-paid';
 import AtSelect from '@components/thread-post/at-select';
 import TopicSelect from '@components/thread-post/topic-select';
@@ -25,6 +26,7 @@ import ForTheForm from '@components/thread/for-the-form';
 import VideoDisplay from '@components/thread-post/video-display';
 import MoneyDisplay from '@components/thread-post/money-display';
 import TagLocalData from '@components/thread-post/tag-localdata';
+import VoteWidget from '@components/thread-post/vote-widget';
 
 @inject('threadPost')
 @inject('index')
@@ -230,6 +232,11 @@ class ThreadPCPage extends React.Component {
                     />
                   )}
 
+                  {/* 投票组件 */}
+                  {(postData?.vote?.voteTitle) && (
+                    <VoteWidget isPc={true} onDelete={() => this.props.setPostData({ vote: {} })} />
+                  )}
+
                   {/* 商品组件 */}
                   {postData.product && postData.product.readyContent && (
                     <Product
@@ -343,6 +350,17 @@ class ThreadPCPage extends React.Component {
                   this.props.setPostData({ product: data });
                 }
               }
+              cancel={() => {
+                this.props.handleSetState({ currentAttachOperation: false });
+                this.props.threadPost.setCurrentSelectedToolbar(false);
+              }}
+            />
+          )}
+          {/* 插入投票 - 弹框 */}
+          {currentAttachOperation === THREAD_TYPE.vote && (
+            <VoteEditor
+              pc
+              visible={currentAttachOperation === THREAD_TYPE.vote}
               cancel={() => {
                 this.props.handleSetState({ currentAttachOperation: false });
                 this.props.threadPost.setCurrentSelectedToolbar(false);

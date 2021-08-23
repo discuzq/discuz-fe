@@ -160,7 +160,7 @@ class IndexH5Page extends React.Component {
             ) : (
               pageData?.map((item, index) => (
                 <ThreadContent
-                  key={`${item.threadId}-${item.updatedAt}`}
+                  key={`${item.threadId}-${item.updatedAt}-${item._time}`}
                   showBottomStyle={index !== pageData.length - 1}
                   data={item}
                   className={styles.listItem}

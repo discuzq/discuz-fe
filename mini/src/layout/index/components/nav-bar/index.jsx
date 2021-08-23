@@ -7,7 +7,7 @@ import { View, Text } from '@tarojs/components';
  * 导航栏
  * @prop {string} title
  */
-const NavBar = forwardRef(({ title = 'Discuz!Q', isShow = true }, ref) => {
+const NavBar = forwardRef(({ title = 'Discuz! Q', isShow = true }, ref) => {
   const [statusBarHeight, setStatusBarHeight] = useState(20)
   const navBarHeight = useRef(64)
 
@@ -17,7 +17,7 @@ const NavBar = forwardRef(({ title = 'Discuz!Q', isShow = true }, ref) => {
       // transform: `translateY(-${isShow ? 0 : height})`,
       display: isShow ? 'block' : 'none',
       height
-    } 
+    }
   }, [statusBarHeight, isShow])
 
   useImperativeHandle(
@@ -40,10 +40,10 @@ const NavBar = forwardRef(({ title = 'Discuz!Q', isShow = true }, ref) => {
   }, [])
 
   return (
-  <View className={styles.container} style={navBarStyle}>
-    <View style={{ height: statusBarHeight }} className={styles.statusBar}></View>
-    <Text className={styles.navBar}>{ title }</Text>
-  </View>
+    <View className={styles.container} style={navBarStyle}>
+      <View style={{ height: statusBarHeight }} className={styles.statusBar}></View>
+      <Text className={styles.navBar}>{title}</Text>
+    </View>
   );
 });
 

@@ -7,6 +7,7 @@ import AudioPlay from '@components/thread/audio-play';
 import PostContent from '@components/thread/post-content';
 import ProductItem from '@components/thread/product-item';
 import VideoPlay from '@components/thread/video-play';
+import VoteDisplay from '@components/thread/vote-display';
 import PostRewardProgressBar, { POST_TYPE } from '@components/thread/post-reward-progress-bar';
 import Tip from '@components/thread/tip';
 import AttachmentView from '@components/thread/attachment-view';
@@ -110,6 +111,7 @@ const RenderThreadContent = inject('user')(observer((props) => {
       props.setContentImgReady();
     }
   }, [threadStore.contentImgLength]);
+
   return (
     <div className={`${styles.container}`}>
       <div className={styles.header}>
@@ -253,15 +255,19 @@ const RenderThreadContent = inject('user')(observer((props) => {
           <AttachmentView attachments={parseContent.VOTE} threadId={threadStore?.threadData?.threadId} />
         )}
 
-        {/* 付费附件 */}
-        {needAttachmentPay && (
-          <div style={{ textAlign: 'center' }} onClick={onContentClick}>
-            <Button className={styles.payButton} type="primary">
-              <Icon className={styles.payIcon} name="GoldCoinOutlined" size={16}></Icon>
-              <p>支付{attachmentPrice}元查看附件内容</p>
-            </Button>
-          </div>
-        )}
+          {/* 投票 */}
+        {parseContent.VOTE_THREAD
+          && <VoteDisplay voteData={parseContent.VOTE_THREAD} threadId={threadStore?.threadData?.threadId} page="detail" />}
+
+          {/* 付费附件 */}
+          {needAttachmentPay && (
+            <div style={{ textAlign: 'center' }} onClick={onContentClick}>
+              <Button className={styles.payButton} type="primary">
+                <Icon className={styles.payIcon} name="GoldCoinOutlined" size={16}></Icon>
+                <p>支付{attachmentPrice}元查看附件内容</p>
+              </Button>
+            </div>
+          )}
 
         {/* 标签 */}
         {(parentCategoryName || categoryName) && (

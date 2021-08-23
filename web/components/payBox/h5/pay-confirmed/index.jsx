@@ -14,6 +14,7 @@ import {
   mode,
 } from '../../../../../common/store/pay/weixin-h5-backend';
 import throttle from '@common/utils/thottle.js';
+import loginHelper from '@common/utils/login-helper';
 
 @inject('site')
 @inject('user')
@@ -81,9 +82,11 @@ export default class PayBox extends React.Component {
         </Button>
       );
     }
+
     if (Number(this.props.payBox?.walletAvaAmount) < Number(amount)) {
       return <p className={styles.subText}>余额不足</p>;
     }
+
     return (
       <>
         {this.props.payBox?.walletAvaAmount ? (
@@ -192,7 +195,7 @@ export default class PayBox extends React.Component {
   gotoBind = () => {
     this.props.payBox.visible = false;
     Router.push({ url: '/user/wx-bind-qrcode?jumpType=1' });
-  }
+  };
 
   renderRightChoices = (item) => {
     const { options = {} } = this.props.payBox;
@@ -200,10 +203,15 @@ export default class PayBox extends React.Component {
 
     if (item.paymentType === PAYWAY_MAP.WALLET) {
       if (canWalletPay && Number(this.props.payBox?.walletAvaAmount) >= Number(options.amount)) {
-        return <Radio name={item.paymentType} />;
+        return (
+          <>
+            {this.walletPaySubText()}
+            <Radio name={item.paymentType} />
+          </>
+        );
       }
 
-      return this.walletPaySubText();
+      // return this.walletPaySubText();
     }
 
     if (item.paymentType === PAYWAY_MAP.WX) {
@@ -244,7 +252,10 @@ export default class PayBox extends React.Component {
                     <Icon className={styles.icon} name={item.icon} color={item.color} size={20} />
                     <p className={styles.text}>{item.name}</p>
                   </div>
-                  <div className={styles.right}>{this.renderRightChoices(item)}</div>
+                  <div className={styles.right}>
+                    {item.paymentType === PAYWAY_MAP.WALLET && this.walletPaySubText()}
+                    {this.renderRightChoices(item)}
+                  </div>
                 </div>
               );
             })}

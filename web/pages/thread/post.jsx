@@ -314,6 +314,12 @@ class PostPage extends React.Component {
       Toast.info({ content: '悬赏内容不可编辑' });
       return false;
     }
+
+    if (item.type === THREAD_TYPE.vote && postData?.vote?.voteUsers > 0) {
+      Toast.info({ content: '投票已生效，不允许编辑' });
+      return false;
+    }
+
     if (item.type === THREAD_TYPE.anonymity) {
       if (postData.anonymous) this.setPostData({ anonymous: 0 });
       else this.setPostData({ anonymous: 1 });
@@ -549,8 +555,8 @@ class PostPage extends React.Component {
   // 是否有内容
   isHaveContent() {
     const { postData } = this.props.threadPost;
-    const { images, video, files, audio } = postData;
-    if (!(postData.contentText || video.id || audio.id || Object.values(images).length
+    const { images, video, files, audio, vote } = postData;
+    if (!(postData.contentText || video.id || vote.voteTitle || audio.id || Object.values(images).length
       || Object.values(files).length)) {
       return false;
     }
@@ -589,7 +595,7 @@ class PostPage extends React.Component {
     if (!this.checkAudioRecordStatus()) return;
 
     if (!this.isHaveContent()) {
-      this.postToast('请至少填写您要发布的内容或者上传图片、附件、视频、语音');
+      this.postToast('请至少填写您要发布的内容或者上传图片、附件、视频、语音、投票等');
       return;
     }
     if (!this.checkAttachPrice()) {
@@ -629,22 +635,23 @@ class PostPage extends React.Component {
     const data = { amount };
     // 保存草稿操作不执行支付流程
     if (!isDraft && amount > 0) {
-      let type = ORDER_TRADE_TYPE.RED_PACKET;
+      let type = ORDER_TRADE_TYPE.ORDER_TYPE_REDPACKET;
       let title = '支付红包';
       if (redAmount > 0) {
         data.redAmount = redAmount;
       }
       if (rewardAmount > 0) {
-        type = ORDER_TRADE_TYPE.POST_REWARD;
+        type = ORDER_TRADE_TYPE.ORDER_TYPE_QUESTION_REWARD;
         title = '支付悬赏';
         data.rewardAmount = rewardAmount;
       }
       if (rewardAmount > 0 && redAmount > 0) {
-        type = ORDER_TRADE_TYPE.COMBIE_PAYMENT;
+        type = ORDER_TRADE_TYPE.ORDER_TYPE_MERGE;
         title = '支付红包和悬赏';
       }
       PayBox.createPayBox({
         data: { ...data, title, type },
+        currentPage: { type: 2 },
         orderCreated: async (orderInfo) => {
           const { orderSn } = orderInfo;
           this.setPostData({ orderInfo });

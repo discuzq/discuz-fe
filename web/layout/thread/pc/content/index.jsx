@@ -6,6 +6,7 @@ import AudioPlay from '@components/thread/audio-play';
 import PostContent from '@components/thread/post-content';
 import ProductItem from '@components/thread/product-item';
 import VideoPlay from '@components/thread/video-play';
+import VoteDisplay from '@components/thread/vote-display';
 import PostRewardProgressBar, { POST_TYPE } from '@components/thread/post-reward-progress-bar';
 import Tip from '@components/thread/tip';
 import AttachmentView from '@components/thread/attachment-view';
@@ -238,8 +239,55 @@ export default inject('user')(observer((props) => {
                   本帖向所有人悬赏
                   <span className={topic.rewardNumber}>{parseContent.REWARD.money || 0}</span>元
                 </div>
-                <div className={topic.rewardTime}>{parseContent.REWARD.expiredAt}截止悬赏</div>
-              </div>
+              )}
+            </div>
+          )}
+
+          {/* 商品 */}
+          {parseContent.GOODS && (
+            <div className={topic.goods}>
+              <ProductItem
+                image={parseContent?.GOODS?.imagePath}
+                amount={parseContent?.GOODS?.price}
+                title={parseContent?.GOODS?.title}
+                onClick={() => onBuyClick(parseContent.GOODS.detailContent)}
+              />
+              <Button
+                className={topic.buyBtn}
+                type="danger"
+                onClick={() => onBuyClick(parseContent.GOODS.detailContent)}
+              >
+                <div className={topic.buyContent}>
+                  <Icon className={topic.buyIcon} name="ShoppingCartOutlined" size={20}></Icon>
+                  <span className={topic.buyText}>购买商品</span>
+                </div>
+              </Button>
+            </div>
+          )}
+
+          {/* 音频 */}
+          {parseContent.VOICE && <AudioPlay url={parseContent.VOICE.mediaUrl} />}
+
+          {/* 附件 */}
+          {parseContent.VOTE && (
+            <AttachmentView attachments={parseContent.VOTE} threadId={threadStore?.threadData?.threadId} />
+          )}
+
+          {/* 投票 */}
+          {parseContent.VOTE_THREAD
+            && <VoteDisplay voteData={parseContent.VOTE_THREAD} threadId={threadStore?.threadData?.threadId} page="detail" />}
+
+          {/* 付费附件：不能免费查看付费帖 && 需要付费 && 不是作者 && 没有付费 */}
+          {needAttachmentPay && (
+            <div style={{ textAlign: 'center' }} onClick={onContentClick}>
+              <Button className={topic.payButton} type="primary" size="large">
+                <div className={topic.pay}>
+                  <Icon className={topic.payIcon} name="GoldCoinOutlined" size={18}></Icon>
+                  支付{attachmentPrice}元查看附件
+                </div>
+              </Button>
+            </div>
+          )}
 
             )}
 

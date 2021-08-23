@@ -19,6 +19,7 @@ const config = {
         'thread/selectRedpacket/index',
         'thread/selectReward/index',
         'thread/selectPayment/index',
+        'thread/voteEditor/index',
       ],
     },
     {
@@ -74,6 +75,7 @@ const config = {
         'forum/partner-invite/index',
         'invite/index',
         'user/index',
+        'my/renew/index',
       ],
     },
   ],

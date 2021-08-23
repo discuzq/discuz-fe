@@ -61,10 +61,17 @@
   .tools {
     padding: rem($margin-4n) 0;
     position: relative;
+  }
 
-    :global{
-      .dzq-icon{
-        color: $icon-color-light;
+  :global{
+    .dzq-icon{
+      color: $icon-color-light;
+    }
+
+    .dzq-textarea{
+      border: none !important;
+      .dzq-textarea__inner{
+        background-color: #fff !important;
       }
     }
   }

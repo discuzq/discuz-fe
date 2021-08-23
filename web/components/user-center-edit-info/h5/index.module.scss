@@ -19,7 +19,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid #F4F6F7;
+    border-bottom: 1px solid #f4f6f7;
     padding: rem($padding-4n) 0;
     height: rem(52);
     box-sizing: border-box;
@@ -36,16 +36,13 @@
     // line-height: rem(36);
     font-size: rem($font-size-base);
     // border-bottom: 1px solid #F4F6F7;
-    >label {
+    .userLabelName {
       color: $text-color-regular;
-    }
-    >div {
-      color: $text-color-primary;
     }
     .userCenterEditWeChat {
       display: flex;
       align-items: center;
-      span {
+      .wxNickname {
         margin-left: rem($margin-4n);
       }
       .linkText {
@@ -141,13 +138,10 @@
     align-items: center;
     justify-content: space-between;
     padding: rem($padding-4n) rem($padding-5n);
-    border-bottom: 1px solid #F4F6F7;
+    border-bottom: 1px solid #f4f6f7;
     margin: 0 rem(-$margin-5n) rem($margin-2n);
     height: rem(52);
     box-sizing: border-box;
-    >div:nth-child(2) {
-      margin-left: rem($margin-2n);
-    }
     :global {
       .dzq-icon {
         font-size: rem($font-size-small) !important;
@@ -164,33 +158,32 @@
     // line-height: rem(36);
     font-size: rem($font-size-base);
     // border-bottom: 1px solid #F4F6F7;
-    >label {
+    .userLabelName {
       color: $text-color-regular;
     }
-    >div {
-      color: $text-color-primary;
-    }
   }
-
 }
-.userCenterEditBtn {
-  background-color: #fff;;
-  width: calc(100% - 32px);
+
+#editInfoWrapper .userCenterEditBtn {
+  background-color: $white;
+  width: 100%;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
   position: fixed;
-  bottom: rem(20);
-  padding: rem($padding-4n);
-  @include ios-safe-area-inset-bottom;
-  button {
+  bottom: 0;
+  padding: rem($padding-2n) rem($padding-4n) rem($padding-10);
+  padding-bottom: calc(10px + constant(safe-area-inset-bottom)); ///兼容 IOS<11.2/
+  padding-bottom: calc(10px + env(safe-area-inset-bottom)); ///兼容 IOS>11.2/
+  .btn {
     // width: rem(166);
     height: rem(42);
     font-size: rem($font-size-middle);
     border: none;
-    border-radius: 5px !important;
+    border-radius: 5px;
   }
-  button:nth-child(1) {
+  .btn:nth-child(1) {
     margin-right: rem($margin-10);
     background-color: $text-bg-color2;
   }

@@ -25,7 +25,7 @@ class CommentList extends React.Component {
       isHideEdit: this.props.isHideEdit, // 隐藏评论编辑删除
       isShowOne: this.props.isShowOne || false, // 是否只显示一条评论回复
     };
-    this.needReply = this.props.data.lastThreeComments; // 评论的回复
+    this.needReply = this.props?.data?.lastThreeComments; // 评论的回复
   }
 
   toCommentDetail = () => {
@@ -91,11 +91,11 @@ class CommentList extends React.Component {
 
   generatePermissions(data = {}) {
     return {
-      canApprove: data.canApprove || false,
-      canDelete: data.canDelete || false,
-      canEdit: data.canEdit || false,
-      canHide: data.canHide || false,
-      canLike: data.canLike || false,
+      canApprove: data?.canApprove || false,
+      canDelete: data?.canDelete || false,
+      canEdit: data?.canEdit || false,
+      canHide: data?.canHide || false,
+      canLike: data?.canLike || false,
     };
   }
 
@@ -171,7 +171,7 @@ class CommentList extends React.Component {
                   <View className={styles.commentListName}>
                     {this.props.data?.user?.nickname || this.props.data?.user?.userName || '用户异常'}
                   </View>
-                  {!!isSelf && (
+                  {(isSelf && !this.props.isAnonymous) && (
                     <View className={styles.masterBox}>
                       <Text className={styles.masterText}>楼主</Text>
                     </View>
@@ -257,6 +257,7 @@ class CommentList extends React.Component {
                         deleteClick={() => this.replyDeleteClick(this.needReply[0])}
                         toCommentDetail={() => this.toCommentDetail()}
                         threadId={this.props.threadId}
+                        isAnonymous={this.props.isAnonymous}
                       ></ReplyList>
                     ) : (
                       (this.needReply || []).map((val, index) => (
@@ -270,6 +271,7 @@ class CommentList extends React.Component {
                             toCommentDetail={() => this.toCommentDetail()}
                             active={val.id === this.props.postId}
                             threadId={this.props.threadId}
+                            isAnonymous={this.props.isAnonymous}
                           ></ReplyList>
                         </View>
                       ))

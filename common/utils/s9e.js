@@ -24,6 +24,7 @@ export const tags = {
       });
     });
   },
+
   parseHtml1: text => { // 恢复 <
     if (!text) return;
     const regexp = /&lt;/gimu;
@@ -57,8 +58,16 @@ export const tags = {
     });
   },
 };
+
+//fixby hechongwei 添加是否有代码块标识isCode，如果有，过滤掉html转移 http://bug.eims.com.cn/bug-view-3099.html
 function parse(text) {
+  const isCode = text.indexOf('<pre><code>') >= 0;
+
   for (const tag in tags) {
+    if (isCode && (tag === 'parseHtml1' || tag === 'parseHtml2')) {
+      return text
+    }
+
     if (tag === 'emotion') {
       const storage = new Storage({ storageType: 'local' })
       const emojis = JSON.parse(storage.get('DZQ_EMOJI') || `{}`);
@@ -70,6 +79,16 @@ function parse(text) {
 
   return text;
 }
+
+// 把一段字符串中的表情符号转换成可渲染的html
+function parseEmoji(text) {
+  const storage = new Storage({ storageType: 'local' })
+  const emojis = JSON.parse(storage.get('DZQ_EMOJI') || `{}`);
+  text = tags.emotion(text, emojis);
+  return text;
+}
+
+
 
 const handleEmoji = (value, emojis) => {
   const config = getConfig() || {}
@@ -96,7 +115,7 @@ const handleEmoji = (value, emojis) => {
   } else {
     return { isAllow: false }
   }
-  
+
 }
 
-export default { parse };
+export default { parse, parseEmoji };

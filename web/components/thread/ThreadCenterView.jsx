@@ -7,6 +7,7 @@ import VideoPlay from './video-play';
 import { handleAttachmentData } from './utils';
 import AttachmentView from './attachment-view';
 import ImageDisplay from './image-display';
+import VoteDisplay from './vote-display';
 import Packet from './packet';
 import styles from './index.module.scss';
 
@@ -29,13 +30,14 @@ const Index = (props) => {
 
   const needPay = useMemo(() => payType !== 0 && !paid, [paid, payType]);
 
-  const {
-    onClick,
-    onPay,
-    onOpen,
-    platform,
-    updateViewCount,
-  } = props;
+    const {
+      onClick,
+      onPay,
+      onOpen,
+      platform,
+      updateViewCount,
+      onTextItemClick
+    } = props
 
   // 标题显示37个字符
   const newTitle = useMemo(() => {
@@ -45,19 +47,20 @@ const Index = (props) => {
     return title;
   }, [title]);
 
-  // 帖子属性内容
-  const renderThreadContent = ({ content: data, attachmentPrice, payType, paid } = {}) => {
-    const {
-      text,
-      imageData,
-      audioData,
-      videoData,
-      goodsData,
-      redPacketData,
-      rewardData,
-      fileData,
-      threadId,
-    } = handleAttachmentData(data);
+    // 帖子属性内容
+    const renderThreadContent = ({ content: data, attachmentPrice, payType, paid } = {}) => {
+        const {
+          text,
+          imageData,
+          audioData,
+          videoData,
+          goodsData,
+          redPacketData,
+          rewardData,
+          fileData,
+          voteData,
+          threadId,
+        } = handleAttachmentData(data);
 
     return (
           <>
@@ -67,7 +70,8 @@ const Index = (props) => {
                 updateViewCount={updateViewCount}
                 useShowMore={!openedMore}
                 onRedirectToDetail={onClick}
-                onOpen={onOpen}/>
+                onOpen={onOpen}
+                onTextItemClick={onTextItemClick} />
               }
 
               {videoData && (
@@ -115,7 +119,9 @@ const Index = (props) => {
                   onClick={onClick}
               />}
               {audioData && <AudioPlay url={audioData.mediaUrl} isPay={needPay} onPay={onPay} updateViewCount={updateViewCount}/>}
-              {fileData?.length > 0 && <AttachmentView threadId={threadId} attachments={fileData} onPay={onPay} isPay={needPay} updateViewCount={updateViewCount}/>}
+            {fileData?.length > 0 && <AttachmentView threadId={threadId} attachments={fileData} onPay={onPay} isPay={needPay} updateViewCount={updateViewCount} />}
+            {/* 投票帖子展示 */}
+            {voteData && <VoteDisplay recomputeRowHeights={props.recomputeRowHeights} voteData={voteData} threadId={threadId} />}
           </>
     );
   };

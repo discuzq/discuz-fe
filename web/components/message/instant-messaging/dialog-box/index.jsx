@@ -103,7 +103,7 @@ const DialogBox = (props, ref) => {
                   renderImage(item)
                 ) : (
                   <div className={styles.msgContent} dangerouslySetInnerHTML={{
-                    __html: xss(s9e.parse(text)),
+                    __html: xss(s9e.parseEmoji(text)),
                   }}></div>
                 )}
               </div>

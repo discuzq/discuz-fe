@@ -26,12 +26,12 @@ $ npm config set registry http://mirrors.cloud.tencent.com/npm/
 
 - ~~修改`mini/project.config.json`文件中的appid为自己的appid~~（废弃）
 - ~~修改`common/config/prod.js`中的域名指向~~（废弃）
-- discuz-fe文件目录下，`dzq.config.yaml`是整个Discuz!Q3.0的环境配置文件
+- discuz-fe文件目录下，`dzq.config.yaml`是整个Discuz! Q3.0的环境配置文件
   - 修改HOST，将修改你的应用的域名指向
   - 修改APPID，将修改你的appid
 
 ```yaml
-TITLE: Discuz!Q
+TITLE: Discuz! Q
 HOST: 【你的域名】
 APPID: 【你的appid】
 VERSION: v3.0.210729

@@ -59,6 +59,10 @@ export default (thread, user) => {
   return new Promise((resolve, reject) => {
     PayBox.createPayBox({
       data,
+      currentPage: {
+        type: 1,
+        threadId
+      },
       success: (orderInfo) => {
         resolve({ success: true, data: orderInfo });
       },

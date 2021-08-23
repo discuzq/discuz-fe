@@ -154,6 +154,16 @@ function DVditor(props) {
     }, 100);
   };
 
+  const isHaveContent = () => {
+    const { postData } = props.threadPost;
+    const { images, video, files, audio, vote } = postData;
+    if (!(postData.contentText || video.id || vote.voteTitle || audio.id || Object.values(images).length
+      || Object.values(files).length)) {
+      return false;
+    }
+    return true;
+  };
+
 
   const getEditorRange = (vditor) => {
     /**
@@ -252,7 +262,7 @@ function DVditor(props) {
       {
         _lutePath: 'https://cdn.jsdelivr.net/npm/@discuzq/vditor@1.0.22/dist/js/lute/lute.min.js',
         ...baseOptions,
-        minHeight: pc ? 450 : 44,
+        minHeight: (pc && !isHaveContent()) ? 450 : 44,
         // 编辑器初始化值
         tab: '  ',
         value,
@@ -365,7 +375,7 @@ function DVditor(props) {
             for (let i = 0; i < files.length; i++) {
               const file = files[i];
               const name = file.name;
-              const nameType = name.substr(name.indexOf('.') + 1);
+              const nameType = name.split('.').pop().toUpperCase();
               const fileType = file.type;
 
 
@@ -377,7 +387,7 @@ function DVditor(props) {
                 return;
               }
 
-              const types = supportImgExt.split(',');
+              const types = supportImgExt.toUpperCase().split(',');
               if (!types.includes(nameType)) {
                 Toast.error({
                   content: `仅支持上传格式为${supportImgExt}的图片，请重新选择`,

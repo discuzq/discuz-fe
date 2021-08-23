@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import { inject, observer } from 'mobx-react';
 import { View, ScrollView } from '@tarojs/components';
 import Router from '@discuzq/sdk/dist/router';
@@ -423,7 +423,7 @@ class CommentH5Page extends React.Component {
       canStick: false,
       isAdmini: this.props?.user?.isAdmini,
     };
-
+    const { isAnonymous } = this.props.thread?.threadData || '';
     // 更多弹窗界面
     const moreStatuses = {
       isEssence: false,
@@ -475,7 +475,8 @@ class CommentH5Page extends React.Component {
                 isHideEdit
                 postId={this.props.comment.postId}
                 positionRef={this.positionRef}
-                threadId={this.props.thread.threadData.userId}
+                threadId={this.props?.thread?.threadData?.userId}
+                isAnonymous={isAnonymous}
               ></CommentList>
             )}
           </View>

@@ -32,7 +32,7 @@ class ForumStore {
     this.isLoading = is;
   }
 
-  @action
+  @action.bound
   async setOtherPermissions() {
     try {
       const resp = await getForum();

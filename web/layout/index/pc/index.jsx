@@ -14,17 +14,19 @@ import DynamicLoading from '@components/dynamic-loading';
 import dynamic from 'next/dynamic';
 import Placeholder from './components/dynamic-vlist/placeholder';
 import HOCFetchSiteData from '@middleware/HOCFetchSiteData';
+import { debounce, throttle } from '@common/utils/throttle-debounce.js';
+import Autoplay from '@common/utils/autoplay';
 
-const DynamicVListLoading = dynamic(
-  () => import('./components/dynamic-vlist'),
-  { loading: (res) => {
-      return (
-          <div style={{width: '100%', maxWidth: '1420px'}}>
-              <DynamicLoading data={res} style={{padding: '0 0 20px'}} loadComponent={<Placeholder/>}/>
-          </div>
-      )
-    } }
-)
+
+const DynamicVListLoading = dynamic(() => import('./components/dynamic-vlist'), {
+  loading: (res) => {
+    return (
+      <div style={{ width: '100%', maxWidth: '1420px' }}>
+        <DynamicLoading data={res} style={{ padding: '0 0 20px' }} loadComponent={<Placeholder />} />
+      </div>
+    );
+  },
+});
 
 @inject('site')
 @inject('user')
@@ -40,7 +42,6 @@ class IndexPCPage extends React.Component {
       isShowDefault: this.checkIsOpenDefaultTab(),
     };
 
-
     this.enabledVList = true; // 开启虚拟列表
 
     // 轮询定时器
@@ -55,6 +56,11 @@ class IndexPCPage extends React.Component {
     this.onPullingUp = this.onPullingUp.bind(this);
     this.renderLeft = this.renderLeft.bind(this);
     this.renderRight = this.renderRight.bind(this);
+
+    const isAutoplay = this.props.site?.webConfig?.qcloud?.qcloudVodAutoPlay || false;
+    if (isAutoplay) {
+      this.autoplay = new Autoplay({ platform: 'pc' });
+    }
   }
 
   componentDidMount() {
@@ -205,6 +211,21 @@ class IndexPCPage extends React.Component {
     return this.props.site.checkSiteIsOpenDefautlThreadListData();
   }
 
+  // 视频播放
+  checkVideoPlay = debounce((startNum, stopNum) => {
+    this.autoplay?.checkVideoPlay(startNum, stopNum);
+  }, 1000);
+
+  // 视频暂停
+  checkVideoPlause = throttle(() => {
+    this.autoplay?.checkVideoPlause();
+  }, 50);
+
+  handleScroll = ({ startNum, stopNum } = {}) => {
+    this.checkVideoPlause();
+    this.checkVideoPlay(startNum, stopNum);
+  };
+
   render() {
     const { index, site } = this.props;
     const { countThreads = 0 } = site?.webConfig?.other || {};
@@ -232,6 +253,7 @@ class IndexPCPage extends React.Component {
         <DynamicVListLoading
           indexStore={index}
           siteStore={site}
+          onScroll={this.handleScroll}
           visible={visible}
           conNum={conNum}
           noMore={currentPage >= totalPage}
