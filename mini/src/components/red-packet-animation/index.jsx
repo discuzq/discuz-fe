@@ -3,12 +3,11 @@ import style from './index.module.scss';
 import { View, Image } from '@tarojs/components'
 import upImg from '../../public/dzq-img/up.png'
 import bottomImg from '../../public/dzq-img/bottom.gif'
+import classNames from 'classnames';
 
 const Index = ({ onClose, money = '0.00' }) => {
 const buttonStyle = {transform: 'rotateY(360deg)', visibility: 'hidden'};
 const openStyle = {visibility: 'hidden'};
-const bottomStyle = {visibility: 'visible', transform: 'scale(1.5, 1.5)', opacity: '0'}
-const upStyle ={ visibility: 'visible',  opacity: '0'}
 const moneyTextStyle = {opacity: '1'}
 
 const [start, setStart] = useState(false) 
@@ -16,7 +15,7 @@ const handleClick = () => {
     setStart(true)
 };
 const handleClose = () => {
-    if (typeof onClose === 'function') {
+    if (typeof onClose === 'function' && start) {
         onClose()
     }
 }
@@ -30,8 +29,18 @@ return (
             <View className={style.button} style={start ? buttonStyle : {}} onClick={handleClick}>
                 <View className={style.open} style={start ? openStyle : {}}>开</View>
             </View>
-            <Image src={upImg} style={start ? bottomStyle : {}} className={style.animationUp}/>
-            <Image src={bottomImg} style={start ? upStyle : {}} className={style.animationBottom}/>
+            <Image src={upImg} className={classNames(
+              style.up,
+              {
+                [style.animationUp]: start,
+              },
+            )}/>
+            <Image src={bottomImg} className={classNames(
+              style.bottom,
+              {
+                [style.animationBottom]: start,
+              },)}
+              />
         </View>
     </View>);
 };
