@@ -35,7 +35,7 @@
           .masterBox {
             padding:rem($padding-2n + 2) rem($padding-2n) 0 0;
             .masterText {
-              border-radius: rem(4) 0;
+              border-radius: rem(2);
               background: $primary-color;
               display: inline-block;
               font-size: rem(12);
@@ -137,7 +137,7 @@
             display: flex;
             align-items: center;
             .masterText {
-              border-radius: rem(4) 0;
+              border-radius: rem(2);
               background: $primary-color;
               display: inline-block;
               font-size: rem(12);
