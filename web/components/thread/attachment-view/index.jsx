@@ -190,8 +190,9 @@ const Index = ({
   };
 
   const splicingLink = (url, fileName) => {
-    const domainName = url.split('/apiv3/')[0];
-    return `${domainName}/download?url=${url}&fileName=${fileName}`;
+    const host = window.location.host; // 域名
+    const protocol = window.location.protocol; // 协议
+    return `${protocol}//${host}/download?url=${url}&fileName=${fileName}`;
   }
 
   // 文件是否可预览

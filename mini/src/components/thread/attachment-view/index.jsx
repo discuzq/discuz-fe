@@ -220,7 +220,7 @@ const Index = ({
   };
 
   const splicingLink = (url, fileName) => {
-    const domainName = url.split('/apiv3/')[0];
+    const domainName = DISCUZ_CONFIG_HOST;
     return `${domainName}/download?url=${url}&fileName=${fileName}`;
   }
 
