@@ -12,7 +12,6 @@ import { ATTACHMENT_FOLD_COUNT } from '@common/constants';
 import { get } from '@common/utils/get';
 import { readDownloadAttachmentStatus } from '@server';
 import { downloadAttachment } from '@common/utils/download-attachment-web';
-import config from '@common/config';
 import goToLoginPage from '@common/utils/go-to-login-page';
 
 import styles from './index.module.scss';
@@ -191,9 +190,9 @@ const Index = ({
   };
 
   const splicingLink = (url, fileName) => {
-    const result = config();
-    const domainName = result.COMMON_BASE_URL;
-    return `${domainName}/download?url=${url}&fileName=${fileName}`;
+    const host = window.location.host; // 域名
+    const protocol = window.location.protocol; // 协议
+    return `${protocol}//${host}/download?url=${url}&fileName=${fileName}`;
   }
 
   // 文件是否可预览

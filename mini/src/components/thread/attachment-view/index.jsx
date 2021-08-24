@@ -13,7 +13,6 @@ import getAttachmentIconLink from '@common/utils/get-attachment-icon-link';
 import { throttle } from '@common/utils/throttle-debounce.js';
 import { ATTACHMENT_FOLD_COUNT } from '@common/constants';
 import Router from '@discuzq/sdk/dist/router';
-import config from '@common/config';
 import { readDownloadAttachmentStatus } from '@server';
 import { downloadAttachmentMini } from '@common/utils/download-attachment-mini';
 
@@ -221,8 +220,7 @@ const Index = ({
   };
 
   const splicingLink = (url, fileName) => {
-    const result = config();
-    const domainName = result.COMMON_BASE_URL;
+    const domainName = DISCUZ_CONFIG_HOST;
     return `${domainName}/download?url=${url}&fileName=${fileName}`;
   }
 
