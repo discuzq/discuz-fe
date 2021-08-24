@@ -11,7 +11,7 @@ import getAttachmentIconLink from '@common/utils/get-attachment-icon-link';
 import { ATTACHMENT_FOLD_COUNT } from '@common/constants';
 import { get } from '@common/utils/get';
 import { readDownloadAttachmentStatus } from '@server';
-import { downloadAttachment, downloadAttachmentMini } from '@common/utils/download-attachment';
+import { downloadAttachment } from '@common/utils/download-attachment-web';
 import config from '@common/config';
 import goToLoginPage from '@common/utils/go-to-login-page';
 
@@ -124,14 +124,13 @@ const Index = ({
       if (isDownload) {
         if (isWeiXin()) {
           window.location.href = itemUrl;
-          Toast.info({ content: '下载成功' });
           downloadAttachment(url, null, false); // 携带登录态请求一下数据，后端记录下载次数
         } else {
           downloadAttachment(url, fileName); // 下载文件
         }
+        Toast.info({ content: '下载成功' });
       }
     }
-    Toast.info({ content: '下载成功' });
   }
 
   const downloadAttachmentParams = (url) => {
