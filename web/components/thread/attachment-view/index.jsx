@@ -11,7 +11,7 @@ import getAttachmentIconLink from '@common/utils/get-attachment-icon-link';
 import { ATTACHMENT_FOLD_COUNT } from '@common/constants';
 import { get } from '@common/utils/get';
 import { readDownloadAttachmentStatus } from '@server';
-import { downloadAttachment, downloadAttachmentMini } from '@common/utils/download-attachment';
+import { downloadAttachment } from '@common/utils/download-attachment-web';
 import config from '@common/config';
 import goToLoginPage from '@common/utils/go-to-login-page';
 

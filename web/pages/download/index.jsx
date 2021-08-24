@@ -6,7 +6,7 @@ import Router from '@discuzq/sdk/dist/router';
 import { readDownloadAttachmentStatus } from '@server';
 import goToLoginPage from '@common/utils/go-to-login-page';
 import HOCFetchSiteData from '@middleware/HOCFetchSiteData';
-import { downloadAttachment } from '@common/utils/download-attachment';
+import { downloadAttachment } from '@common/utils/download-attachment-web';
 
 
 @inject('user')

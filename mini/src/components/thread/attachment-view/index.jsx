@@ -15,7 +15,7 @@ import { ATTACHMENT_FOLD_COUNT } from '@common/constants';
 import Router from '@discuzq/sdk/dist/router';
 import config from '@common/config';
 import { readDownloadAttachmentStatus } from '@server';
-import { downloadAttachmentMini } from '@common/utils/download-attachment';
+import { downloadAttachmentMini } from '@common/utils/download-attachment-mini';
 
 /**
  * 附件
