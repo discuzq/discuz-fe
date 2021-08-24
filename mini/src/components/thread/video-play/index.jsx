@@ -3,6 +3,8 @@ import { inject, observer } from 'mobx-react';
 import styles from './index.module.scss';
 import Video from '@discuzq/design/dist/components/video/index';
 import Icon from '@discuzq/design/dist/components/icon/index';
+import Alert from '@discuzq/design/dist/components/alert/index';
+
 import { noop } from '../utils';
 import { View, Text, Image } from '@tarojs/components'
 import { getElementRect, randomStr } from '../utils'
@@ -48,22 +50,22 @@ const Index = ({
 
   const onPlay = (e) => {
     updateViewCount();
-    if(baselayout) {
+    if (baselayout) {
 
       // 暂停之前正在播放的视频
-      if(baselayout.playingVideoDom) {
-        if(baselayout.playingVideoDom !== e.target.id) {
+      if (baselayout.playingVideoDom) {
+        if (baselayout.playingVideoDom !== e.target.id) {
           Taro.createVideoContext(baselayout.playingVideoDom)?.pause();
         }
       }
 
-       // 暂停之前正在播放的音频
+      // 暂停之前正在播放的音频
       if (baselayout.playingAudioDom) {
         baselayout.playingAudioDom.pause();
       }
 
       if (baselayout.playingAudioDom) {
-        if(baselayout.playingAudioDom !== e.target.id) {
+        if (baselayout.playingAudioDom !== e.target.id) {
           baselayout.playingAudioDom.pause();
         }
       }
@@ -75,9 +77,9 @@ const Index = ({
 
   const onFullscreenChange = (e) => { // 该函数在进出全屏的时候各被调用一次
     e && e.stopPropagation();
-    if(baselayout.videoFullScreenStatus === "") { // 第一次调用
+    if (baselayout.videoFullScreenStatus === "") { // 第一次调用
       baselayout.videoFullScreenStatus = "inFullScreen";
-    } else if(baselayout.videoFullScreenStatus === "inFullScreen") { //第二次调用
+    } else if (baselayout.videoFullScreenStatus === "inFullScreen") { //第二次调用
       baselayout.videoFullScreenStatus = "offFullScreen";
     }
   }
@@ -86,7 +88,7 @@ const Index = ({
     if (relativeToViewport) {
       getElementRect(videoId.current).then(res => {
         const info = Taro.getSystemInfoSync();
-  
+
         const { width, height } = calcVideoSize({
           parentWidth: res?.width || 343,
           v_width,
@@ -95,19 +97,19 @@ const Index = ({
         });
         setWidth(width);
         setHeight(height);
-  
+
         changeHeight({ type: 'video', height })
       })
     }
   }, [relativeToViewport]);
 
   return (
-    <View id={videoId.current} className={styles.container} style={{ 
-      width: `${width}px`, 
-      height: `${height}px` 
+    <View id={videoId.current} className={styles.container} style={{
+      width: `${width}px`,
+      height: `${height}px`
     }}>
       {
-        width && ( 
+        width && (
           <Video
             className={styles.videoBox}
             onReady={onReady}
@@ -128,10 +130,15 @@ const Index = ({
       {
         !isPay && status !== 1 && (
           <View className={styles.payBox}>
-            <View className={`${styles.alert} ${status === 0 ? styles.alertWarn : styles.alertError}`}>
+            {/* <View className={`${styles.alert} ${status === 0 ? styles.alertWarn : styles.alertError}`}>
               <Icon className={styles.tipsIcon} size={20} name={status === 0 ? 'TipsOutlined' : 'WrongOutlined'}></Icon>
               <Text className={styles.tipsText}>{status === 0 ? '视频正在转码中，转码成功后才能正常显示！' : '错误'}</Text>
-            </View>
+            </View> */}
+            {
+              status === 0
+                ? <Alert type="warning" >视频正在转码中，转码成功后才能正常显示！</Alert>
+                : <Alert type="error" >错误！</Alert>
+            }
           </View>
         )
       }

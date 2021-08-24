@@ -2,6 +2,8 @@ import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 're
 import { inject, observer } from 'mobx-react';
 import styles from './index.module.scss';
 import { Video, Icon } from '@discuzq/design';
+import Alert from '@discuzq/design/dist/components/alert/index';
+
 import { noop } from '../utils';
 import calcVideoSize from '@common/utils/calc-video-size';
 
@@ -17,7 +19,7 @@ import calcVideoSize from '@common/utils/calc-video-size';
  * @prop {function} onPay 付费时，蒙层点击事件
  */
 
-//TODO 视频转码中和错误状态的蒙层样式有问题，需要调整
+// TODO 视频转码中和错误状态的蒙层样式有问题，需要调整
 const Index = ({
   isPay = false,
   coverUrl,
@@ -43,14 +45,14 @@ const Index = ({
 
   const onPlay = (e) => {
     updateViewCount();
-    if(player && e && baselayout) {
+    if (player && e && baselayout) {
       // 暂停之前正在播放的音视频
-      if(baselayout.playingVideoDom) {
+      if (baselayout.playingVideoDom) {
         // 暂停之前正在播放的视频
         baselayout.pauseWebPlayingVideo(e.target);
       }
-  
-      if(baselayout.playingAudioDom) {
+
+      if (baselayout.playingAudioDom) {
         // 暂停之前正在播放的音频
         baselayout.pauseWebPlayingAudio();
       }
@@ -58,7 +60,7 @@ const Index = ({
       baselayout.playingVideoDom = e.target;
       baselayout.playingVideoPos = e.target?.parentNode?.parentNode?.parentNode?.offsetTop || -1;
     }
-  }
+  };
 
 
   useEffect(() => {
@@ -67,12 +69,12 @@ const Index = ({
       parentWidth: rect?.width || 343,
       v_width,
       v_height,
-      viewHeight: window.innerHeight
+      viewHeight: window.innerHeight,
     });
 
     // height容错
-    const newHeight = (height === 'NaN' || !height) ? 0 : height
-    
+    const newHeight = (height === 'NaN' || !height) ? 0 : height;
+
     setWidth(width);
     setHeight(newHeight);
   }, []);
@@ -84,7 +86,7 @@ const Index = ({
   }, [ref?.current?.clientHeight]);
 
   return (
-    <div id="common-video-play" className={styles.container} style={{width: `${width}px`, height: `${height}px`}} ref={ref}>
+    <div id="common-video-play" className={styles.container} style={{ width: `${width}px`, height: `${height}px` }} ref={ref}>
       {
         width && (
           <Video
@@ -107,10 +109,17 @@ const Index = ({
       {
         !isPay && status !== 1 && (
           <div className={styles.payBox}>
-            <div className={`${styles.alert} ${status === 0 ? styles.alertWarn : styles.alertError}`}>
+            {/* <div className={`${styles.alert} ${status === 0 ? styles.alertWarn : styles.alertError}`}>
               <Icon className={styles.tipsIcon} size={20} name={status === 0 ? 'TipsOutlined' : 'WrongOutlined'}></Icon>
               <span className={styles.tipsText}>{status === 0 ? '视频正在转码中，转码成功后才能正常显示！' : '错误'}</span>
-            </div>
+            </div> */}
+            {
+              status === 0
+                ? <Alert type="warning" >视频正在转码中，转码成功后才能正常显示！</Alert>
+                : <Alert type="error" >错误！</Alert>
+            }
+
+
           </div>
         )
       }
