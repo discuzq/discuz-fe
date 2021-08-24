@@ -1,57 +1,48 @@
 import React from 'react';
-import styles from './index.module.scss';
-import Icon from '@discuzq/design/dist/components/icon/index';
-import classNames from 'classnames';
-import { Popup } from '@discuzq/design';
+import { ActionSheet } from '@discuzq/design';
 import isWeiXin from '@common/utils/is-weixin';
-
-const index = ({ onClose, handleWxShare, handleH5Share, show, createCard, fromThread }) => (
-      <Popup
-        position="bottom"
-        visible={show}
-        onClose={onClose}
-      >
-        <div className={styles.body}>
-          <div className={styles.container}>
-            <div className={classNames(styles.more, styles.oneRow)}>
-                <div className={styles.moreItem} onClick={createCard}>
-                    <div className={styles.icon}>
-                        <Icon name='PictureOutlinedBig' size={20}>
-                        </Icon>
-                    </div>
-                    <span className={styles.text}>
-                        生成海报
-                    </span>
-                </div>
-                <div className={styles.moreItem} onClick={handleH5Share}>
-                    <div className={styles.icon}>
-                        <Icon name='PaperClipOutlined' size={20}>
-                        </Icon>
-                    </div>
-                    <span className={styles.text}>
-                        复制链接
-                    </span>
-                </div>
-                {isWeiXin() && !fromThread && (
-                <div className={styles.moreItem} onClick={handleWxShare}>
-                    <div className={styles.icon}>
-                        <Icon name='WeChatOutlined' size={20}>
-                        </Icon>
-                    </div>
-                    <span className={styles.text}>
-                        微信分享
-                    </span>
-                </div>
-                )}
-            </div>
-          </div>
-            <div className={styles.button} >
-                    <span className={styles.cancel} onClick={onClose}>
-                        取消
-                    </span>
-            </div>
-        </div>
-      </Popup>
-);
+const index = ({ onClose, handleWxShare, handleH5Share, show, createCard, fromThread }) => {
+  const actions = [
+    {
+      icon: 'PictureOutlinedBig',
+      description: '生成海报',
+    },
+    {
+      icon: 'PaperClipOutlined',
+      description: '复制链接',
+    },
+  ];
+  if (isWeiXin() && !fromThread) {
+    actions.push({
+      icon: 'WeChatOutlined',
+      description: '微信分享',
+    });
+  }
+  const onSelect = (e, item) => {
+    if (item.description === '生成海报') {
+      createCard();
+      return;
+    }
+    if (item.description === '复制链接') {
+      handleH5Share();
+      return;
+    }
+    if (item.description === '微信分享') {
+      handleWxShare();
+      return;
+    }
+  };
+  return (
+        <ActionSheet
+            visible={show}
+            onClose={onClose}
+            layout='row'
+            actions={actions}
+            buttonStyle={{ fontSize: 14 }}
+            onSelect={onSelect}
+        >
+        </ActionSheet>
+  );
+};
 
 export default React.memo(index);
