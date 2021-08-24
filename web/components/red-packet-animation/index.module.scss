@@ -15,7 +15,7 @@
         width: rem(310);
         height: rem(415);
         position: relative;
-        background-image: url('/dzq-img/redpacket.png');
+        background-image: url('https://imgcache.qq.com/operation/dianshi/other/redpacket.d2d2c8778413d454ef7d9b890221112fda06e66d.png');
         background-size: auto 100%;
         background-repeat: no-repeat;
         background-position: 50% 50%;
@@ -57,28 +57,71 @@
             font-size: 43px;
             color: #4f5a70;
         }
-        .animationBottom {
+        .bottom {
             width: 465px;
             position: absolute;
             bottom: -155px;
             left: -78px;
             visibility: hidden;
-            transform-origin: 50%, 0;
-            transition-property:  visibility, opacity;
-            transition-duration:  0s, 0.2s;
-            transition-timing-function: linear, linear;
-            transition-delay:  0.4s, 0.9s
+            // transform-origin: 50%, 0;
+            // transition-property:  visibility, opacity;
+            // transition-duration:  0s, 0.2s;
+            // transition-timing-function: linear, linear;
+            // transition-delay:  0.4s, 0.9s
         }
-        .animationUp {
+        .animationBottom {
+            animation: bottomAnimation .7s linear 0.4s;
+        }
+        @keyframes bottomAnimation {
+            0% {
+                visibility: hidden;
+                opacity: 0;
+            }
+            15% {
+                visibility: visible;
+                opacity: 1;
+            }
+            85% {
+                visibility: visible;
+                opacity: 1;
+            }
+            100% {
+                visibility: hidden;
+                opacity: 0;
+            }
+        }
+        .up {
             width: 310px;
             position: absolute;
             top: -50px;
             visibility: hidden;
-            transition-property: transform, visibility, opacity;
-            transition-duration: 0.4s, 0.1s, 0.2s;
-            transition-delay: 0.5s, 0.4s, 0.9s;
-            transition-timing-function: linear,linear, linear;
-            transform-origin: 50%, 100%;
+            // transition-property: transform, visibility, opacity;
+            // transition-duration: 0.4s, 0.1s, 0.2s;
+            // transition-delay: 0.5s, 0.4s, 0.9s;
+            // transition-timing-function: linear,linear, linear;
+            // transform-origin: 50%, 100%;
+        }
+        .animationUp {
+            animation: upAnimation 0.7s linear 0.4s;
+        }
+        @keyframes upAnimation {
+            0% {
+                visibility: hidden;
+                opacity: 0;
+            }
+            15% {
+                visibility: visible;
+                opacity: 1;
+            }
+            85% {
+                visibility: visible;
+                opacity: 1;
+            }
+            100% {
+                visibility: hidden;
+                opacity: 0;
+                transform: scale(1.5,1.5);
+            }
         }
     }
 }
