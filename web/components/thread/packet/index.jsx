@@ -44,7 +44,7 @@ const Index = ({ money = 0, remainMoney = 0, number, remainNumber, type = 0, onC
               <div className={styles.left}>
                 <div className={styles.top}> {condition === 0 ? '回复领红包' : '集赞领红包'}</div>
                 {
-                  number && number > 0 && (<div className={styles.bottom}>
+                  number && number * 1 > 0 && (<div className={styles.bottom}>
                     已领取{(number - remainNumber).toFixed(0)}个红包，剩余{remainNumber}个红包
                   </div>)
                 }
