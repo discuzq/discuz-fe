@@ -12,7 +12,6 @@ import { ATTACHMENT_FOLD_COUNT } from '@common/constants';
 import { get } from '@common/utils/get';
 import { readDownloadAttachmentStatus } from '@server';
 import { downloadAttachment } from '@common/utils/download-attachment-web';
-import config from '@common/config';
 import goToLoginPage from '@common/utils/go-to-login-page';
 
 import styles from './index.module.scss';
@@ -191,8 +190,7 @@ const Index = ({
   };
 
   const splicingLink = (url, fileName) => {
-    const result = config();
-    const domainName = result.COMMON_BASE_URL;
+    const domainName = url.split('/apiv3/')[0];
     return `${domainName}/download?url=${url}&fileName=${fileName}`;
   }
 
