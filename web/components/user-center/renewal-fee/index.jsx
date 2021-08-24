@@ -4,7 +4,6 @@ import styles from './index.module.scss';
 import { Dialog, Button, Icon, Toast } from '@discuzq/design';
 import HOCFetchSiteData from '@middleware/HOCFetchSiteData';
 import { numberFormat } from '@common/utils/number-format';
-import time from '@discuzq/sdk/dist/time';
 import renewPay from '@common/pay-bussiness/renew-pay';
 
 @inject('site')
@@ -30,28 +29,6 @@ class RenewalFee extends Component {
     } catch (error) {
       console.error(error);
       this.onClose();
-    }
-  };
-
-  // 获取日期格式
-  getDateFormat = () => {
-    if (time.isCurrentYear(this.props.user?.expiredAt)) {
-      return 'MM月DD日';
-    } else {
-      return 'YYYY年MM月DD日';
-    }
-  };
-
-  renderFeeDateContent = () => {
-    if (this.props.user?.expiredDays === 0) {
-      return `有效期：${0}天`;
-    } else if (this.props.user?.isIndefiniteDuration) {
-      return `无限期`;
-    } else {
-      return `有效期：${this.props.user?.expiredDays}天•${time.formatDate(
-        this.props.user?.expiredAt,
-        this.getDateFormat(),
-      )}`;
     }
   };
 
@@ -97,7 +74,7 @@ class RenewalFee extends Component {
                   ￥{this.props.site?.sitePrice} 立即续费
                 </Button>
               )}
-              <div className={styles.effectTimer}>{this.renderFeeDateContent()}</div>
+              <div className={styles.effectTimer}>有效期：{this.props.site?.siteExpire}天</div>
             </div>
           </div>
         </Dialog>
