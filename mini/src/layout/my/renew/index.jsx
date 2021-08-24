@@ -4,7 +4,6 @@ import styles from './index.module.scss';
 import Button from '@discuzq/design/dist/components/button/index';
 import { View, Text } from '@tarojs/components';
 import { numberFormat } from '@common/utils/number-format';
-import time from '@discuzq/sdk/dist/time';
 import renewPay from '@common/pay-bussiness/renew-pay';
 
 @inject('site')
@@ -20,28 +19,6 @@ class RenewalFee extends Component {
       await renewPay({ sitePrice, siteName, userStore, siteStore });
     } catch (error) {
       console.error(error);
-    }
-  };
-
-  // 获取日期格式
-  getDateFormat = () => {
-    if (time.isCurrentYear(this.props.user?.expiredAt)) {
-      return 'MM月DD日';
-    } else {
-      return 'YYYY年MM月DD日';
-    }
-  };
-
-  renderFeeDateContent = () => {
-    if (this.props.user?.expiredDays === 0) {
-      return `有效期：${0}天`;
-    } else if (this.props.user?.isIndefiniteDuration) {
-      return `无限期`;
-    } else {
-      return `有效期：${this.props.user?.expiredDays}天•${time.formatDate(
-        this.props.user?.expiredAt,
-        this.getDateFormat(),
-      )}`;
     }
   };
 
@@ -81,7 +58,7 @@ class RenewalFee extends Component {
             </View>
             <View className={styles.menuItem}>
               <View className={styles.menuTitle}>有效期</View>
-              <View className={styles.menuValue}>{this.renderFeeDateContent()}</View>
+              <View className={styles.menuValue}>{this.props.site?.siteExpire}天</View>
             </View>
           </View>
           {!this.props.user?.isIndefiniteDuration && (

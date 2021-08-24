@@ -5,7 +5,6 @@ import { Button, Icon, Toast } from '@discuzq/design';
 import Header from '@components/header';
 import HOCFetchSiteData from '@middleware/HOCFetchSiteData';
 import { numberFormat } from '@common/utils/number-format';
-import time from '@discuzq/sdk/dist/time';
 import renewPay from '@common/pay-bussiness/renew-pay';
 
 @inject('site')
@@ -21,28 +20,6 @@ class RenewalFee extends Component {
       await renewPay({ sitePrice, siteName, userStore, siteStore });
     } catch (error) {
       console.error(error);
-    }
-  };
-
-  // 获取日期格式
-  getDateFormat = () => {
-    if (time.isCurrentYear(this.props.user?.expiredAt)) {
-      return 'MM月DD日';
-    } else {
-      return 'YYYY年MM月DD日';
-    }
-  };
-
-  renderFeeDateContent = () => {
-    if (this.props.user?.expiredDays === 0) {
-      return `有效期：${0}天`;
-    } else if (this.props.user?.isIndefiniteDuration) {
-      return `无限期`;
-    } else {
-      return `有效期：${this.props.user?.expiredDays}天•${time.formatDate(
-        this.props.user?.expiredAt,
-        this.getDateFormat(),
-      )}`;
     }
   };
 
@@ -79,7 +56,7 @@ class RenewalFee extends Component {
             </div>
             <div className={styles.menuItem}>
               <div className={styles.menuTitle}>有效期</div>
-              <div className={styles.menuValue}>{this.renderFeeDateContent()}</div>
+              <div className={styles.menuValue}>{this.props.site?.siteExpire}天</div>
             </div>
           </div>
           {!this.props.user?.isIndefiniteDuration && (
