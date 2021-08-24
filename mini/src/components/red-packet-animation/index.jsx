@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import style from './index.module.scss';
 import { View, Image } from '@tarojs/components'
-import upImg from '../../public/dzq-img/up.png'
-import bottomImg from '../../public/dzq-img/bottom.gif'
 import classNames from 'classnames';
 
 const Index = ({ onClose, money = '0.00' }) => {
@@ -29,13 +27,13 @@ const handleClose = () => {
             <View className={style.button} style={start ? buttonStyle : {}} onClick={handleClick}>
                 <View className={style.open} style={start ? openStyle : {}}>开</View>
             </View>
-            <Image src={upImg} className={classNames(
+            <Image src="https://imgcache.qq.com/operation/dianshi/other/up.01d1a47e41389411f01d143867134d93e0678512.png" className={classNames(
               style.up,
               {
                 [style.animationUp]: start,
               },
             )}/>
-            <Image src={bottomImg} className={classNames(
+            <Image src="https://imgcache.qq.com/operation/dianshi/other/bottom.5e276e5e63dc355cea9ad803dbc2bc6169acc0ed.gif" className={classNames(
               style.bottom,
               {
                 [style.animationBottom]: start,
