@@ -239,7 +239,6 @@ export default inject('user')(observer((props) => {
                   本帖向所有人悬赏
                   <span className={topic.rewardNumber}>{parseContent.REWARD.money || 0}</span>元
                 </div>
-              )}
             </div>
           )}
 
