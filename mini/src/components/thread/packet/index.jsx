@@ -53,7 +53,7 @@ const Index = ({ money = 0, remainMoney = 0, number, remainNumber, type = 0, onC
               <View className={styles.left}>
                 <View className={styles.top}> {condition === 0 ? '回复领红包' : '集赞领红包'}</View>
                 {
-                  number && remainNumber && (<View className={styles.bottom}>
+                  number && number * 1 > 0 && (<View className={styles.bottom}>
                     已领取{(number - remainNumber).toFixed(0)}个红包，剩余{remainNumber}个红包
                   </View>)
                 }
