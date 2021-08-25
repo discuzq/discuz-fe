@@ -52,7 +52,7 @@ export default class MemberShipCard extends Component {
       <View className={`${styles.memberShipCardWrapper} ${shipCardClassName}`}>
         <View className={styles.MemberShipCardContent}>
           <View className={styles.roleType}>{this.props.user?.groupName}</View>
-          <View className={styles.tagline}>访问海量站点内容•发布内容</View>
+          <View className={styles.tagline}>访问海量站点内容</View>
           <View className={styles.RenewalFee}>
             {!this.props.user?.isIndefiniteDuration && (
               <Button onClick={this.handleRenewalFee} type="primary" className={styles.btn}>
