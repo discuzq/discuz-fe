@@ -5,25 +5,49 @@ import Taro from '@tarojs/taro';
  * @param {boolean} needLogin 是否需要登录
  * @returns
  */
-function withShare() {
+function withShare(options = {}) {
   // 设置默认 
   const defalutTitle = 'Discuz! Q';
   let defalutPath = 'pages/index/index';
   defalutPath = `/pages/index/index?path=${encodeURIComponent(defalutPath)}`;
   let menus = [];
   menus = ['shareAppMessage'];
+  if ( options.showShareTimeline ) {
+    menus.push('shareTimeline');
+  }
   return function demoComponent(Component) {
     class WithShare extends Component {
       componentDidMount() {
-        Taro.showShareMenu({
-          withShareTicket: true,
-          menus,
-        });
+        const res = Taro.getLaunchOptionsSync();
+        if ( !res || res.scene !== 1154 ) {
+          Taro.showShareMenu({
+            withShareTicket: true,
+            menus,
+          });
+        }
+        
         if (super.componentDidMount) {
           super.componentDidMount();
         }
       }
+
+      onShareTimeline = () => {
+        if (this.getShareData && typeof this.getShareData === 'function') {
+          const  shareData  = this.getShareData({from: 'timeLine'})
+          console.log(shareData);
+          const { title=defalutTitle, query} = shareData
+          return {
+            title,
+            query: query
+          }
+        }
+        return {
+          title: defalutTitles
+        }
+      }
+
       onShareAppMessage = (res) => {
+
         const data = res.target?.dataset?.shareData || '';
         let shareData = '';
         if (this.getShareData && typeof this.getShareData === 'function') {

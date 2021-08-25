@@ -115,6 +115,7 @@ class Index extends React.Component {
     async initSiteData() {
       // 是否需要清理当前数据重新加载
       const { params } = this.$instance.router;
+
       if (params.reload === 'true') {
         this.props.user.removeUserInfo();
         await this.props.site.getSiteInfo();

@@ -12,7 +12,7 @@ import LoadingTips from './components/loading-tips';
 import styleVar from '@common/styles/theme/default.scss.json';
 import Icon from '@discuzq/design/dist/components/icon/index';
 import Input from '@discuzq/design/dist/components/input/index';
-import Toast from '@discuzq/design/dist/components/toast/index';
+import Toast from '@components/toast';
 import Button from '@discuzq/design/dist/components/button/index';
 import goToLoginPage from '@common/utils/go-to-login-page';
 
