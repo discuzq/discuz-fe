@@ -134,11 +134,7 @@ const Index = ({
               <Icon className={styles.tipsIcon} size={20} name={status === 0 ? 'TipsOutlined' : 'WrongOutlined'}></Icon>
               <Text className={styles.tipsText}>{status === 0 ? '视频正在转码中，转码成功后才能正常显示！' : '错误'}</Text>
             </View> */}
-            {
-              status === 0
-                ? <Alert type="warning" >视频正在转码中，转码成功后才能正常显示！</Alert>
-                : <Alert type="error" >错误！</Alert>
-            }
+            <Alert type={status === 0 ? "warning" : 'error'} >{status === 0 ? '视频正在转码中，转码成功后才能正常显示！' : '错误！'}</Alert>
           </View>
         )
       }

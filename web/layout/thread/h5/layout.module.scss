@@ -10,6 +10,12 @@
   background: $comment-bg-color;
 }
 
+.alertBox{
+  width: 100%;
+  position: absolute;
+  top: rem(40);
+}
+
 .header {
   width: 100%;
 }

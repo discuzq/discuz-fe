@@ -9,6 +9,11 @@
   justify-content: flex-start;
   background: $comment-bg-color;
 }
+.alertBox{
+  width: 100%;
+  position: absolute;
+  top: rem(60);
+}
 
 .header {
   width: 100%;

@@ -6,7 +6,7 @@ import Router from '@discuzq/sdk/dist/router';
 import AuthorInfo from './components/author-info/index';
 import CommentInput from './components/comment-input/index';
 import LoadingTips from '@components/thread-detail-pc/loading-tips';
-import { Icon, Toast, Popup } from '@discuzq/design';
+import { Icon, Toast, Popup, Alert } from '@discuzq/design';
 import UserInfo from '@components/thread/user-info';
 import RewardPopup from './components/reward-popup';
 import BaseLayout from '@components/base-layout';
@@ -780,13 +780,13 @@ class ThreadPCPage extends React.Component {
                     replyAvatarClick={(comment, reply, floor) => this.replyAvatarClick(comment, reply, floor)}
                   ></RenderCommentList>
                   {!isCommentPositionNoMore && (
-                  // <BottomView
-                  //   onClick={() => this.onLoadMoreClick()}
-                  //   noMoreType="line"
-                  //   loadingText="点击加载更多"
-                  //   isError={isCommentListError}
-                  //   noMore={isCommentPositionNoMore}
-                  // ></BottomView>
+                    // <BottomView
+                    //   onClick={() => this.onLoadMoreClick()}
+                    //   noMoreType="line"
+                    //   loadingText="点击加载更多"
+                    //   isError={isCommentListError}
+                    //   noMore={isCommentPositionNoMore}
+                    // ></BottomView>
 
                     <div className={layout.showMore} onClick={() => this.onLoadMoreClick()}>
                       <div className={layout.hidePercent}>展开更多评论</div>
@@ -878,7 +878,8 @@ class ThreadPCPage extends React.Component {
     const isSelf = this.props.user?.userInfo?.id && this.props.user?.userInfo?.id === threadStore?.threadData?.userId;
     return (
       <div>
-        <ShowTop showContent={this.props.thread?.threadData?.isStick} setTop={this.state.setTop}></ShowTop>
+        {/* <ShowTop showContent={this.props.thread?.threadData?.isStick} setTop={this.state.setTop}></ShowTop> */}
+        {this.state.setTop && <div className={layout.alertBox}><Alert type="success">{this.state.showContent ? '置顶成功' : '已取消置顶'}</Alert></div>}
         <IsApproved isShow={isReady && !isApproved}></IsApproved>
 
         <BaseLayout
@@ -896,6 +897,7 @@ class ThreadPCPage extends React.Component {
           })}
           className="detail"
         >
+
           {this.renderContent()}
         </BaseLayout>
 
@@ -920,7 +922,7 @@ class ThreadPCPage extends React.Component {
               onSubmit={value => this.onPublishClick(value)}
               initValue={this.state.inputValue}
               threadId={this.props.thread?.threadData?.userId}
-              isAnonymous = {isAnonymous}
+              isAnonymous={isAnonymous}
             ></CommentInput>
           </div>
         </Popup>
