@@ -45,6 +45,14 @@ class ForumH5Page extends React.Component {
     this.props.router.push(`/user/${id}`);
   };
 
+  onIntroduceClose = () => {
+    this.props.forum.setIntroduceVisible(false)
+  };
+
+  onIntroduceOpen = () => {
+    this.props.forum.setIntroduceVisible(true)
+  };
+
   render() {
     const { site, forum } = this.props;
     const { platform, envConfig } = site;
@@ -64,8 +72,9 @@ class ForumH5Page extends React.Component {
             {/* 站点介绍 start */}
             <div className={layout.list}>
               <div className={layout.label}>站点介绍</div>
-              <div className={layout.right} title={site.siteIntroduction}>
+              <div className={layout.right} title={site.siteIntroduction} onClick={this.onIntroduceOpen}>
                 <span className={layout.list_text_ellipsis}>{site.siteIntroduction}</span>
+                <Icon size={10} color='#8590A6' name='RightOutlined'/>
               </div>
             </div>
             {/* 站点介绍 end */}
@@ -142,6 +151,23 @@ class ForumH5Page extends React.Component {
         >
           <UserCenterUsers onContainerClick={this.onUserClick}/>
         </Popup>
+        {
+          platform === 'h5' && (
+            <Popup
+              position="bottom"
+              visible={forum.introduceVisible}
+              onClose={this.onIntroduceClose}
+            >
+              <div className={layout.popup_introduce}>
+                <div className={layout.introduce_content}>
+                  <pre>
+                    {site.siteIntroduction}
+                  </pre>
+                </div>
+              </div>
+            </Popup>
+          )
+        }
       </>
     );
   }
