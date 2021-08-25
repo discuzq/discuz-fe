@@ -78,10 +78,6 @@ export default class index extends Component {
       await this.props.user.updateUserInfo(this.props.user.id);
 
       try {
-        this.props.user.userThreadsPage = 1;
-        this.props.user.userThreadsTotalCount = 0;
-        this.props.user.userThreadsTotalPage = 1;
-
         await this.fetchUserThreads();
       } catch (e) {
         console.error(e);
@@ -228,7 +224,7 @@ export default class index extends Component {
         }}
         showHeader={false}
         showTabBar
-        noMore={!isLoading && currentPage >= totalPage}
+        noMore={!isLoading && currentPage > totalPage}
         onRefresh={this.onRefresh}
         requestError={requestError.isError}
         errorText={requestError.errorText}

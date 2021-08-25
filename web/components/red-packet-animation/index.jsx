@@ -28,13 +28,13 @@ const Index = ({ onClose = () => {}, money = '0.00' }) => {
             <div className={style.button} id='button' onClick={handleClick}>
                 <div className={style.open} id='open'>开</div>
             </div>
-            <img src="/dzq-img/up.png" id='up' className={classNames(
+            <img src="https://imgcache.qq.com/operation/dianshi/other/up.01d1a47e41389411f01d143867134d93e0678512.png" id='up' className={classNames(
               style.up,
               {
                 [style.animationUp]: start,
               },
             )}/>
-            <img src="/dzq-img/bottom.gif" id='bottom' className={classNames(
+            <img src="https://imgcache.qq.com/operation/dianshi/other/bottom.5e276e5e63dc355cea9ad803dbc2bc6169acc0ed.gif" id='bottom' className={classNames(
               style.bottom,
               {
                 [style.animationBottom]: start,
