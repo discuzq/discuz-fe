@@ -1,0 +1,68 @@
+@import '@common/styles/index.scss';
+
+.memberShipCardWrapper {
+  background-color: $white;
+  width: 100%;
+  height: 140px;
+  border-radius: 5px;
+  // border: rem(1) solid $white;
+  box-shadow: $border-shadow-color-8;
+  margin-top:$margin-4n;
+  padding: $padding-4n;
+  box-sizing: border-box;
+  background-image: url('../../public/dzq-img/ship-card.png');
+  background-size: 100% 169px;
+  background-repeat: no-repeat;
+}
+
+.MemberShipCardContent {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  .roleType {
+    font-weight: bold;
+    font-size: $font-size-middle-extra;
+    line-height: 25px;
+    text-align: left;
+    color: $text-color-primary;
+    height: 25px;
+  }
+  .tagline {
+    font-size: $font-size-primary;
+    height: 20px;
+    line-height: 20px;
+    color: $text-color-primary;
+    margin: $margin-10 0 18px;
+  }
+  .RenewalFee {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .btn {
+      width: 112px;
+      height: 36px;
+      padding: 0;
+      line-height: 36px;
+      border-radius: rem(5);
+    }
+    .feeTimer {
+      color: $text-color-regular;
+      font-size: $font-size-primary;
+      letter-spacing: 1px;
+      height: 20px;
+      line-height: 20px;
+      width: 100%;
+      text-align: right;
+      .feeDay {
+        font-size: $font-size-h1;
+        color: $primary-color;
+        font-weight: $font-weight-regular;
+      }
+      .noTimeDate {
+        text-align: right;
+        display: block;
+      }
+    }
+  }
+}

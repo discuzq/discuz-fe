@@ -19,11 +19,11 @@ export default class AmountRecognized extends Component {
     this.state = {
       tradeContent: [
         {
-          type: ORDER_TRADE_TYPE.RED_PACKET,
+          type: ORDER_TRADE_TYPE.ORDER_TYPE_REDPACKET,
           name: '红包',
         },
         {
-          type: ORDER_TRADE_TYPE.POST_REWARD,
+          type: ORDER_TRADE_TYPE.ORDER_TYPE_QUESTION_REWARD,
           name: '悬赏',
         },
       ],
@@ -48,32 +48,41 @@ export default class AmountRecognized extends Component {
   renderDiffTradeType = (type) => {
     let value = '';
     switch (type) {
-      case ORDER_TRADE_TYPE.THEME: // 表示付费贴
-        value = '付费帖';
-        break;
-      case ORDER_TRADE_TYPE.POST_REWARD: // 表示打赏
-        value = '悬赏';
-        break;
-      case ORDER_TRADE_TYPE.REGEISTER_SITE:
+      case ORDER_TRADE_TYPE.ORDER_TYPE_REGISTER: // 表示注册(站点付费加入) 1
         value = '付费加入';
         break;
-      case ORDER_TRADE_TYPE.PUT_PROBLEM: // 付费提问
-        value = '付费提问';
-        break;
-      case ORDER_TRADE_TYPE.COMBIE_PAYMENT:
-        value = '红包+悬赏';
-        break;
-      case ORDER_TRADE_TYPE.REWARD: // 表示打赏
+      case ORDER_TRADE_TYPE.ORDER_TYPE_REWARD: // 表示打赏 2
         value = '打赏';
         break;
-      case ORDER_TRADE_TYPE.AUTHORITY_GROUP:
+      case ORDER_TRADE_TYPE.ORDER_TYPE_THREAD: // 付费主题 3
+        value = '付费帖';
+        break;
+      case ORDER_TRADE_TYPE.ORDER_TYPE_GROUP: // 付费用户组 4
         value = '购买权限组';
         break;
-      case ORDER_TRADE_TYPE.ATTACHMEMENT:
+      case ORDER_TRADE_TYPE.ORDER_TYPE_QUESTION: // 问答提问支付 5
+        value = '付费提问';
+        break;
+      case ORDER_TRADE_TYPE.ORDER_TYPE_ONLOOKER: // 问答围观 6
+        value = '问答围观';
+        break;
+      case ORDER_TRADE_TYPE.ORDER_TYPE_ATTACHMENT: // 附件 7
         value = '附件';
         break;
-      case ORDER_TRADE_TYPE.RED_PACKET:
+      case ORDER_TRADE_TYPE.ORDER_TYPE_RENEW: // 站点付费 8
+        value = '站点付费';
+        break;
+      case ORDER_TRADE_TYPE.ORDER_TYPE_REDPACKET: // 红包 9
         value = '红包';
+        break;
+      case ORDER_TRADE_TYPE.ORDER_TYPE_QUESTION_REWARD: // 悬赏 10
+        value = '悬赏';
+        break;
+      case ORDER_TRADE_TYPE.ORDER_TYPE_MERGE: // 合并支付（红包+悬赏）11
+        value = '红包+悬赏';
+        break;
+      case ORDER_TRADE_TYPE.ORDER_TYPE_TEXT: // 文字帖红包 20
+        value = '文字帖红包';
         break;
       default:
         break;
@@ -119,10 +128,10 @@ export default class AmountRecognized extends Component {
         {/* 主要内容区域 */}
         <View className={styles.amountContent}>
           <>
-            {type === ORDER_TRADE_TYPE.COMBIE_PAYMENT ? (
+            {type === ORDER_TRADE_TYPE.ORDER_TYPE_MERGE ? (
               <>
                 {this.state.tradeContent.map((item, index) => {
-                  const amount_ = item.type === ORDER_TRADE_TYPE.RED_PACKET ? redAmount : rewardAmount;
+                  const amount_ = item.type === ORDER_TRADE_TYPE.ORDER_TYPE_REDPACKET ? redAmount : rewardAmount;
                   return (
                     <>
                       <View className={styles.acExplain}>

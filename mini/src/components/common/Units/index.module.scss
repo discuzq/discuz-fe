@@ -167,7 +167,7 @@
     justify-content: flex-end;
     border-top-left-radius: $border-radius-small;
     border-top-right-radius: $border-radius-small;
-    background-color: rgba($color: $black, $alpha: .5);
+    background-color: rgba($color: $black, $alpha: 0.5);
     z-index: 1;
 
     :global {
@@ -177,7 +177,6 @@
       }
     }
   }
-
 }
 
 .video {

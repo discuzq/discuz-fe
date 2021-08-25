@@ -1,0 +1,128 @@
+@import '@common/styles/index.scss';
+.masking {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: $mask-bg-color;
+    z-index: 1400;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .container {
+        position: relative;
+        width: 310px;
+        height: 415px;
+        position: relative;
+        background-image: url('https://imgcache.qq.com/operation/dianshi/other/redpacket.d2d2c8778413d454ef7d9b890221112fda06e66d.png');
+        background-size: auto 100%;
+        background-repeat: no-repeat;
+        background-position: 50% 50%;
+        border-radius: 10px;
+        .moneyText {
+            opacity: 0;
+            transition: opacity 0.1s linear 0.7s;
+        }
+        .text {
+            line-height: 32px;
+            font-size: 24px;
+            color: #FFEEA2;
+            margin-top: 108px;
+            text-align: center;
+        }
+        .money {
+            line-height: 63px;
+            font-size: 48px;
+            color: #FFEEA2;
+            margin-top: 16px;
+            text-align: center;
+        }
+        .button {
+            margin: auto;
+            background-color: #ffeea2;
+            height: 120px;
+            width: 120px;
+            border-radius: 50%;
+            margin-top: 29px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition-property: transform, visibility;
+            transition-duration: 0.8s, 0s;
+            transition-timing-function: linear, linear;
+            transition-delay: 0s, 0.8s;
+        }
+        .open {
+            font-size: 43px;
+            color: #4f5a70;
+        }
+        .bottom {
+            width: 465px;
+            height: 465px;
+            position: absolute;
+            top: 100px;
+            left: -78px;
+            visibility: hidden;
+            // transform-origin: 50%, 0;
+            // transition-property:  visibility, opacity;
+            // transition-duration:  0s, 0.2s;
+            // transition-timing-function: linear, linear;
+            // transition-delay:  0.4s, 0.9s
+        }
+        .animationBottom {
+            animation: bottomAnimation .7s linear 0.4s;
+        }
+        @keyframes bottomAnimation {
+            0% {
+                visibility: hidden;
+                opacity: 0;
+            }
+            15% {
+                visibility: visible;
+                opacity: 1;
+            }
+            85% {
+                visibility: visible;
+                opacity: 1;
+            }
+            100% {
+                visibility: hidden;
+                opacity: 0;
+            }
+        }
+        .up {
+            width: 310px;
+            position: absolute;
+            top: -50px;
+            visibility: hidden;
+            // transition-property: transform, visibility, opacity;
+            // transition-duration: 0.4s, 0.1s, 0.2s;
+            // transition-delay: 0.5s, 0.4s, 0.9s;
+            // transition-timing-function: linear,linear, linear;
+            // transform-origin: 50%, 100%;
+        }
+        .animationUp {
+            animation: upAnimation 0.7s linear 0.4s;
+        }
+        @keyframes upAnimation {
+            0% {
+                visibility: hidden;
+                opacity: 0;
+            }
+            15% {
+                visibility: visible;
+                opacity: 1;
+            }
+            85% {
+                visibility: visible;
+                opacity: 1;
+            }
+            100% {
+                visibility: hidden;
+                opacity: 0;
+                transform: scale(1.5,1.5);
+            }
+        }
+    }
+}

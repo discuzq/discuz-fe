@@ -2,10 +2,10 @@ import React, { useMemo, useState, useEffect } from 'react';
 import styles from './index.module.scss';
 import Tip from '../tip';
 import Icon from '@discuzq/design/dist/components/icon/index';
-import { View, Text } from '@tarojs/components'
-import ShareButton from '../share-button'
+import { View, Text } from '@tarojs/components';
+import ShareButton from '../share-button';
 import goToLoginPage from '@common/utils/go-to-login-page';
-import Taro from '@tarojs/taro'
+import Taro from '@tarojs/taro';
 import Toast from '@discuzq/design/dist/components/toast';
 import { noop } from '../utils';
 /**
@@ -40,27 +40,33 @@ const Index = ({
   updateViewCount = noop,
 }) => {
   const postList = useMemo(() => {
-    const praise =  {
+    const praise = {
       icon: 'LikeOutlined',
       name: '赞',
       event: onPraise,
-      type: 'like'
+      type: 'like',
+      num: wholeNum,
     };
 
-    return [praise, {
-      icon: 'MessageOutlined',
-      name: '评论',
-      event: onComment,
-      type: 'commonet'
-    },
-    {
-      icon: 'ShareAltOutlined',
-      name: '分享',
-      event: onShare,
-      type: 'share'
-    }];
-  }, [isLiked]);
-  const [ show, setShow ] = useState(false)
+    return [
+      praise,
+      {
+        icon: 'MessageOutlined',
+        name: '评论',
+        event: onComment,
+        type: 'commonet',
+        num: comment,
+      },
+      {
+        icon: 'ShareAltOutlined',
+        name: '分享',
+        event: onShare,
+        type: 'share',
+        num: sharing,
+      },
+    ];
+  }, [wholeNum, comment, sharing, isLiked]);
+  const [show, setShow] = useState(false);
   const handleClickShare = () => {
     updateViewCount();
     // 对没有登录的先登录
@@ -69,85 +75,76 @@ const Index = ({
       goToLoginPage({ url: '/subPages/user/wx-auth/index' });
       return;
     }
-    setShow(true)
-  }
+    setShow(true);
+  };
   useEffect(() => {
-    index.setHiddenTabBar(show)
-  }, [show])
-  const needHeight = useMemo(() => userImgs.length !== 0 || comment > 0 || sharing > 0, [userImgs, comment, sharing])
+    index.setHiddenTabBar(show);
+  }, [show]);
+  const needHeight = useMemo(() => userImgs.length !== 0, [userImgs]);
   return (
     <View>
       <View className={needHeight ? styles.user : styles.users}>
-        {userImgs.length !== 0 ? <View className={styles.userImg}>
-          <View className={styles.portrait}>
-            <Tip
-              tipData={tipData}
-              imgs={userImgs}
-              wholeNum={wholeNum}
-              showCount={5}
-              unifyOnClick={unifyOnClick}
-              updateViewCount={updateViewCount}
-            ></Tip>
+        {userImgs.length !== 0 && (
+          <View className={styles.userImg}>
+            <View className={styles.portrait}>
+              <Tip
+                tipData={tipData}
+                imgs={userImgs}
+                wholeNum={wholeNum}
+                showCount={5}
+                unifyOnClick={unifyOnClick}
+                updateViewCount={updateViewCount}
+              ></Tip>
+            </View>
+            {/* {wholeNum !== 0 && <Text className={styles.numText}>{wholeNum}</Text>} */}
           </View>
-          {
-            wholeNum !== 0 && (
-              <Text className={styles.numText}>
-                {wholeNum}
-              </Text>
-            )
-          }
-        </View> : <View></View>}
-        <View className={styles.commentSharing}>
+        )}
+        {/* <View className={styles.commentSharing}>
           {comment > 0 && <Text className={styles.commentNum}>{`${comment}条评论`}</Text>}
           {comment > 0 && sharing > 0 && <Text className={styles.division}>·</Text>}
           {sharing > 0 && <Text className={styles.commentNum}>{`${sharing}次分享`}</Text>}
-        </View>
+        </View> */}
       </View>
 
       <View className={needHeight ? styles.operation : styles.operations}>
-        {
-          postList.map((item, index) => (
-              item.name === '分享'?(
-                <View key={index} className={styles.fabulous} onClick={unifyOnClick || handleClickShare}>
-                 <View className={styles.fabulousIcon}>
-                    <Icon
-                    className={`${styles.icon} ${item.type}`}
-                    name={item.icon}
-                    size={16}>
-                  </Icon>
-                </View>
-                <Text className={styles.fabulousPost}>
-                  {item.name}
-                </Text>
+        {postList.map((item, index) =>
+          item.name === '分享' ? (
+            <View key={index} className={styles.fabulous} onClick={unifyOnClick || handleClickShare}>
+              <View className={styles.fabulousIcon}>
+                <Icon className={`${styles.icon} ${item.type}`} name={item.icon} size={16}></Icon>
               </View>
-              ):
-              (<View key={index} className={styles.fabulous} onClick={unifyOnClick || item.event}>
-                 <View className={styles.fabulousIcon}>
-                    <Icon
-                    className={`${styles.icon} ${item.type} ${isLiked && item.name === '赞' ? styles.likedColor : styles.dislikedColor}`}
-                    name={item.icon}
-                    size={16}>
-                  </Icon>
-                </View>
-                <Text className={isLiked && item.name ===  '赞' ? styles.fabulousCancel: styles.fabulousPost}>
-                  {item.name}
-                </Text>
-              </View>)
-          ))
-        }
+              <Text className={styles.fabulousPost}>{item.num ? item.num : ''}</Text>
+            </View>
+          ) : (
+            <View key={index} className={styles.fabulous} onClick={unifyOnClick || item.event}>
+              <View className={styles.fabulousIcon}>
+                <Icon
+                  className={`${styles.icon} ${item.type} ${
+                    isLiked && item.name === '赞' ? styles.likedColor : styles.dislikedColor
+                  }`}
+                  name={item.icon}
+                  size={16}
+                ></Icon>
+              </View>
+              <Text className={isLiked && item.name === '赞' ? styles.fabulousCancel : styles.fabulousPost}>
+                {item.num ? item.num : item.name}
+              </Text>
+            </View>
+          ),
+        )}
       </View>
       {show && (
-        <ShareButton 
-          show={show} 
-          data={data} 
-          setShow={setShow} 
-          shareThreadid={shareThreadid} 
-          shareAvatar={shareAvatar} 
-          shareNickname={shareNickname} 
+        <ShareButton
+          show={show}
+          data={data}
+          setShow={setShow}
+          shareThreadid={shareThreadid}
+          shareAvatar={shareAvatar}
+          shareNickname={shareNickname}
           getShareData={getShareData}
         ></ShareButton>
       )}
     </View>
   );
 };
-export default  React.memo(Index);
+export default React.memo(Index);

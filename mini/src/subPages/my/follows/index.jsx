@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 import Router from '@discuzq/sdk/dist/router';
 import { View } from '@tarojs/components';
 import { getCurrentInstance } from '@tarojs/taro';
-import UserCenterFllows from '@components/user-center-follow';
+import UserCenterFollows from '@components/user-center-follow';
 import Divider from '@discuzq/design/dist/components/divider/index';
 import Toast from '@discuzq/design/dist/components/toast/index';
 import Page from '@components/page';
@@ -96,9 +96,9 @@ class index extends Component {
     return (
       <>
         {!isOtherFollows ? (
-          <UserCenterFllows onContainerClick={this.onContainerClick} splitElement={this.splitElement()} />
+          <UserCenterFollows onContainerClick={this.onContainerClick} splitElement={this.splitElement()} />
         ) : (
-          <UserCenterFllows onContainerClick={this.onContainerClick} userId={id} splitElement={this.splitElement()} />
+          <UserCenterFollows onContainerClick={this.onContainerClick} userId={id} splitElement={this.splitElement()} />
         )}
       </>
     );

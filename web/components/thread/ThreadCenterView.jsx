@@ -19,18 +19,16 @@ import styles from './index.module.scss';
  */
 
 const Index = (props) => {
-    const {
-        title = '',
-        payType,
-        price,
-        paid,
-        attachmentPrice,
-        openedMore,
-    } = props.data || {};
+  const {
+    title = '',
+    payType,
+    price,
+    paid,
+    attachmentPrice,
+    openedMore,
+  } = props.data || {};
 
-    const needPay = useMemo(() => {
-      return payType !== 0 && !paid
-    }, [paid, payType])
+  const needPay = useMemo(() => payType !== 0 && !paid, [paid, payType]);
 
     const {
       onClick,
@@ -41,13 +39,13 @@ const Index = (props) => {
       onTextItemClick
     } = props
 
-    // 标题显示37个字符
-    const newTitle = useMemo(() => {
-      if (title.length > 100) {
-        return `${title.slice(0, 100)}...`
-      }
-      return title
-    }, [title])
+  // 标题显示37个字符
+  const newTitle = useMemo(() => {
+    if (title.length > 100) {
+      return `${title.slice(0, 100)}...`;
+    }
+    return title;
+  }, [title]);
 
     // 帖子属性内容
     const renderThreadContent = ({ content: data, attachmentPrice, payType, paid } = {}) => {
@@ -64,7 +62,7 @@ const Index = (props) => {
           threadId,
         } = handleAttachmentData(data);
 
-        return (
+    return (
           <>
               {text && <PostContent
                 onContentHeightChange={props.onContentHeightChange}
@@ -102,14 +100,18 @@ const Index = (props) => {
                       onImageReady={props.onImageReady}
                       updateViewCount={updateViewCount}
                   />
-                  )
+              )
               }
               {rewardData && <Packet
                 type={1}
-                money={rewardData.money}
+                // money={rewardData.money}
                 onClick={onClick}
               />}
-              {redPacketData && <Packet money={redPacketData.money || 0} onClick={onClick} condition={redPacketData.condition} />}
+              {redPacketData && <Packet
+              // money={redPacketData.money || 0} 
+              onClick={onClick}
+              condition={redPacketData.condition}
+              />}
               {goodsData && <ProductItem
                   image={goodsData.imagePath}
                   amount={goodsData.price}
@@ -121,10 +123,10 @@ const Index = (props) => {
             {/* 投票帖子展示 */}
             {voteData && <VoteDisplay recomputeRowHeights={props.recomputeRowHeights} voteData={voteData} threadId={threadId} />}
           </>
-        );
-    }
+    );
+  };
 
-    return (
+  return (
         <>
           <div className={`${platform === 'h5' ? styles.wrapper : styles.wrapperPC}`}>
             {title && <div className={styles.title} onClick={onClick}>{newTitle}</div>}
@@ -144,17 +146,15 @@ const Index = (props) => {
               )
           }
         </>
-    )
-}
+  );
+};
 
-export default React.memo(Index)
+export default React.memo(Index);
 
 // 处理
-const WrapperView = ({ children, onClick }) => {
-  return (
+const WrapperView = ({ children, onClick }) => (
     <div className={styles.wrapperView}>
       {children}
       <div className={styles.placeholder} onClick={onClick}></div>
     </div>
-  )
-}
+);

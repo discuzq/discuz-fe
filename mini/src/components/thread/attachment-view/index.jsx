@@ -13,6 +13,8 @@ import getAttachmentIconLink from '@common/utils/get-attachment-icon-link';
 import { throttle } from '@common/utils/throttle-debounce.js';
 import { ATTACHMENT_FOLD_COUNT } from '@common/constants';
 import Router from '@discuzq/sdk/dist/router';
+import { readDownloadAttachmentStatus } from '@server';
+import { downloadAttachmentMini } from '@common/utils/download-attachment-mini';
 
 /**
  * 附件
@@ -32,6 +34,8 @@ const Index = ({
   baselayout,
   updateViewCount = noop,
 }) => {
+  let downloadUrl = null; // 存放下载链接
+  let isDownload = false; // 状态是否允许下载
   // 处理文件大小的显示
   const handleFileSize = (fileSize) => {
     if (fileSize > 1000000) {
@@ -52,14 +56,14 @@ const Index = ({
     //   duration: 0,
     // });
 
-    await thread.fetchThreadAttachmentUrl(threadId, attachmentId).then((res) => {
+    await thread.fetchThreadAttachmentUrl(threadId, attachmentId).then(async (res) => {
       if(res?.code === 0 && res?.data) {
-        const { url } = res.data;
+        const { url, fileName } = res.data;
         if(!url) {
           Toast.info({ content: '获取下载链接失败' });
         }
 
-        callback(url);
+        await callback(url, fileName);
       } else {
         Toast.info({ content: res?.msg });
       }
@@ -75,9 +79,29 @@ const Index = ({
   const [downloading, setDownloading] =
         useState(Array.from({length: attachments.length}, () => false));
 
-  const onDownLoad = (item, index) => {
+  const onDownLoad = async (item, index) => {
     updateViewCount();
+
+    // 下载需要登录态，判断是否登录
+    if (!user.isLogin()) {
+      Toast.info({ content: '请先登录!' });
+      goToLoginPage({ url: '/subPages/user/wx-auth/index' });
+      return;
+    }
+
     if (!isPay) {
+      if(!item || !threadId) return;
+      const attachmentId = item.id;
+      // // 先获取下载链接,根据链接状态判断当前是否执行小程序下载
+      await fetchDownloadUrl(threadId, attachmentId, async (url, fileName) => {
+        downloadUrl = url;
+        const params = downloadAttachmentParams(url);
+        isDownload = await downloadAttachmentStatus(params);
+      });
+      
+      if (!isDownload) return;
+
+
 
       // 下载中
       if(downloading?.length && downloading[index]) {
@@ -104,6 +128,8 @@ const Index = ({
             filePath: res.tempFilePath,
             success: function (res) {
               Toast.info({content: "下载成功"});
+              // 下载成功后向后端发送一个携带登录态的请求，记录下载次数
+              downloadAttachmentMini(downloadUrl);
             },
             fail: function (error) {
               Toast.info({ content: "小程序暂不支持下载此类文件，请点击“链接”复制下载链接" });
@@ -134,13 +160,49 @@ const Index = ({
     }
   };
 
+  const downloadAttachmentParams = (url) => {
+    if (!url) return;
+    const paramArr = url.split('?')[1].split('&');
+    const params = {
+      sign: paramArr[0].split('=')[1],
+      attachmentsId: Number(paramArr[1].split('=')[1]),
+      isCode: 1,
+    }
+    return params;
+  }
+
+  const downloadAttachmentStatus = async (params) => {
+    const res = await readDownloadAttachmentStatus(params);
+
+    if (res?.code === 0) {
+      // 弹出下载弹框
+      return true;
+    }
+
+    if (res?.code === -7083) {  // 超过今天可下载附件的最大次数
+      Toast.info({ content: res?.msg });
+    }
+
+    if (res?.code === -7082) {  // 下载资源已失效
+      Toast.info({ content: res?.msg });
+    }
+
+    if (res?.code === -4004) {  // 资源不存在
+      Toast.info({ content: res?.msg });
+    }
+    return false;
+  }
+
   const onLinkShare = (item, index) => {
     updateViewCount();
     if (!isPay) {
       if(!item || !threadId) return;
 
       const attachmentId = item.id;
-      fetchDownloadUrl(threadId, attachmentId, (url) => {
+      fetchDownloadUrl(threadId, attachmentId, (url, fileName) => {
+        // 链接拼接
+        url = splicingLink(url, fileName);
+
         Taro.setClipboardData({
           data: url,
           success: function (res) {
@@ -156,6 +218,11 @@ const Index = ({
       onPay();
     }
   };
+
+  const splicingLink = (url, fileName) => {
+    const domainName = url.split('/apiv3/')[0];
+    return `${domainName}/download?url=${url}&fileName=${fileName}`;
+  }
 
     // 音频播放
   const isAttachPlayable = (file) => {

@@ -108,14 +108,11 @@ class WalletH5Page extends React.Component {
   loadMore = () => {
     switch (this.state.tabsType) {
       case 'income':
-        this.fetchIncomeDetail();
-        break;
+        return this.fetchIncomeDetail();
       case 'pay':
-        this.fetchExpendDetail();
-        break;
+        return this.fetchExpendDetail();
       case 'withdrawal':
-        this.fetchCashDetail();
-        break;
+        return this.fetchCashDetail();
     }
   };
 
@@ -222,6 +219,7 @@ class WalletH5Page extends React.Component {
         });
       }
       this.setState(pageState);
+      return;
     } catch (e) {
       console.error(e);
       if (e.Code) {
@@ -230,6 +228,7 @@ class WalletH5Page extends React.Component {
           duration: 2000,
         });
       }
+      return Promise.reject();
     }
   };
 
@@ -248,6 +247,7 @@ class WalletH5Page extends React.Component {
       });
     }
     this.setState(pageState);
+    return;
   };
 
   fetchCashDetail = async () => {
@@ -265,6 +265,7 @@ class WalletH5Page extends React.Component {
       });
     }
     this.setState(pageState);
+    return;
   };
 
   listRenderDataFilter = (data) => {
@@ -442,12 +443,7 @@ class WalletH5Page extends React.Component {
             </Tabs>
             {this.state.tabsType === 'income' &&
               this.getWalletList().map((value, index) => (
-                <IncomeList
-                  key={value.id}
-                  incomeVal={value}
-                  itemKey={index}
-                  dataLength={this.getWalletList().length}
-                />
+                <IncomeList key={value.id} incomeVal={value} itemKey={index} dataLength={this.getWalletList().length} />
               ))}
             {this.state.tabsType === 'pay' &&
               this.getWalletList().map((value, index) => (

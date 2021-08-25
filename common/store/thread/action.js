@@ -5,6 +5,7 @@ import {
   operateThread,
   readCommentList,
   readThreadDetail,
+  getRedPacketInfo,
   readThreadAttachmentUrl,
   shareThread,
   readUser,
@@ -94,6 +95,31 @@ class ThreadAction extends ThreadStore {
     if (code === 0) this.setThreadData(data);
     return ret;
   }
+
+  /**
+ * 获取帖子红包信息
+ * @param {number} id 帖子id
+ * @returns 帖子详细信息
+ */
+  @action
+  async getRedPacketInfo(id) {
+    const params = { threadId: id };
+    const ret = await getRedPacketInfo(params);
+    const { code, data } = ret;
+    if (code === 0) {
+      if (data?.status && data?.afterGetRedPacketFirstEnter) {
+        this.setRedPacket(data.amount);
+      }
+    };
+    return ret;
+  }
+
+  //设置当前可领取的红包状态 
+  @action
+  setRedPacket(num) {
+    this.hasRedPacket = num;
+  }
+
   /**
    * 图片加载完成后数量加一
    */
@@ -366,7 +392,7 @@ class ThreadAction extends ThreadStore {
   }
 
   // TODO:帖子支付
-  async pay() {}
+  async pay() { }
 
   /**
    * 帖子删除
@@ -395,7 +421,6 @@ class ThreadAction extends ThreadStore {
       IndexStore?.deleteThreadsData && IndexStore.deleteThreadsData({ id }, SiteStore);
       SearchStore?.deleteThreadsData && SearchStore.deleteThreadsData({ id });
       TopicStore?.deleteThreadsData && TopicStore.deleteThreadsData({ id });
-      UserStore?.deleteUserThreads && UserStore?.deleteUserThreads(id);
 
       return {
         code: res.code,
