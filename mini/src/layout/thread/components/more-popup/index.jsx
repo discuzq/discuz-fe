@@ -57,7 +57,7 @@ const InputPop = (props) => {
       className: collect ? styles.actived : '',
     });
   }
-  if (canShare && !isShowShare) {
+  if (canShare && isShowShare) {
     actions.push({
       icon: 'PictureOutlinedBig',
       description: '生成海报',
