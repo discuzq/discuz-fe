@@ -2,51 +2,61 @@
  * 发帖页弹出层
  */
 import React, { memo } from 'react'; // 性能优化的
-import { Popup } from '@discuzq/design';// 原来就有的封装
 import PropTypes from 'prop-types';// 类型拦截
-import styles from './index.module.scss';// 私有样式
-
+import { ActionSheet } from '@discuzq/design';
 const PostPopup = ({ list, onClick, cancel, visible }) => {
   const handlePopup = (item) => {
     onClick(item);
     cancel();
   };// 自己定义用来调用传进来的方法的
-
+  const actions = [];
+  list.map((item) => {
+    actions.push({ content: item });
+  });
+  const onSelect = (e, item) => {
+    handlePopup(item.content);
+  };
   return (
-    <Popup
-      position="bottom"// 从哪个地方弹出 'bottom' | 'top' | 'center';
-      maskClosable={true}// 点击遮罩层是否关闭弹出层，但好像没什么用
-      visible={visible}// 是否显示弹出层
-      onClose={() => { // 遮罩层点击关闭回调,传一个'取消'，可自定义更改
-        cancel();
-      }}
-    >
-      {/* 循环渲染传进来的数组 */}
-      <div className={styles.container}>
-        <div className={styles.list}>
-          {list.map(item => (
-              <p
-                className={styles.item}
-                key={item}
-                onClick={() => {
-                  handlePopup(item);
-                }}
-              >
-                {item}
-              </p>
-          ))}
-        </div>
-        {/* 取消按钮 */}
-        <p
-          className={styles.cancel}
-          onClick={() => {
-            cancel();
-          }}
-        >
-          取消
-        </p>
-      </div>
-    </Popup>
+    <ActionSheet
+      visible={visible}
+      onClose={cancel}
+      actions={actions}
+      onSelect={onSelect}
+    ></ActionSheet>
+    // <Popup
+    //   position="bottom"// 从哪个地方弹出 'bottom' | 'top' | 'center';
+    //   maskClosable={true}// 点击遮罩层是否关闭弹出层，但好像没什么用
+    //   visible={visible}// 是否显示弹出层
+    //   onClose={() => { // 遮罩层点击关闭回调,传一个'取消'，可自定义更改
+    //     cancel();
+    //   }}
+    // >
+    //   {/* 循环渲染传进来的数组 */}
+    //   <div className={styles.container}>
+    //     <div className={styles.list}>
+    //       {list.map(item => (
+    //           <p
+    //             className={styles.item}
+    //             key={item}
+    //             onClick={() => {
+    //               handlePopup(item);
+    //             }}
+    //           >
+    //             {item}
+    //           </p>
+    //       ))}
+    //     </div>
+    //     {/* 取消按钮 */}
+    //     <p
+    //       className={styles.cancel}
+    //       onClick={() => {
+    //         cancel();
+    //       }}
+    //     >
+    //       取消
+    //     </p>
+    //   </div>
+    // </Popup>
   );
 };
 

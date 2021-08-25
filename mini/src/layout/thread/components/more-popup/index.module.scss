@@ -1,5 +1,12 @@
 @import '@common/styles/index.scss';
 
+.actived {
+  :global{
+    .dzq-action-sheet__icon,.dzq-action-sheet__text{
+      color: $primary-color !important
+    }
+  }
+}
 .container {
   width: 100%;
   background: $border-color;
