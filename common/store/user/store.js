@@ -293,21 +293,22 @@ class UserStore {
 
   // 用户角色分类
   @computed get groupName() {
-    return get(this.userInfo, 'group.groupName')
+    return get(this.userInfo, 'group.groupName');
   }
 
   // 站点到期天数
   @computed get expiredDays() {
-    return get(this.userInfo, 'expiredDays')
+    return get(this.userInfo, 'expiredDays');
   }
 
   // 站点剩余时间
   @computed get expiredAt() {
-    return get(this.userInfo, 'expiredAt')
+    return get(this.userInfo, 'expiredAt');
   }
 
+  // 判断是否是无限期
   @computed get isIndefiniteDuration() {
-    return Number(get(this.userInfo, 'expiredDays')) >= 10000
+    return Number(get(this.userInfo, 'expiredDays')) >= 10000;
   }
 
   // 发帖扩展的权限

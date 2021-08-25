@@ -231,11 +231,6 @@ class index extends Component {
     this.showPreviewerRef();
   };
 
-  // 是否显示续费卡片
-  whetherIsShowRenewalCard = () => {
-    return this.props.site?.siteMode === 'pay' && !this.props.user?.isAdmini && !this.props.isOtherPerson;
-  };
-
   // 点击去到续费页面
   onRenewalFeeClick = () => {
     Router.push({
@@ -249,6 +244,8 @@ class index extends Component {
     }
     return {};
   }
+  // 是否显示续费卡片
+  whetherIsShowRenewalCard = () => this.props.site?.siteMode === 'pay' && !this.props.user?.isAdmini && !this.props.isOtherPerson;
 
   render() {
     const { targetUser } = this;
