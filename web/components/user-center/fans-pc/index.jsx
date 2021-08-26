@@ -66,7 +66,7 @@ class UserCenterFansPc extends React.Component {
       if (this.props.userId === this.props.user?.id) {
         fansCount = this.props.user.fansCount;
       } else {
-        fansCount = this.props.user.targetUserFansCount;
+        fansCount = this.props.user.targetUsers[this.props.userId]?.fansCount;
       }
     } else {
       fansCount = this.props.user.fansCount;

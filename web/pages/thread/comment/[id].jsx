@@ -13,6 +13,7 @@ import ViewAdapter from '@components/view-adapter';
 
 @inject('site')
 @inject('comment')
+@inject('thread')
 @observer
 class CommentDetail extends React.Component {
   static async getInitialProps(ctx) {
@@ -48,7 +49,6 @@ class CommentDetail extends React.Component {
 
   async componentDidMount() {
     const { id, threadId, postId } = this.props.router.query;
-
     // 判断缓存
     const oldId = this.props?.comment?.commentDetail?.id;
     if (Number(id) === oldId && id && oldId) {
@@ -58,6 +58,30 @@ class CommentDetail extends React.Component {
 
     if (threadId) {
       this.props.comment.setThreadId(threadId);
+    }
+
+    // 获取帖子数据
+    const oldThreadId = this.props?.thread?.threadData?.threadId;
+    if (!(threadId && oldThreadId && Number(threadId) === oldThreadId)) {
+      const res = await this.props.thread.fetchThreadDetail(threadId);
+      if (res.code !== 0) {
+        // 404
+        if (res.code === -4004) {
+          Router.replace({ url: '/404' });
+          return;
+        }
+
+        if (res.code > -5000 && res.code < -4000) {
+          this.setState({
+            serverErrorMsg: res.msg,
+          });
+        }
+
+        this.setState({
+          isServerError: true,
+        });
+        return;
+      }
     }
 
     if (postId) {

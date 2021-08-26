@@ -50,11 +50,6 @@ class Index extends React.Component {
             updatedInfo: result.data,
             user: user.userInfo,
           });
-          this.props.user.updateAssignThreadInfo(threadId, {
-            updateType: 'share',
-            updatedInfo: result.data,
-            user: user.userInfo,
-          });
         }
       });
     }

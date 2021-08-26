@@ -80,6 +80,7 @@ class DateTimePicker extends Component {
       visible: false,
       hasChange: false,
     });
+    this.props.onCancel();
   };
 
   // 确定
@@ -148,7 +149,7 @@ class DateTimePicker extends Component {
           <View>
             {/* 背景 */}
             <View className={styles['model-bg']} catchMove></View>
-            <View className={styles['model-box']}>
+            <View className={styles['model-box']} style={this.props.style}>
               {/* content */}
               <PickerView
                 className={classNames(styles['pick-view'], {
@@ -232,6 +233,8 @@ DateTimePicker.propTypes = {
 
 DateTimePicker.defaultProps = {
   onConfirm: () => {},
+  style: {},
+  onCancel: () => {},
 };
 
 export default DateTimePicker;

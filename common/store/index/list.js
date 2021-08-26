@@ -213,6 +213,13 @@ export default class ListStore {
 
     this.lists[namespace].data[1].unshift(threadInfo);
 
+
+    const currentTotalCount = this.getAttribute({ namespace, key: 'totalCount' });
+
+    if (currentTotalCount !== undefined && currentTotalCount !== null) {
+      this.setAttribute({ namespace, key: 'totalCount', value: currentTotalCount + 1 });
+    }
+
     this.lists = { ...this.lists };
   }
 

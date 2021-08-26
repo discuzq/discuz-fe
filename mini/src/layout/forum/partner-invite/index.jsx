@@ -204,7 +204,7 @@ class PartnerInviteH5Page extends React.Component {
               onShowMore={this.handleJoinSite}
             />
             {!isLoading && threadsPageData?.length ? (
-              <PopularContents data={threadsPageData} onItemClick={this.handleJoinSite} unifyOnClick={this.handleJoinSite} />
+              <PopularContents data={threadsPageData} onTextItemClick={this.handleJoinSite} unifyOnClick={this.handleJoinSite} />
             ) : (
               <></>
             )}

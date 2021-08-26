@@ -88,8 +88,10 @@ class WeixinBindH5Page extends React.Component {
         router.push({ pathname: 'wx-select', query: { sessionToken, nickname } });
         return;
       }
-      const { loginType }  = this.props.router.query;
+      const { loginType, bindPhone = '' }  = this.props.router.query;
       if (res.code === 0) {
+        this.props.h5QrCode.bindTitle = '已成功绑定';
+        this.props.h5QrCode.isBtn = false;
         this.setState({
           status: 'success'
         });
@@ -101,15 +103,17 @@ class WeixinBindH5Page extends React.Component {
         setAccessToken({
           accessToken,
         });
+        const userData = await this.props.user.updateUserInfo(uid);
+        const mobile = get(userData, 'mobile', '');
+        if (bindPhone && !mobile) { // 需要绑定手机，但是用户未绑定手机时，跳转到绑定手机页面
+          router.replace('/user/bind-phone');
+          return;
+        }
         this.props.h5QrCode.bindTitle = '已成功绑定，正在跳转到首页';
-        this.props.h5QrCode.isBtn = false;
-        this.props.user.updateUserInfo(uid);
         window.location.href = '/';
         return;
       }
       if (res.code === 0) {
-        this.props.h5QrCode.bindTitle = '已成功绑定';
-        this.props.h5QrCode.isBtn = false;
         return;
       }
       checkUserStatus(res);

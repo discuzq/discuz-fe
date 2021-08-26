@@ -314,6 +314,12 @@ class PostPage extends React.Component {
       Toast.info({ content: '悬赏内容不可编辑' });
       return false;
     }
+
+    if (item.type === THREAD_TYPE.vote && postData?.vote?.voteUsers > 0) {
+      Toast.info({ content: '投票已生效，不允许编辑' });
+      return false;
+    }
+
     if (item.type === THREAD_TYPE.anonymity) {
       if (postData.anonymous) this.setPostData({ anonymous: 0 });
       else this.setPostData({ anonymous: 1 });
@@ -549,8 +555,8 @@ class PostPage extends React.Component {
   // 是否有内容
   isHaveContent() {
     const { postData } = this.props.threadPost;
-    const { images, video, files, audio } = postData;
-    if (!(postData.contentText || video.id || audio.id || Object.values(images).length
+    const { images, video, files, audio, vote } = postData;
+    if (!(postData.contentText || video.id || vote.voteTitle || audio.id || Object.values(images).length
       || Object.values(files).length)) {
       return false;
     }
@@ -589,7 +595,7 @@ class PostPage extends React.Component {
     if (!this.checkAudioRecordStatus()) return;
 
     if (!this.isHaveContent()) {
-      this.postToast('请至少填写您要发布的内容或者上传图片、附件、视频、语音');
+      this.postToast('请至少填写您要发布的内容或者上传图片、附件、视频、语音、投票等');
       return;
     }
     if (!this.checkAttachPrice()) {

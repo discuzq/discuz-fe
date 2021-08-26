@@ -51,6 +51,11 @@ export default [
         isActive: false,
       },
       {
+        label: '投票',
+        value: '109',
+        isActive: false,
+      },
+      {
         label: '悬赏问答',
         value: '107',
         isActive: false,

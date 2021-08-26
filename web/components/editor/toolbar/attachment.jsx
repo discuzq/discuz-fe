@@ -164,6 +164,7 @@ function AttachmentToolbar(props) {
     if (item.type === THREAD_TYPE.video && postData?.video?.id) return activeCls;
     if (item.type === THREAD_TYPE.image && Object.values(postData?.images || []).length > 0) return activeCls;
     if (item.type === THREAD_TYPE.anonymity && postData?.anonymous) return activeCls;
+    if (item.type === THREAD_TYPE.vote && postData?.vote?.voteTitle) return activeCls;
     return cls;
   };
 

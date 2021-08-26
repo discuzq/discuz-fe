@@ -37,19 +37,31 @@ const BaseLayoutControl = forwardRef((props, ref) => {
   } = props;
 
   const [listRef, setListRef] = useState(null);
+  
   const layoutRef = useRef(null);
 
   const disableEffect = useRef(false);
 
-  useImperativeHandle(
-    ref,
-    () => ({
-      listRef,
-    }),
-  );
+  useImperativeHandle(ref, () => ({
+    listRef,
+  }));
 
   const baseLayoutWhiteList = useMemo(() => {
-    const defaultWhiteList = ['home', 'search', 'my', 'like', 'collect', 'buy', 'block', 'draft'];
+    const defaultWhiteList = [
+      'home',
+      'search',
+      'my',
+      'like',
+      'collect',
+      'buy',
+      'block',
+      'draft',
+      'resultTopic',
+      'resultUser',
+      'resultPost',
+      'h5SearchResult',
+      'topicDetail',
+    ];
     if (Array.isArray(jumpRuleList)) {
       return [...defaultWhiteList, ...jumpRuleList];
     }
@@ -80,30 +92,39 @@ const BaseLayoutControl = forwardRef((props, ref) => {
   };
 
   useEffect(() => {
+    if (!disableEffect.current) {
+      handleListPosition()
+    }
+    disableEffect.current = false
+  }, [listRef?.current]);
+
+  useEffect(() => {
+    handleListPosition()
+  }, [jumpTo, hasListChild, pageName]);
+
+  const handleListPosition = () => {
     if (hasListChild && listRef?.current && pageName && isPageInWhiteList()) {
       if (jumpTo > 0) {
         baselayout[pageName] = jumpTo;
         listRef.current.jumpToScrollTop(jumpTo);
       } else {
-        if (baselayout[pageName] > 0) {
-          if (pageName !== 'search' // 首页在PC和H5都适用阅读区域跳转
-              || (pageName === 'search' && site.platform === 'h5')) { // 搜索页只适用H5页面阅读区域跳转
-            // 需要异步触发，可能存在列表没有渲染出来
-            setTimeout(() => {
-              listRef.current.jumpToScrollTop(baselayout[pageName]);
-            });
-          }
-        } else if (baselayout.isJumpingToTop) {
+        if(baselayout[pageName] > 0) {
+          // 需要异步触发，可能存在列表没有渲染出来
+          setTimeout(() => {
+            listRef.current.jumpToScrollTop(baselayout[pageName]);
+          });
+        } else if(baselayout.isJumpingToTop) {
           baselayout.removeJumpingToTop();
           listRef.current.onBackTop();
         }
       }
     }
-  }, [jumpTo, hasListChild, listRef?.current, pageName, jumpRuleList]);
-
+  }
 
   const quickScrolling = (e) => {
-    if (!e || !e.scrollTop || !hasListChild || !listRef?.current?.currentScrollTop) {
+    disableEffect.current = true
+
+    if (!e || isNaN(e.scrollTop) || !hasListChild || !listRef?.current?.currentScrollTop) {
       onScroll();
       return;
     }
@@ -116,9 +137,12 @@ const BaseLayoutControl = forwardRef((props, ref) => {
       const playingVideoTop = baselayout.playingVideoPos;
       const playingVideoBottom = playingVideoDom.offsetHeight + playingVideoTop;
 
-      if (playingVideoTop > 0
-        && (playingVideoBottom < scrollTop // 视频在视窗下面
-          || playingVideoTop > window.innerHeight + scrollTop)) { // 视频在视窗上面
+      if (
+        playingVideoTop > 0 &&
+        (playingVideoBottom < scrollTop || // 视频在视窗下面
+          playingVideoTop > window.innerHeight + scrollTop)
+      ) {
+        // 视频在视窗上面
         baselayout.pauseWebPlayingVideo();
       }
     }
@@ -129,9 +153,12 @@ const BaseLayoutControl = forwardRef((props, ref) => {
       const playingAudioHeight = 56;
       const playingAudioBottom = playingAudioHeight + playingAudioTop;
 
-      if (playingAudioTop > 0
-        && (playingAudioBottom < scrollTop // 音频在视窗下面
-          || playingAudioTop > window.innerHeight + scrollTop)) { // 音频在视窗上面
+      if (
+        playingAudioTop > 0 &&
+        (playingAudioBottom < scrollTop || // 音频在视窗下面
+          playingAudioTop > window.innerHeight + scrollTop)
+      ) {
+        // 音频在视窗上面
         baselayout.pauseWebPlayingAudio();
       }
     }
@@ -142,10 +169,14 @@ const BaseLayoutControl = forwardRef((props, ref) => {
   const handleScroll = quickScroll ? quickScrolling : throttle(quickScrolling, 50);
 
   if (site.platform === 'pc') {
-    return <PCBaseLayout onScroll={handleScroll} pageName={pageName} platform={site.platform} {...others} ref={layoutRef} />;
+    return (
+      <PCBaseLayout onScroll={handleScroll} pageName={pageName} platform={site.platform} {...others} ref={layoutRef} />
+    );
   }
 
-  return <H5BaseLayout onScroll={handleScroll} pageName={pageName} platform={site.platform} {...others} ref={layoutRef} />;
+  return (
+    <H5BaseLayout onScroll={handleScroll} pageName={pageName} platform={site.platform} {...others} ref={layoutRef} />
+  );
 });
 
 export default inject('site', 'baselayout')(observer(BaseLayoutControl));

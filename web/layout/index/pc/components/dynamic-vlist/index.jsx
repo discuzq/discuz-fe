@@ -32,6 +32,8 @@ export default class DynamicVList extends React.Component {
     const { visible, conNum, isShowDefault, onFilterClick, onPostThread, goRefresh } = this.props;
     const { sticks, threads } = data;
     const { pageData } = threads || {};
+
+
     return (
       <div className={styles.indexContent}>
         <TopFilterView onFilterClick={onFilterClick} onPostThread={onPostThread} isShowDefault={isShowDefault} />
@@ -87,22 +89,23 @@ export default class DynamicVList extends React.Component {
       loadNextPage,
       renderRight,
       renderLeft,
-      requestError, 
+      requestError,
       noMore,
-      errorText
+      errorText,
+      onScroll = () => {}
     } = this.props;
     const { sticks, threads } = data;
     const { pageData } = threads || {};
     const { siteStore } = this.props;
     const { countThreads = 0 } = siteStore?.webConfig?.other || {};
-
+    
     return (
       <WindowVList
         list={pageData}
         sticks={sticks}
         platform="pc"
         pageName="home"
-        // onScroll={this.handleScroll}
+        onScroll={onScroll}
         loadNextPage={loadNextPage}
         noMore={noMore}
         requestError={requestError}
@@ -111,17 +114,18 @@ export default class DynamicVList extends React.Component {
         right={renderRight()}
         top={this.renderTop()}
         visible={visible}
-        renderItem={(item, index, recomputeRowHeights, onContentHeightChange, measure) => (
-          <ThreadContent
-            onContentHeightChange={measure}
-            onImageReady={measure}
-            onVideoReady={measure}
-            key={`${item.threadId}-${item.updatedAt}`}
-            data={item}
-            className={styles.listItem}
-            recomputeRowHeights={measure}
-          />
-        )}
+        renderItem={(item, index, recomputeRowHeights, onContentHeightChange, measure) => {
+          return (
+            <ThreadContent
+              onContentHeightChange={measure}
+              onImageReady={measure}
+              onVideoReady={measure}
+              key={`${item.threadId}-${item.updatedAt}`}
+              data={item}
+              className={styles.listItem}
+              recomputeRowHeights={measure}
+            />)
+        }}
       >
         <div className={styles.indexContent}>
           <TopFilterView

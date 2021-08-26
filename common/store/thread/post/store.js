@@ -22,6 +22,7 @@ class ThreadPostStore {
    */
   @observable topics = [];
   @observable topicTotalCount = 0;
+  @observable showNewTopic = false;
   /**
    * 我的关注
    */

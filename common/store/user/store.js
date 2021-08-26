@@ -102,6 +102,13 @@ class UserStore {
   // target user 数据表，以 user id 作为映射
   @observable targetUsers = {};
 
+  // 关注数据表，以 user id 作为映射
+  @observable followStore = {};
+
+  // 粉丝数据表，以 user id 作为映射
+  @observable fansStore = {};
+
+
   @computed get userStatus() {
     return get(this.userInfo, 'status');
   }
@@ -297,6 +304,7 @@ class UserStore {
       [defaultOperation.redpacket]: get(pm, 'insertRedPacket.enable'),
       [THREAD_TYPE.image]: get(pm, 'insertImage.enable'),
       [THREAD_TYPE.video]: get(pm, 'insertVideo.enable'),
+      [THREAD_TYPE.vote]: get(pm, 'insertVote.enable'),
       [THREAD_TYPE.voice]: get(pm, 'insertAudio.enable'),
       [THREAD_TYPE.goods]: get(pm, 'insertGoods.enable'),
       [THREAD_TYPE.reward]: get(pm, 'insertReward.enable'),

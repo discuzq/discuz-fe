@@ -98,7 +98,7 @@ class TopicSelect extends Component {
 
   render() {
     const { pc, visible = false, cancelTopic, threadPost, style = {} } = this.props;
-    const { topics = [] } = threadPost;
+    const { topics = [], showNewTopic } = threadPost;
     const { finish } = this.state;
     const platform = pc ? 'pc' : 'h5';
 
@@ -138,7 +138,7 @@ class TopicSelect extends Component {
           immediateCheck={false}
           platform={platform}
         >
-          {searchWord && topics.map(item => item.content).indexOf(searchWord) === -1 && this.renderItem({ content: searchWord, newTopic: '新话题' })}
+          {showNewTopic && this.renderItem({ content: searchWord, newTopic: '新话题' })}
           {topics.map(item => (
             <React.Fragment key={item.topicId}>
               {this.renderItem(item)}

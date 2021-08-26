@@ -380,6 +380,7 @@ class RenderCommentList extends React.Component {
     const { indexes } = this.props.thread?.threadData?.content || {};
 
     const parseContent = parseContentData(indexes);
+    const { isAnonymous } = this.props.thread?.threadData || '';
 
     return (
       <Fragment>
@@ -421,6 +422,7 @@ class RenderCommentList extends React.Component {
                 }
                 threadId={this.props.thread.threadData.userId}
                 active={val.id === postId}
+                isAnonymous={isAnonymous}
               ></CommentList>
             </View>
           ))}

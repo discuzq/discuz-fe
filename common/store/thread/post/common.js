@@ -13,6 +13,7 @@ export const initPostData = {
   product: {}, // 商品
   redpacket: {}, // 红包 rule-规则，price-金额，number-个数，condition-领取条件，likenum-点赞数
   video: {}, // 视频
+  vote: {}, // 投票
   images: {}, // 图片
   files: {}, // 文件
   orderSn: '', // 支付订单号

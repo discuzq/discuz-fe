@@ -16,7 +16,7 @@ class SearchResultUserPcPage extends React.Component {
   constructor(props) {
     super(props);
 
-    const keyword = this.props.router.query.keyword || '';
+    const keyword = this.props.router.query.keyword || this.props.search.currentKeyword || '';
 
     this.state = {
       keyword,
@@ -81,9 +81,22 @@ class SearchResultUserPcPage extends React.Component {
   };
 
   onSearch = (value) => {
+    this.props.search.currentKeyword = value;
     this.setState({ keyword: value }, () => {
       this.searchData(value);
     });
+  }
+
+  async componentDidMount() {
+    const { search, router } = this.props;
+    const { keyword = '' } = router.query;
+    // 当服务器无法获取数据时，触发浏览器渲染
+    const hasUsers = !!search.users;
+
+    if (!hasUsers || (keyword && search.currentKeyword && keyword !== search.currentKeyword)) {
+      this.page = 1;
+      await search.getUsersList({ search: keyword, perPage: this.perPage });
+    }
   }
 
   render() {
@@ -101,6 +114,7 @@ class SearchResultUserPcPage extends React.Component {
         onRefresh={this.fetchMoreData}
         isShowLayoutRefresh={!!pageData?.length}
         className="search-result-user"
+        pageName="resultUser"
       >
         <SidebarPanel
           title="活跃用户"

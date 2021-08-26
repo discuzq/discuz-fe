@@ -104,7 +104,6 @@ class Index extends React.Component {
           this.props.index.updateAssignThreadInfo(threadId, { updateType: 'like', updatedInfo: result.data, user: user.userInfo });
           this.props.search.updateAssignThreadInfo(threadId, { updateType: 'like', updatedInfo: result.data, user: user.userInfo });
           this.props.topic.updateAssignThreadInfo(threadId, { updateType: 'like', updatedInfo: result.data, user: user.userInfo });
-          this.props.user.updateAssignThreadInfo(threadId, { updateType: 'like', updatedInfo: result.data, user: user.userInfo });
         }
         this.setState({ isSendingLike: false, minHeight: 0 }, () => {
           // 点赞更新完数据后，重新修正帖子高度
@@ -228,7 +227,7 @@ class Index extends React.Component {
     }
 
     render() {
-      const { data, className = '', site = {}, showBottomStyle = true, isShowIcon = false, unifyOnClick = null, relativeToViewport = true } = this.props;
+      const { data, className = '', site = {}, showBottomStyle = true, isShowIcon = false, unifyOnClick = null, relativeToViewport = true, onTextItemClick = null } = this.props;
       const { platform = 'pc' } = site;
       if (!data) {
         return <NoData />;
@@ -291,6 +290,7 @@ class Index extends React.Component {
               setUseShowMore={this.setUseShowMore}
               videoH={videoH}
               updateViewCount={this.updateViewCount}
+              onTextItemClick={onTextItemClick}
             />
 
             <BottomEvent

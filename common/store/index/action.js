@@ -1,6 +1,14 @@
 import { action, computed } from 'mobx';
 import IndexStore from './store';
-import { readCategories, readStickList, readThreadList, updatePosts, createThreadShare, readRecommends } from '@server';
+import {
+  readCategories,
+  readStickList,
+  readThreadList,
+  updatePosts,
+  createThreadShare,
+  readRecommends,
+  readCommentList,
+} from '@server';
 import typeofFn from '@common/utils/typeof';
 import threadReducer from '../thread/reducer';
 import { getCategoryName, getActiveId, getCategories, handleString2Arr } from '@common/utils/handleCategory'
@@ -43,6 +51,38 @@ class IndexAction extends IndexStore {
     const needDefault = this.needDefault
 
     return getCategories(categories, needDefault)
+  }
+
+  /**
+   * 获取帖子的评论列表
+   */
+  @action
+  async getThreadCommentList(threadId) {
+    const targetThread = this.findAssignThread(threadId);
+
+    if (targetThread && targetThread.data) {
+      targetThread.data.isLoading = true;
+      const res = await readCommentList({
+        params: {
+          filter: {
+            thread: Number(threadId),
+          },
+          page: 1,
+          perPage: 10,
+          index: 1,
+        },
+      });
+
+      if (res.code === 0) {
+        targetThread.data.commentList = res?.data?.pageData || [];
+        targetThread.data.requestError.isError = false;
+      } else {
+        targetThread.data.requestError.isError = true;
+        targetThread.data.requestError.errorText = res.msg || '加载失败';
+      }
+
+      targetThread.data.isLoading = false;
+    }
   }
 
   /**
@@ -215,10 +255,16 @@ class IndexAction extends IndexStore {
         }
       } else {
         if (this.threads && result.data.pageData && page !== 1) {
-          const nextThreads = result.data.pageData.map(item => {
+          const nextThreads = result.data.pageData.map((item) => {
             item.openedMore = false;
-            return item
-          })
+            item.commentList = [];
+            item.isLoading = false;
+            item.requestError = {
+              isError: false,
+              errorText: '加载失败',
+            };
+            return item;
+          });
 
           this.threads.pageData.push(...nextThreads);
           this.threads.currentPage = result.data.currentPage;
@@ -343,15 +389,61 @@ class IndexAction extends IndexStore {
    * @returns
    */
   @action
-  updatePayThreadInfo(threadId, obj) {
+  updatePayThreadInfo(threadId, obj, isUpdatePay = true) {
     const targetThread = this.findAssignThread(threadId);
     if (!targetThread || targetThread.length === 0) return;
 
     const { index } = targetThread;
     if (this.threads?.pageData) {
       this.threads.pageData[index] = obj;
-      this.changeInfo = { type: 'pay', thread: threadId }
+      if (isUpdatePay) this.changeInfo = { type: 'pay', thread: threadId }
     }
+  }
+
+  /**
+   * 合并组合新数据
+   * @param {object} sourceData 原帖子数据
+   * @param {number} tomId 插件id
+   * @param {array|object}} tomValue 插件值
+   * @returns
+   */
+  @action
+  combineThreadIndexes(sourceData, tomId, tomValue) {
+    const { content = {} } = sourceData || {};
+    const { indexes = {} } = content || {};
+    const newIndexes = { ...indexes };
+    newIndexes[tomId] = tomValue;
+    return { ...sourceData, content: { ...content, indexes: newIndexes }, _time: new Date().getTime() };
+  }
+  /**
+   * 更新帖子列表插件信息
+   * @param {number} threadId 帖子id
+   * @param {number} tomId 插件id
+   * @param {array|object} tomValue 插件值
+   * @returns
+   */
+  @action
+  updateListThreadIndexes(threadId, tomId, tomValue) {
+    const targetThread = this.findAssignThread(threadId);
+    this.updataThreadIndexesAllData(threadId, tomId, tomValue);
+    if (!targetThread) return;
+    const { index, data } = targetThread;
+    const threadData = this.combineThreadIndexes(data, tomId, tomValue);
+    if (this.threads?.pageData) {
+      this.threads.pageData[index] = threadData;
+      this.threads.pageData = [...this.threads.pageData];
+    }
+    this.updateAssignThreadAllData(threadId, threadData);
+  }
+
+  @action
+  updataThreadIndexesAllData(threadId, tomId, tomValue) {
+    const id = typeofFn.isNumber(threadId) ? threadId : +threadId;
+    const [targetThread] = this.findAssignThreadInLists({ threadId: id });
+    if (!targetThread) return;
+    const { data } = targetThread;
+    const threadData = this.combineThreadIndexes(data, tomId, tomValue);
+    this.updateAssignThreadInfoInLists({ threadId: id, threadInfo: threadData });
   }
 
   /**
@@ -404,10 +496,10 @@ class IndexAction extends IndexStore {
     // newText = replaceStringInRegex(newText, "paragraph", '');
     // newText = replaceStringInRegex(newText, "imgButEmoj", '');
     // newText = replaceStringInRegex(newText, "list", '');
-    // this.sticks[index] = { 
-    //   canViewPosts: threadInfo?.ability?.canViewPost, 
-    //   categoryId: threadInfo?.categoryId, 
-    //   title: threadInfo.title || threadInfo?.content?.text, 
+    // this.sticks[index] = {
+    //   canViewPosts: threadInfo?.ability?.canViewPost,
+    //   categoryId: threadInfo?.categoryId,
+    //   title: threadInfo.title || threadInfo?.content?.text,
     //   updatedAt: threadInfo?.updatedAt,
     //   threadId: threadInfo?.threadId
     // };
@@ -443,30 +535,30 @@ class IndexAction extends IndexStore {
         const { isLiked, likePayCount = 0 } = updatedInfo;
         const theUserId = user.userId || user.id;
         data.isLike = isLiked;
-  
+
         const userData = threadReducer.createUpdateLikeUsersData(user, 1);
         // 添加当前用户到按过赞的用户列表
         const newLikeUsers = threadReducer.setThreadDetailLikedUsers(data.likeReward, !!isLiked, userData);
-  
+
         data.likeReward.users = newLikeUsers;
         data.likeReward.likePayCount = likePayCount;
       }
-  
+
       // 更新评论
       if (updateType === 'comment' && data?.likeReward) {
         data.likeReward.postCount = data.likeReward.postCount + 1;
       }
-  
+
       // 更新分享
       if (updateType === 'share') {
         data.likeReward.shareCount = data.likeReward.shareCount + 1;
       }
-  
+
       // 更新帖子浏览量
       if (updateType === 'viewCount') {
         data.viewCount = updatedInfo.viewCount;
       }
-  
+
       if (updateType === 'openedMore') {
         data.openedMore = openedMore;
       }
@@ -487,7 +579,7 @@ class IndexAction extends IndexStore {
 
     if (targetThreadsInLists && targetThreadsInLists.length !== 0) {
       targetThreadsInLists.forEach(({ index, page, listName, data }) => {
-        threadUpdater({ 
+        threadUpdater({
           data,
           callback: (updatedInfo) => {
             this.lists[listName].data[page][index] = updatedInfo;
@@ -507,9 +599,22 @@ class IndexAction extends IndexStore {
     const { threadId = '' } = threadInfo
     const targetThread = this.findAssignThread(threadId);
 
+    const targetThreadInLists = this.findAssignThreadInTargetList({ threadId, namespace: 'my' })
+
+    const addThreadInLists = ({ threadInfo, threadId }) => {
+      if (targetThreadInLists && targetThreadInLists.length !== 0) {
+        this.updateAssignThreadInfoInLists({ threadId, threadInfo });
+      } else {
+        this.addThreadInTargetList({ namespace: 'my', threadInfo });
+      }
+    }
+
+    addThreadInLists({ threadInfo, threadId });
+
     // 如果更新的数据不存在，则直接插入。若存在，则替代原有数据
     if (!targetThread || targetThread.length === 0) {
       const { pageData } = this.threads || {};
+
       if (pageData) {
         pageData.unshift(threadInfo);
         this.threads.pageData = this.threads.pageData.slice();
@@ -520,7 +625,7 @@ class IndexAction extends IndexStore {
         this.changeInfo = { type: 'add', thread: threadInfo }
       }
     } else {
-      this.updateAssignThreadAllData(threadId, threadInfo)
+      this.updateAssignThreadAllData(threadId, threadInfo);
     }
   }
 
@@ -581,8 +686,14 @@ class IndexAction extends IndexStore {
   adapterList(data = {}) {
     const { pageData = [], ...others } = data;
 
-    const newpageData = pageData.map(item => {
+    const newpageData = pageData.map((item) => {
       item.openedMore = false;
+      item.commentList = [];
+      item.isLoading = false;
+      item.requestError = {
+        isError: false,
+        errorText: '加载失败',
+      };
 
       return item;
     });

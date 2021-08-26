@@ -61,6 +61,8 @@ export const handleAttachmentData = (data) => {
       newData.rewardData = item.body;
     } else if (conversionTomID === '108') { // 附件
       newData.fileData = item.body;
+    } else if (conversionTomID === '109') { // 投票
+      newData.voteData = item.body;
     }
     newData.threadId = threadId;
   });

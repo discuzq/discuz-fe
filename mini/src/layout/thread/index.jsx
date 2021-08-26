@@ -12,7 +12,7 @@ import LoadingTips from './components/loading-tips';
 import styleVar from '@common/styles/theme/default.scss.json';
 import Icon from '@discuzq/design/dist/components/icon/index';
 import Input from '@discuzq/design/dist/components/input/index';
-import Toast from '@discuzq/design/dist/components/toast/index';
+import Toast from '@components/toast';
 import Button from '@discuzq/design/dist/components/button/index';
 import goToLoginPage from '@common/utils/go-to-login-page';
 
@@ -230,8 +230,8 @@ class ThreadH5Page extends React.Component {
 
   // 加载第二段评论列表
   async loadCommentList() {
-    const { isCommentReady } = this.props.thread;
-    if (this.state.isCommentLoading || !isCommentReady) {
+    const { isCommentReady, isCommentListError } = this.props.thread;
+    if (this.state.isCommentLoading || (!isCommentReady && !isCommentListError)) {
       return;
     }
 
@@ -947,6 +947,10 @@ class ThreadH5Page extends React.Component {
     this.setState({ showAboptPopup: false });
   }
 
+  onRetryClick() {
+    this.loadCommentList()
+  }
+
   render() {
     const { thread: threadStore } = this.props;
     const { isReady, isCommentReady, isNoMore, totalCount, isCommentListError } = threadStore;
@@ -1081,7 +1085,7 @@ class ThreadH5Page extends React.Component {
                     </View>
                   </Fragment>
                 ) : (
-                  <LoadingTips isError={isCommentListError} type="init"></LoadingTips>
+                  <LoadingTips isError={isCommentListError} type="init" onErrorClick={() => this.onRetryClick()}></LoadingTips>
                 )}
               </View>
             )}

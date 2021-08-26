@@ -71,6 +71,8 @@ export const handleAttachmentData = (data) => {
     } else if (tomId === '108') {
       // 附件
       newData.fileData = item.body;
+    } else if (tomId === '109') { // 投票
+      newData.voteData = item.body;
     }
     newData.threadId = threadId;
   });

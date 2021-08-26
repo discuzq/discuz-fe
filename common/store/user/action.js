@@ -24,9 +24,6 @@ import {
   miniRebind,
 } from '@server';
 import { get } from '../../utils/get';
-import set from '../../utils/set';
-import typeofFn from '@common/utils/typeof';
-import threadReducer from '../thread/reducer';
 import locals from '@common/utils/local-bridge';
 import constants from '@common/constants';
 
@@ -36,56 +33,314 @@ class UserAction extends SiteStore {
   }
 
   // 获取指定 userid 的 用户信息
-  getTargetUserInfo({ userId }) {
+  @action
+  async getTargetUserInfo({ userId }) {
+    const targetUserInfo = await this.getAssignUserInfo(userId);
 
-  }
+    if (targetUserInfo) {
+      if (!this.targetUsers[userId]) {
+        this.targetUsers[userId] = targetUserInfo;
+      } else {
+        if (targetUserInfo.backgroundUrl && this.targetUsers[userId].backgroundUrl) {
+          const originBackgroundFilename = this.targetUsers[userId].backgroundUrl?.split('?')[0];
+          const nextBackgroundFilename = targetUserInfo.backgroundUrl?.split('?')[0];
 
-  // 拉取指定 userid 的 用户信息
-  fetchTargetUserInfo({ userId }) {
+          if (originBackgroundFilename === nextBackgroundFilename) {
+            targetUserInfo.backgroundUrl = this.targetUsers[userId].backgroundUrl;
+          }
+        }
 
-  }
+        if (targetUserInfo.avatarUrl && this.targetUsers[userId].avatarUrl) {
+          const originAvatarFilename = this.targetUsers[userId].avatarUrl?.split('?')[0];
+          const nextAvatarFilename = targetUserInfo.avatarUrl?.split('?')[0];
 
-  // 设置指定 userid 的 用户信息
-  setTargetUserInfo({
-    userId,
-    userInfo,
-  }) {
+          if (originAvatarFilename === nextAvatarFilename) {
+            targetUserInfo.avatarUrl = this.targetUsers[userId].avatarUrl;
+          }
+        }
 
+        this.targetUsers[userId] = targetUserInfo;
+      }
+
+      this.targetUsers = { ...this.targetUsers };
+    }
   }
 
   // 更新指定 userid 的 用户信息
-  updateTargetUserInfo({
-    userId,
-    updater,
-  }) {
-
+  @action
+  updateTargetUserInfo({ userId, userInfo }) {
+    this.targetUsers[userId] = userInfo;
+    this.targetUsers = { ...this.targetUsers };
   }
 
   // 删除指定 userid 的 用户信息
-  deleteTargetUserInfo({
-    userId,
-  }) {
+  @action
+  deleteTargetUserInfo({ userId }) {
+    if (!this.targetUsers[userId]) return;
+    delete this.targetUsers[userId];
 
-  }
-
-  // 获取指定用户的关注
-  getTargetUserFollowers({ userId, page }) {
-
-  }
-
-  // 获取指定用户的粉丝
-  getTargetUserFanses({ userId, page }) {
-
+    this.targetUsers = { ...this.targetUsers };
   }
 
   // 获取用户的关注者
-  getUserFollowers({ page }) {
+  @action
+  async getUserFollowers({ userId, page, searchValue }) {
+    this.initFollowersStore({ userId });
 
+    const opts = {
+      params: {
+        page: page,
+        perPage: 20,
+        filter: {
+          userId: userId,
+        },
+      },
+    };
+
+    if (searchValue) {
+      opts.params.filter['nickName'] = searchValue;
+    }
+
+    return await getUserFollow(opts);
+  }
+
+  @action
+  initFollowersStore({ userId }) {
+    if (!this.followStore[userId]) {
+      this.followStore[userId] = {
+        data: {},
+        attribs: {},
+      };
+    }
+
+    this.followStore = { ...this.followStore };
+  }
+
+  @action
+  setUserFollowers({ userId, page, followersData }) {
+    this.initFollowersStore({ userId });
+    this.followStore[userId].data[page] = get(followersData, 'data.pageData', []);
+
+    this.followStore[userId].attribs.totalPage = get(followersData, 'data.totalPage', 1);
+    this.followStore[userId].attribs.totalCount = get(followersData, 'data.totalCount', 0);
+
+    if (!this.followStore[userId].attribs.currentPage) {
+      this.followStore[userId].attribs.currentPage = get(followersData, 'data.currentPage', 1);
+    } else {
+      const prevCurrentPage = this.followStore[userId].attribs.currentPage;
+      const currentPage = get(followersData, 'data.currentPage', 1);
+
+      if (Number(currentPage) > prevCurrentPage) {
+        this.followStore[userId].attribs.currentPage = get(followersData, 'data.currentPage');
+      }
+    }
+    console.log(this.followStore);
+    this.followStore = { ...this.followStore };
+  }
+
+  @action
+  clearUserFollowers({ userId }) {
+    if (!this.followStore[userId]) return;
+    this.followStore[userId] = null;
+    this.followStore = { ...this.followStore };
   }
 
   // 获取用户的粉丝
-  getUserFanses({ page }) {
+  @action
+  async getUserFanses({ userId, page }) {
+    const opts = {
+      params: {
+        page: page,
+        perPage: 20,
+        filter: {
+          userId: userId,
+        },
+      },
+    };
 
+    this.initFansesStore({ userId });
+
+    return await getUserFans(opts);
+  }
+
+  @action
+  initFansesStore({ userId }) {
+    if (!this.fansStore[userId]) {
+      this.fansStore[userId] = {
+        data: {},
+        attribs: {},
+      };
+    }
+    this.fansStore = { ...this.fansStore };
+  }
+
+  @action
+  setUserFanses({ userId, page, fansData }) {
+    this.initFansesStore({ userId });
+    this.fansStore[userId].data[page] = get(fansData, 'data.pageData', []);
+
+    this.fansStore[userId].attribs.totalPage = get(fansData, 'data.totalPage', 1);
+    this.fansStore[userId].attribs.totalCount = get(fansData, 'data.totalCount', 0);
+
+    if (!this.fansStore[userId].attribs.currentPage) {
+      this.fansStore[userId].attribs.currentPage = get(fansData, 'data.currentPage', 1);
+    } else {
+      const prevCurrentPage = this.fansStore[userId].attribs.currentPage;
+      const currentPage = get(fansData, 'data.currentPage', 1);
+
+      if (Number(currentPage) > prevCurrentPage) {
+        this.fansStore[userId].attribs.currentPage = get(fansData, 'data.currentPage');
+      }
+    }
+    this.fansStore = { ...this.fansStore };
+  }
+
+  @action
+  findAssignedUserInFollowersAndFans({ userId }) {
+    const resultArray = [];
+    Object.values(this.followStore).forEach((follows) => {
+      if (follows && follows.data) {
+        Object.keys(follows.data).forEach((page) => {
+          follows.data[page].forEach((userInfo) => {
+            if (get(userInfo, 'user.pid') !== userId) return;
+
+            resultArray.push(userInfo);
+          });
+        });
+      }
+    });
+
+    Object.values(this.fansStore).forEach((fans) => {
+      if (fans && fans.data) {
+        Object.keys(fans.data).forEach((page) => {
+          fans.data[page].forEach((userInfo) => {
+            if (get(userInfo, 'user.pid') !== userId) return;
+
+            resultArray.push(userInfo);
+          });
+        });
+      }
+    });
+
+    return resultArray;
+  }
+
+  @action
+  clearUserFanses({ userId }) {
+    if (!this.fansStore[userId]) return;
+    this.fansStore[userId] = null;
+    this.fansStore = { ...this.fansStore };
+  }
+
+  // 关注某个用户
+  @action
+  followUser({ userId, followRes }) {
+    const followTransformer = (userInfo) => {
+      if (get(userInfo, 'user.pid') !== userId) return;
+      userInfo.userFollow.isMutual = followRes.data.isMutual;
+      userInfo.userFollow.isFollow = true;
+    };
+
+    Object.values(this.followStore).forEach((follows) => {
+      if (follows && follows.data) {
+        Object.keys(follows.data).forEach((page) => {
+          follows.data[page].forEach((userInfo) => {
+            followTransformer(userInfo);
+          });
+        });
+      }
+    });
+
+    Object.values(this.fansStore).forEach((fans) => {
+      if (fans && fans.data) {
+        Object.keys(fans.data).forEach((page) => {
+          fans.data[page].forEach((userInfo) => {
+            followTransformer(userInfo);
+          });
+        });
+      }
+    });
+
+    if (this.followStore[this.id] && this.followStore[this.id].data) {
+      let searchFlag = false;
+      Object.keys(this.followStore[this.id].data).forEach((page) => {
+        this.followStore[this.id].data[page].forEach((userInfo) => {
+          if (userInfo.user.pid === userId) {
+            searchFlag = true;
+          }
+        });
+      });
+
+      if (!searchFlag) {
+        const { currentPage = 1 } = this.followStore[this.id].attribs;
+
+        const findResult = this.findAssignedUserInFollowersAndFans({ userId });
+
+        if (findResult.length > 0) {
+          this.followStore[this.id].data[currentPage].push(findResult[0]);
+        }
+      }
+
+      if (this.targetUsers[userId]) {
+        if (followRes && followRes.data && followRes.data.isMutual) {
+          this.targetUsers[userId].follow = 2;
+        } else {
+          this.targetUsers[userId].follow = 1;
+        }
+      }
+    }
+
+    if (this.userInfo) {
+      this.userInfo.followCount += 1;
+    }
+
+    this.followStore = { ...this.followStore };
+    this.fansStore = { ...this.fansStore };
+  }
+
+  // 取消关注某个用户
+  @action
+  unFollowUser({ userId }) {
+    const unfollowTransformer = (userInfo) => {
+      if (get(userInfo, 'user.pid') !== userId) return;
+      userInfo.userFollow.isFollow = false;
+    };
+
+    Object.values(this.followStore).forEach((follows) => {
+      if (follows && follows.data) {
+        Object.keys(follows.data).forEach((page) => {
+          follows.data[page].forEach((userInfo) => {
+            unfollowTransformer(userInfo);
+          });
+        });
+      }
+    });
+
+    Object.values(this.fansStore).forEach((fans) => {
+      if (fans && fans.data) {
+        Object.keys(fans.data).forEach((page) => {
+          fans.data[page].forEach((userInfo) => {
+            unfollowTransformer(userInfo);
+          });
+        });
+      }
+    });
+
+    if (this.userInfo) {
+      this.userInfo.followCount -= 1;
+
+      // 如果删除为 0，清空 followers
+      if (this.userInfo.followCount === 0) {
+        this.clearUserFollowers({ userId: this.id });
+      }
+    }
+
+    if (this.targetUsers[userId]) {
+      this.targetUsers[userId].follow = 0;
+    }
+
+    this.followStore = { ...this.followStore };
+    this.fansStore = { ...this.fansStore };
   }
 
   @action
@@ -190,41 +445,6 @@ class UserAction extends SiteStore {
   }
 
   @action
-  diffPicAndUpdateTargetUserInfo(data) {
-    const transformedData = Object.assign({}, data);
-
-    // 如下操作是为了避免因为签名导致的图片重加载问题
-    if (data.backgroundUrl && this.targetUserBackgroundUrl) {
-      const originBackgroundFilename = this.targetUserBackgroundUrl?.split('?')[0];
-      const nextBackgroundFilename = data.backgroundUrl?.split('?')[0];
-
-      if (originBackgroundFilename === nextBackgroundFilename) {
-        transformedData.backgroundUrl = this.targetUserBackgroundUrl;
-      }
-    }
-
-    if (data.avatarUrl && this.targetUserAvatarUrl) {
-      const originAvatarFilename = this.targetUserAvatarUrl?.split('?')[0];
-      const nextAvatarFilename = data.avatarUrl?.split('?')[0];
-
-      if (originAvatarFilename === nextAvatarFilename) {
-        transformedData.avatarUrl = this.targetUserAvatarUrl;
-      }
-    }
-
-    return transformedData;
-  }
-
-  // 获取指定用户的用户信息，用于获取他人首页
-  @action
-  async getTargetUserInfo(id) {
-    this.targetUserId = id;
-    const userInfo = await this.getAssignUserInfo(id);
-    this.targetUser = this.diffPicAndUpdateTargetUserInfo(userInfo);
-    return userInfo;
-  }
-
-  @action
   getUserFollow = async () => {
     const followsRes = await getUserFollow({
       params: {
@@ -246,31 +466,6 @@ class UserAction extends SiteStore {
       this.userFollowsPage += 1;
     }
     this.userFollows = { ...this.userFollows };
-  };
-
-  @action
-  getUserFans = async () => {
-    const fansRes = await getUserFans({
-      params: {
-        page: this.userFansPage,
-        perPage: 20,
-      },
-    });
-
-    if (fansRes.code !== 0) {
-      console.error(fansRes);
-      return;
-    }
-
-    const pageData = get(fansRes, 'data.pageData', []);
-    const totalPage = get(fansRes, 'data.totalPage', 1);
-    this.userFans[this.userFansPage] = pageData;
-    this.userFansTotalPage = totalPage;
-    this.userFans[this.userFansPage] = pageData;
-    if (this.userFansPage <= this.userFansTotalPage) {
-      this.userFansPage += 1;
-    }
-    this.userFans = { ...this.userFans };
   };
 
   /**
@@ -365,13 +560,21 @@ class UserAction extends SiteStore {
   }
 
   @action
-  setTargetUserDenied() {
-    set(this.targetUser, 'isDeny', true);
+  setTargetUserDenied({ userId }) {
+    if (this.targetUsers[userId]) {
+      this.targetUsers[userId].isDeny = true;
+    }
+
+    this.targetUsers = { ...this.targetUsers };
   }
 
   @action
-  setTargetUserNotBeDenied() {
-    set(this.targetUser, 'isDeny', false);
+  setTargetUserNotBeDenied({ userId }) {
+    if (this.targetUsers[userId]) {
+      this.targetUsers[userId].isDeny = false;
+    }
+
+    this.targetUsers = { ...this.targetUsers };
   }
 
   /**
@@ -416,107 +619,6 @@ class UserAction extends SiteStore {
       data: null,
       success: false,
     };
-  }
-
-  /**
-   * 获取用户自己发的主题列表
-   * @returns
-   */
-  @action
-  getUserThreads = async () => {
-    const userThreadList = await readThreadList({
-      params: {
-        page: this.userThreadsPage,
-        filter: {
-          toUserId: 0,
-          complex: 5,
-        },
-      },
-    });
-    if (userThreadList.code !== 0) {
-      throw {
-        Code: userThreadList.code,
-        Msg: userThreadList.msg || '获取用户主题列表失败',
-      };
-    }
-
-    return userThreadList;
-  };
-
-  /**
-   * 删除指定 id 的用户帖子
-   * @param {*} id
-   */
-  @action
-  deleteUserThreads = (id) => {
-    Object.keys(this.userThreads).forEach((pageNum) => {
-      const pageDataSet = this.userThreads[pageNum];
-
-      const itemIdx = pageDataSet.findIndex(item => item.threadId === id);
-
-      if (itemIdx === -1) return;
-
-      pageDataSet.splice(itemIdx, 1);
-
-      // 计数减少
-      this.userThreadsTotalCount -= 1;
-
-      this.userThreads[pageNum] = [...pageDataSet];
-    });
-  };
-
-  // 获取用户主题列表的写方法
-  // 读写分离，用于阻止多次请求的数据错乱
-  setUserThreads = async (userThreadList) => {
-    const pageData = get(userThreadList, 'data.pageData', []);
-    const totalPage = get(userThreadList, 'data.totalPage', 1);
-    const currPage = get(userThreadList, 'data.currentPage', 1);
-
-    this.userThreadsTotalPage = totalPage;
-
-    this.userThreads = {
-      ...this.userThreads,
-      [currPage]: pageData,
-    };
-
-    this.userThreadsTotalCount = get(userThreadList, 'data.totalCount', 0);
-
-    if (this.userThreadsPage <= this.userThreadsTotalPage) {
-      this.userThreadsPage += 1;
-    }
-  };
-
-  /**
-   * 获取指定用户发的主题列表
-   * @param {*} id
-   * @returns
-   */
-  @action
-  async getTargetUserThreads(id) {
-    const targetUserThreadList = await readThreadList({
-      params: {
-        page: this.targetUserThreadsPage,
-        filter: {
-          toUserId: id,
-          complex: 5,
-        },
-      },
-    });
-
-    const pageData = get(targetUserThreadList, 'data.pageData', []);
-    const totalPage = get(targetUserThreadList, 'data.totalPage', 1);
-    this.targetUserThreadsTotalPage = totalPage;
-    this.targetUserThreads = {
-      ...this.targetUserThreads,
-      [this.targetUserThreadsPage]: pageData,
-    };
-    this.targetUserThreadsTotalCount = get(targetUserThreadList, 'data.totalCount', 0);
-
-    if (this.targetUserThreadsPage <= this.targetUserThreadsTotalPage) {
-      this.targetUserThreadsPage += 1;
-    }
-
-    return this.targetUserThreads;
   }
 
   /**
@@ -900,14 +1002,6 @@ class UserAction extends SiteStore {
   };
 
   @action
-  cleanTargetUserThreads = () => {
-    this.targetUserThreads = [];
-    this.targetUserThreadsPage = 1;
-    this.targetUserThreadsTotalCount = 0;
-    this.targetUserThreadsTotalPage = 1;
-  };
-
-  @action
   cleanTargetUserFans = () => {
     this.targetUserFans = {};
     this.targetUserFansPage = 1;
@@ -935,17 +1029,6 @@ class UserAction extends SiteStore {
   };
 
   /**
-   * 清理他人用户数据函数
-   */
-  @action
-  removeTargetUserInfo = () => {
-    this.targetUser = null;
-    this.cleanTargetUserThreads();
-    this.cleanTargetUserFans();
-    this.cleanTargetUserFollows();
-  };
-
-  /**
    * 支付成功后，更新帖子列表指定帖子状态
    * @param {number} threadId 帖子id
    * @param {object}  obj 更新数据
@@ -962,97 +1045,6 @@ class UserAction extends SiteStore {
         store[key][index] = obj;
       }
     });
-  }
-
-  /**
-   * 更新帖子列表指定帖子状态
-   * @param {number} threadId 帖子id
-   * @param {object}  obj 更新数据
-   * @param {boolean} obj.isLike 是否更新点赞
-   * @param {boolean} obj.isPost 是否更新评论数
-   * @param {boolean} obj.user 当前操作的用户
-   * @returns
-   */
-  @action
-  updateAssignThreadInfo(threadId, obj = {}) {
-    const targetThreads = this.findAssignThread(threadId);
-
-    if (!targetThreads || targetThreads.length === 0) return;
-
-    targetThreads.forEach((targetThread) => {
-      if (!targetThread) return;
-
-      const { index, key, data, store } = targetThread; // 这里是数组
-      const { updateType, updatedInfo, user } = obj;
-
-      if (!data && !data?.likeReward && !data?.likeReward?.users) return;
-
-      // 更新点赞
-      if (
-        updateType === 'like'
-        && !typeofFn.isUndefined(updatedInfo.isLiked)
-        && !typeofFn.isNull(updatedInfo.isLiked)
-        && user
-      ) {
-        const { isLiked, likePayCount = 0 } = updatedInfo;
-        const theUserId = user.userId || user.id;
-        data.isLike = isLiked;
-
-        const userData = threadReducer.createUpdateLikeUsersData(user, 1);
-        // 添加当前用户到按过赞的用户列表
-        const newLikeUsers = threadReducer.setThreadDetailLikedUsers(data.likeReward, !!isLiked, userData);
-
-        data.likeReward.users = newLikeUsers;
-        data.likeReward.likePayCount = likePayCount;
-      }
-
-      // 更新评论
-      if (updateType === 'comment' && data?.likeReward) {
-        data.likeReward.postCount = data.likeReward.postCount + 1;
-      }
-
-      // 更新分享
-      if (updateType === 'share') {
-        data.likeReward.shareCount = data.likeReward.shareCount + 1;
-      }
-
-      if (store[key] && store[key][index]) {
-        store[key][index] = data;
-      }
-    });
-  }
-
-  // 获取指定的帖子数据
-  findAssignThread(threadId) {
-    const threadArr = [];
-
-    if (this.userThreads) {
-      const keys = Object.keys(this.userThreads);
-      keys.forEach((item) => {
-        const pageData = this.userThreads[item];
-
-        for (let i = 0; i < pageData.length; i++) {
-          if (pageData[i].threadId === threadId) {
-            threadArr.push({ key: item, index: i, data: pageData[i], store: this.userThreads });
-          }
-        }
-      });
-    }
-
-    if (this.targetUserThreads) {
-      const keys = Object.keys(this.targetUserThreads);
-      keys.forEach((item) => {
-        const pageData = this.targetUserThreads[item];
-
-        for (let i = 0; i < pageData.length; i++) {
-          if (pageData[i].threadId === threadId) {
-            threadArr.push({ key: item, index: i, data: pageData[i], store: this.targetUserThreads });
-          }
-        }
-      });
-    }
-
-    return threadArr;
   }
 
   // 生成微信换绑二维码，仅在 PC 使用

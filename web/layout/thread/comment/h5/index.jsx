@@ -404,6 +404,7 @@ class CommentH5Page extends React.Component {
   }
   render() {
     const { commentDetail: commentData, isReady } = this.props.comment;
+    const { isAnonymous } = this.props.thread?.threadData || '';
     // 更多弹窗权限
     const morePermissions = {
       // canEdit: commentData?.canEdit,
@@ -464,6 +465,7 @@ class CommentH5Page extends React.Component {
               threadId={this.props.thread?.threadData?.userId}
               postId={this.props.comment.postId}
               positionRef={this.positionRef}
+              isAnonymous={isAnonymous}
             ></CommentList>
           )}
         </div>
@@ -498,12 +500,12 @@ class CommentH5Page extends React.Component {
           <InputPopup
             showEmojis={this.state.showEmojis}
             cancleEmojie={() => {
- this.setState({ showEmojis: false });
- }}
+              this.setState({ showEmojis: false });
+            }}
             showPicture={this.state.showPicture}
             canclePicture={() => {
- this.setState({ showPicture: false });
- }}
+              this.setState({ showPicture: false });
+            }}
             visible={this.state.showCommentInput}
             inputText={this.state.inputText}
             onClose={() => this.setState({ showCommentInput: false })}

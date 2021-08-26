@@ -37,7 +37,7 @@ class PCMyPage extends React.Component {
     };
 
     if (myThreadsList.length === 0) {
-     this.state.isLoading = true; 
+     this.state.isLoading = true;
     }
   }
 
@@ -204,7 +204,7 @@ class PCMyPage extends React.Component {
           {myThreadsList?.map((item, index) => (
             <Thread
               data={item}
-              key={`${item.threadId}-${item.updatedAt}-${item.user.avatar}`}
+              key={`${item.threadId}-${item.updatedAt}-${item.user.avatar}-${item._time}`}
               className={index === 0 && styles.threadStyle}
             />
           ))}

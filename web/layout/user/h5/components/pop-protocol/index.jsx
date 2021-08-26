@@ -2,6 +2,7 @@ import React from 'react';
 import { inject } from 'mobx-react';
 import { Popup } from '@discuzq/design';
 import layout from './index.module.scss';
+import { getClientHeight } from '@common/utils/get-client-height';
 
 const PROTOCAL = {
   PRIVACY: 'privacy',
@@ -38,6 +39,7 @@ class PopProtocol extends React.Component {
     const { protocolVisible, protocolStatus } = this.props;
     const { commonLogin } = this.props;
     const protocolData = this.getProtocalData(protocolStatus);
+    const cliengtHeight = getClientHeight();
 
     return (
       <Popup
@@ -45,7 +47,7 @@ class PopProtocol extends React.Component {
         visible={protocolVisible}
         onClose={() => {commonLogin.setProtocolVisible(false)}}
       >
-        <div className={layout.content}>
+        <div className={layout.content} style={cliengtHeight && {height: `${cliengtHeight - 48}px`}}>
           <div className={layout.title}>
             {protocolData.title}
           </div>

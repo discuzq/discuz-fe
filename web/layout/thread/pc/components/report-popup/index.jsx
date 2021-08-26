@@ -3,7 +3,13 @@ import { Icon, Popup, Button, Textarea, Radio, Toast } from '@discuzq/design';
 import styles from './index.module.scss';
 
 const InputPop = (props) => {
-  const { visible, onOkClick, onCancel, inputText, reportContent = [] } = props;
+  const {
+    visible,
+    onOkClick,
+    onCancel,
+    inputText = '请输入其他理由',
+    reportContent = ['广告垃圾', '违规内容', '恶意灌水', '重复发帖'],
+  } = props;
 
   const [radioValue, setRadioValue] = useState('');
   const [value, setValue] = useState('');

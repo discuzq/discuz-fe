@@ -18,6 +18,7 @@ import { get } from '@common/utils/get';
 import { formatDate } from '@common/utils/format-date';
 import * as localData from '@common/utils/thread-post-localdata';
 import TagLocalData from '@components/thread-post/tag-localdata';
+import VoteWidget from '@components/thread-post/vote-widget';
 
 @inject('payBox')
 @inject('index')
@@ -275,6 +276,13 @@ class Index extends Component {
         }
         nextRoute = '/indexPages/thread/selectRedpacket/index';
         break;
+      case THREAD_TYPE.vote:
+        this.resetOperationType();
+        if (postData.vote.voteUsers > 0) {
+          return this.postToast('投票已生效，不允许编辑');
+        }
+        nextRoute = '/indexPages/thread/voteEditor/index';
+        break;
       case THREAD_TYPE.paid:
         this.setState({ showPaidOption: true });
         this.resetOperationType();
@@ -466,8 +474,8 @@ class Index extends Component {
 
   isHaveContent() {
     const { postData } = this.props.threadPost;
-    const { images, video, files, audio } = postData;
-    if (!(postData.contentText || video.id || audio.id || Object.values(images).length
+    const { images, video, files, audio, vote } = postData;
+    if (!(postData.contentText || video.id || vote.voteTitle || audio.id || Object.values(images).length
       || Object.values(files).length)) {
       return false;
     }
@@ -488,7 +496,7 @@ class Index extends Component {
     if (!this.checkAudioRecordStatus()) return;
 
     if (!this.isHaveContent()) {
-      this.postToast('请至少填写您要发布的内容或者上传图片、附件、视频、语音');
+      this.postToast('请至少填写您要发布的内容或者上传图片、附件、视频、语音、投票等');
       return;
     }
     if (!this.checkAttachPrice()) {
@@ -814,6 +822,12 @@ class Index extends Component {
                   </View>
                 </GeneralUpload>
                 {product.detailContent && <Units type='product' productSrc={product.imagePath} productDesc={product.title} productPrice={product.price} onDelete={() => setPostData({ product: {} })} />}
+
+                {/* 投票组件 */}
+                {(postData?.vote?.voteTitle) && (
+                  <VoteWidget onDelete={() => setPostData({ vote: {} })} />
+                )}
+
               </View>
 
             </View>

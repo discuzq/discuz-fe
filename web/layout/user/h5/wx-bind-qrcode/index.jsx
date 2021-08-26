@@ -48,7 +48,7 @@ class WeixinBindQrCodePage extends React.Component {
 
   async generateQrCode() {
     try {
-      const { sessionToken = '', nickname = '', jumpType = '' } = this.props.router.query;
+      const { sessionToken = '', nickname = '', jumpType = '', bindPhone = '' } = this.props.router.query;
       const { platform, wechatEnv } = this.props.site;
       const qrCodeType = platform === 'h5' ? 'mobile_browser_bind' : 'pc_bind';
       const process = platform === 'h5' && wechatEnv === 'openPlatform' ? 'bind' : '';
@@ -59,7 +59,8 @@ class WeixinBindQrCodePage extends React.Component {
         name = user.nickname;
       }
 
-      const redirectUri = `${wechatEnv === 'miniProgram' ? '/subPages/user/wx-auth/index' : `${window.location.origin}/user/wx-auth`}?loginType=${platform}&action=wx-bind&nickname=${name}&jumpType=${jumpType}`;
+      let redirectUri = `${wechatEnv === 'miniProgram' ? '/subPages/user/wx-auth/index' : `${window.location.origin}/user/wx-auth`}?loginType=${platform}&action=wx-bind&nickname=${name}&jumpType=${jumpType}`;
+      redirectUri += platform === 'h5' && bindPhone ? '&bindPhone=1' : '';
       await this.props.h5QrCode.generate({
         params: {
           sessionToken,
@@ -90,9 +91,15 @@ class WeixinBindQrCodePage extends React.Component {
           params: { sessionToken: this.props.h5QrCode.sessionToken },
         });
         const uid = get(res, 'data.uid');
-        this.props.user.updateUserInfo(uid);
-        // FIXME: 使用 window 跳转用来解决，获取 forum 在登录前后不同的问题，后续需要修改 store 完成
-        window.location.href = '/';
+        const userData = await this.props.user.updateUserInfo(uid);
+        const { router } = this.props;
+        const { bindPhone = null } = router.query;
+        const mobile = get(userData, 'mobile', '');
+        if (bindPhone && !mobile) { // 需要绑定手机，但是用户未绑定手机时，跳转到绑定手机页面
+          router.replace('/user/bind-phone');
+          return;
+        }
+        LoginHelper.restore();
         clearInterval(this.timer);
       } catch (e) {
         const { h5QrCode } = this.props;
@@ -139,13 +146,16 @@ class WeixinBindQrCodePage extends React.Component {
 
   onOkClick = async () => {
     this.props.commonLogin.needToBindMini = true;
-    const { sessionToken, jumpType } = this.props.router.query;
+    const { sessionToken, jumpType, bindPhone = '' } = this.props.router.query;
+    const { platform } = this.props.site;
     const resp = await genMiniBindScheme({
       params: {
         type: 'bind_mini',
         query: {
           scene: sessionToken,
-          jumpType
+          jumpType,
+          bindPhone,
+          loginType: platform
         }
       }
     });

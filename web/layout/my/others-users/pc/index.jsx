@@ -20,13 +20,17 @@ class PCMyPage extends React.Component {
   targetUserId = null;
   constructor(props) {
     super(props);
-    this.props.user.cleanTargetUserThreads();
+    const { query } = this.props.router;
     this.state = {
       showFansPopup: false, // 是否弹出粉丝框
       showFollowPopup: false, // 是否弹出关注框
       fetchUserInfoLoading: true,
       fetchUserThreadsLoading: true,
     };
+
+    if (this.props.user.targetUsers[query.id]) {
+      this.state.fetchUserInfoLoading = false;
+    }
   }
 
   fansPopupInstance = null;
@@ -44,7 +48,7 @@ class PCMyPage extends React.Component {
     }
     if (query.id) {
       this.targetUserId = query.id;
-      await this.props.user.getTargetUserInfo(query.id);
+      await this.props.user.getTargetUserInfo({ userId: query.id });
       this.setState({
         fetchUserInfoLoading: false,
       });
@@ -62,6 +66,7 @@ class PCMyPage extends React.Component {
 
     if (String(this.targetUserId) === String(query.id)) return;
     this.targetUserId = query.id;
+
     if (query.id) {
       if (this.fansPopupInstance) {
         this.fansPopupInstance.closePopup();
@@ -71,22 +76,24 @@ class PCMyPage extends React.Component {
         this.followsPopupInstance.closePopup();
       }
 
+      if (!this.props.user.targetUsers[query.id]) {
+        this.setState({
+          fetchUserInfoLoading: true,
+        });
+      }
+
       this.setState({
-        fetchUserInfoLoading: true,
         fetchUserThreadsLoading: true,
       });
-      this.props.user.removeTargetUserInfo();
-      await this.props.user.getTargetUserInfo(query.id);
+
+      await this.props.user.getTargetUserInfo({ userId: query.id });
+
       this.setState({
         fetchUserInfoLoading: false,
       });
       await this.fetchTargetUserThreads();
     }
   };
-
-  componentWillUnmount() {
-    this.props.user.removeTargetUserInfo();
-  }
 
   fetchTargetUserThreads = async () => {
     const { query } = this.props.router;
@@ -200,7 +207,6 @@ class PCMyPage extends React.Component {
     return (
       <>
         <BaseLayout
-          isOtherPerson={true}
           allowRefresh={false}
           onRefresh={this.fetchTargetUserThreads}
           noMore={totalPage < currentPage}

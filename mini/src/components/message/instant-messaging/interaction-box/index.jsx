@@ -1,14 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View } from '@tarojs/components';
 import Button from '@discuzq/design/dist/components/button/index';
 import Icon from '@discuzq/design/dist/components/icon/index';
 import Input from '@discuzq/design/dist/components/input/index';
+import Toast from '@discuzq/design/dist/components/toast/index';
+
 import { Emoji } from '@components/thread-post';
 import { inject, observer } from 'mobx-react';
 import styles from './index.module.scss';
 
 const InteractionBox = (props) => {
-  const { showEmoji, switchEmoji, chooseImage, typingValue, setTypingValue, doSubmitClick } = props;
+  const { forum, showEmoji, switchEmoji, chooseImage, typingValue, setTypingValue, doSubmitClick } = props;
+  const { otherPermissions, setOtherPermissions } = forum;
+  const { disabledChat = false } = otherPermissions || {};
 
   const [cursorPosition, setCursorPosition] = useState(0);
 
@@ -17,6 +21,10 @@ const InteractionBox = (props) => {
     setTypingValue(text);
     setCursorPosition(cursorPosition + emoji.code.length);
   };
+
+  useEffect(() => {
+    !otherPermissions && setOtherPermissions();
+  }, [])
 
   return (
     <View id='operation-box' className={styles.interactionBox}>
@@ -27,7 +35,8 @@ const InteractionBox = (props) => {
             cursorSpacing={16}
             cursor={cursorPosition}
             value={typingValue}
-            placeholder=" 请输入内容"
+            placeholder={disabledChat ? ' 私信已被禁用' : ' 请输入内容'}
+            disabled={disabledChat}
             onChange={(e) => {
               setTypingValue(e.detail.value);
               setCursorPosition(e.detail.cursor);
@@ -38,15 +47,25 @@ const InteractionBox = (props) => {
           />
           <View className={styles.tools}>
             <View>
-              <Icon name="SmilingFaceOutlined" size={20} color={'var(--color-text-secondary)'} onClick={() => {switchEmoji(!showEmoji)}} />
+              <Icon name="SmilingFaceOutlined" size={20} color={'var(--color-text-secondary)'} onClick={() => {
+                if (disabledChat) {
+                  return Toast.info({ content: `私信已被禁用` });
+                }
+                switchEmoji(!showEmoji);
+              }} />
             </View>
             <View className={styles.pictureUpload}>
-              <Icon name="PictureOutlinedBig" size={20} color={'var(--color-text-secondary)'} onClick={chooseImage} />
+              <Icon name="PictureOutlinedBig" size={20} color={'var(--color-text-secondary)'} onClick={() => {
+                if (disabledChat) {
+                  return Toast.info({ content: `私信已被禁用` });
+                }
+                chooseImage();
+              }} />
             </View>
           </View>
         </View>
         <View className={styles.submit}>
-          <Button className={styles.submitBtn} type="primary" onClick={doSubmitClick}>
+          <Button className={styles.submitBtn} type="primary" disabled={disabledChat} onClick={doSubmitClick}>
             发送
           </Button>
         </View>
@@ -58,4 +77,4 @@ const InteractionBox = (props) => {
   );
 };
 
-export default inject('message', 'user', 'threadPost', 'site')(observer(InteractionBox));
+export default inject('forum')(observer(InteractionBox));

@@ -10,6 +10,7 @@ import ErrorMiniPage from '../../../layout/error/index';
 
 @inject('site')
 @inject('comment')
+@inject('thread')
 class CommentDetail extends React.Component {
   constructor(props) {
     super(props);
@@ -28,6 +29,25 @@ class CommentDetail extends React.Component {
 
     if (threadId) {
       this.props.comment.setThreadId(threadId);
+      const res = await this.props.thread.fetchThreadDetail(threadId);
+      if (res.code !== 0) {
+        // 404
+        if (res.code === -4004) {
+          Router.replace({ url: '/404' });
+          return;
+        }
+
+        if (res.code > -5000 && res.code < -4000) {
+          this.setState({
+            serverErrorMsg: res.msg,
+          });
+        }
+
+        this.setState({
+          isServerError: true,
+        });
+        return;
+      }
     }
 
     if (postId) {

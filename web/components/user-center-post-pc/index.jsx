@@ -16,7 +16,7 @@ class UserCenterPost extends React.Component {
     return (
       <div
         className={styles.userCenterPost}
-        onClick={() => {
+        onClick={(event) => {
           Router.push({ url: '/thread/post' });
         }}
       >
@@ -33,6 +33,7 @@ class UserCenterPost extends React.Component {
           >
             <div className={styles.userCenterPostInfo}>
               <div className={styles.userCenterPostInput}>
+                <div className={styles.inputMask}/>
                 <Input
                   style={{
                     width: '100%',
