@@ -6,10 +6,10 @@ import { inject } from 'mobx-react';
 import ThreadMiniPage from '@layout/thread/index';
 // import PayBoxProvider from '@components/payBox/payBoxProvider';
 import withShare from '@common/utils/withShare/withShare';
-import ErrorMiniPage from '../../layout/error/index';
 import { priceShare } from '@common/utils/priceShare';
 import { updateViewCountInStorage } from '@common/utils/viewcount-in-storage';
-import Toast from '@discuzq/design/dist/components/toast';
+import Toast from '@components/toast';
+import ErrorMiniPage from '../../layout/error/index';
 
 // const MemoToastProvider = React.memo(ToastProvider);
 @inject('site')
@@ -20,7 +20,9 @@ import Toast from '@discuzq/design/dist/components/toast';
 @inject('search')
 @inject('topic')
 @inject('baselayout')
-@withShare()
+@withShare({
+  showShareTimeline: true
+})
 class Detail extends React.Component {
   constructor(props) {
     super(props);
@@ -57,6 +59,7 @@ class Detail extends React.Component {
     if (data.from === 'timeLine') {
       return {
         title: defalutTitle,
+        query: `id=${threadId}`
       };
     }
     if (data.from === 'menu') {
@@ -122,6 +125,7 @@ class Detail extends React.Component {
   };
 
   async componentDidShow() {
+
     const { id, postId } = getCurrentInstance().router.params;
 
     // 判断缓存

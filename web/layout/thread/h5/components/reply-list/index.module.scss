@@ -28,6 +28,10 @@
             line-height: rem(20);
             text-align: left;
             color: $text-color-primary;
+            .replyListNameText {
+              @include text-ellipsis();
+              max-width: rem(100);
+            }
           }
           .masterBox {
             padding-top:rem(2);
@@ -103,12 +107,14 @@
           top: rem(3);
 
           .replyedUserName {
+            max-width: rem(100);
             font-weight: bold;
             font-size: rem($font-size-primary);
             margin-right: rem($margin-2n);
             line-height: rem(18);
             text-align: left;
             color: $primary-color;
+            @include text-ellipsis();
           }
           .masterBox {
             padding-right: rem($padding-2n);

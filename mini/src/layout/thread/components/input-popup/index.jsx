@@ -162,7 +162,7 @@ const InputPop = (props) => {
     if (newValue.length === 0 && !isDisabled) {
       setDisabled(true);
     }
-    textareaRef.current.focus();
+    // textareaRef.current.focus();
     // setFocus(true)
 
     // setShowEmojis(false);//fix:注释 修复 不能连续点击表情输入的问题

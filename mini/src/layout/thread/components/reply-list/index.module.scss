@@ -23,13 +23,15 @@
         .userInfo {
           display: flex;
           .replyListName {
-            max-width: 100px;
             font-size: $font-size-primary;
             font-weight: bold;
             line-height: 20px;
             text-align: left;
             color: $text-color-primary;
-            @include text-ellipsis();
+            .replyListNameText {
+              @include text-ellipsis();
+              max-width: 100px;
+            }
           }
           .masterBox {
             padding-left: rem($padding-2n);

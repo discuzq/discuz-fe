@@ -280,6 +280,14 @@ class UserAction extends SiteStore {
           this.followStore[this.id].data[currentPage].push(findResult[0]);
         }
       }
+
+      if (this.targetUsers[userId]) {
+        if (followRes && followRes.data && followRes.data.isMutual) {
+          this.targetUsers[userId].follow = 2;
+        } else {
+          this.targetUsers[userId].follow = 1;
+        }
+      }
     }
 
     if (this.userInfo) {
@@ -325,6 +333,10 @@ class UserAction extends SiteStore {
       if (this.userInfo.followCount === 0) {
         this.clearUserFollowers({ userId: this.id });
       }
+    }
+
+    if (this.targetUsers[userId]) {
+      this.targetUsers[userId].follow = 0;
     }
 
     this.followStore = { ...this.followStore };

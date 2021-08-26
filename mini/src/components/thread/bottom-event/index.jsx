@@ -75,8 +75,13 @@ const Index = ({
       goToLoginPage({ url: '/subPages/user/wx-auth/index' });
       return;
     }
-    setShow(true);
-  };
+    const isApproved = data?.isApproved === 1;
+    if (!isApproved) {
+      Toast.info({content: '内容正在审核中'});
+      return ;
+    }
+    setShow(true)
+  }
   useEffect(() => {
     index.setHiddenTabBar(show);
   }, [show]);

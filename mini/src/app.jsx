@@ -6,6 +6,7 @@ import Router from '@discuzq/sdk/dist/router';
 import setTitle from '@common/utils/setTitle';
 import LoginHelper from '@common/utils/login-helper'
 import { STORAGE_KEY } from '@common/utils/viewcount-in-storage';
+import locals from '@common/utils/local-bridge';
 
 import './app.scss';
 
@@ -30,12 +31,20 @@ class App extends Component {
    * 注意：options 参数的字段在不同小程序中可能存在差异。所以具体使用的时候请看相关小程序的文档
    */
   async onLaunch(options) {
+
+    // 如果是分享朋友圈进入的，不进入下面跳转逻辑
+    const {scene, query} = options;
+    if ( scene === 1154  ) {
+      return;
+    }
+
     const { site } = this.store;
     const { envConfig } = site;
     const { TITLE } = envConfig;
     if (TITLE && TITLE !== '') {
       setTitle(TITLE);
     }
+
     // 如果启动页面不是pages/index/index，那么将保留路径，跳去启动页
     // 暂时发现是小程序分享朋友圈无法设置url
     const $instance = Taro.getCurrentInstance()
@@ -89,12 +98,12 @@ class App extends Component {
           targetUrl = `${path}?${Object.entries(query).map(([key, value])=> `${key}=${value}`).join('&')}`;
         }
       }
-      
+
       LoginHelper.setUrl(targetUrl);
     } catch(err) {
       console.log('savePageJump', err);
     }
-    
+
     // 清除帖子浏览计数
     Taro.removeStorageSync(STORAGE_KEY)
   }

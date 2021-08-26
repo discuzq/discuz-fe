@@ -599,9 +599,22 @@ class IndexAction extends IndexStore {
     const { threadId = '' } = threadInfo
     const targetThread = this.findAssignThread(threadId);
 
+    const targetThreadInLists = this.findAssignThreadInTargetList({ threadId, namespace: 'my' })
+
+    const addThreadInLists = ({ threadInfo, threadId }) => {
+      if (targetThreadInLists && targetThreadInLists.length !== 0) {
+        this.updateAssignThreadInfoInLists({ threadId, threadInfo });
+      } else {
+        this.addThreadInTargetList({ namespace: 'my', threadInfo });
+      }
+    }
+
+    addThreadInLists({ threadInfo, threadId });
+
     // 如果更新的数据不存在，则直接插入。若存在，则替代原有数据
     if (!targetThread || targetThread.length === 0) {
       const { pageData } = this.threads || {};
+
       if (pageData) {
         pageData.unshift(threadInfo);
         this.threads.pageData = this.threads.pageData.slice();
@@ -612,7 +625,7 @@ class IndexAction extends IndexStore {
         this.changeInfo = { type: 'add', thread: threadInfo }
       }
     } else {
-      this.updateAssignThreadAllData(threadId, threadInfo)
+      this.updateAssignThreadAllData(threadId, threadInfo);
     }
   }
 
