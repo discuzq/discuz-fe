@@ -635,22 +635,23 @@ class PostPage extends React.Component {
     const data = { amount };
     // 保存草稿操作不执行支付流程
     if (!isDraft && amount > 0) {
-      let type = ORDER_TRADE_TYPE.RED_PACKET;
+      let type = ORDER_TRADE_TYPE.ORDER_TYPE_REDPACKET;
       let title = '支付红包';
       if (redAmount > 0) {
         data.redAmount = redAmount;
       }
       if (rewardAmount > 0) {
-        type = ORDER_TRADE_TYPE.POST_REWARD;
+        type = ORDER_TRADE_TYPE.ORDER_TYPE_QUESTION_REWARD;
         title = '支付悬赏';
         data.rewardAmount = rewardAmount;
       }
       if (rewardAmount > 0 && redAmount > 0) {
-        type = ORDER_TRADE_TYPE.COMBIE_PAYMENT;
+        type = ORDER_TRADE_TYPE.ORDER_TYPE_MERGE;
         title = '支付红包和悬赏';
       }
       PayBox.createPayBox({
         data: { ...data, title, type },
+        currentPage: { type: 2 },
         orderCreated: async (orderInfo) => {
           const { orderSn } = orderInfo;
           this.setPostData({ orderInfo });

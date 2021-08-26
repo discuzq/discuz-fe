@@ -152,9 +152,11 @@ function Home(props, ref) {
           <Item
             key={key}
             data={data}
+            index={index}
             isLast={index === list?.length - 2}
             measure={measure}
             recomputeRowHeights={(data) => recomputeRowHeights(index, data)}
+            enableCommentList={true}
           />
         );
     }

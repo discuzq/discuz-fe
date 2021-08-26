@@ -12,7 +12,7 @@ import LoadingTips from './components/loading-tips';
 import styleVar from '@common/styles/theme/default.scss.json';
 import Icon from '@discuzq/design/dist/components/icon/index';
 import Input from '@discuzq/design/dist/components/input/index';
-import Toast from '@discuzq/design/dist/components/toast/index';
+import Toast from '@components/toast';
 import Button from '@discuzq/design/dist/components/button/index';
 import goToLoginPage from '@common/utils/go-to-login-page';
 
@@ -591,7 +591,7 @@ class ThreadH5Page extends React.Component {
         });
     }
 
-    const { success, msg, isApproved } = await this.props.comment.createComment(params, this.props.thread);
+    const { success, msg, isApproved, redPacketAmount } = await this.props.comment.createComment(params, this.props.thread);
     if (success) {
       // 更新帖子中的评论数据
       this.props.thread.updatePostCount(this.props.thread.totalCount);
@@ -602,6 +602,10 @@ class ThreadH5Page extends React.Component {
       if (isRedPack) {
         // 评论获得红包帖，更新帖子数据
         await this.props.thread.fetchThreadDetail(id);
+      }
+
+      if (redPacketAmount && redPacketAmount > 0) {
+        this.props.thread.setRedPacket(redPacketAmount);
       }
 
       // 更新列表store数据

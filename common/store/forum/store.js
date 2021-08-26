@@ -16,6 +16,12 @@ class ForumStore {
   @observable myGroup = null;
   @observable myPermissons = null;
   @observable otherPermissions = null;
+  @observable introduceVisible = false;
+
+  @action
+  setIntroduceVisible(visible) {
+    this.introduceVisible = visible;
+  }
 
   @action
   setUserPage(page) {

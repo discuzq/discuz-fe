@@ -60,20 +60,12 @@ export const THREAD_TYPE = {
 
 // 图片类型
 // https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Image_types
-export const ACCEPT_IMAGE_TYPES = [
-  'image/*',
-];
+export const ACCEPT_IMAGE_TYPES = ['image/*'];
 
-export const ACCEPT_VIDEO_TYPES = [
-  'video/mp4',
-  'video/x-m4v',
-  'video/*',
-];
+export const ACCEPT_VIDEO_TYPES = ['video/mp4', 'video/x-m4v', 'video/*'];
 
 // 附件类型
-export const ACCEPT_FILE_TYPES = [
-  '*/*',
-];
+export const ACCEPT_FILE_TYPES = ['*/*'];
 
 export const THREAD_STATUS = {
   // 新建
@@ -88,4 +80,54 @@ export const THREAD_STATUS = {
 export const AUDIO_FORMAT = ['WAV', 'MP3', 'M4A'];
 
 // 附件文档类型
-export const FILE_PREVIEW_FORMAT = ['PPTX', 'PPT', 'POT', 'POTX', 'PPS', 'PPSX', 'DPS', 'DPT', 'PPTM', 'POTM', 'PPSM', 'DOC', 'DOT', 'WPS', 'WPT', 'DOCX', 'DOTX', 'DOCM', 'DOTM', 'XLS', 'XLT', 'ET', 'ETT', 'XLSX', 'XLTX', 'CSV', 'XLSB', 'XLSM', 'XLTM', 'ETS', 'PDF', 'LRC', 'C', 'CPP', 'H', 'ASM', 'S', 'JAVA', 'ASP', 'BAT', 'BAS', 'PRG', 'CMD', 'RTF', 'TXT', 'LOG', 'XML', 'HTM', 'HTML'];
+export const FILE_PREVIEW_FORMAT = [
+  'PPTX',
+  'PPT',
+  'POT',
+  'POTX',
+  'PPS',
+  'PPSX',
+  'DPS',
+  'DPT',
+  'PPTM',
+  'POTM',
+  'PPSM',
+  'DOC',
+  'DOT',
+  'WPS',
+  'WPT',
+  'DOCX',
+  'DOTX',
+  'DOCM',
+  'DOTM',
+  'XLS',
+  'XLT',
+  'ET',
+  'ETT',
+  'XLSX',
+  'XLTX',
+  'CSV',
+  'XLSB',
+  'XLSM',
+  'XLTM',
+  'ETS',
+  'PDF',
+  'LRC',
+  'C',
+  'CPP',
+  'H',
+  'ASM',
+  'S',
+  'JAVA',
+  'ASP',
+  'BAT',
+  'BAS',
+  'PRG',
+  'CMD',
+  'RTF',
+  'TXT',
+  'LOG',
+  'XML',
+  'HTM',
+  'HTML',
+];

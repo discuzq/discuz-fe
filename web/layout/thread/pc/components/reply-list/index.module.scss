@@ -35,8 +35,8 @@
           .masterBox {
             padding:rem($padding-2n + 2) rem($padding-2n) 0 0;
             .masterText {
-              border-radius: rem(4) 0;
-              background: #ff9700;
+              border-radius: rem(2);
+              background: $primary-color;
               display: inline-block;
               font-size: rem(12);
               -webkit-text-size-adjust:none;
@@ -115,10 +115,11 @@
             margin-right: rem($margin-1n);
 
             .avatar {
-              width: rem(18);
-              height: rem(18);
+              width: rem(24);
+              height: rem(24);
               font-size: rem($font-size-small);
               line-height: rem(18);
+              transform:  scale(0.75);
             }
           }
 
@@ -137,8 +138,8 @@
             display: flex;
             align-items: center;
             .masterText {
-              border-radius: rem(4) 0;
-              background: #ff9700;
+              border-radius: rem(2);
+              background: $primary-color;
               display: inline-block;
               font-size: rem(12);
               -webkit-text-size-adjust:none;

@@ -14,6 +14,7 @@ import {
   mode,
 } from '../../../../../common/store/pay/weixin-h5-backend';
 import throttle from '@common/utils/thottle.js';
+import loginHelper from '@common/utils/login-helper';
 
 @inject('site')
 @inject('user')
@@ -193,8 +194,25 @@ export default class PayBox extends React.Component {
 
   gotoBind = () => {
     this.props.payBox.visible = false;
-    Router.push({ url: '/user/wx-bind-qrcode?jumpType=1' });
-  };
+    const { currentPage: { type, threadId = '' } } = this.props.payBox;
+    let path = '';
+    if (this.props.site.wechatEnv === 'miniProgram') {
+      // 跳小程序绑定后继续访问的页面路径
+      switch(type) {
+        case 1: // 帖子详情
+          path = `/indexPages/thread/index?id=${threadId}`;
+          break;
+        case 2: // 发帖
+          path = '/indexPages/thread/post/index';
+          break;
+      }
+    }
+    if (this.props.site.wechatEnv === 'openPlatform') {
+      loginHelper.saveCurrentUrl();
+      path = loginHelper.getUrl();
+    }
+    Router.push({ url: `/user/wx-bind-qrcode?toPage=${encodeURIComponent(path)}` });
+  }
 
   renderRightChoices = (item) => {
     const { options = {} } = this.props.payBox;
@@ -210,7 +228,7 @@ export default class PayBox extends React.Component {
         );
       }
 
-      return this.walletPaySubText();
+      // return this.walletPaySubText();
     }
 
     if (item.paymentType === PAYWAY_MAP.WX) {
@@ -251,7 +269,10 @@ export default class PayBox extends React.Component {
                     <Icon className={styles.icon} name={item.icon} color={item.color} size={20} />
                     <p className={styles.text}>{item.name}</p>
                   </div>
-                  <div className={styles.right}>{this.renderRightChoices(item)}</div>
+                  <div className={styles.right}>
+                    {item.paymentType === PAYWAY_MAP.WALLET && this.walletPaySubText()}
+                    {this.renderRightChoices(item)}
+                  </div>
                 </div>
               );
             })}

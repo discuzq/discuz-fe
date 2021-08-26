@@ -45,6 +45,7 @@
     }
     .list_text_ellipsis {
       @include text-ellipsis;
+      margin-right: $margin-2n;
     }
   }
   .forum_agent{
@@ -88,4 +89,20 @@
   height: 60%;
   overflow-y: scroll;
   background: var(--color-white);
+}
+.popup_introduce {
+  padding: $padding-4n;
+  height: 60vh;
+  background: $white;
+  z-index: $zindex-popup;
+  overflow-y: auto;
+  .introduce_content {
+    font-weight: normal;
+    color: $text-color-primary;
+    font-size: $font-size-base;
+    line-height: $font-line-height-small;
+    pre {
+      white-space: pre-wrap;
+    }
+  }
 }

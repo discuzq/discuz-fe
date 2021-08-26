@@ -32,6 +32,7 @@ class UserCenterUsersPc extends React.Component {
       <>
         <SidebarPanel
           type="normal"
+          platform={'h5'}
           noData={Number(usersCount) === 0}
           title="成员"
           leftNum={usersCount}
@@ -52,7 +53,11 @@ class UserCenterUsersPc extends React.Component {
                   },
                 });
               }}
-              className={styles.friendsWrapper}
+              itemStyle={{
+                paddingTop: 8,
+                paddingBottom: 8,
+              }}
+              className={styles.usersWrapper}
               limit={this.props.limit}
             />
           )}

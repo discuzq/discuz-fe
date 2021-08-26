@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { computed } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import Avatar from '@components/avatar';
 import Button from '@discuzq/design/dist/components/button/index';
@@ -13,6 +14,7 @@ import { View, Text } from '@tarojs/components';
 import styles from './index.module.scss';
 import throttle from '@common/utils/thottle.js';
 import LoginHelper from '@common/utils/login-helper';
+import MemberShipCard from '@components/MemberShipCard';
 
 @inject('site')
 @inject('user')
@@ -20,10 +22,13 @@ import LoginHelper from '@common/utils/login-helper';
 class index extends Component {
   constructor(props) {
     super(props);
+    const { id } = getCurrentInstance().router.params;
     this.state = {
       isFollowedLoading: false, // 是否点击关注
       isPreviewAvatar: false, // 是否预览头像
     };
+
+    this.targetUserId = id;
   }
 
   static defaultProps = {
@@ -37,7 +42,7 @@ class index extends Component {
     const { id } = getCurrentInstance().router.params;
     if (isDeny) {
       await this.props.user.undenyUser(id);
-      this.props.user.setTargetUserNotBeDenied();
+      this.props.user.setTargetUserNotBeDenied({ userId: id });
       Toast.success({
         content: '解除屏蔽成功',
         hasMask: false,
@@ -45,7 +50,7 @@ class index extends Component {
       });
     } else {
       await this.props.user.denyUser(id);
-      this.props.user.setTargetUserDenied();
+      this.props.user.setTargetUserDenied({ userId: id });
       Toast.success({
         content: '屏蔽成功',
         hasMask: false,
@@ -73,7 +78,7 @@ class index extends Component {
               isFollowedLoading: false,
             });
           } else {
-            await this.props.user.getTargetUserInfo(id);
+            await this.props.user.getTargetUserInfo({ userId: id });
             Toast.success({
               content: '操作成功',
               hasMask: false,
@@ -108,7 +113,7 @@ class index extends Component {
               isFollowedLoading: false,
             });
           } else {
-            await this.props.user.getTargetUserInfo(id);
+            await this.props.user.getTargetUserInfo({ userId: id });
             Toast.success({
               content: '操作成功',
               hasMask: false,
@@ -177,7 +182,7 @@ class index extends Component {
 
   // 点击发送私信
   handleMessage = () => {
-    const { username, nickname } = this.props.user.targetUser;
+    const { username, nickname } = this.targetUser;
     Router.push({ url: `/subPages/message/index?page=chat&username=${username}&nickname=${nickname}` });
   };
 
@@ -226,14 +231,35 @@ class index extends Component {
     this.showPreviewerRef();
   };
 
+  // 点击去到续费页面
+  onRenewalFeeClick = () => {
+    Router.push({
+      url: '/subPages/my/renew/index',
+    });
+  };
+
+  @computed get targetUser() {
+    if (this.targetUserId) {
+      return this.props.user.targetUsers[this.targetUserId];
+    }
+    return {};
+  }
+  // 是否显示续费卡片
+  whetherIsShowRenewalCard = () => this.props.site?.siteMode === 'pay' && !this.props.user?.isAdmini && !this.props.isOtherPerson;
+
   render() {
-    const { targetUser } = this.props.user;
+    const { targetUser } = this;
     const user = this.props.isOtherPerson ? targetUser || {} : this.props.user;
+
     return (
       <View className={styles.h5box}>
         {/* 上 */}
         <View className={styles.h5boxTop}>
-          <View className={styles.headImgBox} onClick={user.avatarUrl && this.handlePreviewAvatar}>
+          <View
+            className={styles.headImgBox}
+            key={user.avatarUrl || new Date()}
+            onClick={user.avatarUrl && this.handlePreviewAvatar}
+          >
             <Avatar image={user.avatarUrl} size="big" name={user.nickname} />
           </View>
           {/* 粉丝|关注|点赞 */}
@@ -308,6 +334,9 @@ class index extends Component {
             </>
           )}
         </View>
+        {this.whetherIsShowRenewalCard() && (
+          <MemberShipCard onRenewalFeeClick={this.onRenewalFeeClick} />
+        )}
         {/* 右上角屏蔽按钮 */}
         {this.props.isOtherPerson && (
           <View

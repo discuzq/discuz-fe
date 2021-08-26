@@ -1,6 +1,14 @@
 import { action, computed } from 'mobx';
 import IndexStore from './store';
-import { readCategories, readStickList, readThreadList, updatePosts, createThreadShare, readRecommends } from '@server';
+import {
+  readCategories,
+  readStickList,
+  readThreadList,
+  updatePosts,
+  createThreadShare,
+  readRecommends,
+  readCommentList,
+} from '@server';
 import typeofFn from '@common/utils/typeof';
 import threadReducer from '../thread/reducer';
 import { getCategoryName, getActiveId, getCategories, handleString2Arr } from '@common/utils/handleCategory'
@@ -43,6 +51,38 @@ class IndexAction extends IndexStore {
     const needDefault = this.needDefault
 
     return getCategories(categories, needDefault)
+  }
+
+  /**
+   * 获取帖子的评论列表
+   */
+  @action
+  async getThreadCommentList(threadId) {
+    const targetThread = this.findAssignThread(threadId);
+
+    if (targetThread && targetThread.data) {
+      targetThread.data.isLoading = true;
+      const res = await readCommentList({
+        params: {
+          filter: {
+            thread: Number(threadId),
+          },
+          page: 1,
+          perPage: 10,
+          index: 1,
+        },
+      });
+
+      if (res.code === 0) {
+        targetThread.data.commentList = res?.data?.pageData || [];
+        targetThread.data.requestError.isError = false;
+      } else {
+        targetThread.data.requestError.isError = true;
+        targetThread.data.requestError.errorText = res.msg || '加载失败';
+      }
+
+      targetThread.data.isLoading = false;
+    }
   }
 
   /**
@@ -215,10 +255,16 @@ class IndexAction extends IndexStore {
         }
       } else {
         if (this.threads && result.data.pageData && page !== 1) {
-          const nextThreads = result.data.pageData.map(item => {
+          const nextThreads = result.data.pageData.map((item) => {
             item.openedMore = false;
-            return item
-          })
+            item.commentList = [];
+            item.isLoading = false;
+            item.requestError = {
+              isError: false,
+              errorText: '加载失败',
+            };
+            return item;
+          });
 
           this.threads.pageData.push(...nextThreads);
           this.threads.currentPage = result.data.currentPage;
@@ -627,8 +673,14 @@ class IndexAction extends IndexStore {
   adapterList(data = {}) {
     const { pageData = [], ...others } = data;
 
-    const newpageData = pageData.map(item => {
+    const newpageData = pageData.map((item) => {
       item.openedMore = false;
+      item.commentList = [];
+      item.isLoading = false;
+      item.requestError = {
+        isError: false,
+        errorText: '加载失败',
+      };
 
       return item;
     });

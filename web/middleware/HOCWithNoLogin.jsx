@@ -49,12 +49,16 @@ export default function HOCWithNoLogin(Component) {
     }
 
     // TODO： 目前只有登录注册相关使用这个中间件，页面登录需要更新数据，当前周期会导致刷新首页，这个先注释
-    // componentDidUpdate() {
-    //   const { user } = this.props;
-    //   if (user.loginStatus) {
-    //     Router.redirect({url: '/'});
-    //   }
-    // }
+    componentDidUpdate() {
+      if (window.location.pathname === '/') {
+        return;
+      }
+
+      const { user } = this.props;
+      if (user.loginStatus) {
+        Router.redirect({url: '/'});
+      }
+    }
 
     render() {
       const { user } = this.props;

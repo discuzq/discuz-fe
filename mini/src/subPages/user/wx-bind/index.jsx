@@ -8,13 +8,15 @@ import Toast from '@discuzq/design/dist/components/toast/index';
 import Page from '@components/page';
 import { get } from '@common/utils/get';
 import { BANNED_USER, REVIEWING, REVIEW_REJECT, checkUserStatus, isExtFieldsOpen } from '@common/store/login/util';
-import layout from './index.module.scss';
-import { getParamCode, getUserProfile } from '../common/utils';
 import { MOBILE_LOGIN_STORE_ERRORS } from '@common/store/login/mobile-login-store';
-import LoginHelper from '@common/utils/login-helper';
+import loginHelper from '@common/utils/login-helper';
+import setAccessToken from '@common/utils/set-access-token';
+import { getParamCode, getUserProfile } from '../common/utils';
+import layout from './index.module.scss';
 // const MemoToastProvider = React.memo(ToastProvider);
 
 @inject('site')
+@inject('user')
 @inject('miniBind')
 @inject('h5QrCode')
 @inject('commonLogin')
@@ -23,9 +25,6 @@ class WXBind extends Component {
   constructor(props) {
     super(props);
     this.handleBindButtonClick = this.handleBindButtonClick.bind(this);
-    this.state = {
-      status: ''
-    }
   }
 
   async componentDidMount() {
@@ -37,7 +36,7 @@ class WXBind extends Component {
   }
 
   getUserProfileCallback = async (params) => {
-    const { scene: sessionToken } = getCurrentInstance().router.params;
+    const { scene: sessionToken, bindPhone = '', loginType, toPage = '' } = getCurrentInstance().router.params;
 
     try {
       const res = await this.props.miniBind.mobilebrowserBind({
@@ -45,16 +44,33 @@ class WXBind extends Component {
         iv: params.iv,
         encryptedData: params.encryptedData,
         sessionToken,
-        type: 'pc'
+        type: loginType
       });
       this.props.commonLogin.setLoginLoading(true);
       checkUserStatus(res);
       if (res.code === 0) {
         this.props.h5QrCode.bindTitle = '已成功绑定';
         this.props.h5QrCode.isBtn = false;
-        this.setState({
-          status: 'success'
+      }
+      toPage && loginHelper.setUrl(decodeURIComponent(toPage));
+      if (res.code === 0 && loginType === 'h5') {
+        const accessToken = get(res, 'data.accessToken');
+        const uid = get(res, 'data.uid');
+        // 注册成功后，默认登录
+        setAccessToken({
+          accessToken,
         });
+        const userData = await this.props.user.updateUserInfo(uid);
+        const mobile = get(userData, 'mobile', '');
+        if (bindPhone && !mobile) { // 需要绑定手机，但是用户未绑定手机时，跳转到绑定手机页面
+          redirectTo({ url: `/subPages/user/bind-phone/index` });
+          return;
+        }
+        this.props.h5QrCode.bindTitle = '已成功绑定，正在跳转到首页';
+        loginHelper.restore();
+        return;
+      }
+      if (res.code === 0) {
         return;
       }
       throw {
@@ -62,9 +78,6 @@ class WXBind extends Component {
         Message: res.msg,
       };
     } catch (error) {
-      this.setState({
-        status: 'error'
-      });
       this.props.commonLogin.setLoginLoading(true);
       await getParamCode(this.props.commonLogin);
       // 注册信息补充
@@ -74,7 +87,7 @@ class WXBind extends Component {
           redirectTo({ url: '/subPages/user/supplementary/index' });
           return;
         }
-        LoginHelper.restore();
+        loginHelper.restore();
         return;
       }
 
@@ -115,8 +128,7 @@ class WXBind extends Component {
   }
 
   render() {
-    const { nickname, jumpType = '' } = getCurrentInstance().router.params;
-    const { status } = this.state;
+    const { nickname } = getCurrentInstance().router.params;
 
     return (
       <Page>
@@ -126,7 +138,6 @@ class WXBind extends Component {
               <View className={layout.title}>绑定小程序</View>
               <View className={layout.tips}>
                 {nickname ? `${nickname}，` : ''}{this.props.h5QrCode.bindTitle}
-                { jumpType === '1' && status === 'success' && <Text>请返回原页面继续支付</Text>}
               </View>
               {
                 this.props.h5QrCode.isBtn

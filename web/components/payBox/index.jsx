@@ -55,6 +55,7 @@ export default class PayBox extends Component {
     this.props.payBox.onCompleted = options.completed || noop;
     this.props.payBox.onOrderCreated = options.orderCreated || noop;
     this.props.payBox.visible = true;
+    this.props.payBox.currentPage = options.currentPage || {};
   };
 
   render() {
