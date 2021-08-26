@@ -8,6 +8,8 @@ class ThreadStore {
     this.threadData = props?.thread;
   }
   @observable threadData = null; // 帖子信息
+  @observable hasRedPacket = 0 // 是否有可领取的红包信息
+
   @observable commentList = null; // 评论列表数据
   @observable page = null; // 评论列表page
   @observable totalCount = 0; // 评论列表总条数

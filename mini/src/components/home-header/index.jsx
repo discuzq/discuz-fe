@@ -210,11 +210,11 @@ class HomeHeader extends React.Component {
             <View className={styles.siteInfo}>
               <View className={styles.item}>
                 <Text className={styles.text}>成员</Text>
-                <Text className={styles.content}>{countUsers}</Text>
+                <Text className={styles.content}>{numberFormat(countUsers)}</Text>
               </View>
               <View className={styles.item}>
                 <Text className={styles.text}>内容</Text>
-                <Text className={styles.content}>{countThreads}</Text>
+                <Text className={styles.content}>{numberFormat(countThreads)}</Text>
               </View>
               <View className={styles.item} onClick={this.handleShareClick} >
                 <Icon className={styles.shareIcon} name="ShareAltOutlined" />

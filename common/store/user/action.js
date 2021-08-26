@@ -19,9 +19,9 @@ import {
   readUsersDeny,
   wechatRebindQrCodeGen,
   getWechatRebindStatus,
-  getSignInFields,
   h5Rebind,
   miniRebind,
+  getSignInFields,
 } from '@server';
 import { get } from '../../utils/get';
 import locals from '@common/utils/local-bridge';

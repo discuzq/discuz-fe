@@ -342,6 +342,8 @@ class Index extends React.Component {
             platform={platform}
             onOpen={this.onOpen}
             updateViewCount={this.updateViewCount}
+            onTextItemClick={onTextItemClick}
+            // recomputeRowHeights={data => this.props.recomputeRowHeights(data)}
             recomputeRowHeights={data => {
               if (this.props.recomputeRowHeights && typeof this.props.recomputeRowHeights === 'function') {
                 this.props.recomputeRowHeights(data);

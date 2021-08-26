@@ -86,7 +86,6 @@ class Index extends React.Component {
       this.updateViewCount();
       this.handlePraise();
     }
-
     handlePraise = debounce(() => {
 
       if(this.state.isSendingLike) return;

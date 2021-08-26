@@ -165,11 +165,11 @@ class HomeHeader extends React.Component {
         {!hideInfo && <ul className={styles.siteInfo}>
           <li className={styles.item}>
             <span className={styles.text}>成员</span>
-            <span className={styles.content}>{countUsers}</span>
+            <span className={styles.content}>{numberFormat(countUsers)}</span>
           </li>
           <li className={styles.item}>
             <span className={styles.text}>内容</span>
-            <span className={styles.content}>{countThreads}</span>
+            <span className={styles.content}>{numberFormat(countThreads)}</span>
           </li>
           <li className={styles.item} onClick={this.handleClick}>
             <Icon className={styles.shareIcon} color="#fff" name="ShareAltOutlined"/>

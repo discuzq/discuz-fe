@@ -12,6 +12,7 @@ import SectionTitle from '@components/section-title';
 import Taro, { getCurrentInstance, eventCenter } from '@tarojs/taro';
 import ImagePreviewer from '@discuzq/design/dist/components/image-previewer/index';
 import classnames from 'classnames';
+import Toast from '@discuzq/design/dist/components/toast';
 
 @inject('user')
 @inject('index')

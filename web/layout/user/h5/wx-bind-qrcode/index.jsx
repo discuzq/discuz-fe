@@ -15,7 +15,7 @@ import { genMiniBindScheme } from '@server';
 import SkipMiniPopup from '@components/login/skip-mini-popup';
 import locals from '@common/utils/local-bridge';
 import setAccessToken from '@common/utils/set-access-token';
-import LoginHelper from '@common/utils/login-helper';
+import loginHelper from '@common/utils/login-helper';
 
 @inject('site')
 @inject('user')
@@ -48,7 +48,7 @@ class WeixinBindQrCodePage extends React.Component {
 
   async generateQrCode() {
     try {
-      const { sessionToken = '', nickname = '', jumpType = '', bindPhone = '' } = this.props.router.query;
+      const { sessionToken = '', nickname = '', bindPhone = '', toPage = '' } = this.props.router.query;
       const { platform, wechatEnv } = this.props.site;
       const qrCodeType = platform === 'h5' ? 'mobile_browser_bind' : 'pc_bind';
       const process = platform === 'h5' && wechatEnv === 'openPlatform' ? 'bind' : '';
@@ -59,8 +59,9 @@ class WeixinBindQrCodePage extends React.Component {
         name = user.nickname;
       }
 
-      let redirectUri = `${wechatEnv === 'miniProgram' ? '/subPages/user/wx-auth/index' : `${window.location.origin}/user/wx-auth`}?loginType=${platform}&action=wx-bind&nickname=${name}&jumpType=${jumpType}`;
+      let redirectUri = `${wechatEnv === 'miniProgram' ? '/subPages/user/wx-auth/index' : `${window.location.origin}/user/wx-auth`}?loginType=${platform}&action=wx-bind&nickname=${name}`;
       redirectUri += platform === 'h5' && bindPhone ? '&bindPhone=1' : '';
+      redirectUri += platform === 'h5' && toPage ? `&toPage=${toPage}` : '';
       await this.props.h5QrCode.generate({
         params: {
           sessionToken,
@@ -99,7 +100,7 @@ class WeixinBindQrCodePage extends React.Component {
           router.replace('/user/bind-phone');
           return;
         }
-        LoginHelper.restore();
+        loginHelper.restore();
         clearInterval(this.timer);
       } catch (e) {
         const { h5QrCode } = this.props;
@@ -140,22 +141,22 @@ class WeixinBindQrCodePage extends React.Component {
       setAccessToken({
         accessToken: loginToken,
       });
-      LoginHelper.gotoIndex();
+      loginHelper.gotoIndex();
     }
   };
 
   onOkClick = async () => {
     this.props.commonLogin.needToBindMini = true;
-    const { sessionToken, jumpType, bindPhone = '' } = this.props.router.query;
+    const { sessionToken, bindPhone = '', toPage } = this.props.router.query;
     const { platform } = this.props.site;
     const resp = await genMiniBindScheme({
       params: {
         type: 'bind_mini',
         query: {
           scene: sessionToken,
-          jumpType,
           bindPhone,
-          loginType: platform
+          loginType: platform,
+          toPage
         }
       }
     });
