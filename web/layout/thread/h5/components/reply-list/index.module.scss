@@ -133,11 +133,13 @@
             margin-right: rem($margin-1n);
             
             .avatar {
-              width: rem(18);
-              height: rem(18);
+              width: rem(24);
+              height: rem(24);
               font-size: rem($font-size-small);
               line-height: rem(18);
+              transform: scale(0.75);
             }
+            
           }
         }
         .positionTop {
