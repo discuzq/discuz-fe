@@ -30,14 +30,14 @@ const Index = (props) => {
 
   const needPay = useMemo(() => payType !== 0 && !paid, [paid, payType]);
 
-    const {
-      onClick,
-      onPay,
-      onOpen,
-      platform,
-      updateViewCount,
-      onTextItemClick
-    } = props
+  const {
+    onClick,
+    onPay,
+    onOpen,
+    platform,
+    updateViewCount,
+    onTextItemClick
+  } = props
 
   // 标题显示37个字符
   const newTitle = useMemo(() => {
@@ -47,105 +47,105 @@ const Index = (props) => {
     return title;
   }, [title]);
 
-    // 帖子属性内容
-    const renderThreadContent = ({ content: data, attachmentPrice, payType, paid } = {}) => {
-        const {
-          text,
-          imageData,
-          audioData,
-          videoData,
-          goodsData,
-          redPacketData,
-          rewardData,
-          fileData,
-          voteData,
-          threadId,
-        } = handleAttachmentData(data);
+  // 帖子属性内容
+  const renderThreadContent = ({ content: data, attachmentPrice, payType, paid } = {}) => {
+    const {
+      text,
+      imageData,
+      audioData,
+      videoData,
+      goodsData,
+      redPacketData,
+      rewardData,
+      fileData,
+      voteData,
+      threadId,
+    } = handleAttachmentData(data);
 
     return (
-          <>
-              {text && <PostContent
-                onContentHeightChange={props.onContentHeightChange}
-                content={text}
-                updateViewCount={updateViewCount}
-                useShowMore={!openedMore}
-                onRedirectToDetail={onClick}
-                onOpen={onOpen}
-                onTextItemClick={onTextItemClick} />
-              }
+      <>
+        {text && <PostContent
+          onContentHeightChange={props.onContentHeightChange}
+          content={text}
+          updateViewCount={updateViewCount}
+          useShowMore={!openedMore}
+          onRedirectToDetail={onClick}
+          onOpen={onOpen}
+          onTextItemClick={onTextItemClick} />
+        }
 
-              {videoData && (
-                <WrapperView onClick={onClick}>
-                  <VideoPlay
-                    url={videoData.mediaUrl}
-                    coverUrl={videoData.coverUrl}
-                    v_width={videoData.width || null}
-                    v_height={videoData.height || null}
-                    onPay={onPay}
-                    isPay={needPay}
-                    status={videoData.status}
-                    onVideoReady={props.onVideoReady}
-                    updateViewCount={updateViewCount}
-                  />
-                </WrapperView>
+        {videoData && (
+          <WrapperView onClick={onClick}>
+            <VideoPlay
+              url={videoData.mediaUrl}
+              coverUrl={videoData.coverUrl}
+              v_width={videoData.width || null}
+              v_height={videoData.height || null}
+              onPay={onPay}
+              isPay={needPay}
+              status={videoData.status}
+              onVideoReady={props.onVideoReady}
+              updateViewCount={updateViewCount}
+            />
+          </WrapperView>
 
-              )}
-              {imageData?.length > 0 && (
-                  <ImageDisplay
-                      platform={props.platform}
-                      imgData={imageData}
-                      isPay={needPay}
-                      onPay={onPay}
-                      onClickMore={onClick}
-                      onImageReady={props.onImageReady}
-                      updateViewCount={updateViewCount}
-                  />
-              )
-              }
-              {rewardData && <Packet
-                type={1}
-                // money={rewardData.money}
-                onClick={onClick}
-              />}
-              {redPacketData && <Packet
-              // money={redPacketData.money || 0} 
-              onClick={onClick}
-              condition={redPacketData.condition}
-              />}
-              {goodsData && <ProductItem
-                  image={goodsData.imagePath}
-                  amount={goodsData.price}
-                  title={goodsData.title}
-                  onClick={onClick}
-              />}
-              {audioData && <AudioPlay url={audioData.mediaUrl} isPay={needPay} onPay={onPay} updateViewCount={updateViewCount}/>}
-            {fileData?.length > 0 && <AttachmentView threadId={threadId} attachments={fileData} onPay={onPay} isPay={needPay} updateViewCount={updateViewCount} />}
-            {/* 投票帖子展示 */}
-            {voteData && <VoteDisplay recomputeRowHeights={props.recomputeRowHeights} voteData={voteData} threadId={threadId} />}
-          </>
+        )}
+        {imageData?.length > 0 && (
+          <ImageDisplay
+            platform={props.platform}
+            imgData={imageData}
+            isPay={needPay}
+            onPay={onPay}
+            onClickMore={onClick}
+            onImageReady={props.onImageReady}
+            updateViewCount={updateViewCount}
+          />
+        )
+        }
+        {rewardData && <Packet
+          type={1}
+          // money={rewardData.money}
+          onClick={onClick}
+        />}
+        {redPacketData && <Packet
+          // money={redPacketData.money || 0} 
+          onClick={onClick}
+          condition={redPacketData.condition}
+        />}
+        {goodsData && <ProductItem
+          image={goodsData.imagePath}
+          amount={goodsData.price}
+          title={goodsData.title}
+          onClick={onClick}
+        />}
+        {audioData && <AudioPlay url={audioData.mediaUrl} isPay={needPay} onPay={onPay} updateViewCount={updateViewCount} />}
+        {fileData?.length > 0 && <AttachmentView threadId={threadId} attachments={fileData} onPay={onPay} isPay={needPay} updateViewCount={updateViewCount} />}
+        {/* 投票帖子展示 */}
+        {voteData && <VoteDisplay recomputeRowHeights={props.recomputeRowHeights} voteData={voteData} threadId={threadId} />}
+      </>
     );
   };
 
   return (
-        <>
-          <div className={`${platform === 'h5' ? styles.wrapper : styles.wrapperPC}`}>
-            {title && <div className={styles.title} onClick={onClick}>{newTitle}</div>}
+    <>
+      <div className={`${platform === 'h5' ? styles.wrapper : styles.wrapperPC}`}>
+        {title && <div className={styles.title} onClick={onClick}>{newTitle}</div>}
 
-            {renderThreadContent(props.data)}
+        {renderThreadContent(props.data)}
+      </div>
+
+      {
+        needPay && (
+          <div className={styles.pay}>
+            <Button className={styles.button} type="primary" onClick={onPay}>
+              <Icon className={styles.payIcon} name="GoldCoinOutlined" size={16}></Icon>
+              {payType === 1 ? <p className={styles.payText}>{`支付${price}元查看剩余内容`}</p> : <p className={styles.payText}>{`支付${attachmentPrice}元查看附件内容`}</p>}
+            </Button>
           </div>
 
-          {
-              needPay && (
-                <div className={styles.pay}>
-                  <Button className={styles.button} type="primary" onClick={onPay}>
-                      <Icon className={styles.payIcon} name="GoldCoinOutlined" size={16}></Icon>
-                      {payType === 1 ? <p className={styles.payText}>{`支付${price}元查看剩余内容`}</p> : <p className={styles.payText}>{`支付${attachmentPrice}元查看附件内容`}</p>}
-                  </Button>
-                </div>
-
-              )
-          }
-        </>
+        )
+      }
+    </>
   );
 };
 
@@ -153,8 +153,8 @@ export default React.memo(Index);
 
 // 处理
 const WrapperView = ({ children, onClick }) => (
-    <div className={styles.wrapperView}>
-      {children}
-      <div className={styles.placeholder} onClick={onClick}></div>
-    </div>
+  <div className={styles.wrapperView}>
+    {children}
+    <div className={styles.placeholder} onClick={onClick}></div>
+  </div>
 );
