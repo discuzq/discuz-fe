@@ -57,6 +57,7 @@ const PostContent = ({
   // 点击"查看更多"
   const onShowMore = useCallback(
     (e) => {
+      console.log(324);
       e && e.stopPropagation();
       updateViewCount();
       if (contentTooLong) {
@@ -64,7 +65,7 @@ const PostContent = ({
         onRedirectToDetail && onRedirectToDetail();
       } else {
         onOpen();
-        setShowMore(false);
+        // setShowMore(false);
       }
     },
     [contentTooLong],
@@ -183,7 +184,7 @@ const PostContent = ({
           }
         </div>
       </div>
-      {useShowMore && showMore && (
+      {showMore && (
         <div className={styles.showMore} onClick={onShowMore}>
           <div className={styles.hidePercent}>{texts.showMore}</div>
           <Icon className={styles.icon} name="RightOutlined" size={12} />

@@ -44,15 +44,17 @@
   @include cursor-on-pc; 
   margin:0 auto;
 
-  @media screen and (max-width: 343px)  {
-      .hongbao ,.xuanshang{
-        width: 282px!important;
-      }
-  }
+  // @media screen and (max-width: 343px)  {
+  //     .hongbao ,.xuanshang{
+  //       width: 100%!important;
+  //     }
+  // }
 
   .hongbao{
     margin:0 auto;
-    width: rem(343);
+    // width: rem(343);
+    width: 100%;
+    max-width: rem(343);
     height:rem(91);
     background-image: linear-gradient(to bottom, #E33042 , #C61A2F);;
     border-radius: 5px;
@@ -106,7 +108,8 @@
   .xuanshang{
   
     margin:0 auto;
-    width: rem(343);
+    width: 100%;
+    max-width: rem(343);
     height:rem(74);
     background-color: #F66B25;
     display: flex;
