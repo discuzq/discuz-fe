@@ -28,6 +28,7 @@ const PostContent = ({
   customHoverBg = false,
   usePointer = true,
   onOpen = noop,
+  onClose = noop,
   updateViewCount = noop,
   transformer = parsedDom => parsedDom,
   onTextItemClick = null,
@@ -45,6 +46,7 @@ const PostContent = ({
 
   const texts = {
     showMore: '查看更多',
+    closeMore: '折叠',
   };
 
   // 过滤内容
@@ -57,7 +59,6 @@ const PostContent = ({
   // 点击"查看更多"
   const onShowMore = useCallback(
     (e) => {
-      console.log(324);
       e && e.stopPropagation();
       updateViewCount();
       if (contentTooLong) {
@@ -68,6 +69,15 @@ const PostContent = ({
         // setShowMore(false);
       }
     },
+    [contentTooLong],
+  );
+
+  // 点击收起更多
+  const onShowClose = useCallback(e => {
+    e && e.stopPropagation();
+    updateViewCount();
+    onClose();
+  },
     [contentTooLong],
   );
 
@@ -150,7 +160,6 @@ const PostContent = ({
     if (imageUrlList.length) {
       setImageUrlList(imageUrlList);
     }
-
   }, [filterContent]);
 
   return (
@@ -185,9 +194,9 @@ const PostContent = ({
         </div>
       </div>
       {showMore && (
-        <div className={styles.showMore} onClick={onShowMore}>
-          <div className={styles.hidePercent}>{texts.showMore}</div>
-          <Icon className={styles.icon} name="RightOutlined" size={12} />
+        <div className={styles.showMore} onClick={useShowMore ? onShowMore : onShowClose}>
+          <div className={styles.hidePercent}>{texts[useShowMore ? 'showMore' : 'closeMore']}</div>
+          <Icon className={useShowMore ? styles.icon : styles.icon_d} name="RightOutlined" size={12} />
         </div>
       )}
     </div>

@@ -31,6 +31,7 @@ const Index = (props) => {
     changeHeight = noop,
     useShowMore = true,
     setUseShowMore = noop,
+    setUseCloseMore = noop,
     updateViewCount = noop,
     onTextItemClick
   } = props;
@@ -71,6 +72,7 @@ const Index = (props) => {
             changeHeight={changeHeight}
             useShowMore={useShowMore}
             setUseShowMore={setUseShowMore}
+            setUseCloseMore={setUseCloseMore}
             onTextItemClick={onTextItemClick}
           />
         )}
@@ -91,15 +93,15 @@ const Index = (props) => {
           </WrapperView>
         )}
         {imageData?.length ? (
-            <ImageDisplay
-              platform="h5"
-              imgData={imageData}
-              isPay={needPay}
-              onPay={onPay}
-              onClickMore={onClick}
-              relativeToViewport={relativeToViewport}
-              updateViewCount={updateViewCount}
-            />
+          <ImageDisplay
+            platform="h5"
+            imgData={imageData}
+            isPay={needPay}
+            onPay={onPay}
+            onClickMore={onClick}
+            relativeToViewport={relativeToViewport}
+            updateViewCount={updateViewCount}
+          />
         ) : null}
         {rewardData && (
           <Packet
@@ -122,7 +124,7 @@ const Index = (props) => {
             onClick={onClick}
           />
         )}
-        {audioData && <AudioPlay url={audioData.mediaUrl} isPay={needPay} onPay={onPay} updateViewCount={updateViewCount}/>}
+        {audioData && <AudioPlay url={audioData.mediaUrl} isPay={needPay} onPay={onPay} updateViewCount={updateViewCount} />}
         {fileData?.length ? <AttachmentView threadId={threadId} attachments={fileData} onPay={onPay} isPay={needPay} updateViewCount={updateViewCount} /> : null}
 
         {/* 投票帖子展示 */}

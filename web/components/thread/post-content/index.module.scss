@@ -72,9 +72,14 @@
     font-size: rem($font-size-primary);
     line-height: rem($font-line-height-primary);
     color: $primary-color;
+    cursor: pointer;
     .icon {
       margin-left: rem(9);
       transform: rotateZ(90deg);
+    }
+    .icon_d {
+      margin-left: rem(9);
+      transform: rotateZ(-90deg);
     }
   }
   .payInfo {
