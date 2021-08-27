@@ -124,6 +124,11 @@ export default inject('site', 'user')(observer((props) => {
     e && e.stopPropagation();
     typeof props.onUserClick === 'function' && props.onUserClick();
   };
+  const {
+    canDownloadAttachment,
+    canViewAttachment,
+    canViewVideo
+  } = threadStore?.threadData?.ability || {};
 
 
   return (
@@ -206,6 +211,7 @@ export default inject('site', 'user')(observer((props) => {
             v_width={parseContent.VIDEO.width || null}
             v_height={parseContent.VIDEO.height || null}
             status={parseContent.VIDEO.status}
+            canViewVideo={canViewVideo}
           />
         )}
 
@@ -302,7 +308,12 @@ export default inject('site', 'user')(observer((props) => {
 
         {/* 附件 */}
         {parseContent.VOTE && (
-          <AttachmentView attachments={parseContent.VOTE} threadId={threadStore?.threadData?.threadId} />
+          <AttachmentView
+            attachments={parseContent.VOTE}
+            threadId={threadStore?.threadData?.threadId}
+            canViewAttachment={canViewAttachment}
+            canDownloadAttachment={canDownloadAttachment}
+          />
         )}
 
         {/* 投票 */}

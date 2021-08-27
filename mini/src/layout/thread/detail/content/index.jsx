@@ -123,6 +123,11 @@ const RenderThreadContent = inject('site','user')(
       if (!userId) return
       Router.push({ url: `/subPages/user/index?id=${userId}` });
     }
+    const {
+      canDownloadAttachment,
+      canViewAttachment,
+      canViewVideo
+    } = threadStore?.threadData?.ability || {};
 
     return (
       <View className={`${styles.container}`}>
@@ -165,6 +170,7 @@ const RenderThreadContent = inject('site','user')(
               v_height={parseContent.VIDEO.height || null}
               v_width={parseContent.VIDEO.width || null}
               status={parseContent.VIDEO.status}
+              canViewVideo={canViewVideo}
             />
           )}
 
@@ -254,7 +260,12 @@ const RenderThreadContent = inject('site','user')(
 
           {/* 附件 */}
           {parseContent.VOTE && (
-            <AttachmentView attachments={parseContent.VOTE} threadId={threadStore?.threadData?.threadId} />
+            <AttachmentView
+              attachments={parseContent.VOTE}
+              threadId={threadStore?.threadData?.threadId}
+              canDownloadAttachment={canDownloadAttachment}
+              canViewAttachment={canViewAttachment}
+            />
           )}
 
           {/* 投票 */}
