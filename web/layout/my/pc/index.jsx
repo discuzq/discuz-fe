@@ -16,7 +16,7 @@ import BaseLayout from '@components/base-layout';
 import { Toast } from '@discuzq/design';
 import { withRouter } from 'next/router';
 import UserCenterHeaderPc from '@components/user-center/header-pc';
-import MemberShipCard from '@components/MemberShipCard';
+import MemberShipCard from '@components/member-ship-card';
 import RenewalFee from '@components/user-center/renewal-fee';
 
 @inject('site')

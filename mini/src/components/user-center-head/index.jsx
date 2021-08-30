@@ -14,7 +14,7 @@ import { View, Text } from '@tarojs/components';
 import styles from './index.module.scss';
 import throttle from '@common/utils/thottle.js';
 import LoginHelper from '@common/utils/login-helper';
-import MemberShipCard from '@components/MemberShipCard';
+import MemberShipCard from '@components/member-ship-card';
 
 @inject('site')
 @inject('user')
@@ -239,9 +239,7 @@ class index extends Component {
   };
 
   // 是否显示续费卡片
-  whetherIsShowRenewalCard = () => {
-    return this.props.site?.siteMode === 'pay' && !this.props.user?.isAdmini && !this.props.isOtherPerson;
-  };
+  whetherIsShowRenewalCard = () => this.props.site?.siteMode === 'pay' && !this.props.user?.isAdmini && !this.props.isOtherPerson;
 
   @computed get targetUser() {
     if (this.targetUserId) {

@@ -11,7 +11,7 @@ import { numberFormat } from '@common/utils/number-format';
 import browser from '@common/utils/browser';
 import throttle from '@common/utils/thottle.js';
 import LoginHelper from '@common/utils/login-helper.js';
-import MemberShipCard from '@components/MemberShipCard';
+import MemberShipCard from '@components/member-ship-card';
 
 @inject('user')
 @inject('site')
@@ -166,7 +166,8 @@ class index extends Component {
 
   // 点击发送私信
   handleMessage = () => {
-    const { username, nickname } = this.props.user.targetUser;
+    const { targetUser } = this;
+    const { username, nickname } = targetUser;
     Router.push({ url: `/message?page=chat&username=${username}&nickname=${nickname}` });
   };
 
@@ -215,9 +216,7 @@ class index extends Component {
   };
 
   // 是否显示续费卡片
-  whetherIsShowRenewalCard = () => {
-    return this.props.site?.siteMode === 'pay' && !this.props.user?.isAdmini && !this.props.isOtherPerson;
-  };
+  whetherIsShowRenewalCard = () => this.props.site?.siteMode === 'pay' && !this.props.user?.isAdmini && !this.props.isOtherPerson;
 
   @computed get targetUser() {
     const { query } = this.props.router;

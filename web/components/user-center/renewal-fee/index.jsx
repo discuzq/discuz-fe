@@ -5,6 +5,7 @@ import { Dialog, Button, Icon, Toast } from '@discuzq/design';
 import HOCFetchSiteData from '@middleware/HOCFetchSiteData';
 import { numberFormat } from '@common/utils/number-format';
 import renewPay from '@common/pay-bussiness/renew-pay';
+import { get } from '@common/utils/get';
 
 @inject('site')
 @inject('user')
@@ -52,7 +53,7 @@ class RenewalFee extends Component {
               <div className={styles.menuItem}>
                 <div className={styles.menuTitle}>站长</div>
                 <div className={styles.menuValue}>
-                  {this.props.site?.siteAuthor?.nickname || this.props.site?.siteAuthor.username}
+                  {get(this.props, 'site.siteAuthor.nickname', '') || get(this.props, 'site.siteAuthor.username', '')}
                 </div>
               </div>
               <div className={styles.menuItem}>
