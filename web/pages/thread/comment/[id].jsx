@@ -143,4 +143,4 @@ class CommentDetail extends React.Component {
 }
 
 // eslint-disable-next-line new-cap
-export default HOCFetchSiteData(HOCWithLogin(withRouter(CommentDetail)));
+export default HOCFetchSiteData(withRouter(CommentDetail));
