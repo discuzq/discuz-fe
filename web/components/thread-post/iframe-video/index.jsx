@@ -40,6 +40,7 @@ const IframeVideo = ({
   };
 
   const handleConfirm = () => {
+    if (value === LOCAL) return true;
     let isMatch = false;
     const iframeReg = /iframe/gi;
     if (iframeReg.test(iframe)) {
