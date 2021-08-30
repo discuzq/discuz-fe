@@ -16,6 +16,7 @@ import classnames from 'classnames';
 import UserInfo from '@components/thread/user-info';
 import styles from './index.module.scss';
 import { debounce } from '@common/utils/throttle-debounce';
+import IframeVideoDisplay from '@components/thread-post/iframe-video-display';
 import Packet from '@components/thread/packet';
 import PacketOpen from '@components/red-packet-animation';
 
@@ -157,6 +158,10 @@ const RenderThreadContent = inject('site', 'user')(observer((props) => {
             v_width={parseContent.VIDEO.width || null}
             status={parseContent.VIDEO.status}
           />
+        )}
+        {/* 外插视频 */}
+        {parseContent.IFRAME && (
+          <IframeVideoDisplay content={parseContent.IFRAME.content} />
         )}
 
         {/* 图片 */}

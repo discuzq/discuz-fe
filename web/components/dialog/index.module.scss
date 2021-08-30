@@ -50,7 +50,15 @@
         &:last-child {
           @include button-primary;
         }
+        &.is-disabled {
+          color: $white;
+          background-color: $disabled-color;
+        }
       }
+    }
+    .confirmbtn {
+      margin-right: 0 !important;
+      @include button-primary;
     }
   }
 }
