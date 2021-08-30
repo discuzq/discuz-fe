@@ -100,7 +100,7 @@ const Index = (props) => {
           <RichText
             className={styles.richtext}
             content={iframeData.content}
-            iframeWhiteList={['bilibili', 'youku', 'iqiyi', 'music.163.com', 'qq.com', 'em.iq.com']}
+            iframeWhiteList={['bilibili', 'youku', 'iqiyi', 'music.163.com', 'qq.com', 'em.iq.com', 'xigua']}
             onClick={() => { }}
             onImgClick={() => { }}
             onLinkClick={() => { }}

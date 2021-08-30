@@ -6,7 +6,7 @@ import styles from './index.module.scss';
 
 const IframeVideoDisplay = ({
   content,
-  whiteList = ['bilibili', 'youku', 'iqiyi', 'music.163.com', 'qq.com', 'em.iq.com'],
+  whiteList = ['bilibili', 'youku', 'iqiyi', 'music.163.com', 'qq.com', 'em.iq.com', 'xigua'],
   isDeleteShow = false,
   threadPost,
   h5,

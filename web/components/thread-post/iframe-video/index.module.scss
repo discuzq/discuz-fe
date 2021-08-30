@@ -47,6 +47,8 @@
   :global {
     .dzq-input {
       flex: 1;
+      -webkit-appearance: none;
+      outline: none;
     }
   }
   .label,
