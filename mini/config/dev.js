@@ -1,4 +1,6 @@
 const getDefinePlugin = require('@discuzq/cli/config/taro/getDefinePlugin');
+const getDZQPluginLoader = require('@discuzq/cli/config/taro/getDZQPluginLoader');
+const path = require('path');
 
 module.exports = {
   env: {
@@ -15,7 +17,9 @@ module.exports = {
           {
             ...defaultDefinePlugin
           }
-      ]);
+        ]
+      )
+      getDZQPluginLoader(chain);
     },
     commonChunks: ['runtime', 'vendors', 'taro', 'common'],
   },

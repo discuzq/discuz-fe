@@ -1,5 +1,4 @@
 const path = require('path');
-
 const config = {
   projectName: 'discuz-app-mini',
   date: '2021-2-19',
@@ -13,7 +12,6 @@ const config = {
   },
   sourceRoot: 'src',
   outputRoot: 'dist',
-  plugins: [],
   defineConstants: {
     LOCATION_APIKEY: JSON.stringify('FF7BZ-27T3X-C574Z-73YBG-FGAJ2-4CF7I')
   },

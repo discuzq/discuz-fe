@@ -29,6 +29,7 @@ import LoginHelper from '@common/utils/login-helper';
 const PARTNER_INVITE_URL = '/subPages/forum/partner-invite/index';
 const CLOSE_URL = '/subPage/close/index';
 
+
 @inject('site')
 @inject('user')
 @inject('emotion')

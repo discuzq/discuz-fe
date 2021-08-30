@@ -37,7 +37,7 @@ export const debounce = (func, wait) => {
 
 // 处理附件的数据
 export const handleAttachmentData = (data) => {
-  const newData = { text: data?.text || '' };
+  const newData = { text: data?.text || '', plugin: {} };
   const values = Object.values(data?.indexes || {});
   values.forEach((item) => {
     let { tomId, threadId } = item;
@@ -63,6 +63,16 @@ export const handleAttachmentData = (data) => {
       newData.fileData = item.body;
     } else if (conversionTomID === '109') { // 投票
       newData.voteData = item.body;
+    // 插件
+    } else {
+      const { tomId, body } = item;
+      const { _plugin } = body;
+      if ( _plugin ) {
+        newData.plugin[_plugin.name] = {
+          tomId, 
+          body
+        };
+      }
     }
     newData.threadId = threadId;
   });

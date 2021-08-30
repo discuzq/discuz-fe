@@ -45,6 +45,7 @@ $margin16: rem($margin-4n);
 }
 
 .dvditor-attachment-toolbar {
+  width: 100%;
   height: 46px;
   display: flex;
   align-items: center;
@@ -53,11 +54,16 @@ $margin16: rem($margin-4n);
   background-color: $white;
   border-top: 1px solid $border-color;
   &__left {
-    margin-left: $margin16;
+    flex: 1 1 auto;
     font-size: $font-size-label;
+    margin-left: rem($margin16);
+    display: flex;
+    overflow-x: auto;
   }
   &__right {
+    flex: 0 0 auto;
     margin-right: rem($margin-2n);
+    margin-left: rem($margin16);
     &.show {
       width: rem(36);
       margin-right: rem($margin-2n);
@@ -76,13 +82,20 @@ $margin16: rem($margin-4n);
     }
   }
   &__inner {
-    margin: 0 $margin16;
+    width: 100%;
+    // margin: 0 $margin16;
     height: 28px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex: 1;
     border-radius: $border-radius-small;
+    &__left {
+      flex: 1 1 auto;
+      font-size: $font-size-label;
+      display: flex;
+      overflow-x: auto;
+    }
   }
   &__item {
     display: inline-block;

@@ -226,19 +226,27 @@ function Home(props, ref) {
 
   // 自定义扫描数据范围
   const overscanIndicesGetter = ({ cellCount, scrollDirection, overscanCellsCount, startIndex, stopIndex }) => {
+    // startNum = startIndex;
+    // stopNum = stopIndex;
+
+    // // 往回滚动
+    // if (scrollDirection === -1) {
+    //   return {
+    //     overscanStartIndex: Math.max(0, startIndex),
+    //     overscanStopIndex: Math.min(cellCount - 1, stopIndex + 3),
+    //   };
+    // }
+    // return {
+    //   overscanStartIndex: Math.max(0, startIndex - overscanCellsCount),
+    //   overscanStopIndex: Math.min(cellCount - 1, stopIndex),
+    // };
+
     startNum = startIndex;
     stopNum = stopIndex;
 
-    // 往回滚动
-    if (scrollDirection === -1) {
-      return {
-        overscanStartIndex: Math.max(0, startIndex),
-        overscanStopIndex: Math.min(cellCount - 1, stopIndex + overscanCellsCount),
-      };
-    }
     return {
       overscanStartIndex: Math.max(0, startIndex - overscanCellsCount),
-      overscanStopIndex: Math.min(cellCount - 1, stopIndex),
+      overscanStopIndex: Math.min(cellCount - 1, stopIndex + overscanCellsCount),
     };
   };
 

@@ -14,6 +14,9 @@ import styles from './index.module.scss';
 import { View, Text } from '@tarojs/components';
 import { getElementRect, randomStr, noop } from './utils'
 
+// 插件引入
+/**DZQ->plugin->register<plugin_index@thread_extension_display_hook>**/
+
 /**
  * 帖子内容组件
  * @prop {object} data 帖子数据
@@ -22,7 +25,7 @@ import { getElementRect, randomStr, noop } from './utils'
  */
 
 const Index = (props) => {
-  const { title = '', payType, price, paid, attachmentPrice } = props.data || {};
+  const { title = '', payType, price, paid, attachmentPrice, site } = props.data || {};
   const needPay = useMemo(() => payType !== 0 && !paid, [paid, payType]);
   const {
     onClick,
@@ -58,8 +61,8 @@ const Index = (props) => {
       voteData,
       fileData,
       threadId,
+      plugin
     } = handleAttachmentData(data);
-
     return (
       <>
         {text && (
@@ -127,6 +130,18 @@ const Index = (props) => {
 
         {/* 投票帖子展示 */}
         {voteData && <VoteDisplay voteData={voteData} updateViewCount={props.updateViewCount} threadId={threadId} />}
+        {
+          DZQPluginCenter.injection('plugin_index', 'thread_extension_display_hook').map(({render, pluginInfo}) => {
+            return (
+              <View key={pluginInfo.name}>
+                {render({
+                  site: props.site,
+                  renderData: plugin
+                })}
+              </View>
+            )
+          })
+        }
       </>
     );
   };

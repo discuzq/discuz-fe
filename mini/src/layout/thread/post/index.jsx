@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Taro, { getCurrentInstance } from '@tarojs/taro';
-import { View } from '@tarojs/components';
+import { View, Text } from '@tarojs/components';
 import Icon from '@discuzq/design/dist/components/icon/index';
 import { observer, inject } from 'mobx-react';
 import { PluginToolbar, DefaultToolbar, GeneralUpload, Title, Content, ClassifyPopup, OptionPopup, Position, Emoji } from '@components/thread-post';
@@ -19,6 +19,12 @@ import { formatDate } from '@common/utils/format-date';
 import * as localData from '@common/utils/thread-post-localdata';
 import TagLocalData from '@components/thread-post/tag-localdata';
 import VoteWidget from '@components/thread-post/vote-widget';
+import typeofFn from '@common/utils/typeof';
+
+import Dialog from '@discuzq/design/dist/components/dialog/index';
+
+// 插件引入
+/**DZQ->plugin->register<plugin_post@post_extension_content_hook>**/
 
 @inject('payBox')
 @inject('index')
@@ -44,11 +50,16 @@ class Index extends Component {
       showPaidOption: false, // 显示付费选项弹框
       showDraftOption: false, // 显示草稿选项弹框
       data: {},
+      pluginDialogShow: false,
+      pluginDialogContent: null
     }
     this.timer = null;
     this.ticket = ''; // 腾讯云验证码返回票据
     this.randstr = ''; // 腾讯云验证码返回随机字符串
     this.contentRef = React.createRef(null);
+
+    this.showPluginDialog = this.showPluginDialog.bind(this);
+    this.closePluginDialog = this.closePluginDialog.bind(this);
   }
 
   componentWillMount() { }
@@ -89,6 +100,22 @@ class Index extends Component {
   }
 
   inst = getCurrentInstance();
+
+  // 插件使用弹窗
+  showPluginDialog( component ) {
+    this.setState({
+      pluginDialogShow: true,
+      pluginDialogContent: component
+    })
+  }
+
+  // 插件使用弹窗
+  closePluginDialog() {
+    this.setState({
+      pluginDialogShow: false,
+      pluginDialogContent: null
+    })
+  }
 
   getNavHeight() {
     const { statusBarHeight } = Taro.getSystemInfoSync();
@@ -474,8 +501,9 @@ class Index extends Component {
 
   isHaveContent() {
     const { postData } = this.props.threadPost;
-    const { images, video, files, audio, vote } = postData;
-    if (!(postData.contentText || video.id || vote.voteTitle || audio.id || Object.values(images).length
+    const { images, video, files, audio, vote, plugin } = postData;
+    // todo, 应该还需要扩展当前插件是否可以无需文字
+    if (!(postData.contentText || video.id || vote.voteTitle || audio.id || !typeofFn.isEmptyObject(plugin) || Object.values(images).length
       || Object.values(files).length)) {
       return false;
     }
@@ -829,6 +857,23 @@ class Index extends Component {
                   <VoteWidget onDelete={() => setPostData({ vote: {} })} />
                 )}
 
+                {
+                  DZQPluginCenter.injection('plugin_post', 'post_extension_content_hook').map(({render, pluginInfo}) => {
+                    return (
+                      <View key={pluginInfo.pluginName}>
+                        {render({
+                          site: this.props.site,
+                          renderData: postData.plugin,
+                          deletePlugin: this.props.threadPost.deletePluginPostData,
+                          updatePlugin: this.props.threadPost.setPluginPostData,
+                          showPluginDialog: this.showPluginDialog,
+                          closePluginDialogL: this.closePluginDialog
+                        })}
+                      </View>
+                    )
+                  })
+                }
+
               </View>
 
             </View>
@@ -913,6 +958,8 @@ class Index extends Component {
 
             {/* 工具栏 */}
             <PluginToolbar
+              showPluginDialog={this.showPluginDialog}
+              closePluginDialog={this.closePluginDialog}
               operationType={operationType}
               isOpenQcloudVod={this.props.site.isOpenQcloudVod}
               permissions={permissions}
@@ -989,6 +1036,11 @@ class Index extends Component {
           onClick={(item) => this.handlePluginClick(item)}
           onHide={() => this.setState({ showDraftOption: false })}
         />
+        <Dialog
+          visible={this.state.pluginDialogShow}
+        >
+          {this.state.pluginDialogContent}
+        </Dialog>
       </>
     );
   }

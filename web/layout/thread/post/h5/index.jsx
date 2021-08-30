@@ -36,6 +36,9 @@ import TagLocalData from '@components/thread-post/tag-localdata';
 import VoteWidget from '@components/thread-post/vote-widget';
 import VoteEditor from '@components/thread-post/vote-editor';
 
+// 插件引入
+/**DZQ->plugin->register<plugin_post@post_extension_content_hook>**/
+
 function judgeDeviceType() {
   const ua = window.navigator.userAgent.toLowerCase();
   const isIOS = /ip[honead]{2,4}(?:.*os\s([\w]+)\slike\smac|;\sopera)/i.test(ua);
@@ -365,6 +368,21 @@ class ThreadCreate extends React.Component {
               onDelete={() => this.props.setPostData({ product: {} })}
             />
           )}
+
+          {
+            DZQPluginCenter.injection('plugin_post', 'post_extension_content_hook').map(({render, pluginInfo}) => {
+              return (
+                <div key={pluginInfo.pluginName}>
+                  {render({
+                    site: this.props.site,
+                    renderData: postData.plugin,
+                    deletePlugin: this.props.threadPost.deletePluginPostData,
+                    updatePlugin: this.props.threadPost.setPluginPostData
+                  })} 
+                </div>
+              )
+            })
+          }
         </div>
         <div id="post-bottombar" className={styles['post-bottombar']}>
           {threadPost.isHaveLocalData && (<div id="post-localdata" className={styles['post-localdata']}>
@@ -411,7 +429,9 @@ class ThreadCreate extends React.Component {
           )}
           {/* 调整了一下结构，因为这里的工具栏需要固定 */}
           <AttachmentToolbar
+            site={this.props.site}
             isOpenQcloudVod={this.props.site.isOpenQcloudVod}
+            onPluginSetPostData={this.props.threadPost.setPluginPostData}
             postData={postData}
             onAttachClick={this.props.handleAttachClick}
             // onUploadChange={this.handleUploadChange}

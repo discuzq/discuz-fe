@@ -202,7 +202,8 @@ class ThreadPostAction extends ThreadPostStore {
    */
   @action
   gettContentIndexes() {
-    const { images, video, files, product, audio, redpacket, rewardQa, orderInfo = {}, vote = {} } = this.postData;
+    const { images, video, files, product, audio, redpacket, rewardQa, orderInfo = {}, vote = {}, plugin = {} } = this.postData;
+
     const imageIds = Object.values(images).map(item => item.id);
     const docIds = Object.values(files).map(item => item.id);
     const contentIndexes = {};
@@ -260,6 +261,14 @@ class ThreadPostAction extends ThreadPostStore {
       };
     }
 
+    // 插件扩展
+    if (plugin) {
+      for (let key in plugin) {
+        contentIndexes[plugin[key].tomId] = {
+          ...plugin[key]
+        }
+      }
+    }
 
     return contentIndexes;
   }
@@ -336,6 +345,7 @@ class ThreadPostAction extends ThreadPostStore {
     const images = {};
     const files = {};
     let vote = {};
+    const plugin = {};
     // 插件格式化
     Object.keys(contentindexes).forEach((index) => {
       const tomId = Number(contentindexes[index].tomId);
@@ -345,33 +355,33 @@ class ThreadPostAction extends ThreadPostStore {
           images[item.id] = { ...item, type: item.fileType, name: item.fileName };
         });
       }
-      if (tomId === THREAD_TYPE.file) {
+      else if (tomId === THREAD_TYPE.file) {
         const fileBody = contentindexes[index].body || [];
         fileBody.forEach((item) => {
           files[item.id] = { ...item, type: item.fileType, name: item.fileName };
         });
       }
-      if (tomId === THREAD_TYPE.voice) {
+      else if (tomId === THREAD_TYPE.voice) {
         audio = contentindexes[index].body || {};
         const audioId = audio.id || audio.threadVideoId;
         audio.id = audioId;
       }
-      if (tomId === THREAD_TYPE.vote) {
+      else if (tomId === THREAD_TYPE.vote) {
         vote = contentindexes[index].body[0] || {};
       }
-      if (tomId === THREAD_TYPE.goods) product = contentindexes[index].body;
-      if (tomId === THREAD_TYPE.video) {
+      else if (tomId === THREAD_TYPE.goods) product = contentindexes[index].body;
+      else if (tomId === THREAD_TYPE.video) {
         video = contentindexes[index].body || {};
         video.thumbUrl = video.mediaUrl;
         const videoId = video.id || video.threadVideoId;
         video.id = videoId;
       }
-      if (tomId === THREAD_TYPE.redPacket) {
+      else if (tomId === THREAD_TYPE.redPacket) {
         const price = contentindexes[index]?.body?.money;
         redpacket = { ...(contentindexes[index]?.body || {}), price };
       }
       // expiredAt: rewardQa.times, price: rewardQa.value, type: 0
-      if (tomId === THREAD_TYPE.reward) {
+      else if (tomId === THREAD_TYPE.reward) {
         const times = contentindexes[index].body.expiredAt
           ? formatDate(contentindexes[index].body.expiredAt?.replace(/-/g, '/'), 'yyyy/MM/dd hh:mm')
           : formatDate(new Date().getTime() + (25 * 3600 * 1000), 'yyyy/MM/dd hh:mm');
@@ -381,6 +391,16 @@ class ThreadPostAction extends ThreadPostStore {
           times,
           value,
         };
+      }
+      else {
+        const { body } = contentindexes[index];
+        const { _plugin } = body;
+        if (!_plugin) return;
+        const { name } = _plugin;
+        plugin[name] = {
+          tomId,
+          body
+        }
       }
     });
     const anonymous = isAnonymous ? 1 : 0;
@@ -405,6 +425,7 @@ class ThreadPostAction extends ThreadPostStore {
       anonymous,
       orderInfo,
       threadId,
+      plugin
     });
   }
 
@@ -524,6 +545,42 @@ class ThreadPostAction extends ThreadPostStore {
   @action
   setEditorHintTopicKey(value) {
     this.editorHintTopicKey = value;
+  }
+
+  // 插件扩展action
+  // 同步插件功能结果到store
+  @action.bound
+  setPluginPostData(data) {
+    const {
+      _pluginInfo,
+      postData
+    } = data;
+    const { pluginName } = _pluginInfo;
+    const { tomId, body } = postData;
+    
+    this.postData.plugin[pluginName] = {
+      tomId,
+      body: {
+        ...body,
+        _plugin: {
+          name: pluginName
+        }
+      }
+    }
+    this.postData = { ...this.postData };
+  }
+
+  @action.bound
+  deletePluginPostData(data) {
+    const {
+      _pluginInfo
+    } = data;
+    const { pluginName } = _pluginInfo;
+    if (this.postData.plugin[pluginName]) {
+      delete this.postData.plugin[pluginName];
+    }
+   
+    this.postData = { ...this.postData };
   }
 }
 

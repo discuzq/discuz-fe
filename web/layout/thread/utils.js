@@ -13,12 +13,22 @@ const typeMap = {
 };
 
 export function parseContentData(indexes) {
-  const parseContent = {};
+  const parseContent = { plugin: {} };
   if (indexes && Object.keys(indexes)) {
     Object.entries(indexes).forEach(([, value]) => {
       if (value) {
         const { tomId, body } = value;
-        parseContent[typeMap[tomId]] = body;
+        if ( typeMap[tomId] ) {
+          parseContent[typeMap[tomId]] = body;
+        } else {
+          const { _plugin } = body;
+          if ( _plugin ) {
+            parseContent.plugin[_plugin.name] = {
+              tomId, 
+              body
+            };
+          }
+        }
       }
     });
   }

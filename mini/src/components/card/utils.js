@@ -95,8 +95,8 @@ export function checkAndGetBase64Src(imgPath, index) {
       resolve(imgPath);
       return;
     }
-    
-    const filePath = `${Taro.env.USER_DATA_PATH}/temp${index || ''}.png`;
+    const timestamp = Date.parse(new Date());
+    const filePath = `${Taro.env.USER_DATA_PATH}/temp${index || '',timestamp}.png`;
     const buffer = Taro.base64ToArrayBuffer(bodyData);
 
     const fsm = Taro.getFileSystemManager();

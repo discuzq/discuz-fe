@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, useEffect } from 'react';
+import React, { useCallback, useMemo, useState, useEffect, useRef } from 'react';
 import { Avatar, Button, Icon, Toast } from '@discuzq/design';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'next/router';
@@ -14,7 +14,7 @@ function avatar(props) {
     direction = 'right',
     image = '',
     name = '匿',
-    onClick = () => {},
+    onClick = () => { },
     className = '',
     circle = true,
     size = 'primary',
@@ -26,6 +26,7 @@ function avatar(props) {
     unifyOnClick = null, // 付费加入，统一点击事件
     withStopPropagation = false, // 是否需要阻止冒泡 默认false不阻止
     level = 6,
+    platform = 'pc',
   } = props;
 
   const currAvatarImage = useMemo(() => {
@@ -270,7 +271,7 @@ function avatar(props) {
           {!isSameWithMe && (
             <div className={styles.footer}>
               <Button
-                onClick={following ? () => {} : (e) => followHandler(e)}
+                onClick={following ? () => { } : (e) => followHandler(e)}
                 loading={following}
                 className={[styles.btn, btnInfo.className]}
                 type="primary"
@@ -283,7 +284,7 @@ function avatar(props) {
                 发私信
               </Button>
               <Button
-                onClick={blocking ? () => {} : (e) => blockingHandler(e)}
+                onClick={blocking ? () => { } : (e) => blockingHandler(e)}
                 loading={blocking}
                 // className={`${styles.btn} ${styles.blocked}`}
                 className={`${styles.btn}`}
@@ -305,28 +306,43 @@ function avatar(props) {
   }, [userInfo, isShowUserInfo, userId, isSameWithMe]);
 
   const userTypeIcon =
-      userType === 1 ? 'LikeOutlined' : userType === 2 ? 'HeartOutlined' : userType === 3 ? 'HeartOutlined' : '',
+    userType === 1 ? 'LikeOutlined' : userType === 2 ? 'HeartOutlined' : userType === 3 ? 'HeartOutlined' : '',
     bgClrBasedOnType =
       userType === 1 ? styles.like : userType === 2 ? styles.heart : userType === 3 ? styles.heart : '';
 
-  const [referenceElement, setReferenceElement] = useState(null);
-  const [popperElement, setPopperElement] = useState(null);
-  const { styles: poperStyle, attributes } = usePopper(referenceElement, popperElement, {
-    placement: 'bottom-start',
-    modifiers: [
-      {
-        name: 'offset',
-        options: {
-          offset: [0, 8],
+  const referenceElement = useRef(null);
+  const popperElement = useRef(null);
+  let poperStyle = {
+    popper: {
+      left: '0',
+      position: 'absolute',
+      top: '0',
+    },
+  };
+  let popperAttributes = {
+    popper: {},
+  };
+
+  if (platform === 'pc') {
+    const { styles, attributes } = usePopper(referenceElement.current, popperElement.current, {
+      placement: 'bottom-start',
+      modifiers: [
+        {
+          name: 'offset',
+          options: {
+            offset: [0, 8],
+          },
         },
-      },
-    ],
-  });
+      ],
+    });
+    poperStyle = styles;
+    popperAttributes = attributes;
+  }
 
   if (currAvatarImage && currAvatarImage !== '') {
     return (
       <div className={styles.avatarBox} onMouseEnter={onMouseEnterHandler} onMouseLeave={onMouseLeaveHandler}>
-        <div onClick={clickAvatar} ref={setReferenceElement}>
+        <div onClick={clickAvatar} ref={referenceElement}>
           <Avatar className={className} circle={circle} image={currAvatarImage} size={size}></Avatar>
           {userTypeIcon && (
             <div className={`${styles.userIcon} ${bgClrBasedOnType}`}>
@@ -336,7 +352,7 @@ function avatar(props) {
         </div>
 
         {isShow && (
-          <div ref={setPopperElement} style={{ ...poperStyle.popper, zIndex: 100 }} {...attributes.popper}>
+          <div ref={popperElement} style={{ ...poperStyle.popper, zIndex: 100 }} {...popperAttributes.popper}>
             {userInfoBox}
           </div>
         )}
@@ -346,7 +362,7 @@ function avatar(props) {
 
   return (
     <div className={styles.avatarBox} onMouseEnter={onMouseEnterHandler} onMouseLeave={onMouseLeaveHandler}>
-      <div onClick={clickAvatar} ref={setReferenceElement}>
+      <div onClick={clickAvatar} ref={referenceElement}>
         <Avatar className={className} circle={circle} text={userName} size={size} onClick={clickAvatar}></Avatar>
         {userTypeIcon && (
           <div className={`${styles.userIcon} ${bgClrBasedOnType}`}>
@@ -356,7 +372,7 @@ function avatar(props) {
       </div>
 
       {isShow && (
-        <div ref={setPopperElement} style={{ ...poperStyle.popper, zIndex: 100 }} {...attributes.popper}>
+        <div ref={popperElement} style={{ ...poperStyle.popper, zIndex: 100 }} {...popperAttributes.popper}>
           {userInfoBox}
         </div>
       )}

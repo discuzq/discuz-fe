@@ -50,6 +50,7 @@ export default function UserInfo(props) {
         name={props.name || ''}
         onClick={(e) => props.onClick && props.onClick(e)}
         unifyOnClick={props.unifyOnClick}
+        platform={props.platform}
       ></Avatar>
 
       <div className={styles.right}>

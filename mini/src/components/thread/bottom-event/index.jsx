@@ -118,7 +118,7 @@ const Index = ({
               <View className={styles.fabulousIcon}>
                 <Icon className={`${styles.icon} ${item.type}`} name={item.icon} size={16}></Icon>
               </View>
-              <Text className={styles.fabulousPost}>{item.num ? item.num : ''}</Text>
+              <Text className={styles.fabulousPost}>{item.num ? item.num : item.name}</Text>
             </View>
           ) : (
             <View key={index} className={styles.fabulous} onClick={unifyOnClick || item.event}>

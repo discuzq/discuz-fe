@@ -11,6 +11,9 @@ import { createAttachment } from '@common/server';
 import { THREAD_TYPE } from '@common/constants/thread-post';
 import { tencentVodUpload } from '@common/utils/tencent-vod';
 
+// 插件引入
+/**DZQ->plugin->register<plugin_post@post_extension_entry_hook>**/
+
 // TODO: upload 待单独独立出来
 function fileToObject(file) {
   return {
@@ -50,7 +53,7 @@ function getObjectURL(file) {
 function AttachmentToolbar(props) {
   let file = null;
   let toastInstance = null;
-  const [showAll, setShowAll] = useState(false);
+  const [showAll, setShowAll] = useState(true);
   const [currentAction, setCurrentAction] = useState('');
   const inputRef = React.createRef(null);
   const { onVideoUpload = () => { } } = props;
@@ -154,6 +157,7 @@ function AttachmentToolbar(props) {
 
   const getIconCls = (item) => {
     const cls = styles['dvditor-attachment-toolbar__item'];
+    if (!item) return cls;
     const activeCls = `${styles['dvditor-attachment-toolbar__item']} ${styles.active}`;
     const action = props.currentSelectedToolbar;
     if (item.type === action && item.type !== THREAD_TYPE.anonymity) return activeCls;
@@ -168,48 +172,69 @@ function AttachmentToolbar(props) {
     return cls;
   };
 
-  const icons = () => attachIcon.map((item) => {
-    const { permission } = props;
-    if (props.pc && item.type === THREAD_TYPE.voice) return null;
-    const clsName = getIconCls(item);
-    let isShow = permission[item.type];
-    if (item.type === THREAD_TYPE.video || item.type === THREAD_TYPE.voice) {
-      isShow = permission[item.type] && props?.isOpenQcloudVod;
-    }
-    if (!item.isUpload) {
-      return isShow ? (
-        <Icon
-          key={item.name}
-          onClick={e => handleAttachClick(e, item)}
-          className={clsName}
-          name={item.name}
-          size="20"
-        />
-      ) : null;
-    }
-    return isShow ? (
-      <div key={item.name} className={clsName}>
-        <Icon
-          onClick={e => {
-            handleAttachClick(e, item);
-            trggerInput(item);
-          }}
-          name={item.name}
-          size="20" />
-        <input
-          style={{ display: 'none' }}
-          type="file"
-          ref={inputRef}
-          onChange={(e) => {
-            handleChange(e, item);
-          }}
-          multiple={item.limit > 1}
-          accept={item.accept}
-        />
-      </div>
-    ) : null;
-  });
 
+  const icons = () => {
+
+    let defaultEntryList = attachIcon.map((item) => {
+      const { permission } = props;
+      if (props.pc && item.type === THREAD_TYPE.voice) return null;
+      const clsName = getIconCls(item);
+      let isShow = permission[item.type];
+      if (item.type === THREAD_TYPE.video || item.type === THREAD_TYPE.voice) {
+        isShow = permission[item.type] && props?.isOpenQcloudVod;
+      }
+      if (!item.isUpload) {
+        return isShow ? (
+          <Icon
+            key={item.name}
+            onClick={e => handleAttachClick(e, item)}
+            className={clsName}
+            name={item.name}
+            size="20"
+          />
+        ) : null;
+      }
+      return isShow ? (
+        <div key={item.name} className={clsName}>
+          <Icon
+            onClick={e => {
+              handleAttachClick(e, item);
+              trggerInput(item);
+            }}
+            name={item.name}
+            size="20" />
+          <input
+            style={{ display: 'none' }}
+            type="file"
+            ref={inputRef}
+            onChange={(e) => {
+              handleChange(e, item);
+            }}
+            multiple={item.limit > 1}
+            accept={item.accept}
+          />
+        </div>
+      ) : null;
+    });
+
+    // 插件注入
+    defaultEntryList = defaultEntryList.concat(DZQPluginCenter.injection('plugin_post', 'post_extension_entry_hook').map(({render, pluginInfo}) => {
+      const clsName = getIconCls(null);
+      return (
+        <div key={pluginInfo.pluginName} className={clsName}>
+          {render({
+            site: props.site,
+            onConfirm: props.onPluginSetPostData, 
+            renderData: props.postData.plugin
+          })} 
+        </div>
+      )
+    }));
+
+    return defaultEntryList;
+  }
+
+  
   if (props.pc) return icons();
   const styl = !showAll ? { display: 'none' } : {};
   const action = props.currentSelectedToolbar || currentAction;

@@ -1,8 +1,8 @@
 const miniConfig = require('../src/app.config');
 const getDefinePlugin = require('@discuzq/cli/config/taro/getDefinePlugin');
+const getDZQPluginLoader = require('@discuzq/cli/config/taro/getDZQPluginLoader');
 
-let a = 1;
-
+const path = require('path');
 module.exports = {
   env: {
     NODE_ENV: '"production"',
@@ -51,6 +51,8 @@ module.exports = {
             ...defaultDefinePlugin
           }
       ]);
+      getDZQPluginLoader(chain);
+
       chain.merge({
         optimization: {
           splitChunks: {
