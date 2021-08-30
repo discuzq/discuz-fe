@@ -19,6 +19,7 @@ const urlDomain = [
   'player.youku.com',
   'music.163.com',
   'iqiyi',
+  'youku',
 ];
 
 const IframeVideo = ({
@@ -40,9 +41,9 @@ const IframeVideo = ({
 
   const handleConfirm = () => {
     let isMatch = false;
-    const iframeReg = /<iframe[\s]*[^<>]*src="([\S]*[^\s<>"']*)"/gi;
+    const iframeReg = /iframe/gi;
     if (iframeReg.test(iframe)) {
-      const [srcValue] = iframe.match(/src="([\S]*[^\s<>"']*)"/ig);
+      const [srcValue] = iframe.match(/src=["']([\S]*[^\s<>"']*)["']/ig) || [];
       urlDomain.map((item) => {
         if (srcValue.indexOf(item) > -1) isMatch = true;
         return item;
