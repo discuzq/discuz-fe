@@ -137,11 +137,11 @@ class WeixinBindQrCodePage extends React.Component {
     const loginToken = this.props.commonLogin.getLoginToken();
     if (loginToken) {
       const dzqUserId = locals.get('dzq_user_id');
-      dzqUserId && this.props.user.updateUserInfo(dzqUserId);
+      dzqUserId && await this.props.user.updateUserInfo(dzqUserId);
       setAccessToken({
         accessToken: loginToken,
       });
-      loginHelper.gotoIndex();
+      loginHelper.restore();
     }
   };
 

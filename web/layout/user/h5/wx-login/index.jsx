@@ -127,7 +127,7 @@ class WXLoginH5Page extends React.Component {
             this.props.commonLogin.needToCompleteExtraInfo = true;
           }
 
-          this.props.router.push('/user/bind-nickname');
+          this.props.router.replace('/user/bind-nickname');
           return;
         }
 
@@ -138,7 +138,7 @@ class WXLoginH5Page extends React.Component {
           uid && this.props.user.updateUserInfo(uid);
           if (isExtFieldsOpen(site)) {
             this.props.commonLogin.needToCompleteExtraInfo = true;
-            this.props.router.push('/user/supplementary');
+            this.props.router.replace('/user/supplementary');
             return;
           }
           return window.location.href = '/';
@@ -148,7 +148,7 @@ class WXLoginH5Page extends React.Component {
           const uid = get(e, 'uid', '');
           uid && this.props.user.updateUserInfo(uid);
           this.props.commonLogin.setStatusMessage(e.Code, e.Message);
-          this.props.router.push(`/user/status?statusCode=${e.Code}&statusMsg=${e.Message}`);
+          this.props.router.replace(`/user/status?statusCode=${e.Code}&statusMsg=${e.Message}`);
         }
       }
     }, 3000);

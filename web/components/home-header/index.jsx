@@ -118,6 +118,14 @@ class HomeHeader extends React.Component {
       this.setState({ height: this.domRef.current.clientHeight });
     }
   }
+  returnPage() {
+    // 没有上一页时，直接返回首页
+    if (window?.history?.state?.idx < 1) {
+      LoginHelper.gotoIndex();
+      return;
+    }
+    Router.back();
+  }
 
   render() {
     const { bgColor, hideInfo = false, style = {}, digest = null, mode = '', site } = this.props;
@@ -132,7 +140,7 @@ class HomeHeader extends React.Component {
         {hideInfo && mode !== 'join' && <div className={styles.topBar}>
           {
             mode === 'login'
-              ? <div onClick={() => Router.back()} className={styles.left}>
+              ? <div onClick={this.returnPage} className={styles.left}>
                   <Icon name="LeftOutlined" />返回
                 </div>
               : <></>
