@@ -38,8 +38,8 @@
             display: flex;
             align-items: center;
             .masterText {
-              border-radius: 4px 0;
-              background: #ff9700;
+              border-radius: 2px;
+              background: $primary-color;
               display: inline-block;
               font-size: 10px;
               line-height: 14px;
@@ -119,8 +119,8 @@
             display: flex;
             align-items: center;
             .masterText {
-              border-radius: 4px 0;
-              background: #ff9700;
+              border-radius: 2px;
+              background: $primary-color;
               display: inline-block;
               font-size: 10px;
               line-height: 14px;
