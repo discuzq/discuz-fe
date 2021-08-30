@@ -75,7 +75,7 @@ const IframeVideo = ({
           </div>
           <div className={classNames(styles.item, styles.flextop)}>
             <span className={styles.left}>*</span>
-            <span className={styles.right}>目前仅支持插入爱奇艺、优酷、B站、西瓜视频; 网易云音乐音频</span>
+            <span className={styles.right}>目前仅支持插入爱奇艺、优酷、西瓜视频、B站视频；网易云音乐音频</span>
           </div>
         </>
       )}
