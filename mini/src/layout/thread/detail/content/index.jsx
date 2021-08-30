@@ -17,7 +17,7 @@ import { minus } from '@common/utils/calculate';
 import classnames from 'classnames';
 import UserInfo from '@components/thread/user-info';
 import Packet from '@components/thread/packet'
-import PacketOpen from '@components/red-packet-animation/web';
+import PacketOpen from '@components/red-packet-animation';
 
 
 import { setClipboardData } from '@tarojs/taro';

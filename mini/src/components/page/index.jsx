@@ -45,7 +45,7 @@ export default class Page extends React.Component {
   // 检查是否满足渲染条件
   isPass(noWait = false) {
     const { noWithLogin, withLogin, site, user, commonLogin } = this.props;
-    const path = getCurrentInstance().router.path;
+    const path = getCurrentInstance()?.router?.path || '';
     const siteMode = site?.webConfig?.setSite?.siteMode;
 
     if (!site.isMiniProgramOpen) {
