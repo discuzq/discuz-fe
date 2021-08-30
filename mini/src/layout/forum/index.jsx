@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 import { View } from '@tarojs/components';
 import Popup from '@discuzq/design/dist/components/popup/index';
 import Icon from '@discuzq/design/dist/components/icon/index';
-import Avatar from '@components/avatar';
+import Avatar from '@discuzq/design/dist/components/avatar/index';
 import HomeHeader from '@components/home-header';
 import UserCenterUsers from '@components/user-center-users';
 import { get } from '@common/utils/get';
@@ -43,6 +43,16 @@ class ForumH5Page extends React.Component {
     Router.push({ url: `/subPages/user/index?id=${id}` });
   };
 
+  adapterAvatarGroup = () => {
+    const { usersPageData = [] } = this.props.forum;
+    const newUsers = usersPageData?.filter((_, index) => index < 3).map(item => ({
+      image: item.avatar,
+      text: item.nickname,
+      className: layout.forum_member_img
+    }));
+    return newUsers || [];
+  }
+
   render() {
     const { site, forum } = this.props;
     const { usersPageData = [], isNoMore } = forum;
@@ -81,7 +91,7 @@ class ForumH5Page extends React.Component {
             <View className={layout.label}>站长</View>
             <View className={layout.right}>
               <View className={layout.forum_agent}>
-                <Avatar size="small" className={layout.forum_agent_img} image={siteAuthor.avatar} name={siteAuthor?.nickname?.substring(0, 1)?.toUpperCase()}/>
+                <Avatar size="small" className={layout.forum_agent_img} image={siteAuthor.avatar} text={siteAuthor?.nickname}/>
                 <View className={layout.forum_agent_name}>{siteAuthor.nickname}</View>
               </View>
             </View>
@@ -92,15 +102,17 @@ class ForumH5Page extends React.Component {
             <View className={layout.label}>成员</View>
             <View className={layout.right} onClick={() => forum.setIsPopup(true)}>
               <View className={layout.forum_member}>
-                {usersPageData?.slice(0, 3).map((item) => (
-                  <Avatar
-                    size="small"
-                    key={item.userId}
-                    name={item.nickname}
-                    className={layout.forum_member_img}
-                    image={item.avatar}
-                  />
-                ))}
+                {
+                  usersPageData && (
+                    <Avatar.Group
+                      circle
+                      maxCount={3}
+                      uppercase
+                      groupData={this.adapterAvatarGroup()}
+                      size='small'
+                    />
+                  )
+                  }
                 <Icon color="#8590A6" name="RightOutlined" className={layout.icon} />
               </View>
             </View>

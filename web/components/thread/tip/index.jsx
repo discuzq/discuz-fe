@@ -1,7 +1,6 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import PopupList from '../popup-list';
-import Avatar from '../../avatar';
-import { Icon } from '@discuzq/design';
+import { Icon, Avatar } from '@discuzq/design';
 import { debounce } from '@common/utils/throttle-debounce.js';
 import { noop } from '../utils';
 
@@ -52,19 +51,28 @@ const Index = ({ imgs = [], tipData = {}, wholeNum = 1, showMore= false, showCou
       styles.imgAfter6, styles.imgAfter7, styles.imgAfter8, styles.imgAfter9, styles.imgAfter10
   ];
 
+  const adapterAvatarGroup = () => {
+    const newUsers = renderUsers?.filter((_, index) => index < showCount).map((item, index) => ({
+      image: item.avatar,
+      text: item.nickname,
+      className: imgAfterArr[index]
+    }));
+    return newUsers || [];
+  }
+
   return (
     <>
         <div className={`${styles.container} ${ platform === 'pc' ? styles.maxWidth204 : styles.maxWidth104 }`}  onClick={onClick} style={sty}>
             {
-                wholeNum !== 0 && renderUsers?.filter((_, index) => index < showCount).map((item, index) => (
-                  <div key={index} className={imgAfterArr[index]}>
-                    <Avatar
-                      image={item.avatar}
-                      name={item.nickname}
-                      size='small'
-                    />
-                  </div>
-                ))
+                wholeNum !== 0 && (
+                  <Avatar.Group
+                    circle={true}
+                    maxCount={showCount}
+                    uppercase={true}
+                    groupData={adapterAvatarGroup()}
+                    size='small'
+                  />
+                )
             }
             {
               showMore && renderUsers?.length > showCount &&

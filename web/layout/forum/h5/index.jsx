@@ -1,8 +1,7 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'next/router';
-import { Popup, Icon } from '@discuzq/design';
-import Avatar from '@components/avatar';
+import { Popup, Icon, Avatar } from '@discuzq/design';
 import HomeHeader from '@components/home-header';
 import Header from '@components/header';
 import List from '@components/list';
@@ -44,6 +43,16 @@ class ForumH5Page extends React.Component {
   onUserClick = ({ id }) => {
     this.props.router.push(`/user/${id}`);
   };
+
+  adapterAvatarGroup = () => {
+    const { usersPageData = [] } = this.props.forum;
+    const newUsers = usersPageData?.filter((_, index) => index < 3).map(item => ({
+      image: item.avatar,
+      text: item.nickname,
+      className: layout.forum_member_img
+    }));
+    return newUsers || [];
+  }
 
   render() {
     const { site, forum } = this.props;
@@ -96,7 +105,7 @@ class ForumH5Page extends React.Component {
                     size='small'
                     className={layout.forum_agent_img}
                     image={siteAuthor.avatar}
-                    name={siteAuthor.nickname}
+                    text={siteAuthor.nickname}
                   />
                   <span className={layout.forum_agent_name}>{siteAuthor.nickname}</span>
                 </div>
@@ -109,11 +118,17 @@ class ForumH5Page extends React.Component {
               <div className={layout.right} onClick={() => forum.setIsPopup(true)}>
                 <div className={layout.forum_member}>
                   {
-                      usersPageData?.slice(0, 3).map(item => (
-                        <Avatar size='small' key={item.userId} name={item.nickname} className={layout.forum_member_img} image={item.avatar}/>
-                      ))
+                      usersPageData && (
+                        <Avatar.Group
+                          circle={true}
+                          maxCount={3}
+                          uppercase={true}
+                          groupData={this.adapterAvatarGroup()}
+                          size='small'
+                        />
+                      )
                   }
-                  <Icon size={10} color='#8590A6' name='RightOutlined'/>
+                  <Icon size={10} color='#8590A6' name='RightOutlined' className={layout.forum_member_icon}/>
                 </div>
               </div>
             </div>

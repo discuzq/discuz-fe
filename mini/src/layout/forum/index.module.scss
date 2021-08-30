@@ -58,19 +58,11 @@
     display: flex;
     align-items: center;
     .forum_member_img{
-      @include img;
-    }
-    &>view:nth-child(2){
-      position: relative;
-      left: rem(-4);
-      z-index: $zindex-backtotop;
-    }
-    &>view:nth-child(3){
-      position: relative;
-      left: rem(-8);
-      z-index: $zindex-backtotop;
+      width: rem(18);
+      height: rem(18);
     }
     .icon{
+      margin-left: rem($margin-2n);
       font-size: rem(10) !important;
       transform: translate(0, rem(.5));
     }

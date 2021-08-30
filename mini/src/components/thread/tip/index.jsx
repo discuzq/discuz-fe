@@ -1,12 +1,12 @@
 import React, { useState, useMemo } from 'react';
-import PopupList from '../popup-list';
-import Avatar from '../../avatar';
-import { View, Text, Image } from '@tarojs/components';
+import { View } from '@tarojs/components';
+import Avatar from '@discuzq/design/dist/components/avatar/index';
 import Icon from '@discuzq/design/dist/components/icon/index';
-import styles from './index.module.scss';
 import { inject, observer } from 'mobx-react';
 import { debounce } from '@common/utils/throttle-debounce.js';
 import { noop } from '../utils';
+import PopupList from '../popup-list';
+import styles from './index.module.scss';
 
 /**
  * 帖子点赞、打赏视图
@@ -50,24 +50,36 @@ import { noop } from '../utils';
     }, [renderUsers]);
 
     const imgAfterArr = [styles.img, styles.imgAfter2, styles.imgAfter3, styles.imgAfter4, styles.imgAfter5];
+    
+
+  const adapterAvatarGroup = () => {
+    const newUsers = renderUsers?.filter((_, avatarIndex) => avatarIndex < showCount).map((item, avatarIndex) => ({
+      image: item.avatar,
+      text: item.nickname,
+      className: imgAfterArr[avatarIndex]
+    }));
+    return newUsers || [];
+  }
 
     return (
       <>
         <View className={styles.container} onClick={unifyOnClick || onClick} style={sty}>
-          {wholeNum !== 0 &&
-            renderUsers
-              ?.filter((_, index) => index < showCount)
-              .map((item, index) => (
-                <View key={index} className={imgAfterArr[index]}>
-                  <Avatar image={item.avatar} name={item.nickname} size="small" />
-
-                  {showMore && renderUsers?.length > showCount && index === 4 && (
-                    <View className={styles.moreIcon} size={20}>
-                      <Icon name="MoreBOutlined" className={styles.icon} size={12}></Icon>
-                    </View>
-                  )}
-                </View>
-              ))}
+            {
+              wholeNum !== 0 && (
+                <Avatar.Group
+                  circle
+                  maxCount={showCount}
+                  uppercase
+                  groupData={adapterAvatarGroup()}
+                  size='small'
+                />
+              )
+            }
+            {showMore && renderUsers?.length > showCount && (
+              <View className={styles.moreIcon} size={20}>
+                <Icon name="MoreBOutlined" className={styles.icon} size={12}></Icon>
+              </View>
+            )}
         </View>
 
         {visible && <PopupList tipData={tipData} visible={visible} onHidden={onHidden} />}
