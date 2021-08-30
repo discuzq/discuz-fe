@@ -79,6 +79,11 @@ const miniConfig = require('./src/app.config');
   copy('./dist/indexPages/common.wxss', './dist/subPages/common.wxss');
 
 
+  const appjs = './dist/app.js';
+  const data = fs.readFileSync(appjs, 'utf8').split(/\r\n|\n|\r/gm);
+  data.unshift(`require("./discuzq"),`);
+  fs.writeFileSync(appjs, data.join('\r\n'))
+
 
   console.log('dist目录处理成功，请在微信开发者工具中进行调试！');
 })();

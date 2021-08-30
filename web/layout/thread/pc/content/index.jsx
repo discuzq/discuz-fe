@@ -20,7 +20,7 @@ import { debounce } from '@common/utils/throttle-debounce';
 import IframeVideoDisplay from '@components/thread-post/iframe-video-display';
 
 import Packet from '@components/thread/packet';
-import PacketOpen from '@components/red-packet-animation';
+import PacketOpen from '@components/red-packet-animation/web';
 
 // 插件引入
 /**DZQ->plugin->register<plugin_detail@thread_extension_display_hook>**/

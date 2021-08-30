@@ -208,7 +208,16 @@ class Index extends React.Component {
       }
       return true
     }
-
+    onShare = () => {
+      const { threadId = '', user } = this.props.data || {};
+      this.props.index.updateThreadShare({ threadId }).then(result => {
+        if (result.code === 0) {
+          this.props.index.updateAssignThreadInfo(threadId, { updateType: 'share', updatedInfo: result.data, user: user.userInfo });
+          this.props.search.updateAssignThreadInfo(threadId, { updateType: 'share', updatedInfo: result.data, user: user.userInfo });
+          this.props.topic.updateAssignThreadInfo(threadId, { updateType: 'share', updatedInfo: result.data, user: user.userInfo });
+        }
+      });
+    }
     updateViewCount = async () => {
       const { data, site } = this.props;
       const { threadId = '' } = data || {};
@@ -299,7 +308,7 @@ class Index extends React.Component {
               wholeNum={likeReward.likePayCount || 0}
               comment={likeReward.postCount || 0}
               sharing={likeReward.shareCount || 0}
-              // onShare={this.onShare}
+              onShare={this.onShare}
               onComment={this.onComment}
               onPraise={this.onPraise}
               unifyOnClick={unifyOnClick}

@@ -147,6 +147,7 @@ const Index = ({
           shareAvatar={shareAvatar}
           shareNickname={shareNickname}
           getShareData={getShareData}
+          onShare={onShare}
         ></ShareButton>
       )}
     </View>

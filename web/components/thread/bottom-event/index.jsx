@@ -35,6 +35,7 @@ const Index = ({
   onComment = () => {},
   onPraise = () => {},
   updateViewCount = noop,
+  handleShare = noop,
 }) => {
   const postList = useMemo(() => {
     const praise = {
@@ -96,6 +97,7 @@ const Index = ({
   const createCard = () => {
     const { threadId } = tipData;
     card.setThreadData(data);
+    handleShare();
     Router.push({ url: `/card?threadId=${threadId}` });
   };
   const needHeight = useMemo(() => userImgs.length !== 0, [userImgs]);

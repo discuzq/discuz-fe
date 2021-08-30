@@ -35,6 +35,9 @@
     :global(.dzq-richText) {
       overflow: hidden;
     }
+    :global(.dzq-richText .dzq-p) {
+      text-align: justify;
+    }
     
     iframe {
       width: 100%;

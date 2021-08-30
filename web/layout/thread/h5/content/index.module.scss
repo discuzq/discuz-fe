@@ -163,8 +163,7 @@
 }
 
 .rewardText {
-  padding: rem($padding-4n);
-  background: $body-bg-color;
+  padding: rem($padding-4n) rem($padding-4n) 0;
   display: flex;
   flex-direction: column;
   align-items: center;

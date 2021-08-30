@@ -6,7 +6,7 @@ import Taro, { useEffect, useDidShow } from '@tarojs/taro'
 import classNames from 'classnames';
 import Popup from '@discuzq/design/dist/components/popup/index';
 
-const Index = ({show, setShow, data = '', getShareData, shareNickname, shareAvatar, shareThreadid, index}) => {
+const Index = ({show, setShow, data = '', getShareData, shareNickname, shareAvatar, shareThreadid, onShare}) => {
     let threadTitle = ''
     const thread = data
     threadTitle = thread?.title
@@ -31,6 +31,7 @@ const Index = ({show, setShow, data = '', getShareData, shareNickname, shareAvat
     }
     const CreateCard = () => {
         setShow(false)
+        onShare()
         Taro.eventCenter.once('page:init', () => {
             Taro.eventCenter.trigger('message:detail', data)
         })

@@ -17,7 +17,7 @@ import { minus } from '@common/utils/calculate';
 import classnames from 'classnames';
 import UserInfo from '@components/thread/user-info';
 import Packet from '@components/thread/packet'
-import PacketOpen from '@components/red-packet-animation';
+import PacketOpen from '@components/red-packet-animation/web';
 
 
 import { setClipboardData } from '@tarojs/taro';
@@ -179,22 +179,6 @@ const RenderThreadContent = inject('site','user')(
             />
           )}
 
-          {/* 悬赏文案 */}
-          {parseContent.REWARD && (
-            <View className={styles.rewardText}>
-              {/* 悬赏 */}
-              {parseContent.REWARD && (
-                <View>
-                  <View className={styles.rewardMoney}>
-                    本帖向所有人悬赏
-                    <Text className={styles.rewardNumber}>{parseContent.REWARD.money || 0}</Text>元
-                  </View>
-                  <View className={styles.rewardTime}>{parseContent.REWARD.expiredAt}截止悬赏</View>
-                </View>
-              )}
-            </View>
-          )}
-
           {(parseContent.RED_PACKET || parseContent.REWARD) && (
             <View className={styles.reward} style={{ width: '100%' }}>
               {/* 悬赏 */}
@@ -213,6 +197,13 @@ const RenderThreadContent = inject('site','user')(
                     money={parseContent.REWARD.money}
                     remainMoney={parseContent.REWARD.remainMoney}
                   />
+                  <View className={styles.rewardText}>
+                    <View className={styles.rewardMoney}>
+                      本帖向所有人悬赏
+                      <Text className={styles.rewardNumber}>{parseContent.REWARD.money || 0}</Text>元
+                    </View>
+                    <View className={styles.rewardTime}>{parseContent.REWARD.expiredAt}截止悬赏</View>
+                  </View>
                 </View>
               )}
               {/* 红包 */}

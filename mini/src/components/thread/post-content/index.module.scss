@@ -40,9 +40,10 @@
     :global(.dzq-richText) {
       overflow: hidden;
     }
-
+    
     :global(.dzq-richText--mini .dzq-p) {
       margin-bottom: 0;
+      text-align: justify;
     }
     // :global(.dzq-p) {
     //   display: flex;

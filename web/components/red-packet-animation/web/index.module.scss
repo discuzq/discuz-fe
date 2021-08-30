@@ -12,39 +12,39 @@
     align-items: center;
     .container {
         position: relative;
-        width: 215px;
-        height: 287px;
+        width: rem(310);
+        height: rem(415);
         position: relative;
         background-image: url('https://imgcache.qq.com/operation/dianshi/other/redpacket.d2d2c8778413d454ef7d9b890221112fda06e66d.png');
         background-size: auto 100%;
         background-repeat: no-repeat;
         background-position: 50% 50%;
-        border-radius: 10px;
+        border-radius: rem(10);
         .moneyText {
             opacity: 0;
             transition: opacity 0.1s linear 0.7s;
         }
         .text {
-            line-height: 26px;
-            font-size: 18px;
+            line-height: rem(32);
+            font-size: rem(24);
             color: #FFEEA2;
-            margin-top: 55px;
+            margin-top: rem(108);
             text-align: center;
         }
         .money {
-            line-height: 35px;
-            font-size: 26px;
+            line-height: rem(63);
+            font-size: rem(48);
             color: #FFEEA2;
-            margin-top: 10px;
+            margin-top: rem(16);
             text-align: center;
         }
         .button {
             margin: auto;
             background-color: #ffeea2;
-            height: 80px;
-            width: 80px;
+            height: rem(120);
+            width: rem(120);
             border-radius: 50%;
-            margin-top: 40px;
+            margin-top: rem(29);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -54,15 +54,14 @@
             transition-delay: 0s, 0.8s;
         }
         .open {
-            font-size: 25px;
+            font-size: 43px;
             color: #4f5a70;
         }
         .bottom {
-            width: 320px;
-            height: 320px;
+            width: 465px;
             position: absolute;
-            top: 70px;
-            left: -54px;
+            bottom: -155px;
+            left: -78px;
             visibility: hidden;
         }
         .animationBottom {
@@ -87,10 +86,9 @@
             }
         }
         .up {
-            width: 213px;
+            width: 310px;
             position: absolute;
-            top: -35px;
-            height: 178px;
+            top: -50px;
             visibility: hidden;
         }
         .animationUp {

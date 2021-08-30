@@ -360,6 +360,7 @@ class Index extends React.Component {
             comment={likeReward.postCount || 0}
             sharing={likeReward.shareCount || 0}
             onShare={unifyOnClick || this.onShare}
+            handleShare={unifyOnClick || this.handleShare}
             onComment={unifyOnClick || this.onComment}
             onPraise={unifyOnClick || this.onPraise}
             isLiked={isLike}
