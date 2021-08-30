@@ -587,8 +587,8 @@ class PostPage extends React.Component {
     // todo, 应该还需要扩展当前插件是否可以无需文字
     if (!(postData.contentText || video.id || vote.voteTitle || audio.id || !typeofFn.isEmptyObject(plugin)
       || Object.values(images).length
-      || Object.values(files).length)
-      || iframe.content) {
+      || Object.values(files).length
+      || iframe.content)) {
       return false;
     }
     return true;
