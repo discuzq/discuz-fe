@@ -6,7 +6,7 @@ import DVditor from '@components/editor';
 import Title from '@components/thread-post/title';
 import { AttachmentToolbar, DefaultToolbar } from '@components/editor/toolbar';
 import Position from '@components/thread-post/position';
-import { Button, Audio, AudioRecord, Tag } from '@discuzq/design';
+import { Button, Audio, AudioRecord } from '@discuzq/design';
 import ClassifyPopup from '@components/thread-post/classify-popup';
 import { withRouter } from 'next/router';
 import Emoji from '@components/editor/emoji';
@@ -27,6 +27,8 @@ import VideoDisplay from '@components/thread-post/video-display';
 import MoneyDisplay from '@components/thread-post/money-display';
 import TagLocalData from '@components/thread-post/tag-localdata';
 import VoteWidget from '@components/thread-post/vote-widget';
+import IframeVideo from '@components/thread-post/iframe-video';
+import IframeVideoDisplay from '@components/thread-post/iframe-video-display';
 
 // 插件引入
 /**DZQ->plugin->register<plugin_post@post_extension_content_hook>**/
@@ -173,7 +175,7 @@ class ThreadPCPage extends React.Component {
                       onCancel={this.hintHide}
                     />
                   }
-                
+
 
                   {/* 插入图片 */}
                   {(currentAttachOperation === THREAD_TYPE.image
@@ -204,6 +206,13 @@ class ThreadPCPage extends React.Component {
                       onReady={this.props.onVideoReady} />
                   )}
 
+                  {/* 外部视频iframe插入和上面的视频组件是互斥的 */}
+                  {(postData.iframe && postData.iframe.content) && (
+                    <IframeVideoDisplay
+                      content={postData.iframe.content}
+                      isDeleteShow
+                    />
+                  )}
                   {/* 录音组件 */}
                   {(currentAttachOperation === THREAD_TYPE.voice) && (
                     <div id="dzq-post-audio-record">
@@ -254,7 +263,7 @@ class ThreadPCPage extends React.Component {
 
                   {
                     DZQPluginCenter.injection('plugin_post', 'post_extension_content_hook').map(({render, pluginInfo}) => {
-                      
+
                       return (
                         <div key={pluginInfo.pluginName}>
                           {render({
@@ -262,7 +271,7 @@ class ThreadPCPage extends React.Component {
                             renderData: postData.plugin,
                             deletePlugin: this.props.threadPost.deletePluginPostData,
                             updatePlugin: this.props.threadPost.setPluginPostData
-                          })} 
+                          })}
                         </div>
                       )
                     })
@@ -388,6 +397,22 @@ class ThreadPCPage extends React.Component {
               cancel={() => {
                 this.props.handleSetState({ currentAttachOperation: false });
                 this.props.threadPost.setCurrentSelectedToolbar(false);
+              }}
+            />
+          )}
+          {/* 插入视频或者外部音视频iframe链接 */}
+          {currentAttachOperation === THREAD_TYPE.video && (
+            <IframeVideo pc
+              visible={currentAttachOperation === THREAD_TYPE.video}
+              onCancel={() => {
+                this.props.handleSetState({ currentAttachOperation: false });
+                this.props.threadPost.setCurrentSelectedToolbar(false);
+              }}
+              beforeUpload={this.props.handleVideoUpload}
+              onUploadChange={(files) => {
+                this.props.handleSetState({ currentAttachOperation: false });
+                this.props.threadPost.setCurrentSelectedToolbar(false);
+                this.props.handleVideoUpload(files);
               }}
             />
           )}

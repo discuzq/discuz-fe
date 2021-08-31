@@ -74,6 +74,8 @@ export const handleAttachmentData = (data) => {
     } else if (tomId === '109') { // 投票
       newData.voteData = item.body;
     // 插件
+    } else if (tomId === '10002') { // iframe外插视频
+      newData.iframeData = item.body;
     } else {
       const { tomId, body } = item;
       const { _plugin } = body;

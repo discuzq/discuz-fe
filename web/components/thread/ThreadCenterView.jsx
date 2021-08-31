@@ -8,6 +8,7 @@ import { handleAttachmentData } from './utils';
 import AttachmentView from './attachment-view';
 import ImageDisplay from './image-display';
 import VoteDisplay from './vote-display';
+import IframeVideoDisplay from '@components/thread-post/iframe-video-display';
 import Packet from './packet';
 import styles from './index.module.scss';
 
@@ -41,6 +42,12 @@ const Index = (props) => {
       onTextItemClick
     } = props
 
+    const {
+      canDownloadAttachment,
+      canViewAttachment,
+      canViewVideo
+    } = props?.data?.ability || {};
+
   // 标题显示37个字符
   const newTitle = useMemo(() => {
     if (title.length > 100) {
@@ -62,6 +69,7 @@ const Index = (props) => {
           fileData,
           voteData,
           threadId,
+          iframeData,
           plugin
         } = handleAttachmentData(data);
 
@@ -89,9 +97,16 @@ const Index = (props) => {
                     status={videoData.status}
                     onVideoReady={props.onVideoReady}
                     updateViewCount={updateViewCount}
+                    canViewVideo={canViewVideo}
                   />
                 </WrapperView>
 
+              )}
+              {/* 外部视频iframe插入和上面的视频组件是互斥的 */}
+              {(iframeData && iframeData.content) && (
+                <IframeVideoDisplay
+                  content={iframeData.content}
+                />
               )}
               {imageData?.length > 0 && (
                   <ImageDisplay
@@ -111,7 +126,7 @@ const Index = (props) => {
                 onClick={onClick}
               />}
               {redPacketData && <Packet
-              // money={redPacketData.money || 0} 
+              // money={redPacketData.money || 0}
               onClick={onClick}
               condition={redPacketData.condition}
               />}
@@ -122,7 +137,15 @@ const Index = (props) => {
                   onClick={onClick}
               />}
               {audioData && <AudioPlay url={audioData.mediaUrl} isPay={needPay} onPay={onPay} updateViewCount={updateViewCount}/>}
-            {fileData?.length > 0 && <AttachmentView threadId={threadId} attachments={fileData} onPay={onPay} isPay={needPay} updateViewCount={updateViewCount} />}
+            {fileData?.length > 0 && <AttachmentView
+                  threadId={threadId}
+                  attachments={fileData}
+                  onPay={onPay}
+                  isPay={needPay}
+                  updateViewCount={updateViewCount}
+                  canViewAttachment={canViewAttachment}
+                  canDownloadAttachment={canDownloadAttachment}
+              />}
             {/* 投票帖子展示 */}
             {voteData && <VoteDisplay recomputeRowHeights={props.recomputeRowHeights} voteData={voteData} threadId={threadId} />}
 
@@ -133,7 +156,7 @@ const Index = (props) => {
                     {render({
                       site: props.site,
                       renderData: plugin
-                    })} 
+                    })}
                   </div>
                 )
               })

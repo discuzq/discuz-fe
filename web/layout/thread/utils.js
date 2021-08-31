@@ -10,6 +10,7 @@ const typeMap = {
   109: 'VOTE_THREAD',
   110: 'FILE',
   111: 'QA_IMAGE',
+  10002: 'IFRAME',
 };
 
 export function parseContentData(indexes) {
