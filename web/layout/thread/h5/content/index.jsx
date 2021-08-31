@@ -115,6 +115,11 @@ const RenderThreadContent = inject('site', 'user')(observer((props) => {
       props.setContentImgReady();
     }
   }, [threadStore.contentImgLength]);
+  const {
+    canDownloadAttachment,
+    canViewAttachment,
+    canViewVideo
+  } = threadStore?.threadData?.ability || {};
 
   return (
     <div className={`${styles.container}`}>
@@ -157,6 +162,7 @@ const RenderThreadContent = inject('site', 'user')(observer((props) => {
             v_height={parseContent.VIDEO.height || null}
             v_width={parseContent.VIDEO.width || null}
             status={parseContent.VIDEO.status}
+            canViewVideo={canViewVideo}
           />
         )}
         {/* 外插视频 */}
@@ -251,7 +257,12 @@ const RenderThreadContent = inject('site', 'user')(observer((props) => {
 
         {/* 附件 */}
         {parseContent.VOTE && (
-          <AttachmentView attachments={parseContent.VOTE} threadId={threadStore?.threadData?.threadId} />
+          <AttachmentView
+            attachments={parseContent.VOTE}
+            threadId={threadStore?.threadData?.threadId}
+            canDownloadAttachment={canDownloadAttachment}
+            canViewAttachment={canViewAttachment}
+          />
         )}
 
         {/* 投票 */}
