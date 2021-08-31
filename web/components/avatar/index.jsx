@@ -7,7 +7,7 @@ import goToLoginPage from '@common/utils/go-to-login-page';
 import classNames from 'classnames';
 import calcCosImageQuality from '@common/utils/calc-cos-image-quality';
 import styles from './index.module.scss';
-import { usePopper } from 'react-popper';
+import { createPopper } from '@popperjs/core';
 
 function avatar(props) {
   const {
@@ -312,32 +312,21 @@ function avatar(props) {
 
   const referenceElement = useRef(null);
   const popperElement = useRef(null);
-  let poperStyle = {
-    popper: {
-      left: '0',
-      position: 'absolute',
-      top: '0',
-    },
-  };
-  let popperAttributes = {
-    popper: {},
-  };
-
-  if (platform === 'pc') {
-    const { styles, attributes } = usePopper(referenceElement.current, popperElement.current, {
-      placement: 'bottom-start',
-      modifiers: [
-        {
-          name: 'offset',
-          options: {
-            offset: [0, 8],
+  useEffect(() => {
+    if (isShow) {
+      createPopper(referenceElement.current, popperElement.current, {
+        placement: 'bottom-start',
+        modifiers: [
+          {
+            name: 'offset',
+            options: {
+              offset: [0, 8],
+            },
           },
-        },
-      ],
-    });
-    poperStyle = styles;
-    popperAttributes = attributes;
-  }
+        ],
+      });
+    }
+  }, [isShow]);
 
   if (currAvatarImage && currAvatarImage !== '') {
     return (
@@ -352,7 +341,7 @@ function avatar(props) {
         </div>
 
         {isShow && (
-          <div ref={popperElement} style={{ ...poperStyle.popper, zIndex: 100 }} {...popperAttributes.popper}>
+          <div ref={popperElement} style={{ zIndex: 100 }}>
             {userInfoBox}
           </div>
         )}
@@ -372,7 +361,7 @@ function avatar(props) {
       </div>
 
       {isShow && (
-        <div ref={popperElement} style={{ ...poperStyle.popper, zIndex: 100 }} {...popperAttributes.popper}>
+        <div ref={popperElement} style={{ zIndex: 100 }}>
           {userInfoBox}
         </div>
       )}

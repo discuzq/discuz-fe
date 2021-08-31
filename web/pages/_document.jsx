@@ -76,7 +76,7 @@ class MyDocument extends Document {
                 var isIE = userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1; //判断是否IE<11浏览器
                 var isIE11 = userAgent.indexOf('Trident') > -1 && userAgent.indexOf("rv:11.0") > -1;
                 if(isIE || isIE11) {
-                  document.body.innerHTML = '<style>html,body{width: 100%;height: 100%;display: block;}h1{padding: 20px;}h3{padding: 15px;}.box{text-align: center;margin-top: 40vh;}</style><div class="box"><h1>站点不支持IE浏览器！</h1><h3>请使用QQ浏览器、chorme，Edge等浏览器。</h3></div>';
+                  document.body.innerHTML = '<style>html,body{width: 100%;height: 100%;display: block;}h1{padding: 20px;}h3{padding: 15px;}.box{text-align: center;margin-top: 40vh;}</style><div class="box"><h1>站点不支持IE浏览器！</h1><h3>请使用QQ浏览器、chrome，Edge等浏览器。</h3></div>';
                 }
             `}}>
 
