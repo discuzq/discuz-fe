@@ -294,7 +294,7 @@ const InputPop = (props) => {
                 onChange={debounce((e) => {
                   handleChange(e)
                 }, 100)}
-                // onFocus={() => setShowEmojis(false)}
+                onFocus={() => setShowEmojis(false)}
                 placeholder={inputText}
                 disabled={loading}
                 placeholderClass={styles.placeholder}
