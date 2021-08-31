@@ -6,6 +6,7 @@ import { inject, observer } from 'mobx-react';
 import withShare from '@common/utils/withShare/withShare';
 import { priceShare } from '@common/utils/priceShare';
 import Taro, { getCurrentInstance, eventCenter } from '@tarojs/taro';
+import { computed } from 'mobx';
 
 @inject('site')
 @inject('search')
@@ -15,10 +16,22 @@ import Taro, { getCurrentInstance, eventCenter } from '@tarojs/taro';
 @observer
 @withShare({})
 class Index extends React.Component {
+
+  @computed get targetUser() {
+    const { id = '' } = getCurrentInstance().router.params;
+
+    if (id) {
+      return this.props.user.targetUsers[id];
+    }
+
+    return {};
+  }
+
   getShareData(data) {
     const { site } = this.props;
     const { id = '' } = getCurrentInstance().router.params;
-    const defalutTitle = `${this.props.user?.targetUser?.nickname || this.props.user?.targetUser?.username}的主页`;
+    const { targetUser } = this;
+    const defalutTitle = `${targetUser?.nickname || targetUser?.username}的主页`;
     const defalutPath = `/subPages/user/index?id=${id}`;
     if (data.from === 'menu') {
       return {
