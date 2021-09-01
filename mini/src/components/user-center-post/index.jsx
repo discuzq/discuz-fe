@@ -63,12 +63,7 @@ class UserCenterPost extends React.Component {
     // 如果开始没有获取到发帖分类的数据--尝试重新获取
     if (!postData.categoryId) {
       const { success, msg } = await this.handleThreadPostData()
-      if (!success) {
-        Toast.error({
-          content: msg || '获取发帖分类失败',
-        });
-        return
-      }
+      if (!success) return
     }
     this.setState({
       isPostDisabled: true,
