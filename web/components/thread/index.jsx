@@ -340,6 +340,7 @@ class Index extends React.Component {
             data={data}
             onClick={unifyOnClick || this.onClick}
             onPay={unifyOnClick || this.onPay}
+            unifyOnClick={unifyOnClick}
             platform={platform}
             onOpen={this.onOpen}
             updateViewCount={this.updateViewCount}

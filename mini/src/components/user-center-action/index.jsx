@@ -13,7 +13,7 @@ import UnreadRedDot from '@components/unread-red-dot';
 class UserCenterAction extends React.Component {
   // 点击我的消息
   handleMyMessage = () => {
-    Router.push({ url: '/subPages/message/index' });
+    Router.push({ url: '/indexPages/message/index' });
   };
 
   // 点击我的钱包

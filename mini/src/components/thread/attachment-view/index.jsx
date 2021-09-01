@@ -15,6 +15,7 @@ import { ATTACHMENT_FOLD_COUNT } from '@common/constants';
 import Router from '@discuzq/sdk/dist/router';
 import { readDownloadAttachmentStatus } from '@server';
 import { downloadAttachmentMini } from '@common/utils/download-attachment-mini';
+import goToLoginPage from '@common/utils/go-to-login-page';
 
 /**
  * 附件
@@ -35,6 +36,7 @@ const Index = ({
   updateViewCount = noop,
   canViewAttachment = true,
   canDownloadAttachment = true,
+  unifyOnClick = null,
 }) => {
   let downloadUrl = null; // 存放下载链接
   let isDownload = false; // 状态是否允许下载
@@ -296,9 +298,9 @@ const Index = ({
             fileName={fileName}
             onPlay={() => onPlay(audioRef, audioWrapperRef)}
             fileSize={handleFileSize(parseFloat(item.fileSize || 0))}
-            beforePlay={async () => await beforeAttachPlay(item)}
-            onDownload={throttle(() => onDownLoad(item, index), 1000)}
-            onLink={throttle(() => onLinkShare(item), 1000)}
+            beforePlay={unifyOnClick || (async () => await beforeAttachPlay(item))}
+            onDownload={unifyOnClick || (throttle(() => onDownLoad(item, index), 1000))}
+            onLink={unifyOnClick || (throttle(() => onLinkShare(item), 1000))}
           />
         </View>
       );
@@ -316,11 +318,11 @@ const Index = ({
           </View>
 
           <View className={styles.right}>
-            <Text onClick={throttle(() => onLinkShare(item), 1000)}>链接</Text>
+            <Text onClick={unifyOnClick || (throttle(() => onLinkShare(item), 1000))}>链接</Text>
             <View className={styles.label}>
               { downloading[index] ?
                 <Spin className={styles.spinner} type="spinner" /> :
-                <Text onClick={throttle(() => onDownLoad(item, index), 1000)}>下载</Text>
+                <Text onClick={unifyOnClick || (throttle(() => onDownLoad(item, index), 1000))}>下载</Text>
               }
             </View>
           </View>
