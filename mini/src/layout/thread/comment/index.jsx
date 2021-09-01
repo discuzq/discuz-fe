@@ -429,7 +429,7 @@ class CommentH5Page extends React.Component {
     const commentDetail = this.props.comment.commentDetail;
     if (!this.props.user.isLogin()) {
       Toast.info({ content: '请先登录!' });
-      goToLoginPage({ url: '/user/login' });
+      goToLoginPage({ url: '/subPages/user/wx-auth/index' });
       return;
     }
     // 回复
