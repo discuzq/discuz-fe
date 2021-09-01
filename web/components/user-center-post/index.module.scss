@@ -3,7 +3,7 @@
 .userCenterPost {
     padding: rem($padding-4n);
     cursor: pointer;
-    padding-bottom: rem($padding-6n);
+    // padding-bottom: rem($padding-6n);
 
     .userCenterPostContent {
         display: flex;
@@ -19,6 +19,8 @@
         font-size: rem($font-size-middle);
         color: $text-color-primary;
         font-weight: 600;
+        height: rem(22);
+        line-height: rem(22);
     }
 
     .userCenterPostInfo {
@@ -35,7 +37,7 @@
 
             input {
                 padding-left: $padding-4n;
-                background-color: $body-bg-color;
+                // background-color: $body-bg-color;
                 border-color: $border-color;
             }
             :global {
@@ -50,5 +52,17 @@
         padding-top: rem($padding-6n);
         display: flex;
         justify-content: space-between;
+    }
+
+    .userCenterPostBtn {
+        width: 100%;
+        text-align: right;
+        margin-top: rem($margin-4n);
+        .btn {
+            width: rem(100);
+            height: rem(36);
+            padding: 0;
+            line-height: rem(36);
+        }
     }
 }
