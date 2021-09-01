@@ -25,7 +25,7 @@ import config from '../../../app.config';
  * @prop {function} onTextItemClick 文本内容块点击事件（会覆盖内容里的a跳转）
  */
 
- const PostContent = ({
+const PostContent = ({
   content,
   useShowMore = true,
   onRedirectToDetail = noop,
@@ -75,13 +75,13 @@ import config from '../../../app.config';
 
   const handleClick = (e, node) => {
     e && e.stopPropagation();
-    const {url, isExternaLink } = handleLink(node)
-    if(isExternaLink) return
+    const { url, isExternaLink } = handleLink(node)
+    if (isExternaLink) return
 
     if (url) {
-      Router.push({url})
+      Router.push({ url })
     } else {
-      if(clickedImageId.current !== e.target.id) {
+      if (clickedImageId.current !== e.target.id) {
         onRedirectToDetail()
       }
     }
@@ -102,9 +102,9 @@ import config from '../../../app.config';
 
     // 内链跳转
     let content = e?.children[0]?.data || "";
-    if(content.indexOf("http") === -1) {
+    if (content.indexOf("http") === -1) {
       content = content[0] !== '/' ? '/' + content : content;
-      if(appPageLinks.indexOf(content) !== -1) {
+      if (appPageLinks.indexOf(content) !== -1) {
         Taro.navigateTo({ url: content });
       }
     }
@@ -113,7 +113,7 @@ import config from '../../../app.config';
   // 点击富文本中的图片
   const handleImgClick = (node, event) => {
     updateViewCount();
-    if(node?.attribs?.src) {
+    if (node?.attribs?.src) {
       setImageVisible(true);
       setCurImageUrl(node.attribs.src);
       clickedImageId.current = event?.target?.id;
@@ -126,7 +126,7 @@ import config from '../../../app.config';
     let ctnSubstring = ctn.substring(0, maxContentLength); // 根据长度截断
 
     const cutPoint = (ctnSubstring.lastIndexOf("<img") > 0) ?
-                      ctnSubstring.lastIndexOf("<img") : ctnSubstring.length;
+      ctnSubstring.lastIndexOf("<img") : ctnSubstring.length;
 
     ctnSubstring = ctnSubstring.substring(0, cutPoint);
     setCutContentForDisplay(ctnSubstring);
@@ -136,7 +136,7 @@ import config from '../../../app.config';
     const _text = replaceStringInRegex(text, "emoj", '');
     const images = _text.match(/<img\s+[^<>]*src=[\"\'\\]+([^\"\']*)/gm) || [];
 
-    for(let i = 0; i < images.length; i++) {
+    for (let i = 0; i < images.length; i++) {
       images[i] = images[i].replace(/<img\s+[^<>]*src=[\"\'\\]+/gm, "") || "";
     }
     return images;
@@ -144,9 +144,9 @@ import config from '../../../app.config';
 
   const generateAppRelativePageLinks = () => {
     const pageLinks = [];
-    for(const pkg of config.subPackages) {
+    for (const pkg of config.subPackages) {
       const root = pkg.root;
-      for(const page of pkg.pages) {
+      for (const page of pkg.pages) {
         pageLinks.push(`/${root}/${page}`);
       }
     }
@@ -174,7 +174,7 @@ import config from '../../../app.config';
     }
 
     const imageUrlList = getImagesFromText(filterContent);
-    if(imageUrlList.length) {
+    if (imageUrlList.length) {
       setImageUrlList(imageUrlList);
     }
 
@@ -196,7 +196,7 @@ import config from '../../../app.config';
             onImgClick={handleImgClick}
             onLinkClick={handleLinkClick}
             transformer={transformer}
-            iframeWhiteList={['bilibili', 'youku', 'iqiyi', 'music.163.com', 'qq.com', 'myqcloud.com']}
+            iframeWhiteList={['bilibili', 'youku', 'iqiyi', 'music.163.com', 'ixigua', 'qq.com', 'myqcloud.com']}
           />
           {imageVisible && (
             <ImagePreviewer
