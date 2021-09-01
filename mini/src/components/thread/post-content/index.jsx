@@ -181,7 +181,7 @@ import config from '../../../app.config';
     generateAppRelativePageLinks();
 
   }, [filterContent]);
-  
+
   return (
     <View className={styles.container} {...props}>
       <View
@@ -196,7 +196,7 @@ import config from '../../../app.config';
             onImgClick={handleImgClick}
             onLinkClick={handleLinkClick}
             transformer={transformer}
-            iframeWhiteList={['bilibili', 'youku', 'iqiyi', 'music.163.com', 'qq.com']}
+            iframeWhiteList={['bilibili', 'youku', 'iqiyi', 'music.163.com', 'qq.com', 'myqcloud.com']}
           />
           {imageVisible && (
             <ImagePreviewer
