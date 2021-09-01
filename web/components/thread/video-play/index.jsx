@@ -1,7 +1,7 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { inject, observer } from 'mobx-react';
 import styles from './index.module.scss';
-import { Video, Icon } from '@discuzq/design';
+import { Video, Icon, Toast } from '@discuzq/design';
 import { noop } from '../utils';
 import calcVideoSize from '@common/utils/calc-video-size';
 
@@ -31,6 +31,7 @@ const Index = ({
   v_height = null,
   onVideoReady = noop,
   updateViewCount = noop,
+  canViewVideo = true,
 }) => {
   let player = null;
   const ref = useRef();
@@ -103,6 +104,10 @@ const Index = ({
       {/* 视频蒙层 已付费时隐藏 未付费时显示 */}
       {
         isPay && <div className={styles.payBox} onClick={onPay}></div>
+      }
+      {/* 视频蒙层 有权限播放时隐藏 无权限播放时显示 */}
+      {
+        !canViewVideo && <div className={styles.payBox} onClick={() => Toast.warning({ content: '暂⽆权限播放视频' })}></div>
       }
       {
         !isPay && status !== 1 && (

@@ -125,7 +125,7 @@ class PartnerInviteH5Page extends React.Component {
     const { user, site } = this.props;
     if (!user?.isLogin()) {
       LoginHelper.saveAndLogin();
-      return;
+      return false;
     }
 
     const { setSite: { siteMode, sitePrice, siteName } = {} } = site.webConfig;
@@ -149,7 +149,7 @@ class PartnerInviteH5Page extends React.Component {
         }, // 支付成功回调
         completed: (orderInfo) => {}, // 支付完成回调(成功或失败)
       });
-      return;
+      return false;
     }
     LoginHelper.restore();
   };

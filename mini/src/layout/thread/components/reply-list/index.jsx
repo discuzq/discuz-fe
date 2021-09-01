@@ -99,7 +99,7 @@ export default class ReplyList extends React.Component {
           </Text>
           {(isSelf && !this.props.isAnonymous) && (
             <View className={styles.masterBox}>
-              <Text className={styles.masterText}>楼主</Text>
+              <Text className={styles.masterText}>作者</Text>
             </View>
           )}
         </View>
@@ -153,7 +153,7 @@ export default class ReplyList extends React.Component {
                 </View>
                 {(isSelf && !this.props.isAnonymous) && (
                     <View className={styles.masterBox}>
-                      <Text className={styles.masterText}>楼主</Text>
+                      <Text className={styles.masterText}>作者</Text>
                     </View>
                   )}
                 {!!groups?.isDisplay  && (

@@ -202,16 +202,35 @@ class PostPage extends React.Component {
   };
 
   // 上传视频之前判断是否已经有了视频，如果有了视频提示只能上传一个视频
-  handleVideoUpload = (isStart) => {
+  // 这个和选择文件之前的回调放到一起了，所以注意一下
+  handleVideoUpload = (files) => {
     const { postData } = this.props.threadPost;
-    if (postData.video && postData.video.id) {
+    if ((postData.video && postData.video.id) || (postData.iframe && postData.iframe.content)) {
       Toast.info({ content: '只能上传一个视频' });
       return false;
     }
-    if (isStart) { // 视频选择完毕，即将上传
-      this.isVideoUploadDone = false;
-    }
-    return true;
+    if (!files) return true;
+
+    const [file] = files;
+    let toastInstance = null;
+    toastInstance = Toast.loading({
+      content: '上传中...',
+      duration: 0,
+      hasMask: true,
+    });
+    tencentVodUpload({
+      file,
+      onUploading: () => {},
+      onComplete: (res, file) => {
+        this.handleVodUploadComplete(res, file, THREAD_TYPE.video);
+        toastInstance?.destroy();
+      },
+      onError: (err) => {
+        this.handleVodUploadComplete(null, file, THREAD_TYPE.video);
+        Toast.error({ content: err.message });
+        toastInstance?.destroy();
+      },
+    });
   };
 
   // 通过云点播上传成功之后处理：主要是针对语音和视频
@@ -319,6 +338,14 @@ class PostPage extends React.Component {
     if (item.type === THREAD_TYPE.vote && postData?.vote?.voteUsers > 0) {
       Toast.info({ content: '投票已生效，不允许编辑' });
       return false;
+    }
+
+    if (item.type === THREAD_TYPE.video) {
+      // 本地上传的视频和网络插入的iframe是互斥的关系
+      if ((postData.video && postData.video.id) || (postData.iframe && postData.iframe.content)) {
+        Toast.info({ content: '只能上传一个视频' });
+        return false;
+      }
     }
 
     if (item.type === THREAD_TYPE.anonymity) {
@@ -556,10 +583,12 @@ class PostPage extends React.Component {
   // 是否有内容
   isHaveContent() {
     const { postData } = this.props.threadPost;
-    const { images, video, files, audio, vote, plugin } = postData;
+    const { images, video, files, audio, vote, iframe = {}, plugin } = postData;
     // todo, 应该还需要扩展当前插件是否可以无需文字
-    if (!(postData.contentText || video.id || vote.voteTitle || audio.id || !typeofFn.isEmptyObject(plugin) || Object.values(images).length
-      || Object.values(files).length)) {
+    if (!(postData.contentText || video.id || vote.voteTitle || audio.id || !typeofFn.isEmptyObject(plugin)
+      || Object.values(images).length
+      || Object.values(files).length
+      || iframe.content)) {
       return false;
     }
     return true;

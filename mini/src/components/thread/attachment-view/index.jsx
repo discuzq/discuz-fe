@@ -15,6 +15,7 @@ import { ATTACHMENT_FOLD_COUNT } from '@common/constants';
 import Router from '@discuzq/sdk/dist/router';
 import { readDownloadAttachmentStatus } from '@server';
 import { downloadAttachmentMini } from '@common/utils/download-attachment-mini';
+import goToLoginPage from '@common/utils/go-to-login-page';
 
 /**
  * 附件
@@ -33,6 +34,9 @@ const Index = ({
   thread = null,
   baselayout,
   updateViewCount = noop,
+  canViewAttachment = true,
+  canDownloadAttachment = true,
+  unifyOnClick = null,
 }) => {
   let downloadUrl = null; // 存放下载链接
   let isDownload = false; // 状态是否允许下载
@@ -86,6 +90,11 @@ const Index = ({
     if (!user.isLogin()) {
       Toast.info({ content: '请先登录!' });
       goToLoginPage({ url: '/subPages/user/wx-auth/index' });
+      return;
+    }
+
+    if (!canDownloadAttachment) {
+      Toast.warning({ content: '暂⽆权限下载附件' });
       return;
     }
 
@@ -195,6 +204,10 @@ const Index = ({
 
   const onLinkShare = (item, index) => {
     updateViewCount();
+    if (!canViewAttachment) {
+      Toast.warning({ content: '暂⽆权限查看附件' });
+      return;
+    }
     if (!isPay) {
       if(!item || !threadId) return;
 
@@ -221,7 +234,7 @@ const Index = ({
 
   const splicingLink = (url, fileName) => {
     const domainName = url.split('/apiv3/')[0];
-    return `${domainName}/download?url=${url}&fileName=${fileName}`;
+    return `${domainName}/download?url=${url}&fileName=${fileName}&threadId=${threadId}`;
   }
 
     // 音频播放
@@ -285,9 +298,9 @@ const Index = ({
             fileName={fileName}
             onPlay={() => onPlay(audioRef, audioWrapperRef)}
             fileSize={handleFileSize(parseFloat(item.fileSize || 0))}
-            beforePlay={async () => await beforeAttachPlay(item)}
-            onDownload={throttle(() => onDownLoad(item, index), 1000)}
-            onLink={throttle(() => onLinkShare(item), 1000)}
+            beforePlay={unifyOnClick || (async () => await beforeAttachPlay(item))}
+            onDownload={unifyOnClick || (throttle(() => onDownLoad(item, index), 1000))}
+            onLink={unifyOnClick || (throttle(() => onLinkShare(item), 1000))}
           />
         </View>
       );
@@ -305,11 +318,11 @@ const Index = ({
           </View>
 
           <View className={styles.right}>
-            <Text onClick={throttle(() => onLinkShare(item), 1000)}>链接</Text>
+            <Text onClick={unifyOnClick || (throttle(() => onLinkShare(item), 1000))}>链接</Text>
             <View className={styles.label}>
               { downloading[index] ?
                 <Spin className={styles.spinner} type="spinner" /> :
-                <Text onClick={throttle(() => onDownLoad(item, index), 1000)}>下载</Text>
+                <Text onClick={unifyOnClick || (throttle(() => onDownLoad(item, index), 1000))}>下载</Text>
               }
             </View>
           </View>

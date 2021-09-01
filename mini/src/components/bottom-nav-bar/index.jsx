@@ -19,7 +19,7 @@ const routes = [
   'pages/index/index',
   'subPages/search/index',
   'indexPages/thread/post/index',
-  'subPages/message/index',
+  'indexPages/message/index',
   'subPages/my/index'
 ]
 
@@ -43,7 +43,7 @@ class BottomNavBar extends React.Component {
       { icon: 'HomeOutlined', text: '首页', active: this.checkCurrActiveTab(curr, 'home'), router: '/indexPages/home/index' },
       { icon: 'FindOutlined', text: '发现', active: this.checkCurrActiveTab(curr, 'search'), router: '/subPages/search/index' },
       { icon: 'PlusOutlined', router: '/indexPages/thread/post/index' },
-      { icon: 'MailOutlined', text: '消息', active: this.checkCurrActiveTab(curr, 'message'), router: '/subPages/message/index' },
+      { icon: 'MailOutlined', text: '消息', active: this.checkCurrActiveTab(curr, 'message'), router: '/indexPages/message/index' },
       { icon: 'ProfessionOutlined', text: '我的', active: this.checkCurrActiveTab(curr, 'my'), router: '/subPages/my/index' },
     ]
 

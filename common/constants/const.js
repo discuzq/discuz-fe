@@ -107,7 +107,7 @@ export const attachIcon = [
     name: 'VideoOutlined',
     active: activeColor,
     type: THREAD_TYPE.video,
-    isUpload: true,
+    isUpload: false,
     limit: 1,
     accept: ACCEPT_VIDEO_TYPES.join(','),
     data: {

@@ -154,6 +154,24 @@ class WXLoginH5Page extends React.Component {
     }, 3000);
   }
 
+  getOrCodeTips = () => {
+    const { site: { platform, wechatEnv } } = this.props;
+    let orCodeTips = '';
+    switch (platform) {
+      case 'pc':
+        orCodeTips = '请使用微信，扫码登录';
+        break;
+      case 'h5':
+        if (wechatEnv === 'miniProgram') {
+          orCodeTips = '请在小程序中完成站点登录';
+          break;
+        }
+        orCodeTips = '长按保存二维码，并在微信中识别此二维码，即可完成登录';
+        break;
+    }
+    return orCodeTips;
+  }
+
   render() {
     const { site, commonLogin } = this.props;
     const { platform } = site;
@@ -175,7 +193,7 @@ class WXLoginH5Page extends React.Component {
             refresh={() => {this.generateQrCode()}}
             isValid={this.props.h5QrCode.isQrCodeValid}
             orCodeImg={this.props.h5QrCode.qrCode}
-            orCodeTips={platform === 'h5' ? '长按保存二维码，并在微信中识别此二维码，即可完成登录' : '请使用微信，扫码登录'}
+            orCodeTips={this.getOrCodeTips()}
           />
           {/* 二维码 end */}
           {isAnotherLoginWayAvaliable && <div className={platform === 'h5' ? layout['otherLogin-title'] : layout.pc_otherLogin_title}>其他登录方式</div>}

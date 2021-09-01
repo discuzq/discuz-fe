@@ -56,6 +56,7 @@ export const THREAD_TYPE = {
   abandonDraft: 119, // 不保存草稿
   anonymity: 10001, // 匿名
   vote: 109, // 投票贴
+  iframe: 10002, // 插件
 };
 
 // 图片类型

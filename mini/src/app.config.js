@@ -20,6 +20,7 @@ const config = {
         'thread/selectReward/index',
         'thread/selectPayment/index',
         'thread/voteEditor/index',
+        'message/index',
       ],
     },
     {
@@ -54,7 +55,6 @@ const config = {
         'wallet/index',
         'wallet/frozen/index',
         'wallet/withdrawal/index',
-        'message/index',
         'my/index',
         'my/buy/index',
         'my/collect/index',
