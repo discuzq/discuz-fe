@@ -202,7 +202,8 @@ class ThreadPostAction extends ThreadPostStore {
    */
   @action
   gettContentIndexes() {
-    const { images, video, files, product, audio, redpacket, rewardQa, orderInfo = {}, vote = {}, plugin = {} } = this.postData;
+    const { images, video, files, product, audio, redpacket,
+      rewardQa, orderInfo = {}, vote = {}, iframe = {}, plugin = {} } = this.postData;
 
     const imageIds = Object.values(images).map(item => item.id);
     const docIds = Object.values(files).map(item => item.id);
@@ -261,6 +262,13 @@ class ThreadPostAction extends ThreadPostStore {
       };
     }
 
+    // 网络插入视频
+    if (iframe.content) {
+      contentIndexes[THREAD_TYPE.iframe] = {
+        tomId: THREAD_TYPE.iframe,
+        body: { ...iframe },
+      };
+    }
     // 插件扩展
     if (plugin) {
       for (let key in plugin) {
@@ -345,6 +353,7 @@ class ThreadPostAction extends ThreadPostStore {
     const images = {};
     const files = {};
     let vote = {};
+    let iframe = {};
     const plugin = {};
     // 插件格式化
     Object.keys(contentindexes).forEach((index) => {
@@ -391,6 +400,8 @@ class ThreadPostAction extends ThreadPostStore {
           times,
           value,
         };
+      } else if (tomId === THREAD_TYPE.iframe) {
+        iframe = contentindexes[index].body || { };
       }
       else {
         const { body } = contentindexes[index];
@@ -425,6 +436,7 @@ class ThreadPostAction extends ThreadPostStore {
       anonymous,
       orderInfo,
       threadId,
+      iframe,
       plugin
     });
   }
@@ -557,7 +569,7 @@ class ThreadPostAction extends ThreadPostStore {
     } = data;
     const { pluginName } = _pluginInfo;
     const { tomId, body } = postData;
-    
+
     this.postData.plugin[pluginName] = {
       tomId,
       body: {
@@ -579,7 +591,7 @@ class ThreadPostAction extends ThreadPostStore {
     if (this.postData.plugin[pluginName]) {
       delete this.postData.plugin[pluginName];
     }
-   
+
     this.postData = { ...this.postData };
   }
 }

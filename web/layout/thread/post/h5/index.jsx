@@ -35,6 +35,8 @@ import toolbarStyles from '@components/editor/toolbar/index.module.scss';
 import TagLocalData from '@components/thread-post/tag-localdata';
 import VoteWidget from '@components/thread-post/vote-widget';
 import VoteEditor from '@components/thread-post/vote-editor';
+import IframeVideo from '@components/thread-post/iframe-video';
+import IframeVideoDisplay from '@components/thread-post/iframe-video-display';
 
 // 插件引入
 /**DZQ->plugin->register<plugin_post@post_extension_content_hook>**/
@@ -313,6 +315,14 @@ class ThreadCreate extends React.Component {
               onDelete={() => this.props.setPostData({ video: {} })}
               onReady={this.props.onVideoReady} />
           )}
+          {/* 外部视频iframe插入和上面的视频组件是互斥的 */}
+          {(postData.iframe && postData.iframe.content) && (
+            <IframeVideoDisplay
+              content={postData.iframe.content}
+              isDeleteShow
+              h5
+            />
+          )}
           {/* 录音组件 */}
           {(currentAttachOperation === THREAD_TYPE.voice
             // && Object.keys(postData.audio).length > 0
@@ -574,6 +584,22 @@ class ThreadCreate extends React.Component {
             cancel={() => {
               this.props.handleSetState({ curPaySelect: '', currentDefaultOperation: '' });
               this.clearBottomFixed();
+            }}
+          />
+        )}
+        {/* 插入视频或者外部音视频iframe链接 */}
+        {currentAttachOperation === THREAD_TYPE.video && (
+          <IframeVideo
+            visible={currentAttachOperation === THREAD_TYPE.video}
+            onCancel={() => {
+              this.props.handleSetState({ currentAttachOperation: false });
+              this.props.threadPost.setCurrentSelectedToolbar(false);
+            }}
+            beforeUpload={this.props.handleVideoUpload}
+            onUploadChange={(files) => {
+              this.props.handleSetState({ currentAttachOperation: false });
+              this.props.threadPost.setCurrentSelectedToolbar(false);
+              this.props.handleVideoUpload(files);
             }}
           />
         )}

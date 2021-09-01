@@ -35,6 +35,8 @@ const Index = ({
   site = null,
   updateViewCount = noop,
   unifyOnClick = null,
+  canDownloadAttachment = true,
+  canViewAttachment = true,
 }) => {
   let itemUrl = null;
   // 处理文件大小的显示
@@ -87,6 +89,12 @@ const Index = ({
       goToLoginPage({ url: '/user/login' });
       return;
     }
+
+    if (!canDownloadAttachment) {
+      Toast.warning({ content: '暂⽆权限下载附件' });
+      return;
+    }
+
     itemUrl = item.url; // 暂用于微信下载
 
     if (!isPay) {
@@ -167,6 +175,10 @@ const Index = ({
 
   const onLinkShare = (item, e) => {
     updateViewCount();
+    if (!canViewAttachment) {
+      Toast.warning({ content: '暂⽆权限查看附件' });
+      return;
+    }
     if (!isPay) {
       if(!item || !threadId) return;
 
@@ -193,7 +205,7 @@ const Index = ({
   const splicingLink = (url, fileName) => {
     const host = window.location.host; // 域名
     const protocol = window.location.protocol; // 协议
-    return `${protocol}//${host}/download?url=${url}&fileName=${fileName}`;
+    return `${protocol}//${host}/download?url=${url}&fileName=${fileName}&threadId=${threadId}`;
   }
 
   // 文件是否可预览
@@ -206,6 +218,11 @@ const Index = ({
   const [previewFile, setPreviewFile] = useState(null);
   const onAttachPreview = (file) => {
     updateViewCount();
+    if (!canViewAttachment) {
+      Toast.warning({ content: '暂⽆权限查看附件' });
+      return;
+    }
+
     if (!isPay) {
       if(!file || !threadId) return;
 

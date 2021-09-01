@@ -2,15 +2,22 @@
 import React from 'react';
 import { Icon, Dialog, Button } from '@discuzq/design';
 import styles from './index.module.scss';
+import ChooseFile from '@components/choose-file';
 
 export default function DDialog(props) {
   const { title, children,
     onClose = () => { },
     onCacel = () => { },
     onConfirm = () => { },
+    confirmDisabled = false,
     isCustomBtn = false,
     className,
     confirmText = '确定',
+    confirmType = '', // upload 代表是上传
+    beforeUpload = () => true,
+    onUploadChange = () => { },
+    limit = 1,
+    accept = '*/*',
     ...other
   } = props;
   const header = (
@@ -36,7 +43,15 @@ export default function DDialog(props) {
       {!isCustomBtn && (
         <div className={styles.btn}>
           <Button onClick={() => onCacel()}>取消</Button>
-          <Button type="primary" onClick={() => onConfirm()}>{confirmText}</Button>
+          <ChooseFile
+            isChoose={confirmType === 'upload'}
+            beforeUpload={beforeUpload}
+            onChange={onUploadChange}
+            accept={accept}
+            limit={limit}
+          >
+            <Button className={styles.confirmbtn} type="primary" disabled={confirmDisabled} onClick={() => onConfirm()}>{confirmText}</Button>
+          </ChooseFile>
         </div>
       )}
     </Dialog>

@@ -34,6 +34,8 @@ const Index = ({
   thread = null,
   baselayout,
   updateViewCount = noop,
+  canViewAttachment = true,
+  canDownloadAttachment = true,
   unifyOnClick = null,
 }) => {
   let downloadUrl = null; // 存放下载链接
@@ -88,6 +90,11 @@ const Index = ({
     if (!user.isLogin()) {
       Toast.info({ content: '请先登录!' });
       goToLoginPage({ url: '/subPages/user/wx-auth/index' });
+      return;
+    }
+
+    if (!canDownloadAttachment) {
+      Toast.warning({ content: '暂⽆权限下载附件' });
       return;
     }
 
@@ -197,6 +204,10 @@ const Index = ({
 
   const onLinkShare = (item, index) => {
     updateViewCount();
+    if (!canViewAttachment) {
+      Toast.warning({ content: '暂⽆权限查看附件' });
+      return;
+    }
     if (!isPay) {
       if(!item || !threadId) return;
 
@@ -223,7 +234,7 @@ const Index = ({
 
   const splicingLink = (url, fileName) => {
     const domainName = url.split('/apiv3/')[0];
-    return `${domainName}/download?url=${url}&fileName=${fileName}`;
+    return `${domainName}/download?url=${url}&fileName=${fileName}&threadId=${threadId}`;
   }
 
     // 音频播放

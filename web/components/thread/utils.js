@@ -63,13 +63,15 @@ export const handleAttachmentData = (data) => {
       newData.fileData = item.body;
     } else if (conversionTomID === '109') { // 投票
       newData.voteData = item.body;
+    } else if (conversionTomID === '10002') { // iframe外插视频
+      newData.iframeData = item.body;
     // 插件
     } else {
       const { tomId, body } = item;
       const { _plugin } = body;
       if ( _plugin ) {
         newData.plugin[_plugin.name] = {
-          tomId, 
+          tomId,
           body
         };
       }

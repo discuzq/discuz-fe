@@ -17,6 +17,7 @@ import topic from './index.module.scss';
 import { minus } from '@common/utils/calculate';
 import { parseContentData } from '../../utils';
 import { debounce } from '@common/utils/throttle-debounce';
+import IframeVideoDisplay from '@components/thread-post/iframe-video-display';
 
 import Packet from '@components/thread/packet';
 import PacketOpen from '@components/red-packet-animation/web';
@@ -123,6 +124,11 @@ export default inject('site', 'user')(observer((props) => {
     e && e.stopPropagation();
     typeof props.onUserClick === 'function' && props.onUserClick();
   };
+  const {
+    canDownloadAttachment,
+    canViewAttachment,
+    canViewVideo
+  } = threadStore?.threadData?.ability || {};
 
 
   return (
@@ -205,7 +211,13 @@ export default inject('site', 'user')(observer((props) => {
             v_width={parseContent.VIDEO.width || null}
             v_height={parseContent.VIDEO.height || null}
             status={parseContent.VIDEO.status}
+            canViewVideo={canViewVideo}
           />
+        )}
+
+        {/* 外插视频 */}
+        {parseContent.IFRAME && (
+          <IframeVideoDisplay content={parseContent.IFRAME.content} />
         )}
 
         {/* 图片 */}
@@ -296,7 +308,12 @@ export default inject('site', 'user')(observer((props) => {
 
         {/* 附件 */}
         {parseContent.VOTE && (
-          <AttachmentView attachments={parseContent.VOTE} threadId={threadStore?.threadData?.threadId} />
+          <AttachmentView
+            attachments={parseContent.VOTE}
+            threadId={threadStore?.threadData?.threadId}
+            canViewAttachment={canViewAttachment}
+            canDownloadAttachment={canDownloadAttachment}
+          />
         )}
 
         {/* 投票 */}

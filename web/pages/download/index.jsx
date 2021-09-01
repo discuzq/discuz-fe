@@ -7,6 +7,7 @@ import { readDownloadAttachmentStatus } from '@server';
 import goToLoginPage from '@common/utils/go-to-login-page';
 import HOCFetchSiteData from '@middleware/HOCFetchSiteData';
 import { downloadAttachment } from '@common/utils/download-attachment-web';
+import { readThreadDetail } from '@server';
 
 
 @inject('user')
@@ -39,6 +40,14 @@ class Download extends React.Component {
     const urlstr = `${urlArr[1].split('=')[1]}?${urlArr[2].split('&')[0]}&${urlArr[2].split('&')[1]}`;
     const paramArr = urlArr[2].split('&');
     const fileName = paramArr[2].split('=')[1];
+    const threadId = paramArr[3].split('=')[1];
+
+    const canDownloadAttachment = await this.getCanDownloadAttachment(threadId);
+    if (!canDownloadAttachment) {
+      Toast.warning({ content: '暂⽆权限下载附件' });
+      Router.redirect({ url: '/' });
+      return;
+    }
     
     const params = {
       sign: paramArr[0].split('=')[1],
@@ -50,7 +59,15 @@ class Download extends React.Component {
     if (isDownload) {
       downloadAttachment(urlstr, fileName); // 下载文件
     }
+    
+  }
 
+  // 获取帖子详情，判断是否有权限下载
+  async getCanDownloadAttachment(id) {
+    const res = await readThreadDetail({ params: { threadId: Number(id) } });
+    if (res.code === 0) {
+      return res?.data?.ability?.canDownloadAttachment;
+    }
   }
 
   // 获取链接状态

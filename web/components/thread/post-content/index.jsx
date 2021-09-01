@@ -34,14 +34,16 @@ const PostContent = ({
   ...props
 }) => {
   // 内容是否超出屏幕高度
+  // const [indrag, setIndrag] = useState(false);
   const [contentTooLong, setContentTooLong] = useState(false); // 超过1200个字符
   const [cutContentForDisplay, setCutContentForDisplay] = useState('');
   const [showMore, setShowMore] = useState(false); // 根据文本长度显示"查看更多"
   const [imageVisible, setImageVisible] = useState(false);
   const [imageUrlList, setImageUrlList] = useState([]);
-  const [curImageUrl, setCurImageUrl] = useState("");
+  const [curImageUrl, setCurImageUrl] = useState('');
   const ImagePreviewerRef = useRef(null); // 富文本中的图片也要支持预览
   const contentWrapperRef = useRef(null);
+  let mouseInDrag = false; // 鼠标是否有拖拽行为，比如拖拽选中文本时
 
   const texts = {
     showMore: '查看更多',
@@ -75,6 +77,9 @@ const PostContent = ({
     if (e.target.localName === 'a') {
       return;
     }
+    if (mouseInDrag) {
+      return; // 如果有拖拽选中过文件不触发点击事情
+    }
     e && e.stopPropagation();
     // 点击图片不跳转，图片不包含表情
     if (!(e?.target?.getAttribute('src') && e?.target?.className?.indexOf('qq-emotion') === -1)) {
@@ -98,6 +103,7 @@ const PostContent = ({
     }
   };
 
+
   // 点击富文本中的链接
   const handleLinkClick = () => {
     updateViewCount();
@@ -117,14 +123,14 @@ const PostContent = ({
   };
 
   const getImagesFromText = (text) => {
-    const _text = replaceStringInRegex(text, "emoj", '');
+    const _text = replaceStringInRegex(text, 'emoj', '');
     const images = _text.match(/<img\s+[^<>]*src=[\"\'\\]+([^\"\']*)/gm) || [];
 
     for (let i = 0; i < images.length; i++) {
-      images[i] = images[i].replace(/<img\s+[^<>]*src=[\"\'\\]+/gm, "") || "";
+      images[i] = images[i].replace(/<img\s+[^<>]*src=[\"\'\\]+/gm, '') || '';
     }
     return images;
-  }
+  };
 
   useEffect(() => {
     const lengthInLine = parseInt((contentWrapperRef.current.offsetWidth || 704) / 16);
@@ -149,7 +155,6 @@ const PostContent = ({
     if (imageUrlList.length) {
       setImageUrlList(imageUrlList);
     }
-
   }, [filterContent]);
 
   return (
@@ -158,6 +163,18 @@ const PostContent = ({
         ref={contentWrapperRef}
         className={`${styles.contentWrapper} ${(useShowMore && showMore) ? styles.hideCover : ''} ${customHoverBg ? styles.bg : ''}`}
         onClick={showMore ? onShowMore : handleClick}
+        onMouseMove={() => {
+          mouseInDrag = true;
+        }}
+        onMouseDown={() => {
+          mouseInDrag = false;
+        }}
+        onMouseUp={() => {
+          const tt = setTimeout(() => {
+            mouseInDrag = false;
+            clearTimeout(tt);
+          }, 0);
+        }}
       >
         <div className={styles.content}>
           <RichText

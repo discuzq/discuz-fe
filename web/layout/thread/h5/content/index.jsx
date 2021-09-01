@@ -16,6 +16,7 @@ import classnames from 'classnames';
 import UserInfo from '@components/thread/user-info';
 import styles from './index.module.scss';
 import { debounce } from '@common/utils/throttle-debounce';
+import IframeVideoDisplay from '@components/thread-post/iframe-video-display';
 import Packet from '@components/thread/packet';
 import PacketOpen from '@components/red-packet-animation/h5';
 
@@ -114,6 +115,11 @@ const RenderThreadContent = inject('site', 'user')(observer((props) => {
       props.setContentImgReady();
     }
   }, [threadStore.contentImgLength]);
+  const {
+    canDownloadAttachment,
+    canViewAttachment,
+    canViewVideo
+  } = threadStore?.threadData?.ability || {};
 
   return (
     <div className={`${styles.container}`}>
@@ -156,7 +162,12 @@ const RenderThreadContent = inject('site', 'user')(observer((props) => {
             v_height={parseContent.VIDEO.height || null}
             v_width={parseContent.VIDEO.width || null}
             status={parseContent.VIDEO.status}
+            canViewVideo={canViewVideo}
           />
+        )}
+        {/* 外插视频 */}
+        {parseContent.IFRAME && (
+          <IframeVideoDisplay content={parseContent.IFRAME.content} />
         )}
 
         {/* 图片 */}
@@ -246,7 +257,12 @@ const RenderThreadContent = inject('site', 'user')(observer((props) => {
 
         {/* 附件 */}
         {parseContent.VOTE && (
-          <AttachmentView attachments={parseContent.VOTE} threadId={threadStore?.threadData?.threadId} />
+          <AttachmentView
+            attachments={parseContent.VOTE}
+            threadId={threadStore?.threadData?.threadId}
+            canDownloadAttachment={canDownloadAttachment}
+            canViewAttachment={canViewAttachment}
+          />
         )}
 
         {/* 投票 */}

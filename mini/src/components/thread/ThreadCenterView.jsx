@@ -1,6 +1,7 @@
 import React, { useMemo, useRef, useEffect, useState } from 'react';
 import Button from '@discuzq/design/dist/components/button/index';
 import Icon from '@discuzq/design/dist/components/icon/index';
+import RichText from '@discuzq/design/dist/components/rich-text/index';
 import AudioPlay from './audio-play';
 import PostContent from './post-content';
 import ProductItem from './product-item';
@@ -39,6 +40,12 @@ const Index = (props) => {
     unifyOnClick = null,
   } = props;
 
+  const {
+    canDownloadAttachment,
+    canViewAttachment,
+    canViewVideo
+  } = props?.data?.ability || {};
+
   const wrapperId = useRef(`thread-wrapper-${randomStr()}`)
 
   // 标题显示37个字符
@@ -62,6 +69,7 @@ const Index = (props) => {
       voteData,
       fileData,
       threadId,
+      iframeData,
       plugin
     } = handleAttachmentData(data);
     return (
@@ -91,8 +99,21 @@ const Index = (props) => {
               relativeToViewport={relativeToViewport}
               changeHeight={changeHeight}
               updateViewCount={updateViewCount}
+              canViewVideo={canViewVideo}
             />
           </WrapperView>
+        )}
+        {/* 外部视频iframe插入和上面的视频组件是互斥的 */}
+        {(iframeData && iframeData.content) && (
+          <RichText
+            className={styles.richtext}
+            content={iframeData.content}
+            iframeWhiteList={['bilibili', 'youku', 'iqiyi', 'music.163.com', 'qq.com', 'em.iq.com', 'xigua']}
+            onClick={() => { }}
+            onImgClick={() => { }}
+            onLinkClick={() => { }}
+            transformer={parseDom => parseDom}
+          />
         )}
         {imageData?.length ? (
             <ImageDisplay
@@ -113,7 +134,7 @@ const Index = (props) => {
         )}
         {redPacketData && (
           <Packet
-            // money={redPacketData.money || 0} 
+            // money={redPacketData.money || 0}
             onClick={onClick}
             condition={redPacketData.condition}
           />
@@ -127,7 +148,18 @@ const Index = (props) => {
           />
         )}
         {audioData && <AudioPlay url={audioData.mediaUrl} isPay={needPay} onPay={onPay} updateViewCount={updateViewCount}/>}
-        {fileData?.length ? <AttachmentView threadId={threadId} unifyOnClick={unifyOnClick} attachments={fileData} onPay={onPay} isPay={needPay} updateViewCount={updateViewCount} /> : null}
+        {fileData?.length ? <AttachmentView 
+            threadId={threadId}
+            unifyOnClick={unifyOnClick}
+            attachments={fileData}
+            onPay={onPay}
+            isPay={needPay}
+            updateViewCount={updateViewCount}
+            canViewAttachment={canViewAttachment}
+            canDownloadAttachment={canDownloadAttachment}
+          /> 
+          : null
+        }
 
         {/* 投票帖子展示 */}
         {voteData && <VoteDisplay voteData={voteData} updateViewCount={props.updateViewCount} threadId={threadId} />}
