@@ -28,10 +28,8 @@ class CommentList extends React.Component {
     this.needReply = this.props?.data?.lastThreeComments; // 评论的回复
   }
 
-  toCommentDetail = () => {
-    if (this.state.isShowOne) {
-      typeof this.props.onCommentClick === 'function' && this.props.onCommentClick();
-    }
+  toCommentDetail = (data) => {
+    typeof this.props.onCommentClick === 'function' && this.props.onCommentClick(data);
   };
 
   filterContent() {
@@ -173,7 +171,7 @@ class CommentList extends React.Component {
                   </View>
                   {(isSelf && !this.props.isAnonymous) && (
                     <View className={styles.masterBox}>
-                      <Text className={styles.masterText}>楼主</Text>
+                      <Text className={styles.masterText}>作者</Text>
                     </View>
                   )}
                   {!!groups?.isDisplay  && (
@@ -268,7 +266,7 @@ class CommentList extends React.Component {
                             likeClick={() => this.replyLikeClick(val)}
                             replyClick={() => this.replyReplyClick(val)}
                             deleteClick={() => this.replyDeleteClick(val)}
-                            toCommentDetail={() => this.toCommentDetail()}
+                            toCommentDetail={() => this.toCommentDetail(val)}
                             active={val.id === this.props.postId}
                             threadId={this.props.threadId}
                             isAnonymous={this.props.isAnonymous}

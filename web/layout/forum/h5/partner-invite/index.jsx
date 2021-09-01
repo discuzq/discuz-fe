@@ -68,7 +68,7 @@ class PartnerInviteH5Page extends React.Component {
     const { user, site, router } = this.props;
     if (!user?.isLogin()) {
       LoginHelper.saveAndLogin();
-      return;
+      return false;
     }
     const { setSite: { siteMode, sitePrice, siteName } = {} } = site.webConfig;
     if (siteMode === 'pay' && user.paid === false) {
@@ -90,6 +90,7 @@ class PartnerInviteH5Page extends React.Component {
     } else {
       LoginHelper.restore();
     }
+    return false;
   }
 
   logout = () => {

@@ -12,6 +12,7 @@ import NoData from '@components/no-data';
 import { withRouter } from 'next/router';
 import Router from '@discuzq/sdk/dist/router';
 import setWxShare from '@common/utils/set-wx-share';
+import { computed } from 'mobx';
 
 @inject('site')
 @inject('user')
@@ -32,6 +33,17 @@ class H5OthersPage extends React.Component {
   }
 
   targetUserId = null;
+
+  @computed get targetUser() {
+    const { query } = this.props.router;
+    const id = this.props.user?.id;
+
+    if (id) {
+      return this.props.user.targetUsers[id];
+    }
+
+    return {};
+  }
 
   componentDidMount = async () => {
     const { query } = this.props.router;
@@ -93,7 +105,7 @@ class H5OthersPage extends React.Component {
   // 设置微信分享内容
   setWeixinShare() {
     setTimeout(() => {
-      const { targetUser } = this.props.user;
+      const { targetUser } = this;
       if (targetUser) {
         const { nickname, avatarUrl, signature, id } = targetUser;
         const title = `${nickname}的主页`;
