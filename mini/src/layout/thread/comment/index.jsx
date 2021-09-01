@@ -429,7 +429,7 @@ class CommentH5Page extends React.Component {
     const commentDetail = this.props.comment.commentDetail;
     if (!this.props.user.isLogin()) {
       Toast.info({ content: '请先登录!' });
-      goToLoginPage({ url: '/user/login' });
+      goToLoginPage({ url: '/subPages/user/wx-auth/index' });
       return;
     }
     // 回复
@@ -458,15 +458,7 @@ class CommentH5Page extends React.Component {
   // 点击复制
   onCopyClick = (data) => {
     const { content } = data || {};
-    // Taro.setClipboardData({
-    //   data: content,
-    //   success: function (res) {
-    //     Toast.success({ content: '复制成功' });
-    //   },
-    //   fail: () => {
-    //     Toast.error({ content: '无法复制' });
-    //   }
-    // })
+
     Taro.setClipboardData({
       data: content,
       success: function (res) {
