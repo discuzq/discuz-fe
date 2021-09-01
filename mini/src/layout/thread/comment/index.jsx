@@ -10,6 +10,7 @@ import Header from '@components/header';
 import Toast from '@discuzq/design/dist/components/toast/index';
 import InputPopup from '../components/input-popup';
 import ReportPopup from '../components/report-popup';
+import OperationPopup from './components/operation-popup';
 import goToLoginPage from '@common/utils/go-to-login-page';
 import Taro from "@tarojs/taro";
 import Icon from '@discuzq/design/dist/components/icon/index';
@@ -34,6 +35,7 @@ class CommentH5Page extends React.Component {
       showCommentInput: false, // 是否弹出评论框
       showDeletePopup: false, // 是否弹出删除弹框
       showReplyDeletePopup: false, // 是否弹出回复删除弹框
+      showOperationPopup: false, // 是否弹出操作内容弹框
       inputText: '请输入内容', // 默认回复框placeholder内容
       showEmojis: false,
       showPicture: false,
@@ -42,6 +44,7 @@ class CommentH5Page extends React.Component {
 
     this.commentData = null;
     this.replyData = null;
+    this.operationData = null;
     this.recordCommentLike = {
       // 记录当前评论点赞状态
       id: null,
@@ -420,6 +423,65 @@ class CommentH5Page extends React.Component {
   onGotoThread = () => {
     const { threadId } = this.props.comment;
     Router.push({ url: `/indexPages/thread/index?id=${threadId}` });
+  
+  // 点击内容
+  onCommentClick = (data) => {
+    this.operationData = data || null;
+    this.setState({showOperationPopup: true});
+  }
+
+  // 点击内容操作框中的选项
+  onOperationClick = (val) => {
+    const commentDetail = this.props.comment.commentDetail;
+    if (!this.props.user.isLogin()) {
+      Toast.info({ content: '请先登录!' });
+      goToLoginPage({ url: '/user/login' });
+      return;
+    }
+    // 回复
+    if (val === 'reply') {
+      if (this.operationData) {
+        this.replyReplyClick(this.operationData, commentDetail);
+      } else {
+        this.replyClick(commentDetail);
+      }
+    };
+    // 复制
+    if (val === 'copy') {
+      if (this.operationData) {
+        this.onCopyClick(this.operationData);
+      } else {
+        this.onCopyClick(commentDetail);
+      }
+    };
+    // 举报
+    if (val === 'report') {
+      this.setState({ showReportPopup: true });
+    }
+    this.setState({showOperationPopup: false});
+  }
+
+  // 点击复制
+  onCopyClick = (data) => {
+    const { content } = data || {};
+    // Taro.setClipboardData({
+    //   data: content,
+    //   success: function (res) {
+    //     Toast.success({ content: '复制成功' });
+    //   },
+    //   fail: () => {
+    //     Toast.error({ content: '无法复制' });
+    //   }
+    // })
+    Taro.setClipboardData({
+      data: content,
+      success: function (res) {
+        Taro.getClipboardData({
+          success: function (res) {
+          }
+        })
+      }
+    })
   }
 
   render() {
@@ -483,6 +545,7 @@ class CommentH5Page extends React.Component {
                   replyReplyClick={(reploy) => this.replyReplyClick(reploy, commentData)}
                   replyDeleteClick={(reply) => this.replyDeleteClick(reply, commentData)}
                   replyAvatarClick={(reply, floor) => this.replyAvatarClick(reply, commentData, floor)}
+                  onCommentClick={reply => this.onCommentClick(reply)}
                   onMoreClick={() => this.onMoreClick()}
                   isHideEdit
                   postId={this.props.comment.postId}
@@ -575,6 +638,12 @@ class CommentH5Page extends React.Component {
               onCancel={() => this.setState({ showReportPopup: false })}
               onOkClick={(data) => this.onReportOk(data)}
             ></ReportPopup>
+            {/* 操作内容弹层 */}
+            <OperationPopup
+              visible={this.state.showOperationPopup}
+              onCancel={() => this.setState({ showOperationPopup: false })}
+              onOperationClick={val => this.onOperationClick(val)}
+            ></OperationPopup>
           </View>
         </View>
       </View>
