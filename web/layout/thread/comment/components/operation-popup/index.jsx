@@ -1,5 +1,6 @@
 import React from 'react';
 import { ActionSheet } from '@discuzq/design';
+import styles from './index.module.scss';
 
 const OperationPop = (props) => {
   const { visible, onCancel, onOperationClick } = props;
@@ -25,6 +26,7 @@ const OperationPop = (props) => {
 
   return (
     <ActionSheet
+      className={styles.main}
       onSelect={(e, item) => onSelect(e, item)}
       visible={visible}
       actions={actionsColumn}
