@@ -202,7 +202,7 @@ class CommentPCPage extends React.Component {
       goToLoginPage({ url: '/user/login' });
       return;
     }
-    if (!this.props.canPublish()) return ;
+    if (!this.props.canPublish()) return;
     this.commentData = comment;
     this.replyData = null;
     this.setState({
@@ -217,7 +217,7 @@ class CommentPCPage extends React.Component {
       goToLoginPage({ url: '/user/login' });
       return;
     }
-    if (!this.props.canPublish()) return ;
+    if (!this.props.canPublish()) return;
     this.commentData = null;
     this.replyData = reply;
     this.replyData.commentId = comment.id;
@@ -317,11 +317,17 @@ class CommentPCPage extends React.Component {
     Router.push({ url: `/user/${userId}` });
   }
 
+
+  onGotoThread = () => {
+    const { threadId } = this.props.comment;
+    this.props.router.push(`/thread/${threadId}`);
+  }
+
   render() {
     const { commentDetail: commentData, isReady, isAuthorInfoError } = this.props.comment;
     const isSelf = this.props.user?.userInfo?.id && this.props.user?.userInfo?.id === commentData?.userId;
     const { isAnonymous } = this.props.thread?.threadData || '';
-
+    const { query } = this.props.router;
     return (
       <div className={styles.container}>
         <div className={styles.header}>
@@ -379,6 +385,7 @@ class CommentPCPage extends React.Component {
                   postId={this.props.comment.postId}
                   positionRef={this.positionRef}
                   isAnonymous={isAnonymous}
+                  originThread={query.fromMessage ? <div className={styles.originThread} onClick={this.onGotoThread}>查看原帖</div> : false}
                 ></CommentList>
               ) : (
                 <LoadingTips type="init"></LoadingTips>
