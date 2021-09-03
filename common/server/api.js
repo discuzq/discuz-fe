@@ -29,6 +29,7 @@ import {
   NEED_BIND_PHONE_FLAG
 } from '@common/constants/site';
 import LoginHelper from '@common/utils/login-helper';
+import { setStatisticParams } from '@common/utils/api-statistic-params';
 
 let globalToast = null;
 const api = apiIns({
@@ -63,6 +64,7 @@ http.interceptors.request.use(
   (config) => {
     // eslint-disable-next-line no-param-reassign
     config = setUserAgent(config);
+    config = setStatisticParams(config);
     const requestData = setAuthorization(config);
     return requestData;
   },
