@@ -28,7 +28,7 @@ import styles from './index.module.scss';
 /**DZQ->plugin->register<plugin_detail@thread_extension_display_hook>**/
 
 // 帖子内容
-const RenderThreadContent = inject('site','user')(
+const RenderThreadContent = inject('site', 'user')(
   observer((props) => {
     const { store: threadStore, site } = props;
     const { text, indexes } = threadStore?.threadData?.content || {};
@@ -160,7 +160,7 @@ const RenderThreadContent = inject('site','user')(
           {threadStore?.threadData?.title && <View className={styles.title}>{threadStore?.threadData?.title}</View>}
 
           {/* 文字 */}
-          {text && <PostContent useShowMore={false} content={text || ''} />}
+          {text && <PostContent needShowMore={false} content={text || ''} />}
 
           {/* 视频 */}
           {parseContent.VIDEO && (
@@ -282,7 +282,7 @@ const RenderThreadContent = inject('site','user')(
           )}
 
           {
-            DZQPluginCenter.injection('plugin_detail', 'thread_extension_display_hook').map(({render, pluginInfo}) => {
+            DZQPluginCenter.injection('plugin_detail', 'thread_extension_display_hook').map(({ render, pluginInfo }) => {
               return (
                 <View key={pluginInfo.name}>
                   {render({

@@ -201,7 +201,7 @@ export default inject('site', 'user')(observer((props) => {
         {threadStore?.threadData?.title && <div className={topic.title}>{threadStore?.threadData?.title}</div>}
 
         {/* 文字 */}
-        {text && <PostContent useShowMore={false} content={text || ''} usePointer={false} />}
+        {text && <PostContent needShowMore={false} content={text || ''} usePointer={false} />}
 
         {/* 视频 */}
         {parseContent.VIDEO && (
@@ -333,16 +333,16 @@ export default inject('site', 'user')(observer((props) => {
         )}
 
         {
-            DZQPluginCenter.injection('plugin_detail', 'thread_extension_display_hook').map(({render, pluginInfo}) => {
-              return (
-                <div key={pluginInfo.name}>
-                  {render({
-                    site: site,
-                    renderData: parseContent.plugin
-                  })} 
-                </div>
-              )
-            })
+          DZQPluginCenter.injection('plugin_detail', 'thread_extension_display_hook').map(({ render, pluginInfo }) => {
+            return (
+              <div key={pluginInfo.name}>
+                {render({
+                  site: site,
+                  renderData: parseContent.plugin
+                })}
+              </div>
+            )
+          })
         }
 
         {/* 标签 */}

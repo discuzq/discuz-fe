@@ -27,12 +27,14 @@ import config from '../../../app.config';
 
 const PostContent = ({
   content,
-  useShowMore = true,
+  useShowMore = false,
+  needShowMore = true, // 是否需要"查看更多"
   onRedirectToDetail = noop,
   customHoverBg = false,
   relativeToViewport = true,
   changeHeight = noop,
   setUseShowMore = noop,
+  setUseCloseMore = noop,
   updateViewCount = noop,
   transformer = parsedDom => parsedDom,
   onTextItemClick = null,
@@ -52,6 +54,7 @@ const PostContent = ({
 
   const texts = {
     showMore: '查看更多',
+    closeMore: '折叠',
   };
   // 过滤内容
   const filterContent = useMemo(() => {
@@ -69,9 +72,16 @@ const PostContent = ({
       onRedirectToDetail && onRedirectToDetail();
     } else {
       setUseShowMore()
-      setShowMore(false);
+      // setShowMore(false);
     }
   }, [contentTooLong]);
+
+  // 点击收起更多
+  const onCloseMore = useCallback(e => {
+    e && e.stopPropagation();
+    setUseCloseMore();
+  }, [contentTooLong])
+
 
   const handleClick = (e, node) => {
     e && e.stopPropagation();
@@ -182,6 +192,8 @@ const PostContent = ({
 
   }, [filterContent]);
 
+
+  console.log(useShowMore);
   return (
     <View className={styles.container} {...props}>
       <View
@@ -213,10 +225,10 @@ const PostContent = ({
           }
         </View>
       </View>
-      {useShowMore && showMore && (
-        <View className={styles.showMore} onClick={onShowMore}>
-          <View className={styles.hidePercent}>{texts.showMore}</View>
-          <Icon className={styles.icon} name="RightOutlined" size={12} />
+      {needShowMore && showMore && (
+        <View className={styles.showMore} onClick={useShowMore ? onShowMore : onCloseMore}>
+          <View className={styles.hidePercent}>{texts[useShowMore ? 'showMore' : 'closeMore']}</View>
+          <Icon className={useShowMore ? styles.icon : styles.icon_d} name="RightOutlined" size={12} />
         </View>
       )}
     </View>

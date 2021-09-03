@@ -124,7 +124,7 @@ class Index extends Component {
     // 处理点击帖子通知 - 回复(携带评论id, 用于评论定位展示)
     if (item.type === "replied" && item.threadId && item.postId) {
       if (item.isReply) {
-        url = `/indexPages/thread/comment/index?id=${item.replyPostId}&threadId=${item.threadId}&postId=${item.postId}`;
+        url = `/indexPages/thread/comment/index?id=${item.replyPostId}&threadId=${item.threadId}&postId=${item.postId}&fromMessage=true`;
       } else {
         url = `/indexPages/thread/index?id=${item.threadId}&postId=${item.postId}`;
       }
