@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState , useMemo } from 'react';
-import { arrTrans, getWindowHeight } from './utils';
+import React, { useEffect, useRef } from 'react';
+import { getWindowHeight } from './utils';
 import List from './List';
-import { inject, observer } from 'mobx-react';
+import { observer } from 'mobx-react';
 
 
 /**
@@ -16,79 +16,23 @@ const VirtualList = ({
   data,
   isClickTab,
   wholePageIndex,
-  index: indexStore,
 }) => {
-  const [dataSource, setDataSource] = useState([]);
   const windowHeight = useRef(null)
   const listRef = useRef(null)
 
-  // 处理分组数据
-  useEffect(() => {
-      if (!data?.length) {
-        resetAllData()
-      } else {
-        const arr = arrTrans(10, data)
-        const { changeInfo } = indexStore
-
-        if (changeInfo) {
-          const { type = '' } = changeInfo
-          if (type === 'delete' || type === 'add' || type === 'edit' || type === 'pay') {
-            setDataSource(arr) 
-          }
-
-          indexStore.changeInfo = null
-        } else {
-          const {length} = arr
-          if (length && data.length > arrLength) {
-            if (arrLength === 0) {
-              setDataSource(arr)
-            } else {
-              const newArr = dataSource.slice()
-              newArr.push(arr[length - 1]) 
-              setDataSource(newArr)
-            }
-          }
-        }
-      } 
-  }, [data?.length, indexStore.changeInfo])
-
-
-  const getThreadInfo = (threadId) => {
-    let pIndex = -1
-    let sIndex = -1
-    const newArr = [ ...dataSource ];
-    newArr.forEach((subArr, index) => {
-      for(let i = 0; i < subArr.length; i++) {
-        if(subArr[i].threadId === threadId) {
-          pIndex = index
-          sIndex = i
-        }
-      }
-    });
-
-    return { pIndex, sIndex }
-  }
-
-  const arrLength = useMemo(() => {
-    let length = 0
-    dataSource.forEach(item => {
-      length += item.length
-    })
-    return length
-  }, [dataSource])
 
 //   通知子组件去监听
   useEffect(() => {
-    if (dataSource?.length && listRef?.current) {
-        const length = dataSource.length - 1
+    if (data?.length && listRef?.current) {
+        const length = data.length - 1
         const { displays } = listRef.current.state
-        if (dataSource?.length > displays?.length) {
+        if (data?.length > displays?.length) {
             setTimeout(() => {
                 listRef?.current?.observePage(length)
             }, 10);
         }
     }
-  }, [dataSource, listRef?.current])
+  }, [data, listRef?.current])
 
   // 获取屏幕高度
   useEffect(() => {
@@ -97,10 +41,7 @@ const VirtualList = ({
     })
   }, [])
 
-    //   当源数据为空时，重置组件数据
-    const resetAllData = () => {
-        setDataSource([])
-    }
+
 
   const dispatch = (threadId, updatedThreadData) => {
     // if(!threadId || !updatedThreadData) return;
@@ -120,9 +61,9 @@ const VirtualList = ({
   return (
       <>
         {
-            (!isClickTab && dataSource?.length > 0) && <List 
+            (!isClickTab && data.length > 0) && <List 
                 ref={(e) => { listRef.current = e }}
-                dataSource={dataSource} 
+                dataSource={data} 
                 wholePageIndex={wholePageIndex} 
                 windowHeight={windowHeight.current} 
                 dispatch={dispatch}
@@ -134,4 +75,4 @@ const VirtualList = ({
   );
 }
 
-export default inject('index')(observer(VirtualList));
+export default observer(VirtualList);

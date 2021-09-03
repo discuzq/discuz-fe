@@ -151,10 +151,6 @@ class Index extends React.Component {
       const { code, data } = await this.props.thread.fetchThreadDetail(thread?.threadId);
       if (code === 0 && data) {
         updatePayThreadInfo(thread?.threadId, data);
-        this.props.index.updateChangeInfo({
-          threadId: thread?.threadId,
-          type: 'pay',
-        });
 
         const { recomputeRowHeights = noop } = this.props;
         recomputeRowHeights(data);

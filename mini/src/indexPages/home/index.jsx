@@ -9,8 +9,6 @@ import { priceShare } from '@common/utils/priceShare';
 import { updateThreadAssignInfoInLists } from '@common/store/thread-list/list-business';
 
 @inject('site')
-@inject('search')
-@inject('topic')
 @inject('index')
 @inject('threadList')
 @inject('user')

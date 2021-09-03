@@ -19,6 +19,19 @@ class IndexStore {
 
   @observable namespace = 'home';
 
+  // 二维数组，小程序使用
+  @computed get TwoDThreads() {
+    const newData = [];
+    const homeData = this.threadList.lists?.[this.namespace];
+    if (homeData?.data) {
+      Object.values(homeData?.data).forEach((pageData) => {
+        newData.push(pageData);
+      });
+    }
+
+    return newData;
+  }
+
   @computed get threads() {
     let newData = null;
 
@@ -122,9 +135,6 @@ class IndexStore {
   @observable recommendsStatus = 'none'
 
   @observable topMenuIndex = '0'
-
-  // 小程序增删使用
-  @observable changeInfo = null
 }
 
 export default IndexStore;

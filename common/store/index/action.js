@@ -175,7 +175,6 @@ class IndexAction extends IndexStore {
 
       if (this.threads?.pageData) {
         this.threads.pageData = newPageData;
-        this.changeInfo = { type: 'delete', thread: id }
       }
 
       // 删除置顶
@@ -361,14 +360,6 @@ class IndexAction extends IndexStore {
   }
 
   /**
-   * 更新changeinfo，小程序首页列表使用
-   */
-  @action
-  updateChangeInfo({ threadId, type }) {
-    this.changeInfo = { type, thread: threadId }
-  }
-
-  /**
    * 合并组合新数据
    * @param {object} sourceData 原帖子数据
    * @param {number} tomId 插件id
@@ -434,9 +425,6 @@ class IndexAction extends IndexStore {
     this.threads.pageData[index] = threadInfo;
 
     this.threadList.updateAssignThreadInfoInLists({ threadId: typeofFn.isNumber(threadId) ? threadId : +threadId, threadInfo });
-
-    // 小程序编辑
-    this.changeInfo = { type: 'edit', thread: threadInfo }
 
     return true;
   }
@@ -522,9 +510,6 @@ class IndexAction extends IndexStore {
         // this.threads.pageData = this.threads.pageData.slice();
         const totalCount = Number(this.threads.totalCount)
         this.threads.totalCount = totalCount + 1
-
-        // 小程序
-        this.changeInfo = { type: 'add', thread: threadInfo }
       }
     } else {
       this.updateAssignThreadAllData(threadId, threadInfo);
