@@ -135,7 +135,7 @@ http.interceptors.response.use((res) => {
       if (process.env.DISCUZ_ENV === 'web') {
         url = '/user/status?statusCode=2';
       } else {
-        url = '/subPages/user/status/index?statusCode=2'
+        url = '/userPages/user/status/index?statusCode=2'
       }
       Router.push({
         url
@@ -146,7 +146,7 @@ http.interceptors.response.use((res) => {
       if (process.env.DISCUZ_ENV === 'web') {
         url = '/user/status?statusCode=-4007';
       } else {
-        url = '/subPages/user/status/index?statusCode=-4007'
+        url = '/userPages/user/status/index?statusCode=-4007'
       }
       Router.push({
         url
@@ -157,7 +157,7 @@ http.interceptors.response.use((res) => {
       if (process.env.DISCUZ_ENV === 'web') {
         url = '/user/status?statusCode=-4009';
       } else {
-        url = '/subPages/user/status/index?statusCode=-4009'
+        url = '/userPages/user/status/index?statusCode=-4009'
       }
       Router.push({
         url
@@ -215,7 +215,7 @@ http.interceptors.response.use((res) => {
       if (process.env.DISCUZ_ENV === 'web') {
         url = '/user/bind-phone';
       } else {
-        url = '/subPages/user/bind-phone/index'
+        url = '/userPages/user/bind-phone/index'
       }
       LoginHelper.saveAndRedirect(url);
       break;
@@ -235,7 +235,7 @@ http.interceptors.response.use((res) => {
       if (process.env.DISCUZ_ENV === 'web') {
         url = '/user/supplementary';
       } else {
-        url = '/subPages/user/supplementary/index';
+        url = '/userPages/user/supplementary/index';
       }
       LoginHelper.saveAndPush(url);
       break;

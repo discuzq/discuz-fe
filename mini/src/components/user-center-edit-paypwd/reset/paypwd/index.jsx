@@ -79,7 +79,7 @@ export default class index extends Component {
           duration: 2000,
         });
         setTimeout(() => {
-          Taro.redirectTo({ url: '/subPages/my/edit/index' });
+          Taro.redirectTo({ url: '/userPages/my/edit/index' });
           this.props.payBox.clearPayPassword();
           this.initState();
         }, 200);

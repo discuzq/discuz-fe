@@ -89,7 +89,7 @@ const Index = ({
     // 下载需要登录态，判断是否登录
     if (!user.isLogin()) {
       Toast.info({ content: '请先登录!' });
-      goToLoginPage({ url: '/subPages/user/wx-auth/index' });
+      goToLoginPage({ url: '/userPages/user/wx-auth/index' });
       return;
     }
 
@@ -107,7 +107,7 @@ const Index = ({
         const params = downloadAttachmentParams(url);
         isDownload = await downloadAttachmentStatus(params);
       });
-      
+
       if (!isDownload) return;
 
 
@@ -245,7 +245,7 @@ const Index = ({
   const beforeAttachPlay = async (file) => {
     // 该文件已经通过校验，能直接播放
     if (file.readyToPlay) {
-      return true;  
+      return true;
     }
 
     if (!isPay) {
@@ -265,7 +265,7 @@ const Index = ({
     const audioContext = audioRef?.current?.getState()?.audioCtx;
     updateViewCount();
     if( audioContext && baselayout && audioWrapperRef) {
-      
+
       // 暂停之前正在播放的视频
       if(baselayout.playingVideoDom) {
         Taro.createVideoContext(baselayout.playingVideoDom)?.pause();

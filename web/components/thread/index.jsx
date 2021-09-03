@@ -19,13 +19,12 @@ import HOCFetchSiteData from '@middleware/HOCFetchSiteData';
 import ViewMore from '@components/view-more';
 import LoadingTips from '@components/thread-detail-pc/loading-tips';
 import BottomView from '@components/list/BottomView';
+import { updateThreadAssignInfoInLists, updatePayThreadInfo } from '@common/store/thread-list/list-business';
 
 @inject('site')
 @inject('index')
 @inject('user')
 @inject('thread')
-@inject('search')
-@inject('topic')
 @inject('card')
 @observer
 class Index extends React.Component {
@@ -53,15 +52,11 @@ class Index extends React.Component {
     h5Share({ path: `thread/${threadId}` });
     this.props.index.updateThreadShare({ threadId }).then((result) => {
       if (result.code === 0) {
-        this.props.index.updateAssignThreadInfo(threadId, { updateType: 'share', updatedInfo: result.data, user: user.userInfo });
-        this.props.search.updateAssignThreadInfo(threadId, { updateType: 'share', updatedInfo: result.data, user: user.userInfo });
-        this.props.topic.updateAssignThreadInfo(threadId, { updateType: 'share', updatedInfo: result.data, user: user.userInfo });
-
-        const { recomputeRowHeights = noop } = this.props;
-
-        if (recomputeRowHeights && typeof recomputeRowHeights === 'function') {
-          recomputeRowHeights();
-        }
+        updateThreadAssignInfoInLists(threadId, {
+          updateType: 'share',
+          updatedInfo: result.data,
+          user: user.userInfo,
+        });
       }
     });
   }, 500)
@@ -117,9 +112,11 @@ class Index extends React.Component {
     this.setState({ isSendingLike: true });
     this.props.index.updateThreadInfo({ pid: postId, id: threadId, data: { attributes: { isLiked: !isLike } } }).then((result) => {
       if (result.code === 0 && result.data) {
-        this.props.index.updateAssignThreadInfo(threadId, { updateType: 'like', updatedInfo: result.data, user: user.userInfo });
-        this.props.search.updateAssignThreadInfo(threadId, { updateType: 'like', updatedInfo: result.data, user: user.userInfo });
-        this.props.topic.updateAssignThreadInfo(threadId, { updateType: 'like', updatedInfo: result.data, user: user.userInfo });
+        updateThreadAssignInfoInLists(threadId, {
+          updateType: 'like',
+          updatedInfo: result.data,
+          user: user.userInfo,
+        });
 
         const { recomputeRowHeights = noop } = this.props;
         recomputeRowHeights();
@@ -153,10 +150,7 @@ class Index extends React.Component {
     if (success && thread?.threadId) {
       const { code, data } = await this.props.thread.fetchThreadDetail(thread?.threadId);
       if (code === 0 && data) {
-        this.props.index.updatePayThreadInfo(thread?.threadId, data);
-        this.props.search.updatePayThreadInfo(thread?.threadId, data);
-        this.props.topic.updatePayThreadInfo(thread?.threadId, data);
-        this.props.user.updatePayThreadInfo(thread?.threadId, data);
+        updatePayThreadInfo(thread?.threadId, data);
 
         const { recomputeRowHeights = noop } = this.props;
         recomputeRowHeights(data);
@@ -207,7 +201,7 @@ class Index extends React.Component {
   onOpen = () => {
     const { threadId = '' } = this.props.data || {};
 
-    this.props.index.updateAssignThreadInfo(threadId, { updateType: 'openedMore', openedMore: true });
+    this.props.index.updateOpenMore(threadId, { openedMore: true });
 
     const { recomputeRowHeights = noop } = this.props;
     recomputeRowHeights();
@@ -280,9 +274,10 @@ class Index extends React.Component {
     const threadIdNumber = Number(threadId);
     const viewCount = await updateViewCountInStorage(threadIdNumber);
     if (viewCount) {
-      this.props.index.updateAssignThreadInfo(threadIdNumber, { updateType: 'viewCount', updatedInfo: { viewCount } });
-      this.props.search.updateAssignThreadInfo(threadIdNumber, { updateType: 'viewCount', updatedInfo: { viewCount } });
-      this.props.topic.updateAssignThreadInfo(threadIdNumber, { updateType: 'viewCount', updatedInfo: { viewCount } });
+      updateThreadAssignInfoInLists(threadIdNumber, {
+        updateType: 'viewCount',
+        updatedInfo: { viewCount },
+      });
     }
   }
 

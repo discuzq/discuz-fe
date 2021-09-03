@@ -69,7 +69,7 @@ class H5OthersPage extends React.Component {
     if (this.targetUserId !== id) return;
     const myId = this.props.user?.id;
     if (String(myId) === this.targetUserId) {
-      Router.replace({ url: '/subPages/my/index' });
+      Router.replace({ url: '/userPages/my/index' });
       return;
     }
 
@@ -92,7 +92,7 @@ class H5OthersPage extends React.Component {
         fetchUserInfoLoading: false,
       });
 
-      const targetUserThreadsList = await this.props.index.fetchList({
+      const targetUserThreadsList = await this.props.threadList.fetchList({
         namespace: `user/${this.targetUserId}`,
         filter: {
           toUserId: this.targetUserId,
@@ -100,7 +100,7 @@ class H5OthersPage extends React.Component {
         },
       });
 
-      this.props.index.setList({ namespace: `user/${this.targetUserId}`, data: targetUserThreadsList });
+      this.props.threadList.setList({ namespace: `user/${this.targetUserId}`, data: targetUserThreadsList });
     }
   };
 
@@ -109,7 +109,7 @@ class H5OthersPage extends React.Component {
     const { id = '' } = getCurrentInstance().router.params;
     const myId = this.props.user?.id;
     if (String(myId) === id) {
-      Router.replace({ url: '/subPages/my/index' });
+      Router.replace({ url: '/userPages/my/index' });
       return;
     }
   };
@@ -123,14 +123,14 @@ class H5OthersPage extends React.Component {
   fetchTargetUserThreads = async () => {
     const { id = '' } = getCurrentInstance().router.params;
     if (id) {
-      const targetUserThreadsList = await this.props.index.fetchList({
+      const targetUserThreadsList = await this.props.threadList.fetchList({
         namespace: `user/${id}`,
         filter: {
           toUserId: id,
           complex: 5,
         },
       });
-      this.props.index.setList({ namespace: `user/${id}`, data: targetUserThreadsList });
+      this.props.threadList.setList({ namespace: `user/${id}`, data: targetUserThreadsList });
     }
     return;
   };
@@ -196,12 +196,12 @@ class H5OthersPage extends React.Component {
 
   getBackgroundUrl = () => {
     const { id = '' } = getCurrentInstance().router.params;
-    
+
     let backgroundUrl = null;
     if (id && this.props.user?.targetUsers[id]) {
       backgroundUrl = this.props.user.targetUsers[id].originalBackGroundUrl;
     }
-    
+
     if (!backgroundUrl) return false;
     return backgroundUrl;
   };
@@ -223,24 +223,24 @@ class H5OthersPage extends React.Component {
     const { site, user } = this.props;
     const { platform } = site;
     const { targetUserId } = this;
-    const { index } = this.props;
-    const { lists } = index;
+    const { threadList } = this.props;
+    const { lists } = threadList;
 
-    const userThreadsList = index.getList({
+    const userThreadsList = threadList.getList({
       namespace: `user/${targetUserId}`,
     });
 
-    const totalPage = index.getAttribute({
+    const totalPage = threadList.getAttribute({
       namespace: `user/${targetUserId}`,
       key: 'totalPage',
     });
 
-    const totalCount = index.getAttribute({
+    const totalCount = threadList.getAttribute({
       namespace: `user/${targetUserId}`,
       key: 'totalCount',
     });
 
-    const currentPage = index.getAttribute({
+    const currentPage = threadList.getAttribute({
       namespace: `user/${targetUserId}`,
       key: 'currentPage',
     });

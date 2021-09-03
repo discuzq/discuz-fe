@@ -51,7 +51,7 @@ class SearchResultPostH5Page extends React.Component {
     const { search, router, baselayout } = this.props;
     const { keyword = '' } = router.query;
     // 当服务器无法获取数据时，触发浏览器渲染
-    const hasThreads = !!search.threads;
+    const hasThreads = !!search.threads?.pageData?.length;
 
     if (!hasThreads || (keyword && keyword !== search.currentPostKeyword)) { // 缓存为空或者url参数与缓存不同，刷新；否则，有缓存的关键词，需要回到原来位置
       this.page = 1;

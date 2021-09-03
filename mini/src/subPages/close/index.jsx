@@ -4,8 +4,10 @@ import Page from '@components/page';
 import Button from '@discuzq/design/dist/components/button/index';
 import { inject, observer } from 'mobx-react';
 import styles from './index.module.scss';
-import imgClose from '../../../../web/public/dzq-img/close.png';
+// import imgClose from '../../../../web/public/dzq-img/close.png';
 import LoginHelper from '@common/utils/login-helper';
+
+const imgClose = 'https://imgcache.qq.com/operation/dianshi/other/close.ac4a6d7f61eff94e2ed5bf332157fc8828b1a5b2.png';
 @inject('site')
 @observer
 class Index extends Component {

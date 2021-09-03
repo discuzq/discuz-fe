@@ -10,7 +10,7 @@ import PopTopic from '@components/pop-topic';
 import UserCenterFansPc from '@components/user-center/fans-pc';
 
 @inject('site')
-@inject('index')
+@inject('threadList')
 @inject('search')
 @observer
 class LikePCPage extends React.Component {
@@ -39,28 +39,28 @@ class LikePCPage extends React.Component {
   };
 
   render() {
-    const { index } = this.props;
+    const { threadList } = this.props;
 
-    const { lists } = index;
+    const { lists } = threadList;
 
-    const likeThreadList = index.getList({ namespace: 'like' });
+    const likeThreadList = threadList.getList({ namespace: 'like' });
 
-    const totalCount = index.getAttribute({
+    const totalCount = threadList.getAttribute({
       namespace: 'like',
       key: 'totalCount',
     });
 
-    const totalPage = index.getAttribute({
+    const totalPage = threadList.getAttribute({
       namespace: 'like',
       key: 'totalPage',
     });
 
-    const currentPage = index.getAttribute({
+    const currentPage = threadList.getAttribute({
       namespace: 'like',
       key: 'currentPage',
     });
 
-    const requestError = index.getListRequestError({ namespace: 'like' });
+    const requestError = threadList.getListRequestError({ namespace: 'like' });
 
     return (
       <BaseLayout

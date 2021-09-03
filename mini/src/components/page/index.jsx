@@ -17,11 +17,11 @@ import {readForum} from '@server';
 
 const INDEX_URL = '/indexPages/home/index';
 const PARTNER_INVITE_URL = '/subPages/forum/partner-invite/index';
-const BIND_NICKNAME_URL = '/subPages/user/bind-nickname/index';
+const BIND_NICKNAME_URL = '/userPages/user/bind-nickname/index';
 const CLOSE_URL = '/subPage/close/index';
 const PAGE_404_URL = '/subPages/404/index';
 const PAGE_500_URL = '/subPages/500/index';
-const STATUS_URL = '/subPages/user/status/index'; // 用户状态提示页
+const STATUS_URL = '/userPages/user/status/index'; // 用户状态提示页
 
 
 @inject('user')
@@ -97,8 +97,8 @@ export default class Page extends React.Component {
       // TODO: 强制绑定方案待定
       if (user.isLogin()) {
         // // 绑定微信：开启微信，没有绑定微信
-        // if ((site.isOffiaccountOpen || site.isMiniProgramOpen) && path !== '/subPages/user/wx-bind-qrcode/index' && !user.isBindWechat) {
-        //   Router.redirect({url: '/subPages/user/wx-bind-qrcode/index'});
+        // if ((site.isOffiaccountOpen || site.isMiniProgramOpen) && path !== '/userPages/user/wx-bind-qrcode/index' && !user.isBindWechat) {
+        //   Router.redirect({url: '/userPages/user/wx-bind-qrcode/index'});
         //   return false;
         // }
         // 前置：没有开启微信

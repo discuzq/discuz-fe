@@ -1,20 +1,68 @@
 import { observable, computed } from 'mobx';
-import ListStore from './list';
+import listProxy from '../thread-list/proxy';
+import ThreadListStore from  '../thread-list/list';
 
-class IndexStore extends ListStore {
-  constructor(props) {
-    super(props);
+class IndexStore {
+  constructor() {
+    this.threadList = new ThreadListStore();
   }
 
   @observable categories = null;
 
   @observable sticks = null;
 
-  @observable threads = null;
+  // @observable threads = null;
 
   @observable drafts = null;
 
   @observable latestReq = 0;
+
+  @observable namespace = 'home';
+
+  // 二维数组，小程序使用
+  @computed get TwoDThreads() {
+    const newData = [];
+    const homeData = this.threadList.lists?.[this.namespace];
+    if (homeData?.data) {
+      Object.values(homeData?.data).forEach((pageData) => {
+        newData.push(pageData);
+      });
+    }
+
+    return newData;
+  }
+
+  @computed get threads() {
+    let newData = null;
+
+    const homeData = this.threadList.lists?.[this.namespace];
+    const attrs = this.threadList.lists?.[this.namespace]?.attribs;
+    if (homeData?.data) {
+      const pageData = this.threadList.listAdapter(homeData);
+      newData = {
+        pageData,
+        ...attrs,
+      };
+    }
+
+    const params = {
+      listStore: this.threadList,
+      namespace: this.namespace,
+    };
+
+    return listProxy(newData, params);
+  }
+  set threads(data) {
+    if (!data) {
+      this.threadList.clearList({ namespace: this.namespace });
+    }
+  }
+
+  @computed get hasThreadsData() {
+    const pageData = this.threadList.getList({ namespace: this.namespace });
+
+    return !!pageData?.length;
+  }
 
   // 是否出现推荐选项
   @observable needDefault = false
@@ -63,11 +111,19 @@ class IndexStore extends ListStore {
   // 小程序scroll-view被scroll-view嵌套，子元素不能使用同名属性来触发事件
   @observable hasOnScrollToLower = true; // 值为false时，第一层嵌套onScrollToLower被设置为null用于执行下一层onScrollToLower
 
+  // @observable threadError = {
+  //   isError: false,
+  //   errorText: '加载失败',
+  // };
+
   // 首页帖子报错信息
-  @observable threadError = {
-    isError: false,
-    errorText: '加载失败',
-  };
+  @computed get threadError() {
+    const requestError = this.threadList.lists?.[this.namespace]?.requestError;
+    return requestError;
+  }
+  set threadError(data) {
+    this.threadList.lists[this.namespace].requestError = data;
+  }
 
   // 首页分类报错信息
   @observable categoryError = {
@@ -79,9 +135,6 @@ class IndexStore extends ListStore {
   @observable recommendsStatus = 'none'
 
   @observable topMenuIndex = '0'
-
-  // 小程序增删使用
-  @observable changeInfo = null
 }
 
 export default IndexStore;

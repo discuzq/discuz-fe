@@ -40,7 +40,7 @@ class ForumH5Page extends React.Component {
 
   // @TODO
   onUserClick = ({ id }) => {
-    Router.push({ url: `/subPages/user/index?id=${id}` });
+    Router.push({ url: `/userPages/user/index?id=${id}` });
   };
 
   onIntroduceClose = () => {

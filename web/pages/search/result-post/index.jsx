@@ -9,6 +9,7 @@ import HOCFetchSiteData from '@middleware/HOCFetchSiteData';
 
 @inject('site')
 @inject('search')
+@inject('threadList')
 @observer
 class Index extends React.Component {
   static async getInitialProps(ctx) {
@@ -27,14 +28,17 @@ class Index extends React.Component {
 
   constructor(props) {
     super(props);
-    const { serverSearch, search } = this.props;
+    const { serverSearch, search, threadList } = this.props;
+
+    threadList.registerList({ namespace: 'search/result-post' });
+
     // 初始化数据到store中
     serverSearch && serverSearch.threads && search.setThreads(serverSearch.threads);
   }
 
   dispatch = async (type, keyword) => {
     const { search } = this.props;
-   
+
     if (type === 'refresh') {
       this.page = 1;
       search.setThreads(null);

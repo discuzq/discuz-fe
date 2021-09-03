@@ -40,12 +40,12 @@ class index extends Component {
         duration: 2000,
       });
       setTimeout(() => {
-        Taro.navigateTo({ url: '/subPages/user/bind-phone/index?from=userCenter' });
+        Taro.navigateTo({ url: '/userPages/user/bind-phone/index?from=userCenter' });
       }, 1000);
       return;
     }
     // FIXME: 页面缺失
-    Taro.navigateTo({ url: '/subPages/user/reset-password/index' });
+    Taro.navigateTo({ url: '/userPages/user/reset-password/index' });
   }, 1000);
 
   // 输入旧密码
@@ -105,7 +105,7 @@ class index extends Component {
           this.props.user.clearUserAccountPassword();
           this.initState();
           setTimeout(() => {
-            Taro.redirectTo({ url: '/subPages/my/edit/index' });
+            Taro.redirectTo({ url: '/userPages/my/edit/index' });
           }, 300);
         })
         .catch((err) => {
@@ -130,7 +130,7 @@ class index extends Component {
           this.props.user.clearUserAccountPassword();
           this.initState();
           setTimeout(() => {
-            Taro.redirectTo({ url: '/subPages/my/edit/index' });
+            Taro.redirectTo({ url: '/userPages/my/edit/index' });
           }, 300);
         })
         .catch((err) => {

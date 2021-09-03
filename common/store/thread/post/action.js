@@ -386,8 +386,10 @@ class ThreadPostAction extends ThreadPostStore {
         video.id = videoId;
       }
       else if (tomId === THREAD_TYPE.redPacket) {
-        const price = contentindexes[index]?.body?.money;
-        redpacket = { ...(contentindexes[index]?.body || {}), price };
+        const redBody = contentindexes[index]?.body || {}
+        const { money = 0, number = 0, rule = 1 } = redBody;
+        const price = rule === 0 ? money / number : money;
+        redpacket = { ...redBody, price };
       }
       // expiredAt: rewardQa.times, price: rewardQa.value, type: 0
       else if (tomId === THREAD_TYPE.reward) {

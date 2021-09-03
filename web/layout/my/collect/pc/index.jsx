@@ -11,7 +11,7 @@ import UserCenterFansPc from '@components/user-center/fans-pc';
 import SidebarPanel from '@components/sidebar-panel';
 
 @inject('site')
-@inject('index')
+@inject('threadList')
 @observer
 class CollectPCPage extends React.Component {
   constructor(props) {
@@ -36,26 +36,26 @@ class CollectPCPage extends React.Component {
   );
 
   render() {
-    const { index } = this.props;
+    const { threadList } = this.props;
 
-    const collectThreadsList = index.getList({ namespace: 'collect' });
+    const collectThreadsList = threadList.getList({ namespace: 'collect' });
 
-    const totalCount = index.getAttribute({
+    const totalCount = threadList.getAttribute({
       namespace: 'collect',
       key: 'totalCount',
     });
 
-    const totalPage = index.getAttribute({
+    const totalPage = threadList.getAttribute({
       namespace: 'collect',
       key: 'totalPage',
     });
 
-    const currentPage = index.getAttribute({
+    const currentPage = threadList.getAttribute({
       namespace: 'collect',
       key: 'currentPage',
     });
 
-    const requestError = index.getListRequestError({ namespace: 'collect' });
+    const requestError = threadList.getListRequestError({ namespace: 'collect' });
 
     return (
       <div className={styles.container}>

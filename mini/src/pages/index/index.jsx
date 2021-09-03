@@ -1,5 +1,6 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react'
+import './discuzq.scss';
 import styles from './index.module.scss';
 import { View } from '@tarojs/components';
 import Icon from '@discuzq/design/dist/components/icon/index';
@@ -80,13 +81,13 @@ class Index extends React.Component {
           LoginHelper.saveAndLogin();
           break;
         case JUMP_TO_AUDIT:// 到审核页
-          Router.push({ url: '/subPages/user/status/index?statusCode=2' });
+          Router.push({ url: '/userPages/user/status/index?statusCode=2' });
           break;
         case JUMP_TO_REFUSE:// 到审核拒绝页
-          Router.push({ url: '/subPages/user/status/index?statusCode=-4007' });
+          Router.push({ url: '/userPages/user/status/index?statusCode=-4007' });
           break;
         case JUMP_TO_DISABLED:// 到审核禁用页
-          Router.push({ url: '/subPages/user/status/index?statusCode=-4009' });
+          Router.push({ url: '/userPages/user/status/index?statusCode=-4009' });
           break;
         case JUMP_TO_HOME_INDEX:// 到首页
           Router.redirect({ url: '/indexPages/home/index' });
@@ -95,7 +96,7 @@ class Index extends React.Component {
           LoginHelper.saveAndRedirect(PARTNER_INVITE_URL);
           break;
         case JUMP_TO_SUPPLEMENTARY:// 跳转到扩展字段页
-          LoginHelper.saveAndPush('/subPages/user/supplementary/index');
+          LoginHelper.saveAndPush('/userPages/user/supplementary/index');
           break;
         case SITE_NO_INSTALL:// 未安装站点
           Router.push({ url: '/subPages/no-install/index' });

@@ -121,7 +121,7 @@ const RenderThreadContent = inject('site', 'user')(
     const onUserClick = () => {
       const userId = threadStore?.threadData?.user?.userId
       if (!userId) return
-      Router.push({ url: `/subPages/user/index?id=${userId}` });
+      Router.push({ url: `/userPages/user/index?id=${userId}` });
     }
     const {
       canDownloadAttachment,

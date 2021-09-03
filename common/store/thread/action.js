@@ -58,18 +58,16 @@ class ThreadAction extends ThreadStore {
 
   /**
    * 更新列表页store
-   * @param {*} IndexStore 首页store
-   * @param {*} SearchStore 发现store
-   * @param {*} TopicStore 话题store
    */
   @action
-  async updateListStore(IndexStore, SearchStore, TopicStore) {
+  async updateListStore() {
     const id = this.threadData?.threadId;
 
     if (id) {
-      IndexStore?.updatePayThreadInfo && IndexStore.updatePayThreadInfo(id, this.threadData);
-      SearchStore?.updatePayThreadInfo && SearchStore.updatePayThreadInfo(id, this.threadData);
-      TopicStore?.updatePayThreadInfo && TopicStore.updatePayThreadInfo(id, this.threadData);
+      this.threadList.updateAssignThreadInfoInLists({
+        threadId: id,
+        threadInfo: this.threadData,
+      });
     }
   }
 
@@ -281,7 +279,7 @@ class ThreadAction extends ThreadStore {
    * 打赏帖子
    */
   @action
-  async rewardPay(params, UserStore, IndexStore, SearchStore, TopicStore) {
+  async rewardPay(params, UserStore) {
     const { success, msg } = await rewardPay(params);
 
     // 支付成功重新请求帖子数据
@@ -300,7 +298,7 @@ class ThreadAction extends ThreadStore {
       }
 
       // 更新列表store
-      this.updateListStore(IndexStore, SearchStore, TopicStore);
+      this.updateListStore();
 
       return {
         success: true,
@@ -400,7 +398,7 @@ class ThreadAction extends ThreadStore {
    * @returns {object} 处理结果
    */
   @action
-  async delete(id, IndexStore, SearchStore, TopicStore, SiteStore, UserStore) {
+  async delete(id) {
     if (!id) {
       return {
         msg: '参数不完整',
@@ -418,9 +416,7 @@ class ThreadAction extends ThreadStore {
       this.setThreadDetailField('isDelete', 1);
 
       // 删除帖子列表中的数据
-      IndexStore?.deleteThreadsData && IndexStore.deleteThreadsData({ id }, SiteStore);
-      SearchStore?.deleteThreadsData && SearchStore.deleteThreadsData({ id });
-      TopicStore?.deleteThreadsData && TopicStore.deleteThreadsData({ id });
+      this.threadList.deleteAssignThreadInLists({ threadId: id });
 
       return {
         code: res.code,
@@ -441,7 +437,7 @@ class ThreadAction extends ThreadStore {
    * @param {number} threadId 帖子id
    */
   @action
-  async shareThread(threadId, IndexStore, SearchStore, TopicStore) {
+  async shareThread(threadId) {
     if (!threadId) {
       return {
         msg: '参数不完整',
@@ -457,16 +453,7 @@ class ThreadAction extends ThreadStore {
     if (res.code === 0) {
       this.threadData.likeReward.shareCount = this.threadData?.likeReward?.shareCount - 0 + 1;
 
-      // 更新列表相关数据
-      IndexStore?.updateAssignThreadInfo(threadId, {
-        updateType: 'share',
-      });
-      SearchStore?.updateAssignThreadInfo(threadId, {
-        updateType: 'share',
-      });
-      TopicStore?.updateAssignThreadInfo(threadId, {
-        updateType: 'share',
-      });
+      this.updateListStore();
 
       return {
         msg: '操作成功',
@@ -719,7 +706,7 @@ class ThreadAction extends ThreadStore {
    * @returns {object} 处理结果
    */
   @action
-  async updateLiked(params, IndexStore, UserStore, SearchStore, TopicStore) {
+  async updateLiked(params, IndexStore, UserStore) {
     const { id, pid, isLiked } = params;
     if (!id || !pid) {
       return {
@@ -752,7 +739,7 @@ class ThreadAction extends ThreadStore {
       }
 
       // 更新列表store
-      this.updateListStore(IndexStore, SearchStore, TopicStore);
+      this.updateListStore();
 
       return {
         msg: '操作成功',

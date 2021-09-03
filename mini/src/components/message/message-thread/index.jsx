@@ -61,19 +61,19 @@ const Index = ({ message, subPage }) => {
       {
         iconName: 'AtOutlined',
         title: '@我的',
-        link: '/indexPages/message/index?page=thread&subPage=at',
+        link: '/subPages/message/index?page=thread&subPage=at',
         totalCount: atUnread || 0,
       },
       {
         iconName: 'MessageOutlined',
         title: '回复我的',
-        link: '/indexPages/message/index?page=thread&subPage=reply',
+        link: '/subPages/message/index?page=thread&subPage=reply',
         totalCount: replyUnread || 0,
       },
       {
         iconName: 'PraiseOutlined',
         title: '点赞我的',
-        link: '/indexPages/message/index?page=thread&subPage=like',
+        link: '/subPages/message/index?page=thread&subPage=like',
         totalCount: likeUnread || 0,
       },
     ]

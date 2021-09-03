@@ -4,8 +4,11 @@ import Progress from '@discuzq/design/dist/components/progress/index';
 import styles from './index.module.scss';
 import { View, Text, Image } from '@tarojs/components'
 
-import redpacketMiniImg from '../../../../../web/public/dzq-img/redpacket-mini.png';
-import coinImg from '../../../../../web/public/dzq-img/coin.png';
+// import redpacketMiniImg from '../../../../../web/public/dzq-img/redpacket-mini.png';
+// import coinImg from '../../../../../web/public/dzq-img/coin.png';
+
+const coinImg = 'https://imgcache.qq.com/operation/dianshi/other/coin.e66d1d9205f2d6a18b38fe29b733eb109e168504.png';
+const redpacketMiniImg = 'https://imgcache.qq.com/operation/dianshi/other/redpacket-mini.10b46eefd630a5d5d322d6bbc07690ac4536ee2d.png';
 
 /**
  * 帖子奖励进度条

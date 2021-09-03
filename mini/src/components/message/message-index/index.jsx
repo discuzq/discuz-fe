@@ -23,19 +23,19 @@ const Index = ({ message, user }) => {
       {
         iconName: 'RemindOutlined',
         title: '账号消息',
-        link: '/indexPages/message/index?page=account',
+        link: '/subPages/message/index?page=account',
         totalCount: accountUnread  || 0,
       },
       {
         iconName: 'RenminbiOutlined',
         title: '财务通知',
-        link: '/indexPages/message/index?page=financial',
+        link: '/subPages/message/index?page=financial',
         totalCount: financialUnread || 0,
       },
       {
         iconName: 'LeaveWordOutlined',
         title: '帖子通知',
-        link: '/indexPages/message/index?page=thread',
+        link: '/subPages/message/index?page=thread',
         totalCount: threadUnread || 0,
       },
     ]

@@ -121,7 +121,7 @@ const DialogBox = (props) => {
               {displayTimePanel && timestamp && <View className={styles.msgTime}>{timestamp}</View>}
               <View className={(ownedBy === 'myself' ? `${styles.myself}` : `${styles.itself}`) + ` ${styles.persona}`}>
                 <View className={styles.profileIcon} onClick={() => {
-                  userId && Taro.navigateTo({ url: `/subPages/user/index?id=${userId}` });
+                  userId && Taro.navigateTo({ url: `/userPages/user/index?id=${userId}` });
                 }}>
                   {userAvatar
                     ? <Avatar image={userAvatar} circle={true} />
@@ -134,7 +134,7 @@ const DialogBox = (props) => {
                   renderImage(item)
                 ) : (
                   <View className={styles.msgContent} dangerouslySetInnerHTML={{
-                    __html: xss(s9e.parse(text)),
+                    __html: xss(s9e.parseEmoji(text)),
                   }}></View>
                 )}
               </View>

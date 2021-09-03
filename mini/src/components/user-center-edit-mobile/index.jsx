@@ -119,7 +119,7 @@ class index extends Component {
             duration: 2000,
           });
           setTimeout(() => {
-            Taro.redirectTo({ url: '/subPages/my/index' });
+            Taro.redirectTo({ url: '/userPages/my/index' });
             this.initState();
           }, 1000);
         })

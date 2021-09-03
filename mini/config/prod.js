@@ -35,11 +35,15 @@ module.exports = {
     addChunkPages (pages) {
       const indexPages = miniConfig.subPackages[0].pages;
       const subPages = miniConfig.subPackages[1].pages;
+      const userPages = miniConfig.subPackages[2].pages;
       indexPages.map(page => {
         pages.set(`indexPages/${page}`, ['indexPages/common']);
       });
       subPages.map(page => {
         pages.set(`subPages/${page}`, ['subPages/common']);
+      });
+      userPages.map(page => {
+        pages.set(`userPages/${page}`, ['userPages/common']);
       });
     },
     webpackChain (chain, webpack) {
@@ -62,7 +66,7 @@ module.exports = {
                 minChunks: 2,
                 reuseExistingChunk: true,
                 test: (module, chunks) => {
-                  const isNoOnlySubpackRequired = chunks.find(chunk => !(/\bindexPages\b/.test(chunk.name) || /\bsubPages\b/.test(chunk.name)))
+                  const isNoOnlySubpackRequired = chunks.find(chunk => !(/\bindexPages\b/.test(chunk.name) || /\bsubPages\b/.test(chunk.name) || /\buserPages\b/.test(chunk.name)))
                   return !isNoOnlySubpackRequired
                 },
                 priority: 500
@@ -72,7 +76,17 @@ module.exports = {
                 minChunks: 2,
                 reuseExistingChunk: true,
                 test: (module, chunks) => {
-                  const isNoOnlySubpackRequired = chunks.find(chunk => !(/\bsubPages\b/.test(chunk.name) || /\bindexPages\b/.test(chunk.name)))
+                  const isNoOnlySubpackRequired = chunks.find(chunk => !(/\bsubPages\b/.test(chunk.name) || /\bindexPages\b/.test(chunk.name) || /\buserPages\b/.test(chunk.name)))
+                  return !isNoOnlySubpackRequired
+                },
+                priority: 1
+              },
+              userPagesCommon: {
+                name: 'userPages/common',
+                minChunks: 2,
+                reuseExistingChunk: true,
+                test: (module, chunks) => {
+                  const isNoOnlySubpackRequired = chunks.find(chunk => !(/\bsubPages\b/.test(chunk.name) || /\bindexPages\b/.test(chunk.name) || /\buserPages\b/.test(chunk.name)))
                   return !isNoOnlySubpackRequired
                 },
                 priority: 1

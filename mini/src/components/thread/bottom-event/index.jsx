@@ -72,7 +72,7 @@ const Index = ({
     // 对没有登录的先登录
     if (!user.isLogin()) {
       Toast.info({ content: '请先登录!' });
-      goToLoginPage({ url: '/subPages/user/wx-auth/index' });
+      goToLoginPage({ url: '/userPages/user/wx-auth/index' });
       return;
     }
     const isApproved = data?.isApproved === 1;
