@@ -520,7 +520,7 @@ class IndexAction extends IndexStore {
 
     const threadUpdater = ({
       data,
-      callback = () => {}
+      callback = () => { }
     }) => {
       if (!data && !data?.likeReward && !data?.likeReward?.users) return;
 

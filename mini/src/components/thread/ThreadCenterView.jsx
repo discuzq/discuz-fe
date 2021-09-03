@@ -35,6 +35,7 @@ const Index = (props) => {
     changeHeight = noop,
     useShowMore = true,
     setUseShowMore = noop,
+    setUseCloseMore = noop,
     updateViewCount = noop,
     onTextItemClick,
     unifyOnClick = null,
@@ -82,6 +83,7 @@ const Index = (props) => {
             relativeToViewport={relativeToViewport}
             changeHeight={changeHeight}
             useShowMore={useShowMore}
+            setUseCloseMore={setUseCloseMore}
             setUseShowMore={setUseShowMore}
             onTextItemClick={onTextItemClick}
           />
@@ -116,15 +118,15 @@ const Index = (props) => {
           />
         )}
         {imageData?.length ? (
-            <ImageDisplay
-              platform="h5"
-              imgData={imageData}
-              isPay={needPay}
-              onPay={onPay}
-              onClickMore={onClick}
-              relativeToViewport={relativeToViewport}
-              updateViewCount={updateViewCount}
-            />
+          <ImageDisplay
+            platform="h5"
+            imgData={imageData}
+            isPay={needPay}
+            onPay={onPay}
+            onClickMore={onClick}
+            relativeToViewport={relativeToViewport}
+            updateViewCount={updateViewCount}
+          />
         ) : null}
         {rewardData && (
           <Packet
@@ -147,24 +149,24 @@ const Index = (props) => {
             onClick={onClick}
           />
         )}
-        {audioData && <AudioPlay url={audioData.mediaUrl} isPay={needPay} onPay={onPay} updateViewCount={updateViewCount}/>}
-        {fileData?.length ? <AttachmentView 
-            threadId={threadId}
-            unifyOnClick={unifyOnClick}
-            attachments={fileData}
-            onPay={onPay}
-            isPay={needPay}
-            updateViewCount={updateViewCount}
-            canViewAttachment={canViewAttachment}
-            canDownloadAttachment={canDownloadAttachment}
-          /> 
+        {audioData && <AudioPlay url={audioData.mediaUrl} isPay={needPay} onPay={onPay} updateViewCount={updateViewCount} />}
+        {fileData?.length ? <AttachmentView
+          threadId={threadId}
+          unifyOnClick={unifyOnClick}
+          attachments={fileData}
+          onPay={onPay}
+          isPay={needPay}
+          updateViewCount={updateViewCount}
+          canViewAttachment={canViewAttachment}
+          canDownloadAttachment={canDownloadAttachment}
+        />
           : null
         }
 
         {/* 投票帖子展示 */}
         {voteData && <VoteDisplay voteData={voteData} updateViewCount={props.updateViewCount} threadId={threadId} />}
         {
-          DZQPluginCenter.injection('plugin_index', 'thread_extension_display_hook').map(({render, pluginInfo}) => {
+          DZQPluginCenter.injection('plugin_index', 'thread_extension_display_hook').map(({ render, pluginInfo }) => {
             return (
               <View key={pluginInfo.name}>
                 {render({
