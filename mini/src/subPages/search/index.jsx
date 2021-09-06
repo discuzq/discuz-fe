@@ -9,10 +9,10 @@ import { getCurrentInstance } from '@tarojs/taro';
 import { updateThreadAssignInfoInLists } from '@common/store/thread-list/list-business';
 
 @inject('search')
-@inject('topic')
 @inject('index')
 @inject('user')
 @inject('site')
+@inject('threadList')
 @observer
 @withShare({
   needShareline: false
@@ -21,6 +21,8 @@ class Index extends React.Component {
 
   constructor(props) {
     super(props);
+
+    this.props.threadList.registerList({ namespace: 'search' });
   }
   async componentDidMount() {
     const { search } = this.props;
@@ -29,7 +31,7 @@ class Index extends React.Component {
 
     const hasIndexTopics = !!search.indexTopics;
     const hasIndexUsers = !!search.indexUsers;
-    const hasIndexThreads = !!search.indexThreads;
+    const hasIndexThreads = !!search.indexThreads?.pageData?.length;
     search.getSearchData({ hasTopics: hasIndexTopics, hasUsers: hasIndexUsers, hasThreads: hasIndexThreads, search: keyword });
   }
   getShareData (data) {

@@ -8,7 +8,7 @@ import { priceShare } from '@common/utils/priceShare';
 import { updateThreadAssignInfoInLists } from '@common/store/thread-list/list-business';
 
 @inject('search')
-@inject('topic')
+@inject('threadList')
 @inject('index')
 @inject('user')
 @observer
@@ -22,6 +22,8 @@ class Index extends React.Component {
 
   constructor(props) {
     super(props);
+
+    this.props.threadList.registerList({ namespace: 'search/result-post' });
   }
 
   async componentDidMount() {
