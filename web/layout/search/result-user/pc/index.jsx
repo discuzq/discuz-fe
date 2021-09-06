@@ -81,7 +81,8 @@ class SearchResultUserPcPage extends React.Component {
   };
 
   onSearch = (value) => {
-    this.props.search.currentKeyword = value;
+    // this.props.search.currentKeyword = value;
+    this.props.router.replace(`/search/result-user?keyword=${value}`);
     this.setState({ keyword: value }, () => {
       this.searchData(value);
     });

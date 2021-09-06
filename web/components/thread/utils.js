@@ -68,7 +68,7 @@ export const handleAttachmentData = (data) => {
     // 插件
     } else {
       const { tomId, body } = item;
-      const { _plugin } = body;
+      const { _plugin } = body || {};
       if ( _plugin ) {
         newData.plugin[_plugin.name] = {
           tomId,

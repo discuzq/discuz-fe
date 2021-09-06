@@ -9,7 +9,7 @@ import { View, Text } from '@tarojs/components';
 import styles from './index.module.scss';
 import Router from '@discuzq/sdk/dist/router';
 import { ScrollView } from '@tarojs/components';
-
+import { substr } from '@common/utils/substr';
 
 const { Col, Row } = Flex;
 
@@ -59,7 +59,7 @@ const Index = ({ permissions = {}, visible, data: tmpData = [], current, onSubmi
       const isBool = arr.length === 1 && (arr[0] === 'all' || arr[0] === 'default')
 
       // 若是大于1，或者等于1且为'all'/'default'，则说明点击的是一级分类
-      if (arr.length > 1 || isBool) { 
+      if (arr.length > 1 || isBool) {
         setFirst(pid)
         setTwo(pid, tmpData)
       } else { // 若是等于1，则说明点击的是没有二级分类的一级分类或者是二级分类
@@ -177,7 +177,7 @@ const Index = ({ permissions = {}, visible, data: tmpData = [], current, onSubmi
                 key={index}
                 onClick={() => onClickFirst(item.pid, type, contents)}
               >
-                {item.name.length > 6 ? item.name.substr(0, 6) : item.name}
+                {item.name.length > 6 ? substr(item.name, 12) : item.name}
               </Text>
               </Col>
             ))
@@ -193,7 +193,7 @@ const Index = ({ permissions = {}, visible, data: tmpData = [], current, onSubmi
                       className={`${firstChildren === item.pid ? styles.childrenActive : ''} ${styles.childrenSpan}`}
                       key={`${index}-${index}`}
                       onClick={() => onClickSecond(item.pid, type)}>
-                        {item.name.length > 6 ? item.name.substr(0, 6) : item.name}
+                        {item.name.length > 6 ? substr(item.name, 12) : item.name}
                     </Text>
                   </Col>
                 ))

@@ -41,7 +41,7 @@ class SearchResultPostH5Page extends React.Component {
   };
 
   onSearch = (keyword) => {
-    this.props.search.currentPostKeyword = keyword;
+    this.props.router.replace(`/search/result-post?keyword=${keyword}`);
     this.setState({ keyword }, () => {
       this.refreshData();
     });
