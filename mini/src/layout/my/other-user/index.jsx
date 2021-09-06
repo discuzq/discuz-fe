@@ -16,7 +16,7 @@ import ImagePreviewer from '@discuzq/design/dist/components/image-previewer/inde
 
 @inject('site')
 @inject('user')
-@inject('index')
+@inject('threadList')
 @observer
 class H5OthersPage extends React.Component {
   constructor(props) {
