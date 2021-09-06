@@ -84,6 +84,7 @@ const PostContent = ({
 
 
   const handleClick = (e, node) => {
+    if(node.name === 'image') return
     e && e.stopPropagation();
     const { url, isExternaLink } = handleLink(node)
     if (isExternaLink) return

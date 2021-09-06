@@ -78,7 +78,7 @@ export const handleAttachmentData = (data) => {
       newData.iframeData = item.body;
     } else {
       const { tomId, body } = item;
-      const { _plugin } = body;
+      const { _plugin } = body || {};
       if ( _plugin ) {
         newData.plugin[_plugin.name] = {
           tomId,
