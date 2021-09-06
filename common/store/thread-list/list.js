@@ -333,8 +333,11 @@ export default class ListStore {
     const targetThreads = this.findAssignThreadInLists({ threadId });
 
     targetThreads.filter(item => !!item?.listName).forEach(({ listName, page, index }) => {
-      if (listName && this.lists[listName]) {
-        this.lists[listName].data[page][index] = threadInfo;
+      if (this.lists?.[listName]?.data?.[page]?.[index]) {
+        this.lists[listName].data[page][index] = {
+          ...this.lists[listName].data[page][index],
+          ...threadInfo,
+        };
       }
     });
 
