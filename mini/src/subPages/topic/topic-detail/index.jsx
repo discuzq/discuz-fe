@@ -9,7 +9,7 @@ import withShare from '@common/utils/withShare/withShare'
 import { priceShare } from '@common/utils/priceShare';
 import { updateThreadAssignInfoInLists } from '@common/store/thread-list/list-business';
 
-@inject('search')
+@inject('threadList')
 @inject('topic')
 @inject('index')
 @inject('user')
@@ -23,6 +23,8 @@ class Index extends React.Component {
       isError: false,
       errorText: '加载失败',
     }
+
+    this.props.threadList.registerList({ namespace: this.props.topic.namespace });
   }
   page = 1;
   perPage = 10;

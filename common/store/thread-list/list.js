@@ -179,7 +179,7 @@ export default class ListStore {
       this.registerList({ namespace });
     }
 
-    this.lists[namespace].data[listPage] = observable(get(data, 'data.pageData'));
+    this.lists[namespace].data[listPage] = observable(get(data, 'data.pageData') || []);
 
     if (
       !this.getAttribute({ namespace, key: 'currentPage' }) ||
