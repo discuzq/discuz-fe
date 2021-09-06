@@ -74,10 +74,15 @@ class IndexAction extends IndexStore {
 
       if (res.code === 0) {
         targetThread.data.commentList = res?.data?.pageData || [];
-        targetThread.data.requestError.isError = false;
+        targetThread.data.requestError = {
+          isError: false,
+          errorText: '加载失败'
+        }
       } else {
-        targetThread.data.requestError.isError = true;
-        targetThread.data.requestError.errorText = res.msg || '加载失败';
+        targetThread.data.requestError = {
+          isError: true,
+          errorText: res.msg || '加载失败'
+        }
       }
 
       targetThread.data.isLoading = false;

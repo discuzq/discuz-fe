@@ -78,6 +78,8 @@ class ThreadAction extends ThreadStore {
   @action
   updatePostCount(count = 0) {
     this.threadData?.likeReward && (this.threadData.likeReward.postCount = count);
+
+    this.updateListStore();
   }
 
   /**
@@ -234,6 +236,8 @@ class ThreadAction extends ThreadStore {
   @action
   setTotalCount(data) {
     this.totalCount = data;
+
+    this.updatePostCount(data);
   }
 
   /**
