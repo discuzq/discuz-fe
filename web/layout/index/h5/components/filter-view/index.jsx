@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Button, Icon, Popup, Flex } from '@discuzq/design';
 import { noop } from '@components/thread/utils';
+import { substr } from '@common/utils/substr';
 import filterData from './data';
 import { withRouter } from 'next/router';
 
@@ -42,7 +43,7 @@ const Index = ({ visible, data: tmpData = [], current, onSubmit = noop, onCancel
       const isBool = arr.length === 1 && (arr[0] === 'all' || arr[0] === 'default')
 
       // 若是大于1，或者等于1且为'all'/'default'，则说明点击的是一级分类
-      if (arr.length > 1 || isBool) { 
+      if (arr.length > 1 || isBool) {
         setFirst(pid)
         setTwo(pid, tmpData)
       } else { // 若是等于1，则说明点击的是没有二级分类的一级分类或者是二级分类
@@ -159,7 +160,7 @@ const Index = ({ visible, data: tmpData = [], current, onSubmit = noop, onCancel
                   className={`${tip === item.pid ? styles.active : ''} ${styles.span}`}
                   onClick={() => onClickFirst(item.pid, type, contents)}
                 >
-                  {item.name.length > 6 ? item.name.substr(0, 6) : item.name}
+                  {item.name.length > 6 ? substr(item.name, 12) : item.name}
                 </span>
               </Col>
             ))
@@ -171,10 +172,10 @@ const Index = ({ visible, data: tmpData = [], current, onSubmit = noop, onCancel
               {
                 subData.map((item, index) => (
                   <Col span={ item.name.length < 6 ? 3 : item.name.length === 6 ? 4 : 5 } key={`${index}-${index}`}>
-                    <span 
-                      className={`${firstChildren === item.pid ? styles.childrenActive : ''} ${styles.childrenSpan}`} 
+                    <span
+                      className={`${firstChildren === item.pid ? styles.childrenActive : ''} ${styles.childrenSpan}`}
                       onClick={() => onClickSecond(item.pid, type)}>
-                        {item.name.length > 6 ? item.name.substr(0, 6) : item.name}
+                        {item.name.length > 6 ? substr(item.name, 12)  : item.name}
                     </span>
                   </Col>
                 ))
