@@ -289,8 +289,9 @@ export default class ListStore {
 
     Object.keys(this.lists).forEach((listName) => {
       const listSearchResult = this.findAssignThreadInTargetList({ namespace: listName, threadId });
-
-      resultList = [...resultList, listSearchResult];
+      if (listSearchResult) {
+        resultList = [...resultList, listSearchResult];
+      }
     });
 
     return resultList;

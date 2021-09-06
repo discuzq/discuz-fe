@@ -142,7 +142,7 @@ class Detail extends React.Component {
       if (targetThreadList?.length) {
         targetThreadList.forEach((targetThread) => {
           if (!threadData && targetThread.data) {
-            targetThread = targetThread.data;
+            threadData = targetThread.data;
           }
         });
       }
