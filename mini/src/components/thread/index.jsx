@@ -23,7 +23,6 @@ import { updateViewCountInStorage } from '@common/utils/viewcount-in-storage';
 @inject('thread')
 @observer
 class Index extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -44,6 +43,7 @@ class Index extends React.Component {
   setUseShowMore = () => {
     this.setState({ useShowMore: false })
   }
+
   setUseCloseMore = () => {
     this.setState({ useShowMore: true })
   }
@@ -228,7 +228,7 @@ class Index extends React.Component {
   }
 
   render() {
-    const { data, className = '', site = {}, showBottomStyle = true, isShowIcon = false, unifyOnClick = null, relativeToViewport = true, onTextItemClick = null } = this.props;
+    const { data, className = '', site = {}, showBottomStyle = true, isShowIcon = false, unifyOnClick = null, relativeToViewport = true, onTextItemClick = null, extraTag } = this.props;
     const { platform = 'pc' } = site;
     if (!data) {
       return <NoData />;
@@ -274,6 +274,7 @@ class Index extends React.Component {
                   isAnonymous={isAnonymous}
                   userId={user?.userId}
                   platform={platform}
+                  extraTag={extraTag}
                   onClick={unifyOnClick || this.onUser}
                 />
                 {isShowIcon && <View className={styles.headerIcon} onClick={unifyOnClick || this.onClickHeaderIcon}><Icon name='CollectOutlinedBig' className={styles.collectIcon}></Icon></View>}

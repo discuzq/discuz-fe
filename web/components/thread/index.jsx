@@ -282,7 +282,7 @@ class Index extends React.Component {
   }
 
   render() {
-    const { data, card, className = '', site = {}, showBottomStyle = true, collect = '', unifyOnClick = null, isShowIcon = false, user: users, onTextItemClick = null } = this.props;
+    const { data, card, className = '', site = {}, showBottomStyle = true, collect = '', unifyOnClick = null, isShowIcon = false, user: users, onTextItemClick = null, extraTag } = this.props;
     const { platform = 'pc' } = site;
 
     const { onContentHeightChange = noop, onImageReady = noop, onVideoReady = noop } = this.props;
@@ -329,6 +329,7 @@ class Index extends React.Component {
             collect={collect}
             onClick={unifyOnClick || this.onClickUser}
             unifyOnClick={unifyOnClick}
+            extraTag={extraTag}
           />
           {isShowIcon && <div className={styles.headerIcon} onClick={unifyOnClick || this.onClickHeaderIcon}><Icon name='CollectOutlinedBig' size={20}></Icon></div>}
         </div>
@@ -346,7 +347,7 @@ class Index extends React.Component {
           onOpen={this.onOpen}
           onClose={this.onClose}
           updateViewCount={this.updateViewCount}
-          recomputeRowHeights={data => {
+          recomputeRowHeights={(data) => {
             if (this.props.recomputeRowHeights && typeof this.props.recomputeRowHeights === 'function') {
               this.props.recomputeRowHeights(data);
             }

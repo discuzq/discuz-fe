@@ -13,6 +13,7 @@ import Taro, { getCurrentInstance, eventCenter } from '@tarojs/taro';
 import ImagePreviewer from '@discuzq/design/dist/components/image-previewer/index';
 import classnames from 'classnames';
 import Toast from '@discuzq/design/dist/components/toast';
+import UserCenterThreads from '@components/user-center-threads';
 
 @inject('user')
 @inject('threadList')
@@ -253,10 +254,7 @@ export default class index extends Component {
               />
             </View>
 
-            {!isLoading &&
-              myThreadsList?.map((item, index) => (
-                <Thread data={item} key={`${item.threadId}-${item.updatedAt}-${item.user.avatar}`} />
-              ))}
+            {!isLoading && <UserCenterThreads showBottomStyle={false} data={myThreadsList}/>}
           </View>
         </View>
         {this.getBackgroundUrl() && (

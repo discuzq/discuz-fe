@@ -24,7 +24,8 @@ UserInfo.propTypes = {
   platform: PropTypes.string, // 是否展示pop PC端
   icon: PropTypes.string, // 图标：点赞或者是付费用户
   collect: PropTypes.string,
-  unifyOnClick: PropTypes.func
+  unifyOnClick: PropTypes.func,
+  extraTag: PropTypes.element,
 };
 
 export default function UserInfo(props) {
@@ -33,6 +34,7 @@ export default function UserInfo(props) {
     console.log(props)
   });*/
   let tagsNumber = 0;
+
   props.isEssence && (tagsNumber = tagsNumber + 1);
   props.isPay && (tagsNumber = tagsNumber + 1);
   props.isReward && (tagsNumber = tagsNumber + 1);
@@ -48,15 +50,16 @@ export default function UserInfo(props) {
         circle={true}
         image={props.avatar}
         name={props.name || ''}
-        onClick={(e) => props.onClick && props.onClick(e)}
+        onClick={e => props.onClick && props.onClick(e)}
         unifyOnClick={props.unifyOnClick}
         platform={props.platform}
       ></Avatar>
 
       <div className={styles.right}>
         <div className={styles.info}>
-          <div className={classNames(styles.name, props.platform === 'pc' && styles.pc, styles.cursor)} onClick={(e) => props.onClick(e)}>{props.name}</div>
+          <div className={classNames(styles.name, props.platform === 'pc' && styles.pc, styles.cursor)} onClick={e => props.onClick(e)}>{props.name}</div>
           {!props.isAnonymous && props.groupName && <div className={`${styles.groupName} ${tagsNumber > 3 ? styles.groupNameText : ''}`}>{props.groupName}</div>}
+          {props.extraInfo && props.extraInfo}
         </div>
 
         <div className={styles.meta}>
@@ -82,7 +85,8 @@ export default function UserInfo(props) {
         {props.isReward && <Tag type="warning">{tagsNumber > 2 && !isPc ? '悬' : '悬赏'}</Tag>}
         {props.isRed && <Tag type="danger">{tagsNumber > 2 && !isPc ? '红' : '红包'}</Tag>}
         {props.isPay && <Tag type="success">{tagsNumber > 2 && !isPc ? '付' : '付费'}</Tag>}
-        {props.collect === 'collect' &&  <Icon className={styles.listItemIcon} name='CollectOutlined' size={20} />}
+        {/* {props.collect === 'collect' || true &&  <Icon className={styles.listItemIcon} name='CollectOutlined' size={20} />} */}
+        {props.extraTag && props.extraTag}
       </div>
     </div>
   );

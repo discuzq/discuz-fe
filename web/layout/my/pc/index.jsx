@@ -11,13 +11,13 @@ import Copyright from '@components/copyright';
 import Router from '@discuzq/sdk/dist/router';
 import UserCenterFansPc from '@components/user-center/fans-pc';
 import UserCenterFollowsPc from '../../../components/user-center/follows-pc';
-import Thread from '@components/thread';
 import BaseLayout from '@components/base-layout';
 import { Toast } from '@discuzq/design';
 import { withRouter } from 'next/router';
 import UserCenterHeaderPc from '@components/user-center/header-pc';
 import MemberShipCard from '@components/member-ship-card';
 import RenewalFee from '@components/user-center/renewal-fee';
+import UserCenterThreads from '@components/user-center-threads';
 
 @inject('site')
 @inject('user')
@@ -128,9 +128,7 @@ class PCMyPage extends React.Component {
   };
 
   // 是否显示续费卡片
-  whetherIsShowRenewalCard = () => {
-    return this.props.site?.siteMode === 'pay' && !this.props.user?.isAdmini;
-  };
+  whetherIsShowRenewalCard = () => this.props.site?.siteMode === 'pay' && !this.props.user?.isAdmini;
 
   renderRight = () => {
     // 条件都满足时才显示微信
@@ -229,13 +227,7 @@ class PCMyPage extends React.Component {
           leftNum={showUserThreadsTotalCount ? `${totalCount}个主题` : ''}
           mold="plane"
         >
-          {myThreadsList?.map((item, index) => (
-            <Thread
-              data={item}
-              key={`${item.threadId}-${item.updatedAt}-${item.user.avatar}-${item._time}`}
-              className={index === 0 && styles.threadStyle}
-            />
-          ))}
+          <UserCenterThreads data={myThreadsList} threadClassName={styles.threadStyle}/>
         </SidebarPanel>
       </div>
     );

@@ -108,7 +108,7 @@ export default class ListStore {
     }
     const newFilter = filter;
     if (filter.categoryids && filter.categoryids instanceof Array) {
-      const newCategoryIds = filter.categoryids?.filter((item) => item);
+      const newCategoryIds = filter.categoryids?.filter(item => item);
       if (!newCategoryIds.length) {
         delete newFilter.categoryids;
       }
@@ -158,7 +158,7 @@ export default class ListStore {
 
   /**
    * 删除所有列表中的item
-   * @param {*} param0 
+   * @param {*} param0
    */
   @action
   deleteListItem = ({ item }) => {
@@ -182,8 +182,8 @@ export default class ListStore {
     this.lists[namespace].data[listPage] = observable(get(data, 'data.pageData') || []);
 
     if (
-      !this.getAttribute({ namespace, key: 'currentPage' }) ||
-      Number(this.getAttribute({ namespace, key: 'currentPage' })) <= Number(get(data, 'data.currentPage'))
+      !this.getAttribute({ namespace, key: 'currentPage' })
+      || Number(this.getAttribute({ namespace, key: 'currentPage' })) <= Number(get(data, 'data.currentPage'))
     ) {
       this.setAttribute({ namespace, key: 'currentPage', value: get(data, 'data.currentPage') });
     }
@@ -268,7 +268,9 @@ export default class ListStore {
       this.lists[namespace].data[1] = [];
     }
 
-    this.lists[namespace].data[1].unshift(threadInfo);
+    if (this.lists[namespace].data[1]) {
+      this.lists[namespace].data[1].unshift(threadInfo);
+    }
 
     const currentTotalCount = this.getAttribute({ namespace, key: 'totalCount' });
 
