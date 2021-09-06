@@ -179,7 +179,7 @@ class CommentList extends React.Component {
                       <Text className={styles.masterText}>作者</Text>
                     </View>
                   )}
-                  {!!groups?.isDisplay  && (
+                  {!!groups?.isDisplay && (
                     <View className={styles.groups}>{groups?.name || groups?.groupName}</View>
                   )}
                 </View>
@@ -209,6 +209,7 @@ class CommentList extends React.Component {
                 ''
               )}
             </View>
+
             {/* 底部操作栏 */}
             {this.props.data?.user && (
               <View className={styles.commentListFooter}>
@@ -240,6 +241,9 @@ class CommentList extends React.Component {
                     )}
                   </View>
                 </View>
+                {
+                  this.props.originThread || ''
+                }
                 {this.props.data?.replyCount - 1 > 0 && this.state.isShowOne ? (
                   <View className={styles.moreReply} onClick={() => this.toCommentDetail()}>
                     查看之前{this.props.data?.replyCount - 1}条回复...
@@ -254,7 +258,7 @@ class CommentList extends React.Component {
                         data={this.needReply[0]}
                         key={this.needReply[0].id}
                         isShowOne
-                        avatarClick={(floor) => this.replyAvatarClick(this.needReply[0],floor)}
+                        avatarClick={(floor) => this.replyAvatarClick(this.needReply[0], floor)}
                         likeClick={() => this.replyLikeClick(this.needReply[0])}
                         replyClick={() => this.replyReplyClick(this.needReply[0])}
                         deleteClick={() => this.replyDeleteClick(this.needReply[0])}
@@ -283,6 +287,7 @@ class CommentList extends React.Component {
                 )}
               </View>
             )}
+
           </View>
         </View>
       </View>

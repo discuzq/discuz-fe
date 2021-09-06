@@ -10,6 +10,7 @@ import HOCFetchSiteData from '@middleware/HOCFetchSiteData';
 @inject('site')
 @inject('search')
 @inject('topic')
+@inject('threadList')
 @inject('baselayout')
 @observer
 class Index extends React.Component {
@@ -36,10 +37,12 @@ class Index extends React.Component {
 
   constructor(props) {
     super(props);
-    const { serverSearch, search, router } = this.props;
+    const { serverSearch, search, router, threadList } = this.props;
     const { keyword = '' } = router?.query;
     // 初始化数据到store中
     const { platform } = this.props.site || {};
+
+    threadList.registerList({ namespace: 'search' });
 
     search.currentKeyword = keyword;
     serverSearch && serverSearch.indexTopics && search.setIndexTopics(serverSearch.indexTopics);
@@ -65,11 +68,11 @@ class Index extends React.Component {
     } else {
       const hasIndexTopics = !!search.indexTopics;
       const hasIndexUsers = !!search.indexUsers;
-      const hasIndexThreads = !!search.indexThreads;
+      const hasIndexThreads = !!search.indexThreads?.pageData?.length;
       search.getSearchData({ hasTopics: hasIndexTopics, hasUsers: hasIndexUsers, hasThreads: hasIndexThreads, search: keyword });
     }
     baselayout.resetSearchResultScrolltop();
-    topic.resetTopicsData();
+    // topic.resetTopicsData();
     search.resetResultData();
   }
 

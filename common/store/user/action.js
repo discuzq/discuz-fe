@@ -1028,38 +1028,6 @@ class UserAction extends SiteStore {
     this.userShieldTotalCount = 0; // 总条数
   };
 
-  // 获取指定的帖子数据
-  findAssignThread(threadId) {
-    if (this.threads) {
-      const { pageData = [] } = this.threads;
-      for (let i = 0; i < pageData.length; i++) {
-        if (pageData[i].threadId === threadId) {
-          return { index: i, data: pageData[i] };
-        }
-      }
-      return null;
-    }
-  }
-
-  /**
-   * 支付成功后，更新帖子列表指定帖子状态
-   * @param {number} threadId 帖子id
-   * @param {object}  obj 更新数据
-   * @returns
-   */
-  @action
-  updatePayThreadInfo(threadId, obj) {
-    const targetThreads = this.findAssignThread(threadId);
-    if (!targetThreads || targetThreads.length === 0) return;
-
-    targetThreads.forEach((targetThread) => {
-      const { index, key, data, store } = targetThread;
-      if (store[key] && store[key][index]) {
-        store[key][index] = obj;
-      }
-    });
-  }
-
   // 生成微信换绑二维码，仅在 PC 使用
   @action
   genRebindQrCode = async ({ scanSuccess = () => {}, scanFail = () => {}, onTimeOut = () => {}, option = {} }) => {

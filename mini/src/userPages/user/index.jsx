@@ -6,6 +6,7 @@ import { inject, observer } from 'mobx-react';
 import withShare from '@common/utils/withShare/withShare';
 import { priceShare } from '@common/utils/priceShare';
 import Taro, { getCurrentInstance, eventCenter } from '@tarojs/taro';
+import { updateThreadAssignInfoInLists } from '@common/store/thread-list/list-business';
 
 @inject('site')
 @inject('search')
@@ -31,17 +32,7 @@ class Index extends React.Component {
       const { user } = this.props;
       this.props.index.updateThreadShare({ threadId }).then((result) => {
         if (result.code === 0) {
-          this.props.index.updateAssignThreadInfo(threadId, {
-            updateType: 'share',
-            updatedInfo: result.data,
-            user: user.userInfo,
-          });
-          this.props.search.updateAssignThreadInfo(threadId, {
-            updateType: 'share',
-            updatedInfo: result.data,
-            user: user.userInfo,
-          });
-          this.props.topic.updateAssignThreadInfo(threadId, {
+          updateThreadAssignInfoInLists(threadId, {
             updateType: 'share',
             updatedInfo: result.data,
             user: user.userInfo,

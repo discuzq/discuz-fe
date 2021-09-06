@@ -8,6 +8,7 @@ import HOCFetchSiteData from '@middleware/HOCFetchSiteData';
 
 @inject('site')
 @inject('search')
+@inject('threadList')
 @inject('baselayout')
 @observer
 class Index extends React.Component {
@@ -35,7 +36,8 @@ class Index extends React.Component {
   constructor(props) {
     super(props);
 
-    const { serverSearch, search } = this.props;
+    const { serverSearch, search, threadList } = this.props;
+    threadList.registerList({ namespace: 'search/result' });
 
     serverSearch && serverSearch.searchTopics && search.setSearchTopics(serverSearch.searchTopics);
     serverSearch && serverSearch.searchUsers && search.setSearchUsers(serverSearch.searchUsers);
@@ -48,7 +50,7 @@ class Index extends React.Component {
 
     const hasSearchTopics = !!search.searchTopics;
     const hasSearchUsers = !!search.searchUsers;
-    const hasSearchThreads = !!search.searchThreads;
+    const hasSearchThreads = !!search.searchThreads?.pageData?.length;
 
     await search.getSearchData({
       hasTopics: hasSearchTopics,

@@ -15,7 +15,7 @@ import setWxShare from '@common/utils/set-wx-share';
 
 @inject('site')
 @inject('user')
-@inject('index')
+@inject('threadList')
 @observer
 class H5OthersPage extends React.Component {
   constructor(props) {
@@ -110,14 +110,14 @@ class H5OthersPage extends React.Component {
   fetchTargetUserThreads = async () => {
     const { query } = this.props.router;
     if (query.id) {
-      const targetUserThreadsList = await this.props.index.fetchList({
+      const targetUserThreadsList = await this.props.threadList.fetchList({
         namespace: `user/${query.id}`,
         filter: {
           toUserId: query.id,
           complex: 5,
         },
       });
-      this.props.index.setList({ namespace: `user/${query.id}`, data: targetUserThreadsList });
+      this.props.threadList.setList({ namespace: `user/${query.id}`, data: targetUserThreadsList });
     }
     return;
   };
@@ -148,26 +148,26 @@ class H5OthersPage extends React.Component {
   render() {
     const { site, user } = this.props;
     const { platform } = site;
-    const { index } = this.props;
-    const { lists } = index;
+    const { threadList } = this.props;
+    const { lists } = threadList;
 
     const { query = {} } = this.props.router;
 
-    const userThreadsList = index.getList({
+    const userThreadsList = threadList.getList({
       namespace: `user/${query.id}`,
     });
 
-    const totalPage = index.getAttribute({
+    const totalPage = threadList.getAttribute({
       namespace: `user/${query.id}`,
       key: 'totalPage',
     });
 
-    const totalCount = index.getAttribute({
+    const totalCount = threadList.getAttribute({
       namespace: `user/${query.id}`,
       key: 'totalCount',
     });
 
-    const currentPage = index.getAttribute({
+    const currentPage = threadList.getAttribute({
       namespace: `user/${query.id}`,
       key: 'currentPage',
     });

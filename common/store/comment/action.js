@@ -316,7 +316,7 @@ class CommentAction extends CommentStore {
         const threadId = ThreadStore?.threadData?.id;
         ThreadStore.setCommentListDetailField(res.data.pid, 'redPacketAmount', res.data.redPacketAmount);
         await ThreadStore.fetchThreadDetail(threadId);
-        ThreadStore.updateListStore(IndexStore, SearchStore, TopicStore);
+        ThreadStore.updateListStore();
       }
 
       return {

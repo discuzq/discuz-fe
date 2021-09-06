@@ -41,8 +41,6 @@ import { parseContentData } from './utils';
 @inject('commentPosition')
 @inject('comment')
 @inject('index')
-@inject('topic')
-@inject('search')
 @inject('payBox')
 @observer
 class ThreadH5Page extends React.Component {
@@ -513,14 +511,7 @@ class ThreadH5Page extends React.Component {
     this.setState({ showDeletePopup: false });
     const id = this.props.thread?.threadData?.id;
 
-    const { success, msg } = await this.props.thread.delete(
-      id,
-      this.props.index,
-      this.props.search,
-      this.props.topic,
-      this.props.site,
-      this.props.user,
-    );
+    const { success, msg } = await this.props.thread.delete(id);
 
     if (success) {
       Toast.success({
@@ -609,7 +600,7 @@ class ThreadH5Page extends React.Component {
       }
 
       // 更新列表store数据
-      this.props.thread.updateListStore(this.props.index, this.props.search, this.props.topic);
+      this.props.thread.updateListStore();
 
       if (isApproved) {
         Toast.success({
@@ -843,7 +834,7 @@ class ThreadH5Page extends React.Component {
     if (success && this.props.thread?.threadData?.threadId) {
       await this.props.thread.fetchThreadDetail(this.props.thread?.threadData?.threadId);
       // 更新列表store数据
-      this.props.thread.updateListStore(this.props.index, this.props.search, this.props.topic);
+      this.props.thread.updateListStore();
     }
   }
 
@@ -871,10 +862,7 @@ class ThreadH5Page extends React.Component {
 
       const { success, msg } = await this.props.thread.rewardPay(
         params,
-        this.props.user,
-        this.props.index,
-        this.props.search,
-        this.props.topic,
+        this.props.user
       );
 
       if (!success) {
@@ -923,7 +911,7 @@ class ThreadH5Page extends React.Component {
 
         // 重新获取帖子详细
         await this.props.thread.fetchThreadDetail(params.threadId);
-        this.props.thread.updateListStore(this.props.index, this.props.search, this.props.topic);
+        this.props.thread.updateListStore();
 
         Toast.success({
           content: `悬赏${data}元`,
