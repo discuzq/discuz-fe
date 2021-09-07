@@ -195,9 +195,10 @@ class CommentList extends React.Component {
                         赞&nbsp;{this.props?.data?.likeCount > 0 ? this.props.data.likeCount : ''}
                       </span>
                     </div>
-                    <div className={styles.commentReply}>
-                      <span onClick={() => this.replyClick()}>回复</span>
-                    </div>
+                    {!this.props.disabledReply && <div className={styles.commentReply}>
+                        <span onClick={() => this.replyClick()}>回复</span>
+                      </div>
+                    }
                     {this.props.isShowAdopt && (
                       <div className={styles.commentAdopt}>
                         <span onClick={() => this.props.onAboptClick()}>采纳</span>

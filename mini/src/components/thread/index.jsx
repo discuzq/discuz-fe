@@ -262,6 +262,10 @@ class Index extends React.Component {
     return canPublish(this.props.user, this.props.site);
   }
 
+    canPublish = () => {
+      return canPublish(this.props.user, this.props.site);
+    }
+
     render() {
       const { data, className = '', site = {}, showBottomStyle = true, isShowIcon = false, unifyOnClick = null, relativeToViewport = true, onTextItemClick = null, extraTag } = this.props;
       const { platform = 'pc' } = site;

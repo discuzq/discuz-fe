@@ -390,6 +390,7 @@ class RenderCommentList extends React.Component {
                 }
                 threadId={this.props.thread?.threadData?.userId}
                 isAnonymous={isAnonymous}
+                disabledReply={true}
               ></CommentList>
             </div>
           ))}
