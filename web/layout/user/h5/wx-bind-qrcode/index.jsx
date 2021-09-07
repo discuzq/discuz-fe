@@ -59,7 +59,7 @@ class WeixinBindQrCodePage extends React.Component {
         name = user.nickname;
       }
 
-      let redirectUri = `${wechatEnv === 'miniProgram' ? '/subPages/user/wx-auth/index' : `${window.location.origin}/user/wx-auth`}?loginType=${platform}&action=wx-bind&nickname=${name}`;
+      let redirectUri = `${wechatEnv === 'miniProgram' ? '/userPages/user/wx-auth/index' : `${window.location.origin}/user/wx-auth`}?loginType=${platform}&action=wx-bind&nickname=${name}`;
       redirectUri += platform === 'h5' && bindPhone ? '&bindPhone=1' : '';
       redirectUri += platform === 'h5' && toPage ? `&toPage=${toPage}` : '';
       await this.props.h5QrCode.generate({
