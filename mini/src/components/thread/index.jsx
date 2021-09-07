@@ -16,6 +16,8 @@ import { getImmutableTypeHeight } from './getHeight'
 import { updateThreadAssignInfoInLists, updatePayThreadInfo } from '@common/store/thread-list/list-business';
 import Skeleton from './skeleton';
 import { updateViewCountInStorage } from '@common/utils/viewcount-in-storage';
+import canPublish from '@common/utils/can-publish';
+import Comment from './comment';
 
 @inject('site')
 @inject('index')
@@ -30,7 +32,8 @@ class Index extends React.Component {
       isSendingLike: false,
       minHeight: 0,
       useShowMore: true,
-      videoH: 0
+      videoH: 0,
+      showCommentList: false
     }
 
     this.threadStyleId = `thread-style-id-${randomStr()}`
@@ -64,23 +67,32 @@ class Index extends React.Component {
     })
   }
 
-  // 评论
-  onComment = (e) => {
-    e && e.stopPropagation();
+    // 评论
+    onComment = async (e) => {
+      e && e.stopPropagation();
 
     if (!this.allowEnter()) {
       return
     }
 
-    const { threadId = '' } = this.props.data || {};
+      const { threadId = '', likeReward } = this.props.data || {};
 
-    if (threadId !== '') {
-      this.props.thread.positionToComment()
-      Router.push({ url: `/indexPages/thread/index?id=${threadId}` })
-    } else {
-      console.log('帖子不存在');
+      if (threadId !== '') {
+        // 请求评论数据
+        if (this.props.enableCommentList && (likeReward.postCount === 0 || this.state.showCommentList)) {
+          this.setState({
+            showCommentList: !this.state.showCommentList,
+          });
+          return;
+        }
+
+        this.props.thread.positionToComment()
+        Router.push({url: `/indexPages/thread/index?id=${threadId}`})
+      } else {
+        console.log('帖子不存在');
+      }
     }
-  }
+    
   // 点赞
   onPraise = (e) => {
     e && e.stopPropagation();
@@ -226,37 +238,61 @@ class Index extends React.Component {
       updateThreadAssignInfoInLists(threadIdNumber, { updateType: 'viewCount', updatedInfo: { viewCount } })
     }
   }
+      // 删除评论
+  deleteComment = () => {
+      const postCount = this.props.data?.likeReward?.postCount;
 
-  render() {
-    const { data, className = '', site = {}, showBottomStyle = true, isShowIcon = false, unifyOnClick = null, relativeToViewport = true, onTextItemClick = null, extraTag } = this.props;
-    const { platform = 'pc' } = site;
-    if (!data) {
-      return <NoData />;
-    }
-    const {
-      user = {},
-      position = {},
-      likeReward = {},
-      viewCount,
-      group,
-      createdAt,
-      isLike,
-      postId,
-      threadId,
-      displayTag,
-      payType,
-      content,
-      isAnonymous,
-      diffTime
-    } = data || {};
-    const { text } = content
-    const { isEssence, isPrice, isRedPack, isReward } = displayTag;
-    const { getShareData, getShareContent } = this.props.user
-    const { shareNickname, shareAvatar, shareThreadid, shareContent } = this.props.user
-    const { minHeight, useShowMore, videoH } = this.state
-    return (
-      <View className={`${styles.container} ${className} ${showBottomStyle && styles.containerBottom} ${platform === 'pc' && styles.containerPC}`} style={{ minHeight: `${minHeight}px` }} id={this.threadStyleId}>
-        {
+      if (postCount > 0) {
+        this.props.data.likeReward.postCount = postCount - 1;
+
+        if (this.props.data.likeReward.postCount === 0) {
+          this.setState({
+            showCommentList: false,
+          });
+        }
+      }
+  };
+  // 新增评论
+  createComment = () => {
+    const postCount = this.props.data?.likeReward?.postCount;
+    this.props.data.likeReward.postCount = postCount + 1;
+  };
+
+  canPublish = () => {
+    return canPublish(this.props.user, this.props.site);
+  }
+
+    render() {
+      const { data, className = '', site = {}, showBottomStyle = true, isShowIcon = false, unifyOnClick = null, relativeToViewport = true, onTextItemClick = null, extraTag } = this.props;
+      const { platform = 'pc' } = site;
+      if (!data) {
+        return <NoData />;
+      }
+      const {
+        user = {},
+        position = {},
+        likeReward = {},
+        viewCount,
+        group,
+        createdAt,
+        isLike,
+        postId,
+        threadId,
+        displayTag,
+        payType,
+        content,
+        isAnonymous,
+        diffTime,
+        commentList = [],
+      } = data || {};
+      const {text} = content
+      const { isEssence, isPrice, isRedPack, isReward } = displayTag;
+      const {getShareData, getShareContent} = this.props.user
+      const {shareNickname, shareAvatar, shareThreadid, shareContent} = this.props.user
+      const { minHeight, useShowMore, videoH } = this.state
+      return (
+        <View className={`${styles.container} ${className} ${showBottomStyle && styles.containerBottom} ${platform === 'pc' && styles.containerPC}`} style={{ minHeight: `${minHeight}px` }} id={this.threadStyleId}>
+          {
           relativeToViewport ? (
             <>
               <View className={styles.header} onClick={unifyOnClick || this.onClick}>
@@ -278,56 +314,77 @@ class Index extends React.Component {
                   onClick={unifyOnClick || this.onUser}
                 />
                 {isShowIcon && <View className={styles.headerIcon} onClick={unifyOnClick || this.onClickHeaderIcon}><Icon name='CollectOutlinedBig' className={styles.collectIcon}></Icon></View>}
-              </View>
+            </View>
 
-              <ThreadCenterView
-                site={site}
-                text={text}
-                data={data}
-                onClick={unifyOnClick || this.onClick}
-                onPay={unifyOnClick || this.onPay}
-                unifyOnClick={unifyOnClick}
-                platform={platform}
-                relativeToViewport={relativeToViewport}
-                changeHeight={this.changeHeight}
-                useShowMore={useShowMore}
-                setUseShowMore={this.setUseShowMore}
-                setUseCloseMore={this.setUseCloseMore}
-                videoH={videoH}
-                updateViewCount={this.updateViewCount}
-                onTextItemClick={onTextItemClick}
-              />
+            <ThreadCenterView
+              site={site}
+              text={text}
+              data={data}
+              onClick={unifyOnClick || this.onClick}
+              onPay={unifyOnClick || this.onPay}
+              unifyOnClick={unifyOnClick}
+              platform={platform}
+              relativeToViewport={relativeToViewport}
+              changeHeight={this.changeHeight}
+              useShowMore={useShowMore}
+              setUseShowMore={this.setUseShowMore}
+              videoH={videoH}
+              updateViewCount={this.updateViewCount}
+              onTextItemClick={onTextItemClick}
+            />
 
-              <BottomEvent
-                userImgs={likeReward.users}
-                wholeNum={likeReward.likePayCount || 0}
-                comment={likeReward.postCount || 0}
-                sharing={likeReward.shareCount || 0}
-                onShare={this.onShare}
-                onComment={this.onComment}
-                onPraise={this.onPraise}
-                unifyOnClick={unifyOnClick}
-                isLiked={isLike}
-                isSendingLike={this.state.isSendingLike}
-                tipData={{ postId, threadId, platform, payType }}
-                platform={platform}
-                index={this.props.index}
-                shareNickname={shareNickname}
-                shareAvatar={shareAvatar}
-                shareThreadid={shareThreadid}
-                getShareData={getShareData}
-                shareContent={shareContent}
-                getShareContent={getShareContent}
-                data={data}
-                user={this.props.user}
-                updateViewCount={this.updateViewCount}
-              />
+            <BottomEvent
+              userImgs={likeReward.users}
+              wholeNum={likeReward.likePayCount || 0}
+              comment={likeReward.postCount || 0}
+              sharing={likeReward.shareCount || 0}
+              onShare={this.onShare}
+              onComment={this.onComment}
+              onPraise={this.onPraise}
+              unifyOnClick={unifyOnClick}
+              isLiked={isLike}
+              isSendingLike={this.state.isSendingLike}
+              tipData={{ postId, threadId, platform, payType }}
+              platform={platform}
+              index={this.props.index}
+              shareNickname = {shareNickname}
+              shareAvatar = {shareAvatar}
+              shareThreadid = {shareThreadid}
+              getShareData = {getShareData}
+              shareContent = {shareContent}
+              getShareContent = {getShareContent}
+              data={data}
+              user={this.props.user}
+              updateViewCount={this.updateViewCount}
+              isCommented={this.state.showCommentList}
+            />
             </>
           ) : <Skeleton style={{ minHeight: `${minHeight}px` }} />
         }
-      </View>
-    );
-  }
+
+        {/* 评论列表 */}
+        {this.state.showCommentList && (
+              <Comment
+                thread={{
+                  threadData: {
+                    id: data.threadId,
+                    ...data,
+                  },
+                }}
+                userInfo={this.props.user.userInfo}
+                canPublish={this.canPublish}
+                commentList={commentList}
+                deleteComment={this.deleteComment}
+                createComment={this.createComment}
+                isLoading={data.isLoading}
+                requestError={data.requestError}
+                postCount={data?.likeReward?.postCount}
+                platform={platform}
+              ></Comment>
+          )}
+        </View>
+      );
+    }
 }
 
 // eslint-disable-next-line new-cap

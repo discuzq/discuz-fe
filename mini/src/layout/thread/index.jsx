@@ -394,9 +394,16 @@ class ThreadH5Page extends React.Component {
   };
 
   // 生成海报
-  onPosterShare() {
+  async onPosterShare() {
     const threadId = this.props.thread?.threadData?.id;
     const threadData = this.props.thread?.threadData;
+
+    const { success, msg } = await this.props.thread.shareThread(threadId, this.props.index, this.props.search, this.props.topic);
+    if (!success) {
+      Toast.error({
+        content: msg,
+      });
+    }
     Taro.eventCenter.once('page:init', () => {
       Taro.eventCenter.trigger('message:detail', threadData);
     });

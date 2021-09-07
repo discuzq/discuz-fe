@@ -9,7 +9,7 @@ import { Toast } from '@discuzq/design';
 import classnames from 'classnames';
 import goToLoginPage from '@common/utils/go-to-login-page';
 import Router from '@discuzq/sdk/dist/router';
-import Operate from './operate';
+import Operate from '../../operate';
 
 const typeMap = {
   101: 'IMAGE',
@@ -64,6 +64,7 @@ class RenderCommentList extends React.Component {
       commentId: data.id,
       isLiked: !data.isLiked,
     };
+    this.operate.updateList(this.props.commentList);
     const { success, msg } = await this.operate.updateLiked(params);
 
     if (success) {
@@ -92,6 +93,7 @@ class RenderCommentList extends React.Component {
       replyId: reply.id,
       isLiked: !reply.isLiked,
     };
+    this.operate.updateList(this.props.commentList);
     const { success, msg } = await this.operate.updateLiked(params);
 
     if (success) {
@@ -129,6 +131,7 @@ class RenderCommentList extends React.Component {
 
     if (!this.commentData.id) return;
 
+    this.operate.updateList(this.props.commentList);
     const { success, msg } = await this.operate.delete({
       commentId: this.commentData.id,
     });
@@ -162,6 +165,7 @@ class RenderCommentList extends React.Component {
   async replyDeleteComment() {
     if (!this.replyData.id) return;
 
+    this.operate.updateList(this.props.commentList);
     const { success, msg } = await this.operate.delete({
       commentId: this.commentData.id,
       replyId: this.replyData.id,
@@ -259,6 +263,7 @@ class RenderCommentList extends React.Component {
         });
     }
 
+    this.operate.updateList(this.props.commentList);
     const { success, msg, isApproved } = await this.operate.createReply(params);
 
     if (success) {
@@ -311,6 +316,7 @@ class RenderCommentList extends React.Component {
         rewards: data,
         threadId: this.props.thread?.threadData?.threadId,
       };
+      this.operate.updateList(this.props.commentList);
       const { success, msg } = await this.operate.reward(params);
       if (success) {
         this.setState({ showAboptPopup: false });

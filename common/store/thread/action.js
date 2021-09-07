@@ -29,6 +29,11 @@ class ThreadAction extends ThreadStore {
   }
 
   @action
+  setPageDataListType(data) {
+    this.pageDataListType = data;
+  }
+
+  @action
   updateViewCount(viewCount) {
     this.threadData && (this.threadData.viewCount = viewCount);
   }
@@ -155,6 +160,7 @@ class ThreadAction extends ThreadStore {
     this.isAuthorInfoError = false;
     this.scrollDistance = 0;
     // this.PreFetch = null; // 预加载相关
+    this.pageDataListType = null; // 是否使用了列表缓存数据
   }
 
   // 定位到评论位置

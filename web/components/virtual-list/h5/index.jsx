@@ -137,6 +137,7 @@ function VList(props, ref) {
             isLast={index === list?.length - 2}
             measure={measure}
             recomputeRowHeights={(data) => recomputeRowHeights(index, data)}
+            enableCommentList={true}
           />
         );
     }

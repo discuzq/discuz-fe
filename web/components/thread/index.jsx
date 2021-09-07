@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { withRouter } from 'next/router';
 import { Icon, Toast } from '@discuzq/design';
 import { inject, observer } from 'mobx-react';
@@ -14,11 +14,8 @@ import { throttle } from '@common/utils/throttle-debounce';
 import { debounce } from './utils';
 import { noop } from '@components/thread/utils';
 import { updateViewCountInStorage } from '@common/utils/viewcount-in-storage';
-import RenderCommentList from './comment-list';
+import Comment from './comment';
 import HOCFetchSiteData from '@middleware/HOCFetchSiteData';
-import ViewMore from '@components/view-more';
-import LoadingTips from '@components/thread-detail-pc/loading-tips';
-import BottomView from '@components/list/BottomView';
 import { updateThreadAssignInfoInLists, updatePayThreadInfo } from '@common/store/thread-list/list-business';
 
 @inject('site')
@@ -74,15 +71,23 @@ class Index extends React.Component {
 
     if (threadId !== '') {
       // 请求评论数据
-      if (likeReward.postCount > 0) {
-        if (this.props.enableCommentList) {
+      if (this.props.enableCommentList) {
+        if (this.props?.site?.platform === 'pc') {
           this.setState({
             showCommentList: !this.state.showCommentList,
           });
-          if (!this.state.showCommentList) {
+          if (!this.state.showCommentList && likeReward.postCount > 0) {
             await this.props.index.getThreadCommentList(threadId);
           }
           return;
+        }
+        if (this.props?.site?.platform === 'h5') {
+          if (likeReward.postCount === 0 || this.state.showCommentList) {
+            this.setState({
+              showCommentList: !this.state.showCommentList,
+            });
+            return;
+          }
         }
       }
       this.props.thread.positionToComment();
@@ -263,6 +268,12 @@ class Index extends React.Component {
     }
   };
 
+  // 新增评论
+  createComment = () => {
+    const postCount = this.props.data?.likeReward?.postCount;
+    this.props.data.likeReward.postCount = postCount + 1;
+  };
+
   updateViewCount = async () => {
     const { data, site } = this.props;
     const { threadId = '' } = data || {};
@@ -331,7 +342,6 @@ class Index extends React.Component {
             unifyOnClick={unifyOnClick}
             extraTag={extraTag}
           />
-          {isShowIcon && <div className={styles.headerIcon} onClick={unifyOnClick || this.onClickHeaderIcon}><Icon name='CollectOutlinedBig' size={20}></Icon></div>}
         </div>
 
         <ThreadCenterView
@@ -377,31 +387,24 @@ class Index extends React.Component {
 
         {/* 评论列表 */}
         {this.props.enableCommentList && this.state.showCommentList && (
-          <Fragment>
-            {commentList?.length > 0 && (
-              <RenderCommentList
-                thread={{
-                  threadData: {
-                    id: data.threadId,
-                    ...data,
-                  },
-                }}
-                canPublish={this.props.canPublish}
-                commentList={commentList}
-                deleteComment={this.deleteComment}
-              ></RenderCommentList>
-            )}
-
-            {data.isLoading ? (
-              <LoadingTips type="init"></LoadingTips>
-            ) : (
-              data?.requestError?.isError && <BottomView err isError={data.requestError.isError}></BottomView>
-            )}
-
-            {data?.likeReward?.postCount > 10 && (
-              <ViewMore className={styles.viewMore} onClick={this.onViewMoreClick}></ViewMore>
-            )}
-          </Fragment>
+          <Comment
+            thread={{
+              threadData: {
+                id: data.threadId,
+                ...data,
+              },
+            }}
+            userInfo={this.props.user.userInfo}
+            canPublish={this.props.canPublish}
+            commentList={commentList}
+            deleteComment={this.deleteComment}
+            createComment={this.createComment}
+            isLoading={data.isLoading}
+            requestError={data.requestError}
+            postCount={data?.likeReward?.postCount}
+            onViewMoreClick={this.onViewMoreClick}
+            platform={platform}
+          ></Comment>
         )}
       </div>
     );

@@ -164,6 +164,7 @@ class IndexH5Page extends React.Component {
                   showBottomStyle={index !== pageData.length - 1}
                   data={item}
                   className={styles.listItem}
+                  enableCommentList={true}
                 />
               ))
             )

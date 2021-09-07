@@ -132,7 +132,8 @@ class MyDocument extends Document {
         <script async={true} src="https://mapapi.qq.com/web/mapComponents/geoLocation/v/geolocation.min.js"></script>
         {/* 编辑器markdown依赖 */}
         <script async={true} src="https://cdn.jsdelivr.net/npm/@discuzq/vditor@1.0.22/dist/js/lute/lute.min.js" ></script>
-        <script src="/js/cos-document-preview-sdk-v0.1.1.js"></script>
+        {/* 腾讯云cos文件预览sdk */}
+        <script async={true} src="https://imgcache.qq.com/operation/dianshi/other/cos-document-preview-sdk-v0.1.1.9128e51973a36da64dfb242554132ab7f86a5125.js"></script>
         {this.createMonitor()}
       </Html>
     );
