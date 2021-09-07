@@ -35,6 +35,11 @@ import toolbarStyles from '@components/editor/toolbar/index.module.scss';
 import TagLocalData from '@components/thread-post/tag-localdata';
 import VoteWidget from '@components/thread-post/vote-widget';
 import VoteEditor from '@components/thread-post/vote-editor';
+import IframeVideo from '@components/thread-post/iframe-video';
+import IframeVideoDisplay from '@components/thread-post/iframe-video-display';
+
+// 插件引入
+/**DZQ->plugin->register<plugin_post@post_extension_content_hook>**/
 
 function judgeDeviceType() {
   const ua = window.navigator.userAgent.toLowerCase();
@@ -310,6 +315,14 @@ class ThreadCreate extends React.Component {
               onDelete={() => this.props.setPostData({ video: {} })}
               onReady={this.props.onVideoReady} />
           )}
+          {/* 外部视频iframe插入和上面的视频组件是互斥的 */}
+          {(postData.iframe && postData.iframe.content) && (
+            <IframeVideoDisplay
+              content={postData.iframe.content}
+              isDeleteShow
+              h5
+            />
+          )}
           {/* 录音组件 */}
           {(currentAttachOperation === THREAD_TYPE.voice
             // && Object.keys(postData.audio).length > 0
@@ -365,6 +378,21 @@ class ThreadCreate extends React.Component {
               onDelete={() => this.props.setPostData({ product: {} })}
             />
           )}
+
+          {
+            DZQPluginCenter.injection('plugin_post', 'post_extension_content_hook').map(({render, pluginInfo}) => {
+              return (
+                <div key={pluginInfo.pluginName}>
+                  {render({
+                    site: this.props.site,
+                    renderData: postData.plugin,
+                    deletePlugin: this.props.threadPost.deletePluginPostData,
+                    updatePlugin: this.props.threadPost.setPluginPostData
+                  })} 
+                </div>
+              )
+            })
+          }
         </div>
         <div id="post-bottombar" className={styles['post-bottombar']}>
           {threadPost.isHaveLocalData && (<div id="post-localdata" className={styles['post-localdata']}>
@@ -411,7 +439,9 @@ class ThreadCreate extends React.Component {
           )}
           {/* 调整了一下结构，因为这里的工具栏需要固定 */}
           <AttachmentToolbar
+            site={this.props.site}
             isOpenQcloudVod={this.props.site.isOpenQcloudVod}
+            onPluginSetPostData={this.props.threadPost.setPluginPostData}
             postData={postData}
             onAttachClick={this.props.handleAttachClick}
             // onUploadChange={this.handleUploadChange}
@@ -554,6 +584,22 @@ class ThreadCreate extends React.Component {
             cancel={() => {
               this.props.handleSetState({ curPaySelect: '', currentDefaultOperation: '' });
               this.clearBottomFixed();
+            }}
+          />
+        )}
+        {/* 插入视频或者外部音视频iframe链接 */}
+        {currentAttachOperation === THREAD_TYPE.video && (
+          <IframeVideo
+            visible={currentAttachOperation === THREAD_TYPE.video}
+            onCancel={() => {
+              this.props.handleSetState({ currentAttachOperation: false });
+              this.props.threadPost.setCurrentSelectedToolbar(false);
+            }}
+            beforeUpload={this.props.handleVideoUpload}
+            onUploadChange={(files) => {
+              this.props.handleSetState({ currentAttachOperation: false });
+              this.props.threadPost.setCurrentSelectedToolbar(false);
+              this.props.handleVideoUpload(files);
             }}
           />
         )}

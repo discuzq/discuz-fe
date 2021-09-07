@@ -17,7 +17,7 @@ const Index = ({
 }) => {
   useEffect(() => {
     if(thread) {
-      getConfig({ thread, miniCode, siteName }).then(
+      getConfig({ site, thread, miniCode, siteName }).then(
         config => {
           setConfig(config);
         }

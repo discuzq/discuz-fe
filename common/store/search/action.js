@@ -61,17 +61,17 @@ class SearchAction extends SearchStore {
     const { pageData: usersPageData } = indexUsers || {};
     const { pageData: threadsPageData } = indexThreads || {};
 
-    const hasTopics = !!(topicsPageData?.length)
-    const hasUsers = !!(usersPageData?.length)
-    const hasThreads = !!(threadsPageData?.length)
+    const hasTopics = !!(topicsPageData?.length);
+    const hasUsers = !!(usersPageData?.length);
+    const hasThreads = !!(threadsPageData?.length);
 
     // 都有值，则显示全部
-    const isShowAll = hasTopics && hasUsers && hasThreads
+    const isShowAll = hasTopics && hasUsers && hasThreads;
 
     // 都没值
-    const isNoData = !hasTopics && !hasUsers && !hasThreads
+    const isNoData = !hasTopics && !hasUsers && !hasThreads;
 
-    return { hasTopics, hasUsers, hasThreads, isShowAll, isNoData }
+    return { hasTopics, hasUsers, hasThreads, isShowAll, isNoData };
   }
 
   // 获取数据状态 - 用于小程序和H5
@@ -81,14 +81,14 @@ class SearchAction extends SearchStore {
     const { pageData: usersPageData } = searchUsers || {};
     const { pageData: threadsPageData } = searchThreads || {};
 
-    const hasTopics = !!(topicsPageData?.length)
-    const hasUsers = !!(usersPageData?.length)
-    const hasThreads = !!(threadsPageData?.length)
+    const hasTopics = !!(topicsPageData?.length);
+    const hasUsers = !!(usersPageData?.length);
+    const hasThreads = !!(threadsPageData?.length);
 
     // 都没有值，或者都有值，则显示全部
-    const isShowAll = (!hasTopics && !hasUsers && !hasThreads) || (hasTopics && hasUsers && hasThreads)
+    const isShowAll = (!hasTopics && !hasUsers && !hasThreads) || (hasTopics && hasUsers && hasThreads);
 
-    return { hasTopics, hasUsers, hasThreads, isShowAll }
+    return { hasTopics, hasUsers, hasThreads, isShowAll };
   }
 
   /**
@@ -96,17 +96,17 @@ class SearchAction extends SearchStore {
    */
   @action
   resetIndexData() {
-    this.indexTopicsError = { isError: false, errorText: '' }
-    this.indexUsersError = { isError: false, errorText: '' }
-    this.indexThreadsError = { isError: false, errorText: '' }
+    this.indexTopicsError = { isError: false, errorText: '' };
+    this.indexUsersError = { isError: false, errorText: '' };
+    this.indexThreadsError = { isError: false, errorText: '' };
 
-    this.currentKeyword = null // 当前正在搜索的关键词重置
+    this.currentKeyword = null; // 当前正在搜索的关键词重置
 
-    this.searchNoData = false // 搜索页没有搜索到东西，从首页返回搜索页要重置
+    this.searchNoData = false; // 搜索页没有搜索到东西，从首页返回搜索页要重置
 
-    this.setIndexTopics(null)
-    this.setIndexUsers(null)
-    this.setIndexThreads(null)
+    this.setIndexTopics(null);
+    this.setIndexUsers(null);
+    this.setIndexThreads(null);
   }
 
   /**
@@ -114,46 +114,46 @@ class SearchAction extends SearchStore {
    */
    @action
   resetSearchData() {
-    this.searchTopicsError = { isError: false, errorText: '' }
-    this.searchUsersError = { isError: false, errorText: '' }
-    this.searchThreadsError = { isError: false, errorText: '' }
+    this.searchTopicsError = { isError: false, errorText: '' };
+    this.searchUsersError = { isError: false, errorText: '' };
+    this.searchThreadsError = { isError: false, errorText: '' };
 
-    this.currentTopicKeyword = null // 用于H5，当前潮流话题页正在搜索的关键词
-    this.currentUserKeyword = null // 用于H5，当前活跃用户页正在搜索的关键词
-    this.currentPostKeyword = null // 用于H5，当前热门内容页正在搜索的关键词
+    this.currentTopicKeyword = null; // 用于H5，当前潮流话题页正在搜索的关键词
+    this.currentUserKeyword = null; // 用于H5，当前活跃用户页正在搜索的关键词
+    this.currentPostKeyword = null; // 用于H5，当前热门内容页正在搜索的关键词
 
-    this.setSearchTopics(null)
-    this.setSearchUsers(null)
-    this.setSearchThreads(null)
+    this.setSearchTopics(null);
+    this.setSearchUsers(null);
+    this.setSearchThreads(null);
   }
 
   /**
    * 发现模块 - 重置更多搜索结果页数据
    */
   @action
-  resetResultData() {
-    this.topicsError = { isError: false, errorText: '' }
-    this.usersError = { isError: false, errorText: '' }
-    this.threadsError = { isError: false, errorText: '' }
+   resetResultData() {
+     this.topicsError = { isError: false, errorText: '' };
+     this.usersError = { isError: false, errorText: '' };
+     this.threadsError = { isError: false, errorText: '' };
 
-    this.currentKeyword = null // 当前正在搜索的关键词重置
+     this.currentKeyword = null; // 当前正在搜索的关键词重置
 
-    this.setTopics(null)
-    this.setUsers(null)
-    this.setThreads(null)
-  }
+     this.setTopics(null);
+     this.setUsers(null);
+     this.setThreads(null);
+   }
 
     /**
    * 发现模块 - 重置主体模块报错信息
     */
     @action
-    resetTopicsError(type) {
-      if (type === 0) {
-        this.indexTopicsError = { isError: false, errorText: '' }
-        return;
-      }
-      this.searchTopicsError = { isError: false, errorText: '' }
+  resetTopicsError(type) {
+    if (type === 0) {
+      this.indexTopicsError = { isError: false, errorText: '' };
+      return;
     }
+    this.searchTopicsError = { isError: false, errorText: '' };
+  }
 
     /**
    * 发现模块 - 重置用户模块报错信息
@@ -161,10 +161,10 @@ class SearchAction extends SearchStore {
     @action
     resetUsersError(type) {
       if (type === 0) {
-        this.indexUsersError = { isError: false, errorText: '' }
+        this.indexUsersError = { isError: false, errorText: '' };
         return;
       }
-      this.searchUsersError = { isError: false, errorText: '' }
+      this.searchUsersError = { isError: false, errorText: '' };
     }
 
     /**
@@ -173,10 +173,10 @@ class SearchAction extends SearchStore {
     @action
     resetThreadsError(type) {
       if (type === 0) {
-        this.indexThreadsError = { isError: false, errorText: '' }
+        this.indexThreadsError = { isError: false, errorText: '' };
         return;
       }
-      this.searchThreadsError = { isError: false, errorText: '' }
+      this.searchThreadsError = { isError: false, errorText: '' };
     }
 
   /**
@@ -186,95 +186,95 @@ class SearchAction extends SearchStore {
    * @returns {object} 处理结果
    */
   @action
-  async getSearchData({
-    type = 0,
-    search,
-    perPage = 10,
-    hasTopics = false,
-    hasUsers = false,
-    hasThreads = false,
-  } = {}) {
-    let newPerPage = perPage;
-    const topicFilter = {
-      hot: search ? 0 : 1,
-      content: search,
+    async getSearchData({
+      type = 0,
+      search,
+      perPage = 10,
+      hasTopics = false,
+      hasUsers = false,
+      hasThreads = false,
+    } = {}) {
+      let newPerPage = perPage;
+      const topicFilter = {
+        hot: search ? 0 : 1,
+        content: search,
+      };
+
+      // type = 1,搜索结果
+      if (type === 1) {
+        newPerPage = 3;
+        topicFilter.hot = 0;
+      }
+
+      const tasks = [];
+      if (!hasTopics) {
+        tasks.push(readTopicsList({ params: { filter: topicFilter, perPage: newPerPage, page: 1 } }));
+      } else {
+        tasks.push(Promise.resolve({}));
+      }
+
+      if (!hasUsers) {
+        tasks.push(readUsersList({ params: { filter: { hot: 1, nickname: search }, perPage: newPerPage, page: 1 } }));
+      } else {
+        tasks.push(Promise.resolve({}));
+      }
+
+      if (!hasThreads) {
+        tasks.push(this.threadList.fetchList({ namespace: 'search', filter: { search }, perPage: newPerPage, page: 1, sequence: '2' }));
+      } else {
+        tasks.push(Promise.resolve({}));
+      }
+
+      const result = await Promise.all(tasks);
+
+      if (!hasTopics) {
+        const res = result[0];
+
+        const { code, data, msg } = res;
+        if (code !== 0) {
+          if (type === 0) {
+            this.indexTopicsError = { isError: true, errorText: msg || '加载失败' };
+          } else {
+            this.searchTopicsError = { isError: true, errorText: msg || '加载失败' };
+          }
+        }
+
+        this.resetTopicsError(type);
+        type === 0 ? this.setIndexTopics(code === 0 ? data : null) : this.setSearchTopics(code === 0 ? data : {});
+      }
+
+      if (!hasUsers) {
+        const res = result[1];
+
+        const { code, data, msg } = res;
+        if (code !== 0) {
+          if (type === 0) {
+            this.indexUsersError = { isError: true, errorText: msg || '加载失败' };
+          } else {
+            this.searchUsersError = { isError: true, errorText: msg || '加载失败' };
+          }
+        }
+
+        this.resetUsersError(type);
+        type === 0 ? this.setIndexUsers(code === 0 ? data : null) : this.setSearchUsers(code === 0 ? data : {});
+      }
+
+      if (!hasThreads) {
+        const res = result[2];
+
+        const { code, data, msg } = res;
+        if (code !== 0) {
+          if (type === 0) {
+            this.indexThreadsError = { isError: true, errorText: msg || '加载失败' };
+          } else {
+            this.searchThreadsError = { isError: true, errorText: msg || '加载失败' };
+          }
+        }
+
+        this.resetThreadsError(type);
+        type === 0 ? this.setIndexThreads(code === 0 ? data : null) : this.setSearchThreads(code === 0 ? data : {});
+      }
     };
-
-    // type = 1,搜索结果
-    if (type === 1) {
-      newPerPage = 3;
-      topicFilter.hot = 0;
-    }
-
-    let tasks = []
-    if ( !hasTopics ) {
-      tasks.push(readTopicsList({ params: { filter: topicFilter, perPage: newPerPage, page: 1 } }))
-    } else {
-      tasks.push(Promise.resolve({}))
-    }
-
-    if ( !hasUsers ) {
-      tasks.push(readUsersList({ params: { filter: { hot: 1, nickname: search }, perPage: newPerPage, page: 1 } }))
-    } else {
-      tasks.push(Promise.resolve({}))
-    }
-
-    if ( !hasThreads ) {
-      tasks.push(readThreadList({ params: { filter: { search }, perPage: newPerPage, page: 1, scope: '2' } }))
-    } else {
-      tasks.push(Promise.resolve({}))
-    }
-
-    const result = await Promise.all(tasks)
-
-    if ( !hasTopics ) {
-      const res = result[0]
-       
-      const { code, data, msg } = res;
-      if (code !== 0) {
-        if (type === 0) {
-          this.indexTopicsError = { isError: true, errorText: msg || '加载失败' }
-        } else {
-          this.searchTopicsError = { isError: true, errorText: msg || '加载失败' }
-        }
-      }
-
-      this.resetTopicsError(type);
-      type === 0 ? this.setIndexTopics(code === 0 ? data : null) : this.setSearchTopics(code === 0 ? data : {});
-    }
-
-    if ( !hasUsers ) {
-      const res = result[1]
-       
-      const { code, data, msg } = res;
-      if (code !== 0) {
-        if (type === 0) {
-          this.indexUsersError = { isError: true, errorText: msg || '加载失败' }
-        } else {
-          this.searchUsersError = { isError: true, errorText: msg || '加载失败' }
-        }
-      }
-
-      this.resetUsersError(type);
-      type === 0 ? this.setIndexUsers(code === 0 ? data : null) : this.setSearchUsers(code === 0 ? data : {});
-    }
-
-    if ( !hasThreads ) {
-      const res = result[2]
-        
-      const { code, data, msg } = res;
-      if (code !== 0) {
-        if (type === 0) {
-          this.indexThreadsError = { isError: true, errorText: msg || '加载失败' }
-        } else {
-          this.searchThreadsError = { isError: true, errorText: msg || '加载失败' }
-        }
-      }
-
-      this.resetThreadsError(type);
-      type === 0 ? this.setIndexThreads(code === 0 ? data : null) : this.setSearchThreads(code === 0 ? data : {});
-    }
-  };
 
   /**
    * 发现模块 - 更多话题
@@ -284,7 +284,7 @@ class SearchAction extends SearchStore {
   @action
   async getTopicsList({ search = '', hot = 0, perPage = 10, page = 1 } = {}) {
     const topicFilter = {
-      hot: hot,
+      hot,
       content: search,
     };
     const result = await readTopicsList({ params: { filter: topicFilter, perPage, page } });
@@ -298,9 +298,8 @@ class SearchAction extends SearchStore {
         this.setTopics(result.data);
       }
       return result.data;
-    } else {
-      this.topicsError = { isError: true, errorText: result?.msg || '加载失败' }
     }
+    this.topicsError = { isError: true, errorText: result?.msg || '加载失败' };
   };
 
   /**
@@ -312,7 +311,7 @@ class SearchAction extends SearchStore {
   @action.bound
   async getUsersList({ type = 'nickname', search = '', hot = 0, perPage = 10, page = 1  } = {}) {
     const result = await readUsersList({ params: { filter: { hot, [type]: search }, perPage, page } });
-    const {code, data} = result;
+    const { code, data } = result;
     if (code === 0 && data) {
       if (this.users && data.pageData && page !== 1) {
         this.users.pageData.push(...data.pageData);
@@ -322,9 +321,8 @@ class SearchAction extends SearchStore {
         this.setUsers(data);
       }
       return result;
-    } else {
-      this.usersError = { isError: true, errorText: result?.msg || '加载失败' }
     }
+    this.usersError = { isError: true, errorText: result?.msg || '加载失败' };
   };
 
   /**
@@ -347,14 +345,13 @@ class SearchAction extends SearchStore {
         this.setThreads(result.data);
       }
       return result.data;
-    } else {
-      this.threadsError = { isError: true, errorText: result?.msg || '加载失败' }
-
-      return Promise.reject(result?.msg || '加载失败');
     }
+    this.threadsError = { isError: true, errorText: result?.msg || '加载失败' };
+
+    return Promise.reject(result?.msg || '加载失败');
   };
 
-/**
+ /**
  * 发现模块 - 关注
  * @param {object} search * 搜索值
  * @returns {object} 处理结果
@@ -375,43 +372,13 @@ class SearchAction extends SearchStore {
  * @returns {object} 处理结果
  */
   @action
-  async cancelFollow({ id, type }) {
-    const result = await deleteFollow({ data: { id, type: type } });
-    if (result.code === 0 && result.data) {
-      return result.data;
-    }
-    return null;
-  };
-
-   /**
-   * 删除帖子操作
-   * @param {string} id 帖子id
-   * @returns
-   */
-    @action
-    async deleteThreadsData({ id } = {}) {
-      if (!id) {
-        return
-      }
- 
-      if (this.threads) {
-       const { pageData = [] } = this.threads;
-       const newPageData = pageData.filter(item => item.threadId !== id)
- 
-       if (this.threads?.pageData) {
-         this.threads.pageData = newPageData;
-       }
-     }
- 
-     if (this.indexThreads) {
-       const { pageData = [] } = this.indexThreads;
-       const newPageData = pageData.filter(item => item.threadId !== id)
- 
-       if (this.indexThreads?.pageData) {
-         this.indexThreads.pageData = newPageData;
-       }
-     }
-    }
+ async cancelFollow({ id, type }) {
+   const result = await deleteFollow({ data: { id, type } });
+   if (result.code === 0 && result.data) {
+     return result.data;
+   }
+   return null;
+ };
 
   /**
    * 更新用户状态
@@ -421,178 +388,62 @@ class SearchAction extends SearchStore {
    * @returns
    */
    @action
-   updateActiveUserInfo(userId, obj = {}) {
-    const users = this.findAssignUser(userId)
+  updateActiveUserInfo(userId, obj = {}) {
+    const users = this.findAssignUser(userId);
 
-    users?.forEach(item => {
-      this.updateInfo(item, obj)
-    })
-   }
+    users?.forEach((item) => {
+      this.updateInfo(item, obj);
+    });
+  }
 
    @action
-  updateInfo(dataSource, obj) {
-    if (!dataSource) {
-      return
-    }
-    const { index, data, store } = dataSource;
+   updateInfo(dataSource, obj) {
+     if (!dataSource) {
+       return;
+     }
+     const { index, data, store } = dataSource;
 
-    // 更新点赞
-    const { isFollow } = obj;
-    if (!typeofFn.isUndefined(isFollow) && !typeofFn.isNull(isFollow)) {
-      data.isFollow = isFollow;
-    }
+     // 更新点赞
+     const { isFollow } = obj;
+     if (!typeofFn.isUndefined(isFollow) && !typeofFn.isNull(isFollow)) {
+       data.isFollow = isFollow;
+     }
 
-    // 更新点赞
-    const { isMutual } = obj;
-    if (!typeofFn.isUndefined(isMutual) && !typeofFn.isNull(isMutual)) {
-      data.isMutualFollow = isMutual;
-    }
+     // 更新点赞
+     const { isMutual } = obj;
+     if (!typeofFn.isUndefined(isMutual) && !typeofFn.isNull(isMutual)) {
+       data.isMutualFollow = isMutual;
+     }
 
-    if (store?.pageData) {
-      const newArr = store.pageData.slice()
-      newArr[index] = data;
-      store.pageData = newArr
-    }
-  }
+     if (store?.pageData) {
+       const newArr = store.pageData.slice();
+       newArr[index] = data;
+       store.pageData = newArr;
+     }
+   }
 
    // 获取指定的用户数据
-  findAssignUser(userId) {
-    const users = []
-    if (this.indexUsers) {
-      const { pageData = [] } = this.indexUsers;
-      pageData.forEach((item, index) => {
-        if (item.userId === userId) {
-          users.push(
-            { index, data: item, store: this.indexUsers}
-          )
-        }
-      })
-    }
+   findAssignUser(userId) {
+     const users = [];
+     if (this.indexUsers) {
+       const { pageData = [] } = this.indexUsers;
+       pageData.forEach((item, index) => {
+         if (item.userId === userId) {
+           users.push({ index, data: item, store: this.indexUsers });
+         }
+       });
+     }
 
-    if (this.users) {
-      const { pageData = [] } = this.users;
-      pageData.forEach((item, index) => {
-        if (item.userId === userId) {
-          users.push(
-            { index, data: item, store: this.users }
-          )
-        }
-      })
-    }
-    return users
-  }
-
-  /**
-   * 支付成功后，更新帖子列表指定帖子状态
-   * @param {number} threadId 帖子id
-   * @param {object}  obj 更新数据
-   * @returns
-   */
-   @action
-   updatePayThreadInfo(threadId, obj) {
-     const targetThreads = this.findAssignThread(threadId);
-     if (!targetThreads || targetThreads.length === 0) return;
-
-     targetThreads.forEach(targetThread => {
-      const { index, store } = targetThread;
-      if (store?.pageData) {
-        store.pageData[index] = obj;
-      }
-     })
+     if (this.users) {
+       const { pageData = [] } = this.users;
+       pageData.forEach((item, index) => {
+         if (item.userId === userId) {
+           users.push({ index, data: item, store: this.users });
+         }
+       });
+     }
+     return users;
    }
- 
-   /**
-    * 更新帖子列表指定帖子状态
-    * @param {number} threadId 帖子id
-    * @param {object}  obj 更新数据
-    * @param {boolean} obj.isLike 是否更新点赞
-    * @param {boolean} obj.isPost 是否更新评论数
-    * @param {boolean} obj.user 当前操作的用户
-    * @returns
-    */
-    @action
-    updateAssignThreadInfo(threadId, obj = {}) {
-      const targetThreads = this.findAssignThread(threadId);
-      if (!targetThreads || targetThreads.length === 0) return;
-
-      targetThreads.forEach(targetThread => {
-        if (!targetThread) return;
-
-        const { index, data, store } = targetThread; // 这里是数组
-        const { updateType, updatedInfo, user } = obj;
-
-        if(!data && !data?.likeReward && !data?.likeReward?.users) return;
-  
-        // 更新点赞
-        if (updateType === 'like' && !typeofFn.isUndefined(updatedInfo.isLiked) &&
-            !typeofFn.isNull(updatedInfo.isLiked) && user) {
-          const { isLiked, likePayCount = 0 } = updatedInfo;
-          const theUserId = user.userId || user.id;
-          data.isLike = isLiked;
-    
-          const userData = threadReducer.createUpdateLikeUsersData(user, 1);
-          // 添加当前用户到按过赞的用户列表
-          const newLikeUsers = threadReducer.setThreadDetailLikedUsers(data.likeReward, !!isLiked, userData);
-        
-          data.likeReward.users = newLikeUsers;
-          data.likeReward.likePayCount = likePayCount;
-        }
-
-        // 更新评论
-        if (updateType === 'comment' && data?.likeReward) {
-          data.likeReward.postCount = data.likeReward.postCount + 1;
-        }
-
-        // 更新分享
-        if (updateType === 'share') {
-          data.likeReward.shareCount = data.likeReward.shareCount + 1;
-        }
-
-        // // 更新帖子浏览量
-        // if (updateType === 'viewCount') {
-        //   data.viewCount = updatedInfo.viewCount;
-        // }
-
-        if (store.pageData) {
-          store.pageData[index] = data;
-        }
-      });
-
-
-    }
-
-   // 获取指定的帖子数据
-  findAssignThread(threadId) {
-    const threadArr = []
-    if (this.threads) {
-      const { pageData = [] } = this.threads;
-      for (let i = 0; i < pageData.length; i++)  {
-        if (pageData[i].threadId === threadId) {
-          threadArr.push({ index: i, data: pageData[i], store: this.threads });
-        }
-      }
-    }
-
-    if (this.indexThreads) {
-      const { pageData = [] } = this.indexThreads;
-      for (let i = 0; i < pageData.length; i++)  {
-        if (pageData[i].threadId === threadId) {
-          threadArr.push({ index: i, data: pageData[i], store: this.indexThreads });
-        }
-      }
-    }
-
-    if (this.searchThreads) {
-      const { pageData = [] } = this.searchThreads;
-      for (let i = 0; i < pageData.length; i++)  {
-        if (pageData[i].threadId === threadId) {
-          threadArr.push({ index: i, data: pageData[i], store: this.searchThreads });
-        }
-      }
-    }
-
-    return threadArr
-  }
 }
 
 export default SearchAction;

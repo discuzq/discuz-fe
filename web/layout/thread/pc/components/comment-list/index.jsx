@@ -136,7 +136,6 @@ class CommentList extends React.Component {
   render() {
     const { canDelete, canEdit, canLike, canHide } = this.generatePermissions(this.props.data);
     const { groups } = this.props.data?.user || {};
-    console.log(this.props.isAnonymous);
     // 评论内容是否通过审核
     const isApproved = this.props?.data?.isApproved === 1;
     const isSelf = this.props.threadId === this.props?.data?.userId;
@@ -187,11 +186,11 @@ class CommentList extends React.Component {
                   </div>
                   {(isSelf && !this.props.isAnonymous) && (
                     <div className={styles.masterBox}>
-                      <span className={styles.masterText}>楼主</span>
+                      <span className={styles.masterText}>作者</span>
                     </div>
                   )}
-                  {!!groups?.isDisplay  && (
-                      <div className={styles.groups}>{groups?.name || groups?.groupName}</div>
+                  {!!groups?.isDisplay && (
+                    <div className={styles.groups}>{groups?.name || groups?.groupName}</div>
                   )}
                 </div>
                 {!isApproved ? <div className={styles.isApproved}>审核中</div> : <div></div>}
@@ -288,6 +287,9 @@ class CommentList extends React.Component {
                 ) : (
                   ''
                 )}
+
+                {/* 添加查看原帖入口组件，从外部传入 */}
+                {this.props.originThread || ''}
 
                 {this.props.isFirstDivider && <Divider className={styles.divider}></Divider>}
 

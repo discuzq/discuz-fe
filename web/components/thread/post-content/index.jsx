@@ -15,7 +15,7 @@ import styles from './index.module.scss';
 /**
  * 帖子内容展示
  * @prop {string}   content 内容
- * @prop {boolean}  useShowMore 是否需要"查看更多"
+ * @prop {boolean}  needShowMore 是否需要"查看更多"
  * @prop {function} onRedirectToDetail 跳转到详情页面，当点击内容或查看更多内容超出屏幕时跳转到详情页面
  * @prop {function} onOpen 内容展开事件
  * @prop {function} onTextItemClick 文本内容块点击事件（会覆盖内容里的a跳转）
@@ -23,28 +23,33 @@ import styles from './index.module.scss';
 
 const PostContent = ({
   content,
-  useShowMore = true, // 是否需要"查看更多"
+  needShowMore = true, // 是否需要"查看更多"
+  useShowMore = false,
   onRedirectToDetail = noop,
   customHoverBg = false,
   usePointer = true,
   onOpen = noop,
+  onClose = noop,
   updateViewCount = noop,
   transformer = parsedDom => parsedDom,
   onTextItemClick = null,
   ...props
 }) => {
   // 内容是否超出屏幕高度
+  // const [indrag, setIndrag] = useState(false);
   const [contentTooLong, setContentTooLong] = useState(false); // 超过1200个字符
   const [cutContentForDisplay, setCutContentForDisplay] = useState('');
   const [showMore, setShowMore] = useState(false); // 根据文本长度显示"查看更多"
   const [imageVisible, setImageVisible] = useState(false);
   const [imageUrlList, setImageUrlList] = useState([]);
-  const [curImageUrl, setCurImageUrl] = useState("");
+  const [curImageUrl, setCurImageUrl] = useState('');
   const ImagePreviewerRef = useRef(null); // 富文本中的图片也要支持预览
   const contentWrapperRef = useRef(null);
+  let mousePosition = { x: 0, y: 0 };
 
   const texts = {
     showMore: '查看更多',
+    closeMore: '折叠',
   };
 
   // 过滤内容
@@ -64,9 +69,18 @@ const PostContent = ({
         onRedirectToDetail && onRedirectToDetail();
       } else {
         onOpen();
-        setShowMore(false);
+        // setShowMore(false);
       }
     },
+    [contentTooLong],
+  );
+
+  // 点击收起更多
+  const onShowClose = useCallback(e => {
+    e && e.stopPropagation();
+    updateViewCount();
+    onClose();
+  },
     [contentTooLong],
   );
 
@@ -75,6 +89,14 @@ const PostContent = ({
     if (e.target.localName === 'a') {
       return;
     }
+    if (e.pageX !== mousePosition.x || e.pageY !== mousePosition.y) {
+      console.log(e.pageX !== mousePosition.x || e.pageY !== mousePosition.y, e, mousePosition)
+      return; // 如果有拖动行为 不触发点击事情
+    }
+    // if (mouseInDrag) {
+    //   console.log(mouseInDrag);
+    //   return; // 如果有拖拽选中过文件不触发点击事情
+    // }
     e && e.stopPropagation();
     // 点击图片不跳转，图片不包含表情
     if (!(e?.target?.getAttribute('src') && e?.target?.className?.indexOf('qq-emotion') === -1)) {
@@ -98,6 +120,7 @@ const PostContent = ({
     }
   };
 
+
   // 点击富文本中的链接
   const handleLinkClick = () => {
     updateViewCount();
@@ -117,14 +140,14 @@ const PostContent = ({
   };
 
   const getImagesFromText = (text) => {
-    const _text = replaceStringInRegex(text, "emoj", '');
+    const _text = replaceStringInRegex(text, 'emoj', '');
     const images = _text.match(/<img\s+[^<>]*src=[\"\'\\]+([^\"\']*)/gm) || [];
 
     for (let i = 0; i < images.length; i++) {
-      images[i] = images[i].replace(/<img\s+[^<>]*src=[\"\'\\]+/gm, "") || "";
+      images[i] = images[i].replace(/<img\s+[^<>]*src=[\"\'\\]+/gm, '') || '';
     }
     return images;
-  }
+  };
 
   useEffect(() => {
     const lengthInLine = parseInt((contentWrapperRef.current.offsetWidth || 704) / 16);
@@ -149,7 +172,6 @@ const PostContent = ({
     if (imageUrlList.length) {
       setImageUrlList(imageUrlList);
     }
-
   }, [filterContent]);
 
   return (
@@ -158,6 +180,9 @@ const PostContent = ({
         ref={contentWrapperRef}
         className={`${styles.contentWrapper} ${(useShowMore && showMore) ? styles.hideCover : ''} ${customHoverBg ? styles.bg : ''}`}
         onClick={showMore ? onShowMore : handleClick}
+        onMouseDown={e => {
+          mousePosition = { x: e.pageX, y: e.pageY }; // 记录一下点击鼠标时的坐标，判断是否有拖动行为
+        }}
       >
         <div className={styles.content}>
           <RichText
@@ -166,7 +191,7 @@ const PostContent = ({
             onImgClick={handleImgClick}
             onLinkClick={handleLinkClick}
             transformer={transformer}
-            iframeWhiteList={['bilibili', 'youku', 'iqiyi', 'music.163.com', 'qq.com']}
+            iframeWhiteList={['bilibili', 'youku', 'iqiyi', 'music.163.com', 'ixigua', 'qq.com', 'myqcloud.com', window.location.hostname]}
           />
           {imageVisible && (
             <ImagePreviewer
@@ -183,10 +208,11 @@ const PostContent = ({
           }
         </div>
       </div>
-      {useShowMore && showMore && (
-        <div className={styles.showMore} onClick={onShowMore}>
-          <div className={styles.hidePercent}>{texts.showMore}</div>
-          <Icon className={styles.icon} name="RightOutlined" size={12} />
+      {needShowMore && showMore && (
+        <div className={styles.showMore} onClick={useShowMore ? onShowMore : onShowClose}>
+          {/* {useShowMore + ''} */}
+          <div className={styles.hidePercent}>{texts[useShowMore ? 'showMore' : 'closeMore']}</div>
+          <Icon className={useShowMore ? styles.icon : styles.icon_d} name="RightOutlined" size={12} />
         </div>
       )}
     </div>

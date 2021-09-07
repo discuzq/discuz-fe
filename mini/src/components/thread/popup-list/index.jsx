@@ -45,7 +45,7 @@ import { View, Text } from '@tarojs/components'
 
   const loadData = async ({ type }) => {
     const { postId = '', threadId = '' } = tipData;
-    
+
     const res = await readLikedUsers({ params: { threadId, postId, type, page: 1 } });
     if(res?.code === 0) {
       setAll(res?.data);
@@ -112,7 +112,7 @@ import { View, Text } from '@tarojs/components'
   };
 
   const onUserClick = (userId = '') => {
-    Router.push({url: `/subPages/user/index?id=${userId}`});
+    Router.push({url: `/userPages/user/index?id=${userId}`});
   };
 
   const onClose = () => {

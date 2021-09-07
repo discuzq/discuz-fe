@@ -1,6 +1,6 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
-import { View, Navigator } from '@tarojs/components';
+import { View, Navigator, Text } from '@tarojs/components';
 import styles from './index.module.scss';
 import Icon from '@discuzq/design/dist/components/icon/index';
 import Popup from '@discuzq/design/dist/components/popup/index'
@@ -13,20 +13,29 @@ import { ToastProvider } from '@discuzq/design/dist/components/toast/ToastProvid
 import Taro from '@tarojs/taro';
 import { REVIEWING } from '@common/store/login/util';
 import LoginHelper from '@common/utils/login-helper';
+import {readForum} from '@server';
 
 const INDEX_URL = '/indexPages/home/index';
 const PARTNER_INVITE_URL = '/subPages/forum/partner-invite/index';
-const BIND_NICKNAME_URL = '/subPages/user/bind-nickname/index';
+const BIND_NICKNAME_URL = '/userPages/user/bind-nickname/index';
 const CLOSE_URL = '/subPage/close/index';
 const PAGE_404_URL = '/subPages/404/index';
 const PAGE_500_URL = '/subPages/500/index';
-const STATUS_URL = '/subPages/user/status/index'; // 用户状态提示页
+const STATUS_URL = '/userPages/user/status/index'; // 用户状态提示页
+
 
 @inject('user')
 @inject('site')
 @inject('commonLogin')
 @observer
 export default class Page extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      _status: 'none'
+    }
+  }
+
   static defaultProps = {
     withLogin: false,
     noWithLogin: false,
@@ -36,7 +45,7 @@ export default class Page extends React.Component {
   // 检查是否满足渲染条件
   isPass(noWait = false) {
     const { noWithLogin, withLogin, site, user, commonLogin } = this.props;
-    const path = getCurrentInstance().router.path;
+    const path = getCurrentInstance()?.router?.path || '';
     const siteMode = site?.webConfig?.setSite?.siteMode;
 
     if (!site.isMiniProgramOpen) {
@@ -88,8 +97,8 @@ export default class Page extends React.Component {
       // TODO: 强制绑定方案待定
       if (user.isLogin()) {
         // // 绑定微信：开启微信，没有绑定微信
-        // if ((site.isOffiaccountOpen || site.isMiniProgramOpen) && path !== '/subPages/user/wx-bind-qrcode/index' && !user.isBindWechat) {
-        //   Router.redirect({url: '/subPages/user/wx-bind-qrcode/index'});
+        // if ((site.isOffiaccountOpen || site.isMiniProgramOpen) && path !== '/userPages/user/wx-bind-qrcode/index' && !user.isBindWechat) {
+        //   Router.redirect({url: '/userPages/user/wx-bind-qrcode/index'});
         //   return false;
         // }
         // 前置：没有开启微信
@@ -120,8 +129,35 @@ export default class Page extends React.Component {
     return true;
   }
 
+  //
+  async getSiteData() {
+    const siteResult = await readForum({});
+    // 一切异常建议进入小程序体验
+    this.setState({
+      _status: siteResult.code !== 0 ? 'error' : 'pass'
+    });
+  }
+
   createContent() {
     const { children, site } = this.props;
+
+
+    const options = Taro.getLaunchOptionsSync();
+    if ( options && options.scene === 1154 ) {
+      if ( this.state._status !== 'none' ) {
+        if ( this.state._status === 'pass' ) {
+          return children;
+        } else {
+          return (<View className={styles.loadingBox}>
+            <View style={{textAlign: 'center'}}>数据异常</View>
+            <View style={{textAlign: 'center'}}>进入小程序了解详情</View>
+          </View>)
+        }
+      } else {
+        this.getSiteData();
+      }
+    }
+
     const routerList = Taro.getCurrentPages();
     const currRouter = routerList[routerList.length - 1];
     if (currRouter) {

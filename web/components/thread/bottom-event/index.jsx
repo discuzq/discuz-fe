@@ -6,6 +6,7 @@ import { noop } from '../utils';
 import MorePopop from '@components/more-popop';
 import Router from '@discuzq/sdk/dist/router';
 import goToLoginPage from '@common/utils/go-to-login-page';
+import Toast from '@discuzq/design/dist/components/toast';
 
 /**
  * 帖子底部内容
@@ -34,6 +35,7 @@ const Index = ({
   onComment = () => {},
   onPraise = () => {},
   updateViewCount = noop,
+  handleShare = noop,
 }) => {
   const postList = useMemo(() => {
     const praise = {
@@ -68,7 +70,11 @@ const Index = ({
   // TODO：此处逻辑需要移植到thread/index中，方便逻辑复用
   const handleClick = () => {
     updateViewCount();
-
+    const isApproved = data?.isApproved === 1;
+    if (!isApproved) {
+      Toast.info({ content: '内容正在审核中' });
+      return ;
+    }
     if (platform === 'pc') {
       onShare();
     } else {
@@ -91,6 +97,7 @@ const Index = ({
   const createCard = () => {
     const { threadId } = tipData;
     card.setThreadData(data);
+    handleShare();
     Router.push({ url: `/card?threadId=${threadId}` });
   };
   const needHeight = useMemo(() => userImgs.length !== 0, [userImgs]);

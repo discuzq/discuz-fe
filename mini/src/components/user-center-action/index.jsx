@@ -26,17 +26,17 @@ class UserCenterAction extends React.Component {
 
   // 点击我的购买
   handleMyBuy = () => {
-    Router.push({ url: '/subPages/my/buy/index' });
+    Router.push({ url: '/userPages/my/buy/index' });
   }
 
   // 点击我的收藏
   handleMyCollect = () => {
-    Router.push({ url: '/subPages/my/collect/index' });
+    Router.push({ url: '/userPages/my/collect/index' });
   }
 
   // 草稿箱
   handleMyDraft = () => {
-    Router.push({ url: '/subPages/my/draft/index' });
+    Router.push({ url: '/userPages/my/draft/index' });
   }
 
   // 点击站点信息
@@ -51,7 +51,7 @@ class UserCenterAction extends React.Component {
 
   // 点击我的屏蔽
   handleMyBlock = () => {
-    Router.push({ url: '/subPages/my/block/index' });
+    Router.push({ url: '/userPages/my/block/index' });
   };
 
   componentDidMount() {

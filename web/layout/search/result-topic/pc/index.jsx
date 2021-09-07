@@ -2,11 +2,11 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import BaseLayout from '@components/base-layout';
 import TrendingTopicMore from '../../../search/pc/components/trending-topic-more';
-import ActiveUsers from '@components/active-users'
+import ActiveUsers from '@components/active-users';
 import { withRouter } from 'next/router';
 import Copyright from '@components/copyright';
 import SidebarPanel from '@components/sidebar-panel';
-import TopicItem from '@components/topic-item'
+import TopicItem from '@components/topic-item';
 import styles from './index.module.scss';
 
 
@@ -20,7 +20,7 @@ class SearchResultTopicPCPage extends React.Component {
     const keyword = this.props.router.query.keyword || this.props.search.currentKeyword || '';
 
     this.state = {
-      keyword: keyword,
+      keyword,
       refreshing: false,
     };
   }
@@ -29,8 +29,8 @@ class SearchResultTopicPCPage extends React.Component {
     this.props.router.push('/search/result-user');
   };
 
-  onTopicClick = data => {
-    const { topicId } = data
+  onTopicClick = (data) => {
+    const { topicId } = data;
     this.props.router.push(`/topic/topic-detail/${topicId}`);
   };
 
@@ -46,7 +46,8 @@ class SearchResultTopicPCPage extends React.Component {
   };
 
   onSearch = (value) => {
-    this.props.search.currentKeyword = keyword;
+    // this.props.search.currentKeyword = keyword;
+    this.props.router.replace(`/search/result-topic?keyword=${value}`);
     this.setState({ keyword: value }, () => {
       this.searchData(value);
     });
@@ -64,14 +65,12 @@ class SearchResultTopicPCPage extends React.Component {
     }
   }
 
-  renderRight = () => {
-    return (
+  renderRight = () => (
       <>
         <ActiveUsers />
         <Copyright/>
       </>
     )
-  }
 
   render() {
     const { pageData, currentPage, totalPage } = this.props.search.topics || {};

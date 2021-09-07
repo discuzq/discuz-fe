@@ -137,11 +137,11 @@ class WeixinBindQrCodePage extends React.Component {
     const loginToken = this.props.commonLogin.getLoginToken();
     if (loginToken) {
       const dzqUserId = locals.get('dzq_user_id');
-      dzqUserId && this.props.user.updateUserInfo(dzqUserId);
+      dzqUserId && await this.props.user.updateUserInfo(dzqUserId);
       setAccessToken({
         accessToken: loginToken,
       });
-      loginHelper.gotoIndex();
+      loginHelper.restore();
     }
   };
 
@@ -180,6 +180,24 @@ class WeixinBindQrCodePage extends React.Component {
     });
   }
 
+  getOrCodeTips = () => {
+    const { site: { platform, wechatEnv } } = this.props;
+    let orCodeTips = '';
+    switch (platform) {
+      case 'pc':
+        orCodeTips = '请使用微信，扫码绑定';
+        break;
+      case 'h5':
+        if (wechatEnv === 'miniProgram') {
+          orCodeTips = '请在小程序中完成微信绑定';
+          break;
+        }
+        orCodeTips = '长按保存二维码，并在微信中识别此二维码，即可完成绑定';
+        break;
+    }
+    return orCodeTips;
+  }
+
   render() {
     const { site: { wechatEnv, platform }, router, h5QrCode } = this.props;
     const { nickname, isSkip = false } = router.query;
@@ -201,7 +219,7 @@ class WeixinBindQrCodePage extends React.Component {
             refresh={() => {this.generateQrCode()}}
             isValid={h5QrCode.isQrCodeValid}
             orCodeImg={h5QrCode.qrCode}
-            orCodeTips={platform === 'h5' ? '长按保存二维码，并在微信中识别此二维码，即可完成登录' : '请使用微信，扫码登录'}
+            orCodeTips={this.getOrCodeTips()}
           />
           {/* 二维码 end */}
           { isSkip && <span className={layout.skip} onClick={this.handleSkipWechatButtonClick}>跳过</span> }

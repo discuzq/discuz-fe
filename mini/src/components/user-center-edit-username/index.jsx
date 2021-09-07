@@ -40,7 +40,7 @@ export default class index extends Component {
       });
       this.props.user.userInfo.username = this.props.user.editUserName;
       setTimeout(() => {
-        Taro.navigateTo({ url: '/subPages/my/index' });
+        Taro.navigateTo({ url: '/userPages/my/index' });
         this.initState();
       }, 1000);
     } catch (err) {

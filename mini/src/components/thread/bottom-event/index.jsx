@@ -72,11 +72,16 @@ const Index = ({
     // 对没有登录的先登录
     if (!user.isLogin()) {
       Toast.info({ content: '请先登录!' });
-      goToLoginPage({ url: '/subPages/user/wx-auth/index' });
+      goToLoginPage({ url: '/userPages/user/wx-auth/index' });
       return;
     }
-    setShow(true);
-  };
+    const isApproved = data?.isApproved === 1;
+    if (!isApproved) {
+      Toast.info({content: '内容正在审核中'});
+      return ;
+    }
+    setShow(true)
+  }
   useEffect(() => {
     index.setHiddenTabBar(show);
   }, [show]);
@@ -113,7 +118,7 @@ const Index = ({
               <View className={styles.fabulousIcon}>
                 <Icon className={`${styles.icon} ${item.type}`} name={item.icon} size={16}></Icon>
               </View>
-              <Text className={styles.fabulousPost}>{item.num ? item.num : ''}</Text>
+              <Text className={styles.fabulousPost}>{item.num ? item.num : item.name}</Text>
             </View>
           ) : (
             <View key={index} className={styles.fabulous} onClick={unifyOnClick || item.event}>
@@ -142,6 +147,7 @@ const Index = ({
           shareAvatar={shareAvatar}
           shareNickname={shareNickname}
           getShareData={getShareData}
+          onShare={onShare}
         ></ShareButton>
       )}
     </View>

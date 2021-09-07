@@ -7,8 +7,10 @@ import Avatar from '@discuzq/design/dist/components/avatar/index';
 import { View, Button } from '@tarojs/components';
 import HomeHeader from '@components/home-header';
 import layout from './index.module.scss';
-import bgImage from './../../../../web/public/dzq-img/invite-banner-bg.png';
+// import bgImage from './../../../../web/public/dzq-img/invite-banner-bg.png';
 import NoMoreDataTip from '@components/no-more-data-tip';
+
+const bgImage = 'https://imgcache.qq.com/operation/dianshi/other/invite-banner-bg.8ebc5c7a58f15fe8979ce893715bf37422ae2e68.png';
 
 @inject('site')
 @inject('user')

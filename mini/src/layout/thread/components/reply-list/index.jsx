@@ -99,7 +99,7 @@ export default class ReplyList extends React.Component {
           </Text>
           {(isSelf && !this.props.isAnonymous) && (
             <View className={styles.masterBox}>
-              <Text className={styles.masterText}>楼主</Text>
+              <Text className={styles.masterText}>作者</Text>
             </View>
           )}
         </View>
@@ -149,11 +149,11 @@ export default class ReplyList extends React.Component {
                     this.avatarClick(2);
                   }}
                 >
-                  {this.props.data?.user?.nickname || this.props.data?.user?.userName || '用户异常'}
+                  <Text className={styles.replyListNameText}>{this.props.data?.user?.nickname || this.props.data?.user?.userName || '用户异常'}</Text>
                 </View>
                 {(isSelf && !this.props.isAnonymous) && (
                     <View className={styles.masterBox}>
-                      <Text className={styles.masterText}>楼主</Text>
+                      <Text className={styles.masterText}>作者</Text>
                     </View>
                   )}
                 {!!groups?.isDisplay  && (

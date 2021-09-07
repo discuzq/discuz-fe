@@ -2,10 +2,12 @@ import { observable, computed } from 'mobx';
 import htmlToString from '../../utils/html-to-string';
 import s9e from '../../utils/s9e';
 import { parseContentData } from '@layout/thread/utils';
+import ThreadListStore from  '../thread-list/list';
 
 class ThreadStore {
   constructor(props) {
     this.threadData = props?.thread;
+    this.threadList = new ThreadListStore();
   }
   @observable threadData = null; // 帖子信息
   @observable hasRedPacket = 0 // 是否有可领取的红包信息

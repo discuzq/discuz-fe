@@ -7,6 +7,7 @@ import { Dialog, Divider, Icon, Toast } from '@discuzq/design';
 import { PAY_BOX_ERROR_CODE_MAP, STEP_MAP } from '../../../../../common/constants/payBoxStoreConstants';
 import throttle from '@common/utils/thottle.js';
 import Router from '@discuzq/sdk/dist/router';
+import ReactDOM from 'react-dom';
 
 @inject('site')
 @inject('user')
@@ -197,7 +198,8 @@ class Index extends React.Component {
 
   render() {
     const { list = [], isShow } = this.state;
-    return (
+
+    const payPwdElement = (
       <div style={{ position: 'relative', zIndex: 1400 }}>
         {this.renderDialogPayment()}
         <div style={{ display: !isShow && 'none' }} className={styles.keyboard} onClick={this.keyboardClickHander}>
@@ -246,6 +248,12 @@ class Index extends React.Component {
         </div>
       </div>
     );
+
+    if (typeof window !== 'undefined') {
+      return ReactDOM.createPortal(payPwdElement, document.body);
+    }
+
+    return payPwdElement;
   }
 }
 

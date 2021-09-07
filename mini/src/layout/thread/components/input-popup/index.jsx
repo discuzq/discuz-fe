@@ -122,7 +122,7 @@ const InputPop = (props) => {
     setShowPicture(false);
 
     textareaRef.current.blur();
-    setFocus(false);
+    // setFocus(false);
 
     // 请求表情地址
     if (!emojis?.length) {
@@ -162,7 +162,7 @@ const InputPop = (props) => {
     if (newValue.length === 0 && !isDisabled) {
       setDisabled(true);
     }
-    textareaRef.current.focus();
+    // textareaRef.current.focus();
     // setFocus(true)
 
     // setShowEmojis(false);//fix:注释 修复 不能连续点击表情输入的问题
@@ -293,7 +293,7 @@ const InputPop = (props) => {
                 onChange={debounce((e) => {
                   handleChange(e)
                 }, 100)}
-                // onFocus={() => setShowEmojis(false)}
+                onClick={() => { setShowEmojis(false), textareaRef.current.focus(); }}
                 placeholder={inputText}
                 disabled={loading}
                 placeholderClass={styles.placeholder}

@@ -44,7 +44,7 @@ class UsernameH5Login extends React.Component {
         this.props.commonLogin.needToCompleteExtraInfo = true;
       }
 
-      this.props.router.push('/user/bind-nickname');
+      this.props.router.replace('/user/bind-nickname');
       return;
     }
 
@@ -54,7 +54,7 @@ class UsernameH5Login extends React.Component {
       uid && this.props.user.updateUserInfo(uid);
       if (isExtFieldsOpen(this.props.site)) {
         this.props.commonLogin.needToCompleteExtraInfo = true;
-        return this.props.router.push('/user/supplementary');
+        return this.props.router.replace('/user/supplementary');
       }
       return window.location.href = '/';
     }
@@ -69,14 +69,14 @@ class UsernameH5Login extends React.Component {
       e.accessToken && this.props.commonLogin.setLoginToken(e.accessToken);
       this.props.commonLogin.needToBindWechat = true;
       this.props.commonLogin.sessionToken = e.sessionToken;
-      this.props.router.push(`/user/wx-bind-qrcode?sessionToken=${e.sessionToken}&loginType=${platform}&nickname=${e.nickname}&isSkip=${true}`);
+      this.props.router.replace(`/user/wx-bind-qrcode?sessionToken=${e.sessionToken}&loginType=${platform}&nickname=${e.nickname}&isSkip=${true}`);
       return;
     }
 
     // 手机号绑定 flag
     if (e.Code === NEED_BIND_PHONE_FLAG) {
       this.props.commonLogin.needToBindPhone = true;
-      this.props.router.push(`/user/bind-phone?sessionToken=${e.sessionToken}`);
+      this.props.router.replace(`/user/bind-phone?sessionToken=${e.sessionToken}`);
       return;
     }
 
@@ -85,7 +85,7 @@ class UsernameH5Login extends React.Component {
       const uid = get(e, 'uid', '');
       uid && this.props.user.updateUserInfo(uid);
       this.props.commonLogin.setStatusMessage(e.Code, e.Message);
-      this.props.router.push(`/user/status?statusCode=${e.Code}&statusMsg=${e.Message}`);
+      this.props.router.replace(`/user/status?statusCode=${e.Code}&statusMsg=${e.Message}`);
       return;
     }
 
@@ -167,7 +167,7 @@ class UsernameH5Login extends React.Component {
               <span
                 className={layout.clickBtn}
                 onClick={() => {
-                  router.push('register');
+                  router.replace('register');
                 }}
               >
                 注册用户
@@ -179,7 +179,7 @@ class UsernameH5Login extends React.Component {
                 <span
                   className={layout.clickBtn}
                   onClick={() => {
-                    router.push('reset-password');
+                    router.replace('reset-password');
                   }}
                 >
                   找回密码

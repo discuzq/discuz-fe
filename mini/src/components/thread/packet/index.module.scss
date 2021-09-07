@@ -99,6 +99,8 @@
           display: inline-block;
           width: rem(18);
           height: rem(24);
+          position: relative;
+          top:2px;
         }
       }
     }
@@ -121,7 +123,7 @@
       border-radius: 4px;
       position: absolute;
       top:19px;
-      z-index: 9999;
+      z-index: 3;
     }
     &::before{
       left:-4px
@@ -187,7 +189,7 @@
         left:-4px;
         content: '';
         border-radius: 50%;
-        z-index: 9999;
+        z-index: 3;
       }
       &::after{
         top:-4px;

@@ -40,9 +40,11 @@
     :global(.dzq-richText) {
       overflow: hidden;
     }
-
+    
     :global(.dzq-richText--mini .dzq-p) {
       margin-bottom: 0;
+      text-align: justify;
+      word-break: break-word;
     }
     // :global(.dzq-p) {
     //   display: flex;
@@ -83,6 +85,11 @@
       margin-left: 9px;
       transform: rotateZ(90deg);
     }
+    .icon_d{
+      margin-left: 9px;
+      transform: rotateZ(-90deg);
+    }
+
   }
   .payInfo {
     display: flex;

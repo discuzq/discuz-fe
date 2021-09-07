@@ -39,7 +39,7 @@ function validateUrl(url) {
       if (pathname.startsWith('/my')) {
         return true;
       }
-      
+
       return !WEB_SITE_JOIN_WHITE_LIST.some(item => pathname.startsWith(item));
     } catch (err) {
       console.error('LoginHelper is setting a invalid url', url, absUrl, err);
@@ -49,7 +49,7 @@ function validateUrl(url) {
     const miniUrl = url.startsWith('/') ? url : `/${url}`;
 
     // 我的 页面在白名单，需要记录
-    if (miniUrl.startsWith('/subPages/my/index')) {
+    if (miniUrl.startsWith('/userPages/my/index')) {
       return true;
     }
     return !MINI_SITE_JOIN_WHITE_LIST.some(item => miniUrl.startsWith(item));
@@ -123,7 +123,7 @@ class LoginHelper {
   };
 
   gotoLogin = () => {
-    const url = isWeb() ? '/user/login' : '/subPages/user/wx-auth/index';
+    const url = isWeb() ? '/user/login' : '/userPages/user/wx-auth/index';
     Router.redirect({ url });
   };
 

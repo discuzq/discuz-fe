@@ -23,6 +23,7 @@
         .userInfo {
           display: flex;
           .replyListName {
+            max-width: rem(200);
             padding-top: rem($padding-2n);
             padding-left: rem($padding-3n);
             padding-right: rem($padding-2n);
@@ -31,12 +32,13 @@
             line-height: rem(20);
             text-align: left;
             color: $text-color-primary;
+            @include text-ellipsis();
           }
           .masterBox {
             padding:rem($padding-2n + 2) rem($padding-2n) 0 0;
             .masterText {
-              border-radius: rem(4) 0;
-              background: #ff9700;
+              border-radius: rem(2);
+              background: $primary-color;
               display: inline-block;
               font-size: rem(12);
               -webkit-text-size-adjust:none;
@@ -123,6 +125,7 @@
           }
 
           .replyedUserName {
+            max-width: rem(200);
             display: inline-block;
             font-weight: $font-weight-regular;
             font-size: rem($font-size-primary);
@@ -130,6 +133,7 @@
             line-height: rem(20);
             text-align: left;
             color: $primary-color;
+            @include text-ellipsis();
           }
           .masterBox {
             padding:0 rem($padding-2n) 0 0;
@@ -137,8 +141,8 @@
             display: flex;
             align-items: center;
             .masterText {
-              border-radius: rem(4) 0;
-              background: #ff9700;
+              border-radius: rem(2);
+              background: $primary-color;
               display: inline-block;
               font-size: rem(12);
               -webkit-text-size-adjust:none;

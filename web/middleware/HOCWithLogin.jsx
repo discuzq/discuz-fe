@@ -42,7 +42,7 @@ export default function HOCWithLogin(Component) {
 
     componentDidMount() {
       const { user } = this.props;
-      if (!user.loginStatus) {
+      if (!user.isLogin()) {
         LoginHelper.saveAndLogin();
       }
     }
@@ -50,15 +50,14 @@ export default function HOCWithLogin(Component) {
     componentDidUpdate() {
       const { user } = this.props;
 
-      if (!user.loginStatus) {
+      if (!user.isLogin()) {
         LoginHelper.saveAndLogin();
       }
     }
 
     render() {
       const { user } = this.props;
-      const { loginStatus } = user;
-      if (loginStatus === 'padding' || !loginStatus) return null;
+      if (!user.isLogin()) return null;
       return <Component {...this.props}/>;
     }
   }

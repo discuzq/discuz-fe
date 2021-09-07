@@ -1,18 +1,22 @@
 import React, { useMemo, useRef, useEffect, useState } from 'react';
 import Button from '@discuzq/design/dist/components/button/index';
 import Icon from '@discuzq/design/dist/components/icon/index';
+import RichText from '@discuzq/design/dist/components/rich-text/index';
 import AudioPlay from './audio-play';
 import PostContent from './post-content';
 import ProductItem from './product-item';
 import VideoPlay from './video-play';
 import VoteDisplay from './vote-display';
-import { handleAttachmentData } from './utils';
+import { handleAttachmentData , getElementRect, randomStr, noop, handleLink } from './utils';
 import AttachmentView from './attachment-view';
 import ImageDisplay from './image-display';
 import Packet from './packet';
 import styles from './index.module.scss';
 import { View, Text } from '@tarojs/components';
-import { getElementRect, randomStr, noop } from './utils'
+
+
+// 插件引入
+/** DZQ->plugin->register<plugin_index@thread_extension_display_hook>**/
 
 /**
  * 帖子内容组件
@@ -22,7 +26,7 @@ import { getElementRect, randomStr, noop } from './utils'
  */
 
 const Index = (props) => {
-  const { title = '', payType, price, paid, attachmentPrice } = props.data || {};
+  const { title = '', payType, price, paid, attachmentPrice, site } = props.data || {};
   const needPay = useMemo(() => payType !== 0 && !paid, [paid, payType]);
   const {
     onClick,
@@ -31,9 +35,17 @@ const Index = (props) => {
     changeHeight = noop,
     useShowMore = true,
     setUseShowMore = noop,
+    setUseCloseMore = noop,
     updateViewCount = noop,
-    onTextItemClick
+    onTextItemClick,
+    unifyOnClick = null,
   } = props;
+
+  const {
+    canDownloadAttachment,
+    canViewAttachment,
+    canViewVideo
+  } = props?.data?.ability || {};
 
   const wrapperId = useRef(`thread-wrapper-${randomStr()}`)
 
@@ -58,8 +70,9 @@ const Index = (props) => {
       voteData,
       fileData,
       threadId,
+      iframeData,
+      plugin
     } = handleAttachmentData(data);
-
     return (
       <>
         {text && (
@@ -70,6 +83,7 @@ const Index = (props) => {
             relativeToViewport={relativeToViewport}
             changeHeight={changeHeight}
             useShowMore={useShowMore}
+            setUseCloseMore={setUseCloseMore}
             setUseShowMore={setUseShowMore}
             onTextItemClick={onTextItemClick}
           />
@@ -87,19 +101,34 @@ const Index = (props) => {
               relativeToViewport={relativeToViewport}
               changeHeight={changeHeight}
               updateViewCount={updateViewCount}
+              canViewVideo={canViewVideo}
             />
           </WrapperView>
         )}
+        {/* 外部视频iframe插入和上面的视频组件是互斥的 */}
+        {(iframeData && iframeData.content) && (
+          <RichText
+            className={styles.richtext}
+            content={iframeData.content}
+            iframeWhiteList={['bilibili', 'youku', 'iqiyi', 'music.163.com', 'qq.com', 'em.iq.com', 'xigua']}
+            onClick={() => { }}
+            onImgClick={() => { }}
+            onLinkClick={(node) => {
+              handleLink(node);
+            }}
+            transformer={parseDom => parseDom}
+          />
+        )}
         {imageData?.length ? (
-            <ImageDisplay
-              platform="h5"
-              imgData={imageData}
-              isPay={needPay}
-              onPay={onPay}
-              onClickMore={onClick}
-              relativeToViewport={relativeToViewport}
-              updateViewCount={updateViewCount}
-            />
+          <ImageDisplay
+            platform="h5"
+            imgData={imageData}
+            isPay={needPay}
+            onPay={onPay}
+            onClickMore={onClick}
+            relativeToViewport={relativeToViewport}
+            updateViewCount={updateViewCount}
+          />
         ) : null}
         {rewardData && (
           <Packet
@@ -109,7 +138,7 @@ const Index = (props) => {
         )}
         {redPacketData && (
           <Packet
-            // money={redPacketData.money || 0} 
+            // money={redPacketData.money || 0}
             onClick={onClick}
             condition={redPacketData.condition}
           />
@@ -122,11 +151,32 @@ const Index = (props) => {
             onClick={onClick}
           />
         )}
-        {audioData && <AudioPlay url={audioData.mediaUrl} isPay={needPay} onPay={onPay} updateViewCount={updateViewCount}/>}
-        {fileData?.length ? <AttachmentView threadId={threadId} attachments={fileData} onPay={onPay} isPay={needPay} updateViewCount={updateViewCount} /> : null}
+        {audioData && <AudioPlay url={audioData.mediaUrl} isPay={needPay} onPay={onPay} updateViewCount={updateViewCount} />}
+        {fileData?.length ? <AttachmentView
+          threadId={threadId}
+          unifyOnClick={unifyOnClick}
+          attachments={fileData}
+          onPay={onPay}
+          isPay={needPay}
+          updateViewCount={updateViewCount}
+          canViewAttachment={canViewAttachment}
+          canDownloadAttachment={canDownloadAttachment}
+        />
+          : null
+        }
 
         {/* 投票帖子展示 */}
         {voteData && <VoteDisplay voteData={voteData} updateViewCount={props.updateViewCount} threadId={threadId} />}
+        {
+          DZQPluginCenter.injection('plugin_index', 'thread_extension_display_hook').map(({ render, pluginInfo }) => (
+              <View key={pluginInfo.name}>
+                {render({
+                  site: props.site,
+                  renderData: plugin
+                })}
+              </View>
+            ))
+        }
       </>
     );
   };

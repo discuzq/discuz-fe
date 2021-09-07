@@ -3,11 +3,11 @@ import Icon from '@discuzq/design/dist/components/icon/index';
 import { noop } from '@components/thread/utils';
 import styles from './index.module.scss';
 import { View, Text, Button, Image } from '@tarojs/components';
-import TopicHeaderImg from '../../../../../../../web/public/dzq-img/topic-header.png';
+// import TopicHeaderImg from '../../../../../../../web/public/dzq-img/topic-header.png';
 import Router from '@discuzq/sdk/dist/router';
 import { inject, observer } from 'mobx-react';
 
-
+const TopicHeaderImg = 'https://imgcache.qq.com/operation/dianshi/other/topic-header.05dc9960be3b4aa9e8c0beab476ab7cc1ecc1639.png';
 /**
  * 用户组件
  * @prop {string} title 话题标题

@@ -4,6 +4,7 @@ const COS = require('./cos-wx-sdk-v5');
 
 export default (options) => {
   return new Promise(async (resolve, reject) => {
+
     const {
       file,
       type,

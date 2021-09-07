@@ -6,10 +6,11 @@ import { inject } from 'mobx-react';
 import ThreadMiniPage from '@layout/thread/index';
 // import PayBoxProvider from '@components/payBox/payBoxProvider';
 import withShare from '@common/utils/withShare/withShare';
-import ErrorMiniPage from '../../layout/error/index';
 import { priceShare } from '@common/utils/priceShare';
 import { updateViewCountInStorage } from '@common/utils/viewcount-in-storage';
-import Toast from '@discuzq/design/dist/components/toast';
+import Toast from '@components/toast';
+import ErrorMiniPage from '../../layout/error/index';
+import { updateThreadAssignInfoInLists } from '@common/store/thread-list/list-business';
 
 // const MemoToastProvider = React.memo(ToastProvider);
 @inject('site')
@@ -17,10 +18,11 @@ import Toast from '@discuzq/design/dist/components/toast';
 @inject('user')
 @inject('commentPosition')
 @inject('index')
-@inject('search')
-@inject('topic')
+@inject('threadList')
 @inject('baselayout')
-@withShare()
+@withShare({
+  showShareTimeline: true
+})
 class Detail extends React.Component {
   constructor(props) {
     super(props);
@@ -57,6 +59,7 @@ class Detail extends React.Component {
     if (data.from === 'timeLine') {
       return {
         title: defalutTitle,
+        query: `id=${threadId}`
       };
     }
     if (data.from === 'menu') {
@@ -87,7 +90,7 @@ class Detail extends React.Component {
         }
       );
     }
-    this.props.thread.shareThread(threadId, this.props.index, this.props.search, this.props.topic);
+    this.props.thread.shareThread(threadId);
 
     return (
       priceShare({ isAnonymous, isPrice, path }) || {
@@ -106,15 +109,7 @@ class Detail extends React.Component {
     const viewCount = await updateViewCountInStorage(threadId, viewCountMode === 0);
     if (viewCount) {
       this.props.thread.updateViewCount(viewCount);
-      this.props.index.updateAssignThreadInfo(threadId, {
-        updateType: 'viewCount',
-        updatedInfo: { viewCount },
-      });
-      this.props.search.updateAssignThreadInfo(threadId, {
-        updateType: 'viewCount',
-        updatedInfo: { viewCount },
-      });
-      this.props.topic.updateAssignThreadInfo(threadId, {
+      updateThreadAssignInfoInLists(threadId, {
         updateType: 'viewCount',
         updatedInfo: { viewCount },
       });
@@ -122,6 +117,7 @@ class Detail extends React.Component {
   };
 
   async componentDidShow() {
+
     const { id, postId } = getCurrentInstance().router.params;
 
     // 判断缓存
@@ -141,20 +137,14 @@ class Detail extends React.Component {
   async getThreadDataFromList(id) {
     if (id) {
       let threadData;
-      // 首页iebook
-      const indexRes = this.props.index.findAssignThread(Number(id));
-      threadData = indexRes?.data;
 
-      // 发现列表
-      if (!threadData) {
-        const searchRes = this.props.search.findAssignThread(Number(id));
-        threadData = searchRes[0]?.data;
-      }
-
-      // 话题列表
-      if (!threadData) {
-        const topicRes = this.props.topic.findAssignThread(Number(id));
-        threadData = topicRes?.data;
+      const targetThreadList = this.props.threadList.findAssignThreadInLists({ threadId: Number(id) });
+      if (targetThreadList?.length) {
+        targetThreadList.forEach((targetThread) => {
+          if (!threadData && targetThread.data) {
+            threadData = targetThread.data;
+          }
+        });
       }
 
       if (threadData?.threadId && !threadData?.displayTag?.isRedPack && !threadData?.displayTag?.isReward) {

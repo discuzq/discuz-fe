@@ -4,8 +4,10 @@ import { View, Text, Image } from '@tarojs/components';
 import Button from '@discuzq/design/dist/components/button/index';
 import Page from '@components/page';
 import styles from './index.module.scss';
-import img404 from '../../../../web/public/dzq-img/404.png';
+// import img404 from '../../../../web/public/dzq-img/404.png';
 import Taro from '@tarojs/taro';
+
+const img404 = 'https://imgcache.qq.com/operation/dianshi/other/404.c57a3a41feb16d1530344c8b1f258e0db5e298f9.png';
 
 class NotFindPage extends Component {
   componentWillMount() { }
@@ -33,7 +35,7 @@ class NotFindPage extends Component {
     return (
       <Page>
         <View className={styles.page}>
-          <Image className={styles.img} src={img404}/>
+          <Image className={styles.img} src={img404} />
           <Text className={styles.text}>您要访问的页面可能已被删除、已更改名称或暂时不可用</Text>
           <View className={styles.fixedBox}>
             <Button onClick={() => {this.goback()}} size='large' className={styles.btn} type='primary'>返回上一页</Button>

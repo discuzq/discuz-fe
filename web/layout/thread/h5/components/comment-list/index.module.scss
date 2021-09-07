@@ -69,18 +69,20 @@
           .userInfo {
             display: flex;
             .commentListName {
+              max-width: rem(100);
               font-weight: bold;
               font-size: rem($font-size-primary);
               line-height: rem(20);
               text-align: left;
               color: $text-color-primary;
+              @include text-ellipsis();
             }
             .masterBox {
               padding-top:rem(2);
               padding-left: rem($padding-2n);
               .masterText {
-                border-radius: rem(4) 0;
-                background: #ff9700;
+                border-radius: rem(2);
+                background: $primary-color;
                 display: inline-block;
                 font-size: rem(12);
                 -webkit-text-size-adjust:none;

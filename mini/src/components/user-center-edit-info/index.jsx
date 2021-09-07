@@ -108,10 +108,10 @@ class index extends Component {
 
   handleGoToEditMobile = () => {
     if (!this.user.mobile) {
-      Taro.navigateTo({ url: '/subPages/user/bind-phone/index?from=userCenter' });
+      Taro.navigateTo({ url: '/userPages/user/bind-phone/index?from=userCenter' });
       return;
     }
-    Taro.navigateTo({ url: '/subPages/my/edit/mobile/index' });
+    Taro.navigateTo({ url: '/userPages/my/edit/mobile/index' });
   };
 
   handleGoToEditUserName = () => {
@@ -122,19 +122,19 @@ class index extends Component {
       });
       return;
     }
-    Taro.navigateTo({ url: '/subPages/my/edit/username/index' });
+    Taro.navigateTo({ url: '/userPages/my/edit/username/index' });
   };
 
   handleGoToEditAccountPwd = () => {
-    Taro.navigateTo({ url: '/subPages/my/edit/pwd/index' });
+    Taro.navigateTo({ url: '/userPages/my/edit/pwd/index' });
   };
 
   handleGoToEditPayPwd = () => {
-    Taro.navigateTo({ url: '/subPages/my/edit/paypwd/index' });
+    Taro.navigateTo({ url: '/userPages/my/edit/paypwd/index' });
   };
 
   handleGoToAdditionalInfo = () => {
-    Taro.navigateTo({ url: '/subPages/my/edit/additional-info/index' });
+    Taro.navigateTo({ url: '/userPages/my/edit/additional-info/index' });
   };
 
   // 渲染修改用户名
@@ -224,7 +224,7 @@ class index extends Component {
                   <Avatar size="small" image={this.user.wxHeadImgUrl} name={this.user.wxNickname} />
                   <Text className={styles.wxNickname}>{this.user.wxNickname}</Text>
                   <Text className={styles.linkText} onClick={() => {
-                    Taro.navigateTo({ url: '/subPages/user/rebind/index' });
+                    Taro.navigateTo({ url: '/userPages/user/rebind/index' });
                   }}
                   >换绑</Text>
                 </View>

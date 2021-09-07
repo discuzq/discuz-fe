@@ -6,21 +6,29 @@ import withShare from '@common/utils/withShare/withShare'
 import { inject, observer } from 'mobx-react'
 import { handleString2Arr } from '@common/utils/handleCategory';
 import { priceShare } from '@common/utils/priceShare';
+import { updateThreadAssignInfoInLists } from '@common/store/thread-list/list-business';
 
 @inject('site')
-@inject('search')
-@inject('topic')
 @inject('index')
+@inject('threadList')
 @inject('user')
 @inject('baselayout')
+@withShare()
 @observer
 @withShare({
-  needLogin: true
+  needLogin: true,
+  showShareTimeline: false
 })
 class Index extends React.Component {
   state = {
     isError: false,
     errorText: '加载失败'
+  }
+
+  constructor(props) {
+    super(props);
+    const { index, threadList } = this.props;
+    threadList.registerList({ namespace: index.namespace });
   }
 
   componentDidHide() {
@@ -36,7 +44,7 @@ class Index extends React.Component {
 
   getShareData(data) {
     const { site, user } = this.props
-    const siteName = site.webConfig?.setSite?.siteName || ''    
+    const siteName = site.webConfig?.setSite?.siteName || ''
     const defalutPath = 'pages/index/index'
     const nickname = user?.userInfo?.nickname || ''
     const defalutTitle = `${nickname}邀请你加入${siteName}`
@@ -56,13 +64,11 @@ class Index extends React.Component {
       const { user } = this.props
       this.props.index.updateThreadShare({ threadId }).then(result => {
         if (result.code === 0) {
-          this.props.index.updateAssignThreadInfo(threadId, { updateType: 'share', updatedInfo: result.data, user: user.userInfo });
-          this.props.search.updateAssignThreadInfo(threadId, { updateType: 'share', updatedInfo: result.data, user: user.userInfo });
-          this.props.topic.updateAssignThreadInfo(threadId, { updateType: 'share', updatedInfo: result.data, user: user.userInfo });
+          updateThreadAssignInfoInLists(threadId, { updateType: 'share', updatedInfo: result.data, user: user.userInfo });
         }
       });
     }
-    return     priceShare({isAnonymous, isPrice, path}) || 
+    return priceShare({isAnonymous, isPrice, path}) ||
     {
       title,
       path
@@ -85,8 +91,8 @@ class Index extends React.Component {
     this.props.index.getReadCategories();
     this.props.index.getRreadStickList(categoryIds);
     this.props.index.getReadThreadList({
-        sequence, 
-        filter: { categoryids: categoryIds, types: newTypes, essence, attention, sort } 
+        sequence,
+        filter: { categoryids: categoryIds, types: newTypes, essence, attention, sort }
     }).then(() => {
       // 若第一次接口请求成功，则开始第二次请求，提高数据渲染效率
       this.dispatch('moreData');
@@ -95,7 +101,8 @@ class Index extends React.Component {
 
   componentDidShow() {
     const { threads } = this.props.index || {}
-    if (!threads) {
+    console.log(threads)
+    if (!threads?.pageData?.length) {
       this.loadData()
     }
   }

@@ -228,7 +228,7 @@ export default class PayBox extends React.Component {
         );
       }
 
-      // return this.walletPaySubText();
+      return this.walletPaySubText();
     }
 
     if (item.paymentType === PAYWAY_MAP.WX) {
@@ -270,7 +270,7 @@ export default class PayBox extends React.Component {
                     <p className={styles.text}>{item.name}</p>
                   </div>
                   <div className={styles.right}>
-                    {item.paymentType === PAYWAY_MAP.WALLET && this.walletPaySubText()}
+                    {/*{item.paymentType === PAYWAY_MAP.WALLET && this.walletPaySubText()}*/}
                     {this.renderRightChoices(item)}
                   </div>
                 </div>

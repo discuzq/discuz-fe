@@ -69,7 +69,7 @@ class LoginPhoneH5Page extends React.Component {
           this.props.commonLogin.needToCompleteExtraInfo = true;
         }
 
-        this.props.router.push('/user/bind-nickname');
+        this.props.router.replace('/user/bind-nickname');
         return;
       }
 
@@ -78,7 +78,7 @@ class LoginPhoneH5Page extends React.Component {
       if (e.Code === MOBILE_LOGIN_STORE_ERRORS.NEED_COMPLETE_REQUIRED_INFO.Code) {
         if (isExtFieldsOpen(site)) {
           this.props.commonLogin.needToCompleteExtraInfo = true;
-          this.props.router.push('/user/supplementary');
+          this.props.router.replace('/user/supplementary');
           return;
         }
         return window.location.href = '/';
@@ -87,7 +87,7 @@ class LoginPhoneH5Page extends React.Component {
       if (e.Code === MOBILE_LOGIN_STORE_ERRORS.NEED_ALL_INFO.Code) {
         this.props.commonLogin.needToSetNickname = true;
         this.props.commonLogin.needToCompleteExtraInfo = true;
-        this.props.router.push('/user/bind-nickname?needToCompleteExtraInfo=true');
+        this.props.router.replace('/user/bind-nickname?needToCompleteExtraInfo=true');
         return;
       }
 
@@ -101,7 +101,7 @@ class LoginPhoneH5Page extends React.Component {
         e.accessToken && this.props.commonLogin.setLoginToken(e.accessToken);
         this.props.commonLogin.needToBindWechat = true;
         this.props.commonLogin.sessionToken = e.sessionToken;
-        this.props.router.push(`/user/wx-bind-qrcode?sessionToken=${e.sessionToken}&loginType=${platform}&nickname=${e.nickname}&isSkip=${true}`);
+        this.props.router.replace(`/user/wx-bind-qrcode?sessionToken=${e.sessionToken}&loginType=${platform}&nickname=${e.nickname}&isSkip=${true}`);
         return;
       }
 
@@ -110,7 +110,7 @@ class LoginPhoneH5Page extends React.Component {
         const uid = get(e, 'uid', '');
         uid && this.props.user.updateUserInfo(uid);
         this.props.commonLogin.setStatusMessage(e.Code, e.Message);
-        this.props.router.push(`/user/status?statusCode=${e.Code}&statusMsg=${e.Message}`);
+        this.props.router.replace(`/user/status?statusCode=${e.Code}&statusMsg=${e.Message}`);
         return;
       }
 

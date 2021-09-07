@@ -39,7 +39,7 @@ class RenewalFee extends Component {
             <div className={styles.menuItem}>
               <div className={styles.menuTitle}>站长</div>
               <div className={styles.menuValue}>
-                {this.props.site?.siteAuthor?.nickname || this.props.site?.siteAuthor.username}
+                {this.props.site?.siteAuthor?.nickname || this.props.site?.siteAuthor?.username}
               </div>
             </div>
             <div className={styles.menuItem}>

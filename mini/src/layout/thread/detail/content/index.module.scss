@@ -164,8 +164,7 @@
 }
 
 .rewardText {
-  padding: $padding-4n;
-  background: $body-bg-color;
+  padding: $padding-4n $padding-4n 0;
   display: flex;
   flex-direction: column;
   align-items: center;

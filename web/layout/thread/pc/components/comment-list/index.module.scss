@@ -37,6 +37,7 @@
           .userInfo {
             display: flex;
             .commentListName {
+              max-width: rem(200);
               padding-top: rem($padding-2n);
               padding-left: rem($padding-3n);
               padding-right: rem($padding-2n);
@@ -45,12 +46,13 @@
               line-height: rem(20);
               text-align: left;
               color: $text-color-primary;
+              @include text-ellipsis();
             }
             .masterBox {
               padding:rem($padding-2n + 2) rem($padding-2n) 0 0;
               .masterText {
-                border-radius: rem(4) 0;
-                background: #ff9700;
+                border-radius: rem(2);
+                background: $primary-color;
                 display: inline-block;
                 font-size: rem(12);
                 -webkit-text-size-adjust:none;

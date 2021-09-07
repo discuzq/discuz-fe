@@ -40,7 +40,8 @@ class SearchResultTopicH5Page extends React.Component {
   };
 
   onSearch = (keyword) => {
-    this.props.search.currentTopicKeyword = keyword;
+    // this.props.search.currentTopicKeyword = keyword;
+    this.props.router.replace(`/search/result-topic?keyword=${keyword}`);
     this.setState({ keyword }, () => {
       this.refreshData();
     });

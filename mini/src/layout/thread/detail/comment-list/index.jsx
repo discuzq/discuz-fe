@@ -68,7 +68,7 @@ class RenderCommentList extends React.Component {
   async likeClick(data) {
     if (!this.props.user.isLogin()) {
       Toast.info({ content: '请先登录!' });
-      goToLoginPage({ url: '/subPages/user/wx-auth/index' });
+      goToLoginPage({ url: '/userPages/user/wx-auth/index' });
       return;
     }
 
@@ -123,7 +123,7 @@ class RenderCommentList extends React.Component {
   async replyLikeClick(reply, comment) {
     if (!this.props.user.isLogin()) {
       Toast.info({ content: '请先登录!' });
-      goToLoginPage({ url: '/subPages/user/wx-auth/index' });
+      goToLoginPage({ url: '/userPages/user/wx-auth/index' });
       return;
     }
 
@@ -202,7 +202,7 @@ class RenderCommentList extends React.Component {
     this.props.replyClick(comment);
     // if (!this.props.user.isLogin()) {
     //   Toast.info({ content: '请先登录!' });
-    //   goToLoginPage({ url: '/subPages/user/wx-authorization/index' });
+    //   goToLoginPage({ url: '/userPages/user/wx-authorization/index' });
     //   return;
     // }
 
@@ -220,7 +220,7 @@ class RenderCommentList extends React.Component {
     this.props.replyReplyClick(reply, comment);
     // if (!this.props.user.isLogin()) {
     //   Toast.info({ content: '请先登录!' });
-    //   goToLoginPage({ url: '/subPages/user/wx-authorization/index' });
+    //   goToLoginPage({ url: '/userPages/user/wx-authorization/index' });
     //   return;
     // }
 
@@ -291,7 +291,7 @@ class RenderCommentList extends React.Component {
   onCommentClick(data) {
     if (!this.props.user.isLogin()) {
       Toast.info({ content: '请先登录!' });
-      goToLoginPage({ url: '/subPages/user/wx-auth/index' });
+      goToLoginPage({ url: '/userPages/user/wx-auth/index' });
       return;
     }
     if (data.id && this.props.thread?.threadData?.id) {
@@ -309,7 +309,7 @@ class RenderCommentList extends React.Component {
 
     // if (!this.props.user.isLogin()) {
     //   Toast.info({ content: '请先登录!' });
-    //   goToLoginPage({ url: '/subPages/user/wx-auth/index' });
+    //   goToLoginPage({ url: '/userPages/user/wx-auth/index' });
     //   return;
     // }
 
@@ -320,7 +320,7 @@ class RenderCommentList extends React.Component {
   avatarClick(data) {
     const { userId } = data;
     if (!userId) return;
-    Router.push({ url: `/subPages/user/index?id=${userId}` });
+    Router.push({ url: `/userPages/user/index?id=${userId}` });
   }
 
   replyAvatarClick(reply, comment, floor) {

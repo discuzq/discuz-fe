@@ -9,6 +9,9 @@
   border-bottom: 1px solid var(--border-line-color);
   background: var(--color-white);
   position: relative;
+  &.container-plugin-show{
+    padding:  0;;
+  }
 
   .category {
     line-height: 1;
@@ -31,12 +34,17 @@
     margin-left: 16px;
     margin-right: 8px;
     color: $icon-color;
+    &:first-child{
+      margin-left: 0;
+    }
     &.active {
       color: $icon-color-active;
     }
   }
 
   .plugin-icon-container {
+    display: flex;
+    width: 100%;
     background: $white;
     z-index: 10;
     height: 28px;
@@ -45,16 +53,19 @@
     left: 16px;
 
     .plugin-icon {
-      float: left;
       height: 100%;
       display: flex;
       align-items: center;
+      overflow-x: auto;
+      flex: 1 1 auto;
+      margin-right: 8px;
     }
 
     .switcher {
       float: right;
-      width: 35px;
-      margin: 4px 0;
+      padding-left: 8px;
+      margin-right: 35px;
+      margin-left: 8px;
       border-left: 1px solid var(--border-line-color);
       display: flex;
       justify-content: center;

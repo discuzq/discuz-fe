@@ -13,9 +13,10 @@ import Taro, { getCurrentInstance, eventCenter } from '@tarojs/taro';
 import ImagePreviewer from '@discuzq/design/dist/components/image-previewer/index';
 import classnames from 'classnames';
 import Toast from '@discuzq/design/dist/components/toast';
+import UserCenterThreads from '@components/user-center-threads';
 
 @inject('user')
-@inject('index')
+@inject('threadList')
 @observer
 export default class index extends Component {
   constructor(props) {
@@ -50,14 +51,14 @@ export default class index extends Component {
 
   fetchUserThreads = async () => {
     try {
-      const userThreadsList = await this.props.index.fetchList({
+      const userThreadsList = await this.props.threadList.fetchList({
         namespace: 'my',
         filter: {
           toUserId: 0,
           complex: 5,
         },
       });
-      this.props.index.setList({ namespace: 'my', data: userThreadsList });
+      this.props.threadList.setList({ namespace: 'my', data: userThreadsList });
     } catch (err) {
       console.error(err);
       let errMessage = '加载用户列表失败';
@@ -94,7 +95,7 @@ export default class index extends Component {
 
   // 处理页面栈退出后，数据没有重置
   componentWillUnmount() {
-    this.props.index.clearList({ namespace: 'my' });
+    this.props.threadList.clearList({ namespace: 'my' });
     const onShowEventId = this.$instance.router.onShow;
     // 卸载
     eventCenter.off(onShowEventId, this.onShow);
@@ -184,29 +185,29 @@ export default class index extends Component {
     const { isLoading } = this.state;
     const { user } = this.props;
 
-    const { index } = this.props;
-    const { lists } = index;
+    const { threadList } = this.props;
+    const { lists } = threadList;
 
-    const myThreadsList = index.getList({
+    const myThreadsList = threadList.getList({
       namespace: 'my',
     });
 
-    const totalPage = index.getAttribute({
+    const totalPage = threadList.getAttribute({
       namespace: 'my',
       key: 'totalPage',
     });
 
-    const totalCount = index.getAttribute({
+    const totalCount = threadList.getAttribute({
       namespace: 'my',
       key: 'totalCount',
     });
 
-    const currentPage = index.getAttribute({
+    const currentPage = threadList.getAttribute({
       namespace: 'my',
       key: 'currentPage',
     });
 
-    const requestError = index.getListRequestError({ namespace: 'my' });
+    const requestError = threadList.getListRequestError({ namespace: 'my' });
 
     return (
       <BaseLayout
@@ -253,10 +254,7 @@ export default class index extends Component {
               />
             </View>
 
-            {!isLoading &&
-              myThreadsList?.map((item, index) => (
-                <Thread data={item} key={`${item.threadId}-${item.updatedAt}-${item.user.avatar}`} />
-              ))}
+            {!isLoading && <UserCenterThreads showBottomStyle={false} data={myThreadsList}/>}
           </View>
         </View>
         {this.getBackgroundUrl() && (

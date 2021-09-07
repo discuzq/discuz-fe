@@ -11,6 +11,7 @@ import HOCFetchSiteData from '@middleware/HOCFetchSiteData';
 @inject('site')
 @inject('topic')
 @inject('baselayout')
+@inject('threadList')
 @observer
 class Index extends React.Component {
   page = 1;
@@ -33,8 +34,11 @@ class Index extends React.Component {
 
   constructor(props) {
     super(props);
-    const { serverTopic, topic } = this.props;
+    const { serverTopic, topic, threadList } = this.props;
     // 初始化数据到store中
+
+    threadList.registerList({ namespace: topic.namespace });
+
     serverTopic && serverTopic.topicDetail && topic.setTopicDetail(serverTopic.topicDetail);
     this.state = {
       fetchTopicInfoLoading: false,
@@ -48,7 +52,7 @@ class Index extends React.Component {
     const { id = '' } = router.query;
     const topicId = topic?.topicDetail?.pageData[0]?.topicId || '';
     // 当服务器无法获取数据时，触发浏览器渲染
-    const hasTopics = !!topic.topicDetail;
+    const hasTopics = !!topic.topicDetail?.pageData?.length;
     if (!hasTopics || Number(id) !== topicId) {
       this.setState({
         fetchTopicInfoLoading: true,

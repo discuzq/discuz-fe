@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react';
 import styles from './index.module.scss';
 import Video from '@discuzq/design/dist/components/video/index';
 import Icon from '@discuzq/design/dist/components/icon/index';
+import Toast from '@discuzq/design/dist/components/toast/index';
 import { noop } from '../utils';
 import { View, Text, Image } from '@tarojs/components'
 import { getElementRect, randomStr } from '../utils'
@@ -36,6 +37,7 @@ const Index = ({
   v_height = null,
   relativeToViewport = true,
   updateViewCount = noop,
+  canViewVideo = true,
 }) => {
   let player = null;
   const videoId = useRef(`video${randomStr()}`);
@@ -124,6 +126,10 @@ const Index = ({
       {/* 视频蒙层 已付费时隐藏 未付费时显示 */}
       {
         isPay && <View className={styles.payBox} onClick={onPay}></View>
+      }
+      {/* 视频蒙层 有权限播放时隐藏 无权限播放时显示 */}
+      {
+        !canViewVideo && <View className={styles.payBox} onClick={() => Toast.warning({ content: '暂⽆权限播放视频' })}></View>
       }
       {
         !isPay && status !== 1 && (

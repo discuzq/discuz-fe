@@ -19,7 +19,7 @@ const handleClose = () => {
   }
   return (
     <View className={style.masking} onClick={handleClose}>
-        <View className={style.container}>
+        <View className={style.container} onClick={e => e.stopPropagation()}>
             <View className={style.moneyText} style={start ? moneyTextStyle : {}}>
                 <View className={style.text}>恭喜您，领到了</View>
                 <View className={style.money}>{money}元</View>

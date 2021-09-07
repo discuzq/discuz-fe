@@ -41,7 +41,7 @@ class index extends Component {
     this.props.payBox
       .getPayPwdResetToken()
       .then(() => {
-        Taro.navigateTo({ url: '/subPages/my/edit/reset/paypwd/index' });
+        Taro.navigateTo({ url: '/userPages/my/edit/reset/paypwd/index' });
         this.props.payBox.oldPayPwd = null;
         this.initState();
       })
@@ -64,11 +64,11 @@ class index extends Component {
         duration: 2000,
       });
       setTimeout(() => {
-        Taro.navigateTo({ url: '/subPages/user/bind-phone/index?from=userCenter' });
+        Taro.navigateTo({ url: '/userPages/user/bind-phone/index?from=userCenter' });
       }, 1000);
       return;
     }
-    Taro.navigateTo({ url: '/subPages/my/edit/find/paypwd/index' });
+    Taro.navigateTo({ url: '/userPages/my/edit/find/paypwd/index' });
   }, 1000);
 
   // 初次设置密码 password
@@ -127,7 +127,7 @@ class index extends Component {
         }
         // 防止跳转过快
         setTimeout(() => {
-          Taro.redirectTo({ url: '/subPages/my/edit/index' });
+          Taro.redirectTo({ url: '/userPages/my/edit/index' });
           this.props.user.userInfo.canWalletPay = true;
           this.props.payBox.password = null;
           this.initState();

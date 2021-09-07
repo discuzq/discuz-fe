@@ -8,8 +8,16 @@ import { getCurrentInstance } from '@tarojs/taro';
 
 @inject('site')
 @inject('search')
+@inject('threadList')
 @observer
 class Index extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    const { threadList } = this.props;
+    threadList.registerList({ namespace: 'search/result' });
+  }
 
   async componentDidMount() {
     const { search, router } = this.props;
@@ -21,7 +29,7 @@ class Index extends React.Component {
     // 当服务器无法获取数据时，触发浏览器渲染
     const hasSearchTopics = !!search.searchTopics;
     const hasSearchUsers = !!search.searchUsers;
-    const hasSearchThreads = !!search.searchThreads;
+    const hasSearchThreads = !!search.searchThreads?.pageData?.length;
 
     await search.getSearchData({
       hasTopics: hasSearchTopics,

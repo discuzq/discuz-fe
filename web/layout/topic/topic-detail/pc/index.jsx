@@ -57,7 +57,10 @@ class IndexPCPage extends React.Component {
       </>
    )
 
-  renderItem = ({ content = '', threadCount = 0, viewCount = 0, threads = [] }, index) => (
+  renderItem = ({ content = '', threadCount = 0, viewCount = 0 }, index) => {
+    const threads = this.props.topic?.topicThreads?.pageData || [];
+
+    return (
       <div className={styles.topicContent} key={index}>
         <DetailsHeader title={content} viewNum={viewCount} contentNum={threadCount} onShare={this.onShare} />
         <div className={styles.themeContent}>
@@ -72,7 +75,8 @@ class IndexPCPage extends React.Component {
           }
         </div>
       </div>
-  )
+    );
+  }
 
   render() {
     const { pageData = [] } = this.props.topic?.topicDetail || {};

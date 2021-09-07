@@ -127,7 +127,7 @@ class WXLoginH5Page extends React.Component {
             this.props.commonLogin.needToCompleteExtraInfo = true;
           }
 
-          this.props.router.push('/user/bind-nickname');
+          this.props.router.replace('/user/bind-nickname');
           return;
         }
 
@@ -138,7 +138,7 @@ class WXLoginH5Page extends React.Component {
           uid && this.props.user.updateUserInfo(uid);
           if (isExtFieldsOpen(site)) {
             this.props.commonLogin.needToCompleteExtraInfo = true;
-            this.props.router.push('/user/supplementary');
+            this.props.router.replace('/user/supplementary');
             return;
           }
           return window.location.href = '/';
@@ -148,10 +148,28 @@ class WXLoginH5Page extends React.Component {
           const uid = get(e, 'uid', '');
           uid && this.props.user.updateUserInfo(uid);
           this.props.commonLogin.setStatusMessage(e.Code, e.Message);
-          this.props.router.push(`/user/status?statusCode=${e.Code}&statusMsg=${e.Message}`);
+          this.props.router.replace(`/user/status?statusCode=${e.Code}&statusMsg=${e.Message}`);
         }
       }
     }, 3000);
+  }
+
+  getOrCodeTips = () => {
+    const { site: { platform, wechatEnv } } = this.props;
+    let orCodeTips = '';
+    switch (platform) {
+      case 'pc':
+        orCodeTips = '请使用微信，扫码登录';
+        break;
+      case 'h5':
+        if (wechatEnv === 'miniProgram') {
+          orCodeTips = '请在小程序中完成站点登录';
+          break;
+        }
+        orCodeTips = '长按保存二维码，并在微信中识别此二维码，即可完成登录';
+        break;
+    }
+    return orCodeTips;
   }
 
   render() {
@@ -175,7 +193,7 @@ class WXLoginH5Page extends React.Component {
             refresh={() => {this.generateQrCode()}}
             isValid={this.props.h5QrCode.isQrCodeValid}
             orCodeImg={this.props.h5QrCode.qrCode}
-            orCodeTips={platform === 'h5' ? '长按保存二维码，并在微信中识别此二维码，即可完成登录' : '请使用微信，扫码登录'}
+            orCodeTips={this.getOrCodeTips()}
           />
           {/* 二维码 end */}
           {isAnotherLoginWayAvaliable && <div className={platform === 'h5' ? layout['otherLogin-title'] : layout.pc_otherLogin_title}>其他登录方式</div>}

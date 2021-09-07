@@ -24,10 +24,13 @@ import { setClipboardData } from '@tarojs/taro';
 import { parseContentData } from '../../utils';
 import styles from './index.module.scss';
 
+// 插件引入
+/** DZQ->plugin->register<plugin_detail@thread_extension_display_hook>**/
+
 // 帖子内容
-const RenderThreadContent = inject('user')(
+const RenderThreadContent = inject('site', 'user')(
   observer((props) => {
-    const { store: threadStore } = props;
+    const { store: threadStore, site } = props;
     const { text, indexes } = threadStore?.threadData?.content || {};
     const { parentCategoryName, categoryName } = threadStore?.threadData;
     const { hasRedPacket } = threadStore; // 是否有红包领取的数据
@@ -118,8 +121,13 @@ const RenderThreadContent = inject('user')(
     const onUserClick = () => {
       const userId = threadStore?.threadData?.user?.userId
       if (!userId) return
-      Router.push({ url: `/subPages/user/index?id=${userId}` });
+      Router.push({ url: `/userPages/user/index?id=${userId}` });
     }
+    const {
+      canDownloadAttachment,
+      canViewAttachment,
+      canViewVideo
+    } = threadStore?.threadData?.ability || {};
 
     return (
       <View className={`${styles.container}`}>
@@ -152,7 +160,7 @@ const RenderThreadContent = inject('user')(
           {threadStore?.threadData?.title && <View className={styles.title}>{threadStore?.threadData?.title}</View>}
 
           {/* 文字 */}
-          {text && <PostContent useShowMore={false} content={text || ''} />}
+          {text && <PostContent needShowMore={false} content={text || ''} />}
 
           {/* 视频 */}
           {parseContent.VIDEO && (
@@ -162,6 +170,7 @@ const RenderThreadContent = inject('user')(
               v_height={parseContent.VIDEO.height || null}
               v_width={parseContent.VIDEO.width || null}
               status={parseContent.VIDEO.status}
+              canViewVideo={canViewVideo}
             />
           )}
 
@@ -176,24 +185,8 @@ const RenderThreadContent = inject('user')(
             />
           )}
 
-          {/* 悬赏文案 */}
-          {parseContent.REWARD && (
-            <View className={styles.rewardText}>
-              {/* 悬赏 */}
-              {parseContent.REWARD && (
-                <View>
-                  <View className={styles.rewardMoney}>
-                    本帖向所有人悬赏
-                    <Text className={styles.rewardNumber}>{parseContent.REWARD.money || 0}</Text>元
-                  </View>
-                  <View className={styles.rewardTime}>{parseContent.REWARD.expiredAt}截止悬赏</View>
-                </View>
-              )}
-            </View>
-          )}
-
           {(parseContent.RED_PACKET || parseContent.REWARD) && (
-            <View className={styles.reward}>
+            <View className={styles.reward} style={{ width: '100%' }}>
               {/* 悬赏 */}
               {parseContent.REWARD && (
                 <View className={styles.rewardBody}>
@@ -210,11 +203,18 @@ const RenderThreadContent = inject('user')(
                     money={parseContent.REWARD.money}
                     remainMoney={parseContent.REWARD.remainMoney}
                   />
+                  <View className={styles.rewardText}>
+                    <View className={styles.rewardMoney}>
+                      本帖向所有人悬赏
+                      <Text className={styles.rewardNumber}>{parseContent.REWARD.money || 0}</Text>元
+                    </View>
+                    <View className={styles.rewardTime}>{parseContent.REWARD.expiredAt}截止悬赏</View>
+                  </View>
                 </View>
               )}
               {/* 红包 */}
               {parseContent.RED_PACKET && (
-                <View>
+                <View style={{ width: '100%' }}>
                   {/* <PostRewardProgressBar
                     remaining={Number(parseContent.RED_PACKET.remainNumber || 0)}
                     received={
@@ -260,7 +260,12 @@ const RenderThreadContent = inject('user')(
 
           {/* 附件 */}
           {parseContent.VOTE && (
-            <AttachmentView attachments={parseContent.VOTE} threadId={threadStore?.threadData?.threadId} />
+            <AttachmentView
+              attachments={parseContent.VOTE}
+              threadId={threadStore?.threadData?.threadId}
+              canDownloadAttachment={canDownloadAttachment}
+              canViewAttachment={canViewAttachment}
+            />
           )}
 
           {/* 投票 */}
@@ -275,6 +280,17 @@ const RenderThreadContent = inject('user')(
               </Button>
             </View>
           )}
+
+          {
+            DZQPluginCenter.injection('plugin_detail', 'thread_extension_display_hook').map(({ render, pluginInfo }) => (
+                <View key={pluginInfo.name}>
+                  {render({
+                    site,
+                    renderData: parseContent.plugin
+                  })}
+                </View>
+              ))
+          }
 
           {/* 标签 */}
           {(parentCategoryName || categoryName) && (
@@ -338,7 +354,7 @@ const RenderThreadContent = inject('user')(
                 <Tip
                   tipData={tipData}
                   imgs={threadStore?.threadData?.likeReward?.users || []}
-                  showMore={true}
+                  showMore
                   showCount={5}
                 ></Tip>
               </View>

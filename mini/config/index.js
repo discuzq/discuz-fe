@@ -1,5 +1,4 @@
 const path = require('path');
-
 const config = {
   projectName: 'discuz-app-mini',
   date: '2021-2-19',
@@ -13,7 +12,6 @@ const config = {
   },
   sourceRoot: 'src',
   outputRoot: 'dist',
-  plugins: [],
   defineConstants: {
     LOCATION_APIKEY: JSON.stringify('FF7BZ-27T3X-C574Z-73YBG-FGAJ2-4CF7I')
   },
@@ -50,6 +48,9 @@ const config = {
     },
     baseLevel: 20,
     postcss: {
+      autoprefixer: {
+        enable: false,
+      },
       pxtransform: {
         enable: true,
         config: {
@@ -59,8 +60,8 @@ const config = {
       url: {
         enable: true,
         config: {
-          limit: 1024, // 设定转换尺寸上限
-        },
+          limit: 10240 // 设定转换尺寸上限
+        }
       },
       cssModules: {
         enable: true, // 默认为 false，如需使用 css modules 功能，则设为 true

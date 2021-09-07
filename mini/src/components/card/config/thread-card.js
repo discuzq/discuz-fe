@@ -6,13 +6,13 @@ import { checkAndGetBase64Src } from '../utils'
 const posterFrameWidth = 8;
 const posterWidth = 710 - posterFrameWidth * 2;
 
-const getConfig = async ({ thread, miniCode, siteName }) => {
+const getConfig = async ({ site, thread, miniCode, siteName }) => {
   if (!miniCode) {
     return;
   }
   const codeUrl = await miniCode.base64Img ? checkAndGetBase64Src(miniCode.base64Img) : miniCode
   const { height: headerHeight, config: headerConfig } = getHeaderConfig({ thread });
-  const { height: contentHeight, config: contentConfig } = getContentConfig({ baseHeight: headerHeight, thread });
+  const { height: contentHeight, config: contentConfig } = await getContentConfig({ site, baseHeight: headerHeight, thread });
   const { height: footerHeight, config: footerConfig } = getFooterConfig({
     baseHeight: headerHeight + contentHeight,
     codeUrl,

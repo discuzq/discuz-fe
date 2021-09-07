@@ -1,8 +1,8 @@
 const miniConfig = require('../src/app.config');
 const getDefinePlugin = require('@discuzq/cli/config/taro/getDefinePlugin');
+const getDZQPluginLoader = require('@discuzq/cli/config/taro/getDZQPluginLoader');
 
-let a = 1;
-
+const path = require('path');
 module.exports = {
   env: {
     NODE_ENV: '"production"',
@@ -35,11 +35,15 @@ module.exports = {
     addChunkPages (pages) {
       const indexPages = miniConfig.subPackages[0].pages;
       const subPages = miniConfig.subPackages[1].pages;
+      const userPages = miniConfig.subPackages[2].pages;
       indexPages.map(page => {
         pages.set(`indexPages/${page}`, ['indexPages/common']);
       });
       subPages.map(page => {
         pages.set(`subPages/${page}`, ['subPages/common']);
+      });
+      userPages.map(page => {
+        pages.set(`userPages/${page}`, ['userPages/common']);
       });
     },
     webpackChain (chain, webpack) {
@@ -51,6 +55,8 @@ module.exports = {
             ...defaultDefinePlugin
           }
       ]);
+      getDZQPluginLoader(chain);
+
       chain.merge({
         optimization: {
           splitChunks: {
@@ -60,17 +66,27 @@ module.exports = {
                 minChunks: 2,
                 reuseExistingChunk: true,
                 test: (module, chunks) => {
-                  const isNoOnlySubpackRequired = chunks.find(chunk => !(/\bindexPages\b/.test(chunk.name) || /\bsubPages\b/.test(chunk.name)))
+                  const isNoOnlySubpackRequired = chunks.find(chunk => !(/\bindexPages\b/.test(chunk.name) || /\bsubPages\b/.test(chunk.name) || /\buserPages\b/.test(chunk.name)))
                   return !isNoOnlySubpackRequired
                 },
-                priority: 200
+                priority: 500
               },
               subPagesCommon: {
                 name: 'subPages/common',
                 minChunks: 2,
                 reuseExistingChunk: true,
                 test: (module, chunks) => {
-                  const isNoOnlySubpackRequired = chunks.find(chunk => !(/\bsubPages\b/.test(chunk.name) || /\bindexPages\b/.test(chunk.name)))
+                  const isNoOnlySubpackRequired = chunks.find(chunk => !(/\bsubPages\b/.test(chunk.name) || /\bindexPages\b/.test(chunk.name) || /\buserPages\b/.test(chunk.name)))
+                  return !isNoOnlySubpackRequired
+                },
+                priority: 1
+              },
+              userPagesCommon: {
+                name: 'userPages/common',
+                minChunks: 2,
+                reuseExistingChunk: true,
+                test: (module, chunks) => {
+                  const isNoOnlySubpackRequired = chunks.find(chunk => !(/\bsubPages\b/.test(chunk.name) || /\bindexPages\b/.test(chunk.name) || /\buserPages\b/.test(chunk.name)))
                   return !isNoOnlySubpackRequired
                 },
                 priority: 1
@@ -83,6 +99,20 @@ module.exports = {
                   return /[\\/]node_modules[\\/]/.test(module.resource);
                 },
                 priority: 200,
+              },
+              taro: {
+                name: 'taro',
+                test: module => {
+                  return /@tarojs[\\/][a-z]+/.test(module.context);
+                },
+                priority: 300,
+              },
+              discuzq: {
+                name: 'discuzq',
+                test: module => {
+                  return /@discuzq[\\/][a-z]+/.test(module.context);
+                },
+                priority: 900,
               },
             }
           }

@@ -13,9 +13,12 @@ import Router from '@discuzq/sdk/dist/router';
 import PostContent from '@components/thread/post-content';
 import { debounce } from '@common/utils/throttle-debounce';
 import styles from './index.module.scss';
-import redPacketMini from '../../../../../../web/public/dzq-img/redpacket-mini.png';
-import coin from '../../../../../../web/public/dzq-img/coin.png';
+// import redPacketMini from '../../../../../../web/public/dzq-img/redpacket-mini.png';
+// import coin from '../../../../../../web/public/dzq-img/coin.png';
 import ReplyList from '../reply-list/index';
+
+const coin = 'https://imgcache.qq.com/operation/dianshi/other/coin.e66d1d9205f2d6a18b38fe29b733eb109e168504.png';
+const redPacketMini = 'https://imgcache.qq.com/operation/dianshi/other/redpacket-mini.10b46eefd630a5d5d322d6bbc07690ac4536ee2d.png';
 
 @observer
 class CommentList extends React.Component {
@@ -173,10 +176,10 @@ class CommentList extends React.Component {
                   </View>
                   {(isSelf && !this.props.isAnonymous) && (
                     <View className={styles.masterBox}>
-                      <Text className={styles.masterText}>楼主</Text>
+                      <Text className={styles.masterText}>作者</Text>
                     </View>
                   )}
-                  {!!groups?.isDisplay  && (
+                  {!!groups?.isDisplay && (
                     <View className={styles.groups}>{groups?.name || groups?.groupName}</View>
                   )}
                 </View>
@@ -206,6 +209,7 @@ class CommentList extends React.Component {
                 ''
               )}
             </View>
+
             {/* 底部操作栏 */}
             {this.props.data?.user && (
               <View className={styles.commentListFooter}>
@@ -237,6 +241,9 @@ class CommentList extends React.Component {
                     )}
                   </View>
                 </View>
+                {
+                  this.props.originThread || ''
+                }
                 {this.props.data?.replyCount - 1 > 0 && this.state.isShowOne ? (
                   <View className={styles.moreReply} onClick={() => this.toCommentDetail()}>
                     查看之前{this.props.data?.replyCount - 1}条回复...
@@ -251,7 +258,7 @@ class CommentList extends React.Component {
                         data={this.needReply[0]}
                         key={this.needReply[0].id}
                         isShowOne
-                        avatarClick={(floor) => this.replyAvatarClick(this.needReply[0],floor)}
+                        avatarClick={(floor) => this.replyAvatarClick(this.needReply[0], floor)}
                         likeClick={() => this.replyLikeClick(this.needReply[0])}
                         replyClick={() => this.replyReplyClick(this.needReply[0])}
                         deleteClick={() => this.replyDeleteClick(this.needReply[0])}
@@ -280,6 +287,7 @@ class CommentList extends React.Component {
                 )}
               </View>
             )}
+
           </View>
         </View>
       </View>

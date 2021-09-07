@@ -34,6 +34,9 @@ const Index = ({
   user = null,
   site = null,
   updateViewCount = noop,
+  unifyOnClick = null,
+  canDownloadAttachment = false,
+  canViewAttachment = false,
 }) => {
   let itemUrl = null;
   // 处理文件大小的显示
@@ -56,9 +59,9 @@ const Index = ({
     });
 
     await thread.fetchThreadAttachmentUrl(threadId, attachmentId).then((res) => {
-      if(res?.code === 0 && res?.data) {
+      if (res?.code === 0 && res?.data) {
         const { url, fileName } = res.data;
-        if(!url) {
+        if (!url) {
           Toast.info({ content: '获取下载链接失败' });
         }
         callback(url, fileName);
@@ -87,6 +90,12 @@ const Index = ({
       goToLoginPage({ url: '/user/login' });
       return;
     }
+
+    if (!canDownloadAttachment) {
+      Toast.warning({ content: '暂⽆权限下载附件' });
+      return;
+    }
+
     itemUrl = item.url; // 暂用于微信下载
 
     if (!isPay) {
@@ -98,19 +107,18 @@ const Index = ({
 
       // if(isWeiXin()) {
       //   window.location.href = item.url;
-        
+
       //   Toast.info({ content: '下载成功' });
       // } else {
-        const attachmentId = item.id;
-        fetchDownloadUrl(threadId, attachmentId, (url, fileName) => {
-          // window.location.href = url;
-          download(url, fileName);
-        });
+      const attachmentId = item.id;
+      fetchDownloadUrl(threadId, attachmentId, (url, fileName) => {
+        // window.location.href = url;
+        download(url, fileName);
+      });
       // }
 
       // downloading[index] = false;
       // setDownloading([...downloading]);
-
     } else {
       onPay();
     }
@@ -130,7 +138,7 @@ const Index = ({
         Toast.info({ content: '下载成功' });
       }
     }
-  }
+  };
 
   const downloadAttachmentParams = (url) => {
     if (!url) return;
@@ -139,9 +147,9 @@ const Index = ({
       sign: paramArr[0].split('=')[1],
       attachmentsId: Number(paramArr[1].split('=')[1]),
       isCode: 1,
-    }
+    };
     return params;
-  }
+  };
 
   const downloadAttachmentStatus = async (params) => {
     const res = await readDownloadAttachmentStatus(params);
@@ -163,10 +171,14 @@ const Index = ({
       Toast.info({ content: res?.msg });
     }
     return false;
-  }
+  };
 
   const onLinkShare = (item, e) => {
     updateViewCount();
+    if (!canViewAttachment) {
+      Toast.warning({ content: '暂⽆权限查看附件' });
+      return;
+    }
     if (!isPay) {
       if (!item || !threadId) return;
 
@@ -174,7 +186,7 @@ const Index = ({
       fetchDownloadUrl(threadId, attachmentId, async (url, fileName) => {
         // 链接拼接
         url = splicingLink(url, fileName);
-        
+
         setTimeout(() => {
           if (!h5Share({ url })) {
             navigator.clipboard.writeText(url); // qq浏览器不支持异步document.execCommand('Copy')
@@ -190,10 +202,10 @@ const Index = ({
   };
 
   const splicingLink = (url, fileName) => {
-    const host = window.location.host; // 域名
-    const protocol = window.location.protocol; // 协议
-    return `${protocol}//${host}/download?url=${url}&fileName=${fileName}`;
-  }
+    const { host } = window.location; // 域名
+    const { protocol } = window.location; // 协议
+    return `${protocol}//${host}/download?url=${url}&fileName=${fileName}&threadId=${threadId}`;
+  };
 
   // 文件是否可预览
   const isAttachPreviewable = (file) => {
@@ -205,6 +217,11 @@ const Index = ({
   const [previewFile, setPreviewFile] = useState(null);
   const onAttachPreview = (file) => {
     updateViewCount();
+    if (!canViewAttachment) {
+      Toast.warning({ content: '暂⽆权限查看附件' });
+      return;
+    }
+
     if (!isPay) {
       if (!file || !threadId) return;
 
@@ -250,9 +267,9 @@ const Index = ({
             src={url}
             fileName={fileName}
             fileSize={handleFileSize(parseFloat(item.fileSize || 0))}
-            beforePlay={async () => await beforeAttachPlay(item)}
-            onDownload={throttle(() => onDownLoad(item, index), 1000)}
-            onLink={throttle(() => onLinkShare(item), 1000)}
+            beforePlay={unifyOnClick || (async () => await beforeAttachPlay(item))}
+            onDownload={unifyOnClick || (throttle(() => onDownLoad(item, index), 1000))}
+            onLink={unifyOnClick || (throttle(() => onLinkShare(item), 1000))}
           />
         </div>
       );
@@ -271,13 +288,20 @@ const Index = ({
 
           <div className={styles.right}>
             {
-              isAttachPreviewable(item) ? <span onClick={throttle(() => onAttachPreview(item), 1000)}>预览</span> : <></>
+              isAttachPreviewable(item)
+                ? <span onClick={unifyOnClick || (throttle(() => onAttachPreview(item), 1000))}>预览</span>
+                : <></>
             }
-            <span className={styles.span} onClick={throttle(() => onLinkShare(item), 1000)}>链接</span>
+            <span className={styles.span} onClick={unifyOnClick || (throttle(() => onLinkShare(item), 1000))}>链接</span>
             <div className={styles.label}>
               { downloading[index]
                 ? <Spin className={styles.spinner} type="spinner" />
-                : <span className={styles.span} onClick={throttle(() => onDownLoad(item, index), 1000)}>下载</span>
+                : <span
+                    className={styles.span}
+                    onClick={unifyOnClick || (throttle(() => onDownLoad(item, index), 1000))}
+                  >
+                    下载
+                  </span>
               }
             </div>
           </div>

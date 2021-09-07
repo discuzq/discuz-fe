@@ -4,7 +4,7 @@ import loginHelper from './login-helper';
  */
 export default function canPublish(userStore, siteStore) {
   if (!userStore.isLogin()) { // 是否登录
-    loginHelper.gotoLogin();
+    loginHelper.saveAndLogin();
     return false;
   }
   if (!siteStore.publishNeedBindPhone && !siteStore.publishNeedBindWechat) { // 如果没有开启发帖需要绑定手机或者微信，则不做逻辑处理
