@@ -155,7 +155,7 @@ const CommentInput = inject('site')(inject('user')((props) => {
           loading={loading}
           disabled={!canSubmit}
           onClick={onSubmitClick}
-          className={styles.button}
+          className={`${styles.button} ${platform === 'h5' && styles.h5}`}
           type="primary"
           size="large"
         >

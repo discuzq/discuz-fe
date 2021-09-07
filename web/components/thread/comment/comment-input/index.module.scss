@@ -15,8 +15,8 @@
     .dzq-input {
       .dzq-input__inner {
         font-size: rem($font-size-middle);
-        background-color: $comment-bg-color;
-        border-radius: 0;
+        // background-color: $comment-bg-color;
+        // border-radius: 0;
         padding: rem($padding-1n) rem($padding-2n);
       }
     }
@@ -36,7 +36,7 @@
 }
 
 .footer {
-  padding-left: rem(42);
+  padding-left: rem(45);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -58,6 +58,10 @@
     border-radius: rem($border-radius-small);
     box-sizing: border-box;
     font-size: rem($font-size-primary);
+
+    &.h5 {
+      width: rem(76);
+    }
   }
 }
 

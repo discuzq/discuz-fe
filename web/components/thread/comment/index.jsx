@@ -132,7 +132,7 @@ class Comment extends React.Component {
         <ViewMore className={styles.viewMore} onClick={this.onViewMoreClick}></ViewMore>
       )}
 
-      <CommentInput userInfo={userInfo} onSubmit={val => this.onPublishClick(val)}></CommentInput>
+      <CommentInput userInfo={userInfo} onSubmit={val => this.onPublishClick(val)} platform={platform}></CommentInput>
     </>;
   }
 }
