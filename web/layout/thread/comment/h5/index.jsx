@@ -410,6 +410,8 @@ class CommentH5Page extends React.Component {
   onGotoThread = () => {
     const { threadId } = this.props.comment;
     this.props.router.push(`/thread/${threadId}`);
+  }
+  
   // 点击内容
   onCommentClick = (data) => {
     this.operationData = data || null;
