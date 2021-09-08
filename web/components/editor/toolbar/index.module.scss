@@ -102,6 +102,8 @@ $margin16: rem($margin-4n);
     margin-left: $margin-5n;
     color: $icon-color;
     cursor: pointer;
+    line-height: 22px !important;
+
     &:first-child {
       margin-left: 0;
     }
