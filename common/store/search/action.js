@@ -224,9 +224,9 @@ class SearchAction extends SearchStore {
     } else {
       tasks.push(Promise.resolve({}))
     }
-
+    this.indexThreadsLoading = true;
     const result = await Promise.all(tasks)
-
+    this.indexThreadsLoading = false;
     if ( !hasTopics ) {
       const res = result[0]
        
@@ -338,9 +338,7 @@ class SearchAction extends SearchStore {
 
     if (result.code === 0 && result.data) {
       if (this.threads && result.data.pageData && page !== 1) {
-        this.threads.pageData.push(...result.data.pageData);
-        const newPageData = this.threads.pageData.slice();
-        this.setThreads({ ...result.data, pageData: newPageData });
+        this.setThreads(result.data);
       } else {
         // 首次加载，先置空，是为了列表回到顶部
         this.setThreads({ pageData: [] });

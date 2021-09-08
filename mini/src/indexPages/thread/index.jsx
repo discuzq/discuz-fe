@@ -138,10 +138,12 @@ class Detail extends React.Component {
     if (id) {
       let threadData;
 
+      let listType = '';
       const targetThreadList = this.props.threadList.findAssignThreadInLists({ threadId: Number(id) });
       if (targetThreadList?.length) {
         targetThreadList.forEach((targetThread) => {
           if (!threadData && targetThread.data) {
+            listType = targetThread.listName;
             threadData = targetThread.data;
           }
         });
@@ -149,6 +151,7 @@ class Detail extends React.Component {
 
       if (threadData?.threadId && !threadData?.displayTag?.isRedPack && !threadData?.displayTag?.isReward) {
         this.props.thread.setThreadData(threadData);
+        this.props.thread.setPageDataListType(listType); // 记录使用的是哪个列表数据
       }
     }
   }

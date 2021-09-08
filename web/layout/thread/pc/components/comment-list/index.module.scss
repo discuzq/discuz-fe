@@ -16,6 +16,7 @@
     display: flex;
     .commentListAvatar {
       margin-right: rem($margin-2n);
+      width: rem(38);
     }
     .avatar {
       cursor: pointer;

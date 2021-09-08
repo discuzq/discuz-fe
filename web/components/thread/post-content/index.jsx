@@ -191,7 +191,7 @@ const PostContent = ({
             onImgClick={handleImgClick}
             onLinkClick={handleLinkClick}
             transformer={transformer}
-            iframeWhiteList={['bilibili', 'youku', 'iqiyi', 'music.163.com', 'ixigua', 'qq.com', 'myqcloud.com']}
+            iframeWhiteList={['bilibili', 'youku', 'iqiyi', 'music.163.com', 'ixigua', 'qq.com', 'myqcloud.com', window.location.hostname]}
           />
           {imageVisible && (
             <ImagePreviewer

@@ -42,7 +42,8 @@ class SearchResultUserH5Page extends React.Component {
   };
 
   onSearch = (keyword) => {
-    this.props.search.currentUserKeyword = keyword;
+    // this.props.search.currentUserKeyword = keyword;
+    this.props.router.replace(`/search/result-user?keyword=${keyword}`);
     this.setState({ keyword }, () => {
       this.refreshData();
     });

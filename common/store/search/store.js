@@ -11,6 +11,7 @@ class SearchStore {
   @observable indexTopics = null;
   @observable indexUsers = null;
   @observable indexThreadsNamespace = 'search';
+  @observable indexThreadsLoading = true;
   @computed get indexThreads() {
     let newData = null;
     const homeData = this.threadList.lists?.[this.indexThreadsNamespace];
