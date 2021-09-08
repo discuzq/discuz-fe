@@ -251,6 +251,7 @@ class index extends Component {
   render() {
     const { targetUser } = this;
     const user = this.props.isOtherPerson ? targetUser || {} : this.props.user;
+    const { webConfig: { other: { threadOptimize } } } = this.props.site;
 
     return (
       <View className={styles.h5box}>
@@ -311,12 +312,14 @@ class index extends Component {
                   <Text className={styles.userBtnText}>{this.renderFollowedStatus(user.follow).text}</Text>
                 </View>
               </Button>
-              <Button full className={styles.btn} onClick={this.handleMessage}>
-                <View className={styles.actionButtonContentWrapper}>
-                  <Icon name="NewsOutlined" size={16} />
-                  <Text className={styles.userBtnText}>发私信</Text>
-                </View>
-              </Button>
+              {threadOptimize ? (
+                <Button full className={styles.btn} onClick={this.handleMessage}>
+                  <View className={styles.actionButtonContentWrapper}>
+                    <Icon name="NewsOutlined" size={16} />
+                    <Text className={styles.userBtnText}>发私信</Text>
+                  </View>
+                </Button>
+              ) : null}
             </>
           ) : (
             <>

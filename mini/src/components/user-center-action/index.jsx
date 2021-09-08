@@ -8,6 +8,7 @@ import Router from '@discuzq/sdk/dist/router';
 import UnreadRedDot from '@components/unread-red-dot';
 
 @inject('user')
+@inject('site')
 @inject('message')
 @observer
 class UserCenterAction extends React.Component {
@@ -60,6 +61,7 @@ class UserCenterAction extends React.Component {
 
   render() {
     const { totalUnread } = this.props.message;
+    const { webConfig: { other: { threadOptimize } } } = this.props.site;
     return (
       <View className={styles.userActionMobile}>
         <View className={styles.userCenterAction}>
@@ -106,17 +108,8 @@ class UserCenterAction extends React.Component {
             </View>
           </View>
         </View>
+
         <View className={styles.userCenterAction}>
-          <View onClick={this.handleMyBuy} className={styles.userCenterActionItemContainer}>
-            <View className={styles.userCenterActionItem}>
-              <View className={styles.userCenterActionItemIcon}>
-                <Badge>
-                  <Icon name={'ShoppingCartOutlined'} color={'#4F5A70'} size={20} />
-                </Badge>
-              </View>
-              <View className={styles.userCenterActionItemDesc}>我的购买</View>
-            </View>
-          </View>
 
           <View className={styles.userCenterActionItemContainer}>
             <View onClick={this.handleMyDraft} className={styles.userCenterActionItem}>
@@ -140,6 +133,17 @@ class UserCenterAction extends React.Component {
             </View>
           </View>
 
+          <View onClick={this.handleMyBuy} className={styles.userCenterActionItemContainer} style={{ visibility: !threadOptimize && 'hidden' }}>
+            <View className={styles.userCenterActionItem}>
+              <View className={styles.userCenterActionItemIcon}>
+                <Badge>
+                  <Icon name={'ShoppingCartOutlined'} color={'#4F5A70'} size={20} />
+                </Badge>
+              </View>
+              <View className={styles.userCenterActionItemDesc}>我的购买</View>
+            </View>
+          </View>
+
           <View className={styles.userCenterActionItemContainer} style={{ visibility: this.props.user.isAdmini && 'hidden' }}>
             <View onClick={this.handleMyInvite} className={styles.userCenterActionItem}>
               <View className={styles.userCenterActionItemIcon}>
@@ -150,7 +154,9 @@ class UserCenterAction extends React.Component {
               <View className={styles.userCenterActionItemDesc}>推广邀请</View>
             </View>
           </View>
+
         </View>
+
       </View>
     );
   }

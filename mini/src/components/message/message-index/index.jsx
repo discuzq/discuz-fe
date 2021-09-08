@@ -8,9 +8,10 @@ import Notice from '@components/message/notice';
 import Card from '@components/message/message-card';
 import BottomNavBar from '@components/bottom-nav-bar';
 
-const Index = ({ message, user }) => {
+const Index = ({ message, user, site }) => {
   const { readDialogList, dialogList, threadUnread, financialUnread, accountUnread, deleteDialog } = message;
   const { currentPage, totalPage, list } = dialogList;
+  const { webConfig: { other: { threadOptimize } } } = site;
 
   // 初始化请求数据
   useDidShow(async () => {
@@ -43,6 +44,10 @@ const Index = ({ message, user }) => {
 
   // 过滤展示数据
   const formatChatDialogList = (data = []) => {
+    if (!threadOptimize) {
+      return [];
+    }
+
     const newList = [];
     data.forEach((item) => {
       const { id, dialogMessage, sender, recipient, unreadCount } = item;
@@ -101,4 +106,4 @@ const Index = ({ message, user }) => {
   )
 }
 
-export default inject('message', 'user')(observer(Index));
+export default inject('message', 'user', 'site')(observer(Index));

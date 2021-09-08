@@ -854,7 +854,12 @@ class Index extends Component {
 
                 {/* 投票组件 */}
                 {(postData?.vote?.voteTitle) && (
-                  <VoteWidget onDelete={() => setPostData({ vote: {} })} />
+                  <VoteWidget onDelete={() => setPostData({ vote: {} })} onClick={() => {
+                    if (postData.vote.voteUsers > 0) {
+                      return this.postToast('投票已生效，不允许编辑');
+                    }
+                    Taro.navigateTo({ url: '/indexPages/thread/voteEditor/index' });
+                  }} />
                 )}
 
                 {

@@ -10,7 +10,8 @@ import Icon from '@discuzq/design/dist/components/icon/index';
 import { defaultIcon } from '@common/constants/const';
 import { THREAD_TYPE } from '@common/constants/thread-post';
 
-const Index = inject('user', 'threadPost')(observer(({
+const Index = inject('site', 'user', 'threadPost')(observer(({
+  site,
   user,
   threadPost,
   onPluginClick,
@@ -18,6 +19,8 @@ const Index = inject('user', 'threadPost')(observer(({
   operationType,
   style,
 }) => {
+  const { webConfig: { other: { threadOptimize } } } = site;
+
   const [currentTool, setCurrentTool] = useState("");
 
   useEffect(() => {
@@ -45,7 +48,10 @@ const Index = inject('user', 'threadPost')(observer(({
   const plug = useMemo(() => {
     return defaultIcon.map((item, index) => {
       // 是否有权限
-      const canInsert = tep[item.id];
+      let canInsert = tep[item.id];
+      if (item.type === THREAD_TYPE.paid || item.type === THREAD_TYPE.redPacket) {
+        canInsert = tep[item.id] && threadOptimize;
+      }
       return canInsert ? (
         <Icon
           key={index}
