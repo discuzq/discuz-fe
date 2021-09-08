@@ -9,6 +9,7 @@ import withShare from '@common/utils/withShare/withShare';
 import { priceShare } from '@common/utils/priceShare';
 import { updateViewCountInStorage } from '@common/utils/viewcount-in-storage';
 import Toast from '@components/toast';
+import ShareError from '@components/share-error/index';
 import ErrorMiniPage from '../../layout/error/index';
 import { updateThreadAssignInfoInLists } from '@common/store/thread-list/list-business';
 
@@ -28,6 +29,7 @@ class Detail extends React.Component {
     super(props);
     this.state = {
       isServerError: false,
+      serverErrorType: 'error',
       serverErrorMsg: '',
     };
   }
@@ -177,6 +179,18 @@ class Detail extends React.Component {
           });
         }
 
+        if (res.code === -3001) {
+          this.setState({
+            serverErrorType: 'permission',
+          });
+        }
+
+        if (res.code === -3006) {
+          this.setState({
+            serverErrorType: 'pay',
+          });
+        }
+
         this.setState({
           isServerError: true,
         });
@@ -248,6 +262,12 @@ class Detail extends React.Component {
   }
 
   render() {
+    const options = Taro.getLaunchOptionsSync();
+    const { serverErrorType } = this.state;
+    // 分享朋友圈时，如果页面错误则返回提示
+    if (options && options.scene === 1154 && this.state.isServerError) {
+      return <ShareError type={serverErrorType}/>;
+    }
     return this.state.isServerError ? (
       <ErrorMiniPage text={this.state.serverErrorMsg} />
     ) : (
