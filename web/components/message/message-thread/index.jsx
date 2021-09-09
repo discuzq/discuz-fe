@@ -112,7 +112,7 @@ class Index extends React.Component {
         isReply: item.isReply === 1, // 是否是楼中楼回复
         postId: item.postId || 0,
         replyPostId: item.replyPostId || 0,
-        content: item.threadTitle || item.postContent,
+        content: item.postContent,
         type: item.type,
         avatar: item.userAvatar,
         userId: item.userId,
