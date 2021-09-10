@@ -10,7 +10,7 @@ import UserCenterFansPc from '@components/user-center/fans-pc';
 import SidebarPanel from '@components/sidebar-panel';
 
 @inject('site')
-@inject('index')
+@inject('threadList')
 @observer
 class BuyPCPage extends React.Component {
   constructor(props) {
@@ -30,30 +30,30 @@ class BuyPCPage extends React.Component {
   );
 
   render() {
-    const { index } = this.props;
+    const { threadList } = this.props;
 
-    const { lists } = index;
+    const { lists } = threadList;
 
-    const buyThreadsList = index.getList({
+    const buyThreadsList = threadList.getList({
       namespace: 'buy',
     });
 
-    const totalCount = index.getAttribute({
+    const totalCount = threadList.getAttribute({
       namespace: 'buy',
       key: 'totalCount',
     });
 
-    const totalPage = index.getAttribute({
+    const totalPage = threadList.getAttribute({
       namespace: 'buy',
       key: 'totalPage',
     });
 
-    const currentPage = index.getAttribute({
+    const currentPage = threadList.getAttribute({
       namespace: 'buy',
       key: 'currentPage',
     });
 
-    const requestError = index.getListRequestError({ namespace: 'buy' });
+    const requestError = threadList.getListRequestError({ namespace: 'buy' });
 
     return (
       <BaseLayout

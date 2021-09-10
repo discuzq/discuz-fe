@@ -13,17 +13,16 @@ import ThreadCenterView from './ThreadCenterView';
 import { debounce, noop, getElementRect, randomStr } from './utils'
 import { View, Text } from '@tarojs/components'
 import { getImmutableTypeHeight } from './getHeight'
-import canPublish from '@common/utils/can-publish';
+import { updateThreadAssignInfoInLists, updatePayThreadInfo } from '@common/store/thread-list/list-business';
 import Skeleton from './skeleton';
 import { updateViewCountInStorage } from '@common/utils/viewcount-in-storage';
+import canPublish from '@common/utils/can-publish';
 import Comment from './comment';
 
 @inject('site')
 @inject('index')
 @inject('user')
 @inject('thread')
-@inject('search')
-@inject('topic')
 @observer
 class Index extends React.Component {
   constructor(props) {
@@ -47,6 +46,7 @@ class Index extends React.Component {
   setUseShowMore = () => {
     this.setState({ useShowMore: false })
   }
+
   setUseCloseMore = () => {
     this.setState({ useShowMore: true })
   }
@@ -147,14 +147,11 @@ class Index extends React.Component {
     const thread = this.props.data;
     const { success } = await threadPay(thread, this.props.user?.userInfo);
 
-    // 支付成功重新请求帖子数据
-    if (success && thread?.threadId) {
-      const { code, data } = await this.props.thread.fetchThreadDetail(thread?.threadId);
-      if (code === 0 && data) {
-        this.props.index.updatePayThreadInfo(thread?.threadId, data);
-        this.props.search.updatePayThreadInfo(thread?.threadId, data);
-        this.props.topic.updatePayThreadInfo(thread?.threadId, data);
-        this.props.user.updatePayThreadInfo(thread?.threadId, data);
+      // 支付成功重新请求帖子数据
+      if (success && thread?.threadId) {
+        const { code, data } = await this.props.thread.fetchThreadDetail(thread?.threadId);
+        if (code === 0 && data) {
+          updatePayThreadInfo(thread?.threadId, data);
 
         if (typeof this.props.dispatch === "function") {
           this.props.dispatch(thread?.threadId, data);
@@ -224,9 +221,7 @@ class Index extends React.Component {
     const { threadId = '', user } = this.props.data || {};
     this.props.index.updateThreadShare({ threadId }).then(result => {
       if (result.code === 0) {
-        this.props.index.updateAssignThreadInfo(threadId, { updateType: 'share', updatedInfo: result.data, user: user.userInfo });
-        this.props.search.updateAssignThreadInfo(threadId, { updateType: 'share', updatedInfo: result.data, user: user.userInfo });
-        this.props.topic.updateAssignThreadInfo(threadId, { updateType: 'share', updatedInfo: result.data, user: user.userInfo });
+        updateThreadAssignInfoInLists(threadId, { updateType: 'share', updatedInfo: result.data, user: user.userInfo });
       }
     });
   }
@@ -315,8 +310,8 @@ class Index extends React.Component {
                   isAnonymous={isAnonymous}
                   userId={user?.userId}
                   platform={platform}
-                  onClick={unifyOnClick || this.onUser}
                   extraTag={extraTag}
+                  onClick={unifyOnClick || this.onUser}
                 />
                 {isShowIcon && <View className={styles.headerIcon} onClick={unifyOnClick || this.onClickHeaderIcon}><Icon name='CollectOutlinedBig' className={styles.collectIcon}></Icon></View>}
               </View>

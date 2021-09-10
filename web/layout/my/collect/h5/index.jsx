@@ -8,12 +8,12 @@ import BaseLayout from '@components/base-layout';
 import throttle from '@common/utils/thottle.js';
 
 @inject('site')
-@inject('index')
+@inject('threadList')
 @inject('thread')
 @observer
 class Index extends React.Component {
   handleUnFavoriteItem = throttle(async (item) => {
-    const { index } = this.props;
+    const { threadList } = this.props;
 
     const params = {
       id: item.threadId,
@@ -26,7 +26,7 @@ class Index extends React.Component {
         duration: 2000,
       });
     } else {
-      let collectTotalCount = index.getAttribute({
+      let collectTotalCount = threadList.getAttribute({
         namespace: 'collect',
         key: 'totalCount',
       });
@@ -40,36 +40,36 @@ class Index extends React.Component {
         collectTotalCount = 0;
       }
 
-      index.setAttribute({ namespace: 'collect', key: 'totalCount', value: collectTotalCount });
-      index.deleteListItem({ namespace: 'collect', item });
+      threadList.setAttribute({ namespace: 'collect', key: 'totalCount', value: collectTotalCount });
+      threadList.deleteListItem({ namespace: 'collect', item });
     }
   }, 1000);
 
   render() {
-    const { index } = this.props;
+    const { threadList } = this.props;
 
-    const { lists } = index;
+    const { lists } = threadList;
 
-    const collectThreadsList = index.getList({
+    const collectThreadsList = threadList.getList({
       namespace: 'collect',
     });
 
-    const totalCount = index.getAttribute({
+    const totalCount = threadList.getAttribute({
       namespace: 'collect',
       key: 'totalCount',
     });
 
-    const totalPage = index.getAttribute({
+    const totalPage = threadList.getAttribute({
       namespace: 'collect',
       key: 'totalPage',
     });
 
-    const currentPage = index.getAttribute({
+    const currentPage = threadList.getAttribute({
       namespace: 'collect',
       key: 'currentPage',
     });
 
-    const requestError = index.getListRequestError({ namespace: 'collect' });
+    const requestError = threadList.getListRequestError({ namespace: 'collect' });
 
     return (
       <BaseLayout

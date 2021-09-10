@@ -16,7 +16,7 @@ import ImagePreviewer from '@discuzq/design/dist/components/image-previewer/inde
 
 @inject('site')
 @inject('user')
-@inject('index')
+@inject('threadList')
 @observer
 class H5OthersPage extends React.Component {
   constructor(props) {
@@ -92,7 +92,7 @@ class H5OthersPage extends React.Component {
         fetchUserInfoLoading: false,
       });
 
-      const targetUserThreadsList = await this.props.index.fetchList({
+      const targetUserThreadsList = await this.props.threadList.fetchList({
         namespace: `user/${this.targetUserId}`,
         filter: {
           toUserId: this.targetUserId,
@@ -100,7 +100,7 @@ class H5OthersPage extends React.Component {
         },
       });
 
-      this.props.index.setList({ namespace: `user/${this.targetUserId}`, data: targetUserThreadsList });
+      this.props.threadList.setList({ namespace: `user/${this.targetUserId}`, data: targetUserThreadsList });
     }
   };
 
@@ -123,14 +123,14 @@ class H5OthersPage extends React.Component {
   fetchTargetUserThreads = async () => {
     const { id = '' } = getCurrentInstance().router.params;
     if (id) {
-      const targetUserThreadsList = await this.props.index.fetchList({
+      const targetUserThreadsList = await this.props.threadList.fetchList({
         namespace: `user/${id}`,
         filter: {
           toUserId: id,
           complex: 5,
         },
       });
-      this.props.index.setList({ namespace: `user/${id}`, data: targetUserThreadsList });
+      this.props.threadList.setList({ namespace: `user/${id}`, data: targetUserThreadsList });
     }
     return;
   };
@@ -223,24 +223,24 @@ class H5OthersPage extends React.Component {
     const { site, user } = this.props;
     const { platform } = site;
     const { targetUserId } = this;
-    const { index } = this.props;
-    const { lists } = index;
+    const { threadList } = this.props;
+    const { lists } = threadList;
 
-    const userThreadsList = index.getList({
+    const userThreadsList = threadList.getList({
       namespace: `user/${targetUserId}`,
     });
 
-    const totalPage = index.getAttribute({
+    const totalPage = threadList.getAttribute({
       namespace: `user/${targetUserId}`,
       key: 'totalPage',
     });
 
-    const totalCount = index.getAttribute({
+    const totalCount = threadList.getAttribute({
       namespace: `user/${targetUserId}`,
       key: 'totalCount',
     });
 
-    const currentPage = index.getAttribute({
+    const currentPage = threadList.getAttribute({
       namespace: `user/${targetUserId}`,
       key: 'currentPage',
     });

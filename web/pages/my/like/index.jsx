@@ -12,6 +12,7 @@ import { withRouter } from 'next/router';
 @inject('site')
 @inject('index')
 @inject('search')
+@inject('threadList')
 @observer
 class Index extends React.Component {
   page = 1;
@@ -44,13 +45,13 @@ class Index extends React.Component {
 
   constructor(props) {
     super(props);
-    const { serverIndex, index, serverSearch, search } = this.props;
+    const { serverIndex, index, serverSearch, search, threadList } = this.props;
     this.state = {
       firstLoading: true, // 首次加载状态判断
       totalCount: 0,
       page: 1,
     };
-    index.registerList({ namespace: 'like' });
+    threadList.registerList({ namespace: 'like' });
 
     if (serverIndex && serverIndex.threads) {
       index.setThreads(serverIndex.threads);
@@ -70,12 +71,12 @@ class Index extends React.Component {
 
   async componentDidMount() {
     this.props.router.events.on('routeChangeStart', this.beforeRouterChange);
-    const { index, search } = this.props;
+    const { index, search, threadList } = this.props;
     const hasThreadsData = !!index.threads;
     const hasTopics = !!search.topics;
     this.page = 1;
     if (!hasThreadsData) {
-      const threadsResp = await index.fetchList({
+      const threadsResp = await threadList.fetchList({
         namespace: 'like',
         perPage: 10,
         filter: {
@@ -83,7 +84,7 @@ class Index extends React.Component {
         },
       });
 
-      index.setList({
+      threadList.setList({
         namespace: 'like',
         data: threadsResp,
       });
@@ -115,14 +116,14 @@ class Index extends React.Component {
   };
 
   clearStoreThreads = () => {
-    const { index } = this.props;
-    index.clearList({ namespace: 'like' });
+    const { threadList } = this.props;
+    threadList.clearList({ namespace: 'like' });
   };
 
   dispatch = async () => {
-    const { index } = this.props;
+    const { threadList } = this.props;
     this.page += 1;
-    const threadsResp = await index.fetchList({
+    const threadsResp = await threadList.fetchList({
       namespace: 'like',
       perPage: 10,
       filter: {
@@ -130,7 +131,7 @@ class Index extends React.Component {
       },
     });
 
-    index.setList({
+    threadList.setList({
       namespace: 'like',
       data: threadsResp,
     });

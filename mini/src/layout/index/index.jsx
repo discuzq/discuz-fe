@@ -129,7 +129,7 @@ class IndexH5Page extends React.Component {
   render() {
     const { index, user } = this.props;
     const { isFinished, isClickTab } = this.state;
-    const { threads = {}, currentCategories, filter, threadError } = index;
+    const { threads = {}, TwoDThreads, currentCategories, filter, threadError } = index;
     const { currentPage = 1, totalPage, pageData } = threads || {};
     return (
       <BaseLayout
@@ -156,7 +156,7 @@ class IndexH5Page extends React.Component {
 
           {
             !this.isNormal ? (
-              <ThreadList data={pageData} isClickTab={isClickTab} wholePageIndex={currentPage - 1}/>
+              <ThreadList data={TwoDThreads} isClickTab={isClickTab} wholePageIndex={currentPage - 1}/>
             ) : (
               pageData?.map((item, index) => (
                 <ThreadContent

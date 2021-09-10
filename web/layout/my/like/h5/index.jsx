@@ -5,27 +5,27 @@ import ThreadContent from '@components/thread';
 import BaseLayout from '@components/base-layout';
 
 @inject('site')
-@inject('index')
+@inject('threadList')
 @observer
 class Index extends React.Component {
   render() {
-    const { index } = this.props;
+    const { threadList } = this.props;
 
-    const { lists } = index;
+    const { lists } = threadList;
 
-    const likeThreadList = index.getList({ namespace: 'like' });
+    const likeThreadList = threadList.getList({ namespace: 'like' });
 
-    const totalPage = index.getAttribute({
+    const totalPage = threadList.getAttribute({
       namespace: 'like',
       key: 'totalPage',
     });
 
-    const currentPage = index.getAttribute({
+    const currentPage = threadList.getAttribute({
       namespace: 'like',
       key: 'currentPage',
     });
 
-    const requestError = index.getListRequestError({ namespace: 'like' });
+    const requestError = threadList.getListRequestError({ namespace: 'like' });
 
     return (
       <BaseLayout
