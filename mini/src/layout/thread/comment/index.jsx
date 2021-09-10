@@ -12,12 +12,12 @@ import InputPopup from '../components/input-popup';
 import ReportPopup from '../components/report-popup';
 import OperationPopup from './components/operation-popup';
 import goToLoginPage from '@common/utils/go-to-login-page';
-import Taro from "@tarojs/taro";
+import Taro, { Current } from "@tarojs/taro";
 import Icon from '@discuzq/design/dist/components/icon/index';
 import Input from '@discuzq/design/dist/components/input/index';
 import footer from './footer.module.scss';
 import classNames from 'classnames';
-import { Current } from '@tarojs/taro';
+
 
 
 @inject('site')
@@ -433,7 +433,7 @@ class CommentH5Page extends React.Component {
 
   // 点击内容操作框中的选项
   onOperationClick = (val) => {
-    const commentDetail = this.props.comment.commentDetail;
+    const {commentDetail} = this.props.comment;
     if (!this.props.user.isLogin()) {
       Toast.info({ content: '请先登录!' });
       goToLoginPage({ url: '/subPages/user/wx-auth/index' });
@@ -468,9 +468,9 @@ class CommentH5Page extends React.Component {
 
     Taro.setClipboardData({
       data: content,
-      success: function (res) {
+      success (res) {
         Taro.getClipboardData({
-          success: function (res) {
+          success (res) {
           }
         })
       }
@@ -485,7 +485,7 @@ class CommentH5Page extends React.Component {
 
   // 点击内容操作框中的选项
   onOperationClick = (val) => {
-    const commentDetail = this.props.comment.commentDetail;
+    const {commentDetail} = this.props.comment;
     if (!this.props.user.isLogin()) {
       Toast.info({ content: '请先登录!' });
       goToLoginPage({ url: '/subPages/user/wx-auth/index' });
@@ -520,9 +520,9 @@ class CommentH5Page extends React.Component {
 
     Taro.setClipboardData({
       data: content,
-      success: function (res) {
+      success (res) {
         Taro.getClipboardData({
-          success: function (res) {
+          success (res) {
           }
         })
       }

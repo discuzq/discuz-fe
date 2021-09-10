@@ -1,3 +1,4 @@
+/* eslint-disable spaced-comment */
 /**
  * 创建帖子页面
  */
@@ -229,7 +230,7 @@ class ThreadCreate extends React.Component {
     const { postType, threadPost: { postData: { contentText, images, video, files, audio } } } = this.props;
 
     if (!this.props.checkAudioRecordStatus()) return;
-    if (postType !== "isEdit" && (contentText || video.id || audio.id || Object.values(images).length || Object.values(files).length)) {
+    if (postType !== 'isEdit' && (contentText || video.id || audio.id || Object.values(images).length || Object.values(files).length)) {
       this.props.handleSetState({ draftShow: true, jumpLink: link });
       return;
     }
@@ -273,7 +274,7 @@ class ThreadCreate extends React.Component {
             atList={atList}
             topic={topic}
             onCountChange={count => this.props.handleSetState({ count })}
-            onInput={(vditor) => this.props.handleVditorChange(vditor, 'input')}
+            onInput={vditor => this.props.handleVditorChange(vditor, 'input')}
             onChange={this.props.handleVditorChange}
             onFocus={(action, event) => {
               this.setBottomFixed(action, event);
@@ -370,7 +371,7 @@ class ThreadCreate extends React.Component {
           {(postData?.vote?.voteTitle) && (
             <VoteWidget onDelete={() => this.props.setPostData({ vote: {} })} onClick={() => {
               this.props.handleAttachClick({
-                type: THREAD_TYPE.vote
+                type: THREAD_TYPE.vote,
               });
             }} />
           )}
@@ -384,18 +385,16 @@ class ThreadCreate extends React.Component {
           )}
 
           {
-            DZQPluginCenter.injection('plugin_post', 'post_extension_content_hook').map(({render, pluginInfo}) => {
-              return (
+            DZQPluginCenter.injection('plugin_post', 'post_extension_content_hook').map(({ render, pluginInfo }) => (
                 <div key={pluginInfo.pluginName}>
                   {render({
                     site: this.props.site,
                     renderData: postData.plugin,
                     deletePlugin: this.props.threadPost.deletePluginPostData,
-                    updatePlugin: this.props.threadPost.setPluginPostData
+                    updatePlugin: this.props.threadPost.setPluginPostData,
                   })}
                 </div>
-              )
-            })
+            ))
           }
         </div>
         <div id="post-bottombar" className={styles['post-bottombar']}>
@@ -506,7 +505,7 @@ class ThreadCreate extends React.Component {
         {currentDefaultOperation === defaultOperation.pay && (
           <PostPopup
             list={this.props.paySelectText}
-            onClick={val => {
+            onClick={(val) => {
               const content = '帖子付费和附件付费不能同时设置';
               if (postData.price && val === '附件付费') {
                 Toast.error({ content });
@@ -564,7 +563,7 @@ class ThreadCreate extends React.Component {
           <RedpacketSelect
             data={postData.redpacket}
             cancel={() => this.props.handleSetState({ currentDefaultOperation: '' })}
-            confirm={data => {
+            confirm={(data) => {
               this.props.setPostData({ redpacket: data });
               this.clearBottomFixed();
             }}
