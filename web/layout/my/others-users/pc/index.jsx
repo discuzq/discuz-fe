@@ -13,7 +13,7 @@ import UserCenterThreads from '@components/user-center-threads';
 import UserCenterHeaderPc from '@components/user-center/header-pc';
 
 @inject('site')
-@inject('index')
+@inject('threadList')
 @inject('user')
 @observer
 class PCMyPage extends React.Component {
@@ -98,14 +98,14 @@ class PCMyPage extends React.Component {
   fetchTargetUserThreads = async () => {
     const { query } = this.props.router;
     if (query.id) {
-      const targetUserThreadsList = await this.props.index.fetchList({
+      const targetUserThreadsList = await this.props.threadList.fetchList({
         namespace: `user/${query.id}`,
         filter: {
           toUserId: query.id,
           complex: 5,
         },
       });
-      this.props.index.setList({ namespace: `user/${query.id}`, data: targetUserThreadsList });
+      this.props.threadList.setList({ namespace: `user/${query.id}`, data: targetUserThreadsList });
       this.setState({
         fetchUserThreadsLoading: false,
       });
@@ -147,21 +147,21 @@ class PCMyPage extends React.Component {
 
   renderContent = () => {
     const { fetchUserThreadsLoading } = this.state;
-    const { index } = this.props;
-    const { lists } = index;
+    const { threadList } = this.props;
+    const { lists } = threadList;
 
     const { query = {} } = this.props.router;
 
-    const userThreadsList = index.getList({
+    const userThreadsList = threadList.getList({
       namespace: `user/${query.id}`,
     });
 
-    const totalCount = index.getAttribute({
+    const totalCount = threadList.getAttribute({
       namespace: `user/${query.id}`,
       key: 'totalCount',
     });
 
-    const requestError = index.getListRequestError({ namespace: `user/${query.id}` });
+    const requestError = threadList.getListRequestError({ namespace: `user/${query.id}` });
 
     return (
       <div className={styles.userContent}>
@@ -185,21 +185,21 @@ class PCMyPage extends React.Component {
 
   render() {
     const { fetchUserInfoLoading } = this.state;
-    const { index } = this.props;
-    const { lists } = index;
+    const { threadList } = this.props;
+    const { lists } = threadList;
 
     const { query = {} } = this.props.router;
 
-    const userThreadsList = index.getList({
+    const userThreadsList = threadList.getList({
       namespace: `user/${query.id}`,
     });
 
-    const totalPage = index.getAttribute({
+    const totalPage = threadList.getAttribute({
       namespace: `user/${query.id}`,
       key: 'totalPage',
     });
 
-    const currentPage = index.getAttribute({
+    const currentPage = threadList.getAttribute({
       namespace: `user/${query.id}`,
       key: 'currentPage',
     });

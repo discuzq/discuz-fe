@@ -74,6 +74,7 @@ const UNTOP_MENUS = (
 @inject('index')
 @inject('search')
 @inject('thread')
+@inject('threadList')
 @inject('site')
 @inject('user')
 @observer
@@ -95,7 +96,7 @@ class UserCenterThreads extends React.Component {
 
     const ret = await setThreadBeSticked({
       thread,
-      indexStore: this.props.index,
+      listStore: this.props.threadList,
     });
 
     if (ret.success) {
@@ -115,7 +116,7 @@ class UserCenterThreads extends React.Component {
 
     const ret = await setThreadBeUnSticked({
       thread,
-      indexStore: this.props.index,
+      listStore: this.props.threadList,
     });
 
     if (ret.success) {

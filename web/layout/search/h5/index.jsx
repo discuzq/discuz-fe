@@ -62,7 +62,7 @@ class SearchH5Page extends React.Component {
   }
 
   render() {
-    const { indexTopics, indexUsers, indexThreads, indexTopicsError, indexUsersError, indexThreadsError } = this.props.search;
+    const { indexTopics, indexUsers, indexThreads, indexTopicsError, indexUsersError, indexThreadsError, indexThreadsLoading } = this.props.search;
     const { pageData: topicsPageData } = indexTopics || {};
     const { pageData: usersPageData } = indexUsers || {};
     const { pageData: threadsPageData } = indexThreads || {};
@@ -110,7 +110,7 @@ class SearchH5Page extends React.Component {
           icon={{ type: 3, name: 'HotOutlined' }}
           title="热门内容" 
           onShowMore={this.redirectToSearchResultPost}
-          isLoading={!threadsPageData}
+          isLoading={indexThreadsLoading}
           noData={!threadsPageData?.length}
           platform='h5'
           isError={indexThreadsError.isError}

@@ -9,10 +9,10 @@ import Router from '@discuzq/sdk/dist/router';
 import { withRouter } from 'next/router';
 import { fixImageOrientation } from '@common/utils/exif';
 import throttle from '@common/utils/thottle.js';
-import { updateMyThreadAvatar } from '@common/store/index/list-business';
+import { updateMyThreadAvatar } from '@common/store/thread-list/list-business';
 
 @inject('user')
-@inject('index')
+@inject('threadList')
 @observer
 class index extends Component {
   constructor(props) {
@@ -48,7 +48,7 @@ class index extends Component {
           // this.user.editAvatarUrl = res.avatarUrl;
           updateMyThreadAvatar({
             avatarUrl: res.avatarUrl,
-            indexStore: this.props.index,
+            threadList: this.props.threadList,
           });
 
           Toast.success({

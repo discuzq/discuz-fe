@@ -93,11 +93,13 @@ class Autoplay {
 
         // 检查视频是否在当前可视区内
         if (top > this.topInstance && bottom < window.innerHeight - this.bottomInstance) {
-          videoElement.muted = true;
-          videoElement.currentTime = videoObj?.currentTime || 0;
-          videoElement.play();
-          this.addVideo(index, videoElement);
-          return;
+          if (videoElement && videoElement.play) {
+            videoElement.muted = true;
+            videoElement.currentTime = videoObj?.currentTime || 0;
+            videoElement.play();
+            this.addVideo(index, videoElement);
+            return;
+          }
         }
       }
       index = index + 1;

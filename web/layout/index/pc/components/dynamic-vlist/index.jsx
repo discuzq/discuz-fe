@@ -57,6 +57,7 @@ export default class DynamicVList extends React.Component {
                 key={`${item.threadId}-${item.createdAt || ''}-${item.updatedAt || ''}`}
                 className={styles.threadContent}
                 data={item}
+                enableCommentList={true}
               />
             ))}
           </div>

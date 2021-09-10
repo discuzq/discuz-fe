@@ -12,7 +12,7 @@ import { withRouter } from 'next/router';
 
 @inject('site')
 @inject('user')
-@inject('index')
+@inject('threadList')
 @observer
 class H5MyPage extends React.Component {
   constructor(props) {
@@ -26,7 +26,7 @@ class H5MyPage extends React.Component {
 
   fetchUserThreads = async () => {
     try {
-      const userThreadsList = await this.props.index.fetchList({
+      const userThreadsList = await this.props.threadList.fetchList({
         namespace: 'my',
         filter: {
           toUserId: 0,
@@ -34,7 +34,7 @@ class H5MyPage extends React.Component {
         },
       });
       if (!this.unMount) {
-        this.props.index.setList({ namespace: 'my', data: userThreadsList });
+        this.props.threadList.setList({ namespace: 'my', data: userThreadsList });
       }
     } catch (err) {
       console.error(err);
@@ -66,7 +66,7 @@ class H5MyPage extends React.Component {
     }
     // 如果不是进入 thread 详情页面
     if (!/thread\//.test(url)) {
-      this.props.index.clearList({ namespace: 'my' });
+      this.props.threadList.clearList({ namespace: 'my' });
     }
   };
 
@@ -131,29 +131,29 @@ class H5MyPage extends React.Component {
     const { isLoading } = this.state;
     const { site } = this.props;
     const { platform } = site;
-    const { index } = this.props;
-    const { lists } = index;
+    const { threadList } = this.props;
+    const { lists } = threadList;
 
-    const myThreadsList = index.getList({
+    const myThreadsList = threadList.getList({
       namespace: 'my',
     });
 
-    const totalPage = index.getAttribute({
+    const totalPage = threadList.getAttribute({
       namespace: 'my',
       key: 'totalPage',
     });
 
-    const totalCount = index.getAttribute({
+    const totalCount = threadList.getAttribute({
       namespace: 'my',
       key: 'totalCount',
     });
 
-    const currentPage = index.getAttribute({
+    const currentPage = threadList.getAttribute({
       namespace: 'my',
       key: 'currentPage',
     });
 
-    const requestError = index.getListRequestError({ namespace: 'my' });
+    const requestError = threadList.getListRequestError({ namespace: 'my' });
 
     return (
       <BaseLayout
