@@ -129,12 +129,8 @@ const Index = ({
     if (params) {
       const isDownload = await downloadAttachmentStatus(params);
       if (isDownload) {
-        if (isWeiXin()) {
-          window.location.href = itemUrl;
-          downloadAttachment(url, null, false); // 携带登录态请求一下数据，后端记录下载次数
-        } else {
-          downloadAttachment(url, fileName); // 下载文件
-        }
+        window.location.href = itemUrl;
+        downloadAttachment(url, null, false); // 携带登录态请求一下数据，后端记录下载次数
         Toast.info({ content: '下载成功' });
       }
     }

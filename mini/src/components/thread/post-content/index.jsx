@@ -56,6 +56,9 @@ const PostContent = ({
     showMore: '查看更多',
     closeMore: '折叠',
   };
+
+  const [openedMore, setOpenedMore] = useState(useShowMore);
+  
   // 过滤内容
   const filterContent = useMemo(() => {
     let newContent = content ? s9e.parse(content) : '';
@@ -71,6 +74,7 @@ const PostContent = ({
       // 内容过长直接跳转到详情页面
       onRedirectToDetail && onRedirectToDetail();
     } else {
+      setOpenedMore(false);
       setUseShowMore()
       // setShowMore(false);
     }
@@ -79,6 +83,7 @@ const PostContent = ({
   // 点击收起更多
   const onCloseMore = useCallback(e => {
     e && e.stopPropagation();
+    setOpenedMore(true);
     setUseCloseMore();
   }, [contentTooLong])
 
@@ -178,7 +183,7 @@ const PostContent = ({
       setShowMore(true);
     }
     if (length > 1200) { // 超过一页的超长文本
-      if (useShowMore) getCutContentForDisplay(1200);
+      if (openedMore) getCutContentForDisplay(1200);
       setContentTooLong(true);
     } else {
       setContentTooLong(false);
@@ -194,17 +199,16 @@ const PostContent = ({
   }, [filterContent]);
 
 
-  console.log(useShowMore);
   return (
     <View className={styles.container} {...props}>
       <View
         ref={contentWrapperRef}
-        className={`${styles.contentWrapper} ${useShowMore && showMore ? styles.hideCover : ''} ${customHoverBg ? styles.bg : ''}`}
+        className={`${styles.contentWrapper} ${openedMore && showMore ? styles.hideCover : ''} ${customHoverBg ? styles.bg : ''}`}
         onClick={!showMore ? onShowMore : handleClick}
       >
         <View className={styles.content}>
           <RichText
-            content={(useShowMore && cutContentForDisplay) ? cutContentForDisplay : urlToLink(filterContent)}
+            content={(openedMore && cutContentForDisplay) ? cutContentForDisplay : urlToLink(filterContent)}
             onClick={handleClick}
             onImgClick={handleImgClick}
             onLinkClick={handleLinkClick}
@@ -227,9 +231,9 @@ const PostContent = ({
         </View>
       </View>
       {needShowMore && showMore && (
-        <View className={styles.showMore} onClick={useShowMore ? onShowMore : onCloseMore}>
-          <View className={styles.hidePercent}>{texts[useShowMore ? 'showMore' : 'closeMore']}</View>
-          <Icon className={useShowMore ? styles.icon : styles.icon_d} name="RightOutlined" size={12} />
+        <View className={styles.showMore} onClick={openedMore ? onShowMore : onCloseMore}>
+          <View className={styles.hidePercent}>{texts[openedMore ? 'showMore' : 'closeMore']}</View>
+          <Icon className={openedMore ? styles.icon : styles.icon_d} name="RightOutlined" size={12} />
         </View>
       )}
     </View>

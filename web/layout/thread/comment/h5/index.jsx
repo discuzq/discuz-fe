@@ -461,6 +461,55 @@ class CommentH5Page extends React.Component {
       });
   }
 
+  // 点击内容
+  onCommentClick = (data) => {
+    this.operationData = data || null;
+    this.setState({showOperationPopup: true});
+  }
+
+  // 点击内容操作框中的选项
+  onOperationClick = (val) => {
+    const commentDetail = this.props.comment.commentDetail;
+    if (!this.props.user.isLogin()) {
+      Toast.info({ content: '请先登录!' });
+      goToLoginPage({ url: '/user/login' });
+      return;
+    }
+    // 回复
+    if (val === 'reply') {
+      if (this.operationData) {
+        this.replyReplyClick(this.operationData, commentDetail);
+      } else {
+        this.replyClick(commentDetail);
+      }
+    };
+    // 复制
+    if (val === 'copy') {
+      if (this.operationData) {
+        this.onCopyClick(this.operationData);
+      } else {
+        this.onCopyClick(commentDetail);
+      }
+    };
+    // 举报
+    if (val === 'report') {
+      this.setState({ showReportPopup: true });
+    }
+    this.setState({showOperationPopup: false});
+  }
+
+  // 点击复制
+  onCopyClick = (data) => {
+    const { content } = data || {};
+    navigator.clipboard.writeText(content)
+      .then(() => {
+        Toast.success({ content: '复制成功' });
+      })
+      .catch(() => {
+        Toast.error({ content: '无法复制' });
+      });
+  }
+
   render() {
     const { commentDetail: commentData, isReady } = this.props.comment;
     const { isAnonymous } = this.props.thread?.threadData || '';

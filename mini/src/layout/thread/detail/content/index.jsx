@@ -35,6 +35,7 @@ const RenderThreadContent = inject('site', 'user')(
     const { text, indexes } = threadStore?.threadData?.content || {};
     const { parentCategoryName, categoryName } = threadStore?.threadData;
     const { hasRedPacket } = threadStore; // 是否有红包领取的数据
+    const { webConfig: { other: { threadOptimize } } } = site;
 
     const tipData = {
       postId: threadStore?.threadData?.postId,
@@ -75,9 +76,9 @@ const RenderThreadContent = inject('site', 'user')(
     const isReward = threadStore?.threadData?.displayTag?.isReward;
 
     // 是否打赏帖
-    const isBeReward = isFree && threadStore?.threadData?.ability.canBeReward && !isRedPack && !isReward;
+    const isBeReward = isFree && threadOptimize && !isRedPack && !isReward;
     // 是否显示打赏按钮： 免费帖 && 不是自己 && 不是红包 && 不是悬赏 && 允许被打赏
-    const canBeReward = isFree && threadStore?.threadData?.ability.canBeReward && !isRedPack && !isReward;
+    const canBeReward = isFree && threadOptimize && !isRedPack && !isReward;
     // 是否已打赏
     const isRewarded = threadStore?.threadData?.isReward;
 

@@ -111,7 +111,7 @@
             margin-right: $margin-2n;
             line-height: 18px;
             text-align: left;
-            color: $primary-color;
+            // color: $primary-color;
             @include text-ellipsis();
           }
           .masterBox {

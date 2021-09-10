@@ -8,6 +8,7 @@ import goToLoginPage from '@common/utils/go-to-login-page';
 import HOCFetchSiteData from '@middleware/HOCFetchSiteData';
 import { downloadAttachment } from '@common/utils/download-attachment-web';
 import { readThreadDetail } from '@server';
+import { parseContentData } from '@layout/thread/utils';
 
 
 @inject('user')
@@ -41,32 +42,44 @@ class Download extends React.Component {
     const paramArr = urlArr[2].split('&');
     const fileName = paramArr[2].split('=')[1];
     const threadId = paramArr[3].split('=')[1];
+    const attachmentsId = Number(paramArr[1].split('=')[1]);
 
-    const canDownloadAttachment = await this.getCanDownloadAttachment(threadId);
+    const { canDownloadAttachment, attachment } = await this.getCanDownloadAttachment(threadId);
     if (!canDownloadAttachment) {
       Toast.warning({ content: '暂⽆权限下载附件' });
       Router.redirect({ url: '/' });
       return;
     }
-    
+    const attachmentUrl = this.getAttachmentLink(attachmentsId, attachment);
     const params = {
       sign: paramArr[0].split('=')[1],
-      attachmentsId: Number(paramArr[1].split('=')[1]),
+      attachmentsId: attachmentsId,
       isCode: 1,
     }
     // 获取链接状态，先判断链接是否可以下载文件
     const isDownload = await this.downloadAttachmentStatus(params);
     if (isDownload) {
-      downloadAttachment(urlstr, fileName); // 下载文件
+      downloadAttachment(urlstr, fileName, false); // 下载文件
+      window.location.href = attachmentUrl;
     }
-    
   }
 
   // 获取帖子详情，判断是否有权限下载
   async getCanDownloadAttachment(id) {
     const res = await readThreadDetail({ params: { threadId: Number(id) } });
     if (res.code === 0) {
-      return res?.data?.ability?.canDownloadAttachment;
+      const parseContent = parseContentData(res?.data?.content?.indexes);
+      return {
+        canDownloadAttachment: res?.data?.ability?.canDownloadAttachment,
+        attachment: parseContent && parseContent.VOTE
+      }
+    }
+  }
+
+  // 获取附件地址链接
+  getAttachmentLink(id, data) {
+    for (let i = 0; i < data?.length; i++) {
+      if (data[i].id === id) return data[i].url;
     }
   }
 

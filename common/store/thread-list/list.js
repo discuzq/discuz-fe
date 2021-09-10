@@ -262,14 +262,27 @@ export default class ListStore {
    * @param {*} param0
    */
   @action
-  addThreadInTargetList = ({ namespace, threadInfo }) => {
+  addThreadInTargetList = ({ namespace, threadInfo, updater = null }) => {
     if (!this.lists[namespace]) {
       this.registerList({ namespace });
       this.lists[namespace].data[1] = [];
     }
 
+    // 个人中心数据需要考虑置顶时的情况
     if (this.lists[namespace].data[1]) {
-      this.lists[namespace].data[1].unshift(threadInfo);
+      if (updater) {
+        updater(this.lists[namespace].data[1]);
+      } else {
+        if (namespace === 'my') {
+          if (this.lists[namespace].data[1][0] && this.lists[namespace].data[1][0].userStickStatus === 1) {
+            this.lists['my'].data[1].splice(1, 0, threadInfo);
+          } else {
+            this.lists['my'].data[1].unshift(threadInfo);
+          }
+        } else {
+          this.lists[namespace].data[1].unshift(threadInfo);
+        }
+      }
     }
 
     const currentTotalCount = this.getAttribute({ namespace, key: 'totalCount' });

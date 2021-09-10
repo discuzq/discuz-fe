@@ -610,6 +610,7 @@ class ThreadH5Page extends React.Component {
   handleWxShare = () => {
     this.setState({ isShowWeiXinShare: true });
     this.onShareClose();
+    this.onShareClick();
   };
   createCard = async () => {
     const data = this.props.thread.threadData;

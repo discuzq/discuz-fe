@@ -12,12 +12,12 @@ import InputPopup from '../components/input-popup';
 import ReportPopup from '../components/report-popup';
 import OperationPopup from './components/operation-popup';
 import goToLoginPage from '@common/utils/go-to-login-page';
-import Taro from "@tarojs/taro";
+import Taro, { Current } from "@tarojs/taro";
 import Icon from '@discuzq/design/dist/components/icon/index';
 import Input from '@discuzq/design/dist/components/input/index';
 import footer from './footer.module.scss';
 import classNames from 'classnames';
-import { getCurrentInstance } from '@tarojs/taro';
+
 
 
 @inject('site')
@@ -422,7 +422,7 @@ class CommentH5Page extends React.Component {
 
   onGotoThread = () => {
     const { threadId } = this.props.comment;
-    Router.push({ url: `/indexPages/thread/index?id=${threadId}` });
+    Router.push({ url: `/indexPages/thread/index?id=${threadId}&fromMessage=true` });
   }
   
   // 点击内容
@@ -433,7 +433,7 @@ class CommentH5Page extends React.Component {
 
   // 点击内容操作框中的选项
   onOperationClick = (val) => {
-    const commentDetail = this.props.comment.commentDetail;
+    const {commentDetail} = this.props.comment;
     if (!this.props.user.isLogin()) {
       Toast.info({ content: '请先登录!' });
       goToLoginPage({ url: '/subPages/user/wx-auth/index' });
@@ -468,9 +468,61 @@ class CommentH5Page extends React.Component {
 
     Taro.setClipboardData({
       data: content,
-      success: function (res) {
+      success (res) {
         Taro.getClipboardData({
-          success: function (res) {
+          success (res) {
+          }
+        })
+      }
+    })
+  }
+  
+  // 点击内容
+  onCommentClick = (data) => {
+    this.operationData = data || null;
+    this.setState({showOperationPopup: true});
+  }
+
+  // 点击内容操作框中的选项
+  onOperationClick = (val) => {
+    const {commentDetail} = this.props.comment;
+    if (!this.props.user.isLogin()) {
+      Toast.info({ content: '请先登录!' });
+      goToLoginPage({ url: '/subPages/user/wx-auth/index' });
+      return;
+    }
+    // 回复
+    if (val === 'reply') {
+      if (this.operationData) {
+        this.replyReplyClick(this.operationData, commentDetail);
+      } else {
+        this.replyClick(commentDetail);
+      }
+    };
+    // 复制
+    if (val === 'copy') {
+      if (this.operationData) {
+        this.onCopyClick(this.operationData);
+      } else {
+        this.onCopyClick(commentDetail);
+      }
+    };
+    // 举报
+    if (val === 'report') {
+      this.setState({ showReportPopup: true });
+    }
+    this.setState({showOperationPopup: false});
+  }
+
+  // 点击复制
+  onCopyClick = (data) => {
+    const { content } = data || {};
+
+    Taro.setClipboardData({
+      data: content,
+      success (res) {
+        Taro.getClipboardData({
+          success (res) {
           }
         })
       }
@@ -479,8 +531,7 @@ class CommentH5Page extends React.Component {
 
   render() {
     const { commentDetail: commentData, isReady } = this.props.comment;
-    console.log(getCurrentInstance().router, 1)
-    const query = getCurrentInstance().router.params;
+    const query = Current.router.params;
     // 更多弹窗权限
     const morePermissions = {
       canEdit: false,

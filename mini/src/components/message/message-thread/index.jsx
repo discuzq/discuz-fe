@@ -43,7 +43,7 @@ const Index = ({ message, subPage }) => {
         isReply: item.isReply === 1, // 是否是楼中楼回复
         postId: item.postId || 0,
         replyPostId: item.replyPostId || 0,
-        content: item.postContent,
+        content: item.postContent, // 产品确认后，不展示标题，修改成展示@内容
         type: item.type,
         avatar: item.userAvatar,
         userId: item.userId,

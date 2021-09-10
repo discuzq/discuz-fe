@@ -52,6 +52,8 @@ const PostContent = ({
     closeMore: '折叠',
   };
 
+  const [openedMore, setOpenedMore] = useState(useShowMore);
+
   // 过滤内容
   const filterContent = useMemo(() => {
     let newContent = content ? s9e.parse(content) : '';
@@ -68,8 +70,8 @@ const PostContent = ({
         // 内容过长直接跳转到详情页面
         onRedirectToDetail && onRedirectToDetail();
       } else {
+        setOpenedMore(false);
         onOpen();
-        // setShowMore(false);
       }
     },
     [contentTooLong],
@@ -78,6 +80,7 @@ const PostContent = ({
   // 点击收起更多
   const onShowClose = useCallback(e => {
     e && e.stopPropagation();
+    setOpenedMore(true);
     updateViewCount();
     onClose();
   },
@@ -162,7 +165,7 @@ const PostContent = ({
       setShowMore(true);
     }
     if (length > 1200) { // 超过一页的超长文本
-      if (useShowMore) getCutContentForDisplay(1200);
+      if (openedMore) getCutContentForDisplay(1200);
       setContentTooLong(true);
     } else {
       setContentTooLong(false);
@@ -178,7 +181,7 @@ const PostContent = ({
     <div className={classnames(styles.container, usePointer ? styles.usePointer : '')} {...props}>
       <div
         ref={contentWrapperRef}
-        className={`${styles.contentWrapper} ${(useShowMore && showMore) ? styles.hideCover : ''} ${customHoverBg ? styles.bg : ''}`}
+        className={`${styles.contentWrapper} ${(openedMore && showMore) ? styles.hideCover : ''} ${customHoverBg ? styles.bg : ''}`}
         onClick={showMore ? onShowMore : handleClick}
         onMouseDown={e => {
           mousePosition = { x: e.pageX, y: e.pageY }; // 记录一下点击鼠标时的坐标，判断是否有拖动行为
@@ -186,7 +189,7 @@ const PostContent = ({
       >
         <div className={styles.content}>
           <RichText
-            content={useShowMore && cutContentForDisplay ? cutContentForDisplay : urlToLink(filterContent)}
+            content={openedMore && cutContentForDisplay ? cutContentForDisplay : urlToLink(filterContent)}
             onClick={handleClick}
             onImgClick={handleImgClick}
             onLinkClick={handleLinkClick}
@@ -209,14 +212,14 @@ const PostContent = ({
         </div>
       </div>
       {needShowMore && showMore && (
-        <div className={styles.showMore} onClick={useShowMore ? onShowMore : onShowClose}>
+        <div className={styles.showMore} onClick={openedMore ? onShowMore : onShowClose}>
           {/* {useShowMore + ''} */}
-          <div className={styles.hidePercent}>{texts[useShowMore ? 'showMore' : 'closeMore']}</div>
-          <Icon className={useShowMore ? styles.icon : styles.icon_d} name="RightOutlined" size={12} />
+          <div className={styles.hidePercent}>{texts[openedMore ? 'showMore' : 'closeMore']}</div>
+          <Icon className={openedMore ? styles.icon : styles.icon_d} name="RightOutlined" size={12} />
         </div>
       )}
     </div>
   );
 };
 
-export default React.memo(PostContent);
+export default PostContent;

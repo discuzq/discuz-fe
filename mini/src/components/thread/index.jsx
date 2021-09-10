@@ -135,7 +135,7 @@ class Index extends React.Component {
     // 对没有登录的先做
     if (!this.props.user.isLogin()) {
       Toast.info({ content: '请先登录!' });
-      goToLoginPage({ url: '/subPages/user/wx-auth/index' });
+      goToLoginPage({ url: '/userPages/user/wx-auth/index' });
       return;
     }
 
@@ -258,13 +258,9 @@ class Index extends React.Component {
     this.props.data.likeReward.postCount = postCount + 1;
   };
 
-  canPublish = () => {
-    return canPublish(this.props.user, this.props.site);
-  }
+  canPublish = () => canPublish(this.props.user, this.props.site)
 
-    canPublish = () => {
-      return canPublish(this.props.user, this.props.site);
-    }
+    canPublish = () => canPublish(this.props.user, this.props.site)
 
     render() {
       const { data, className = '', site = {}, showBottomStyle = true, isShowIcon = false, unifyOnClick = null, relativeToViewport = true, onTextItemClick = null, extraTag } = this.props;
@@ -316,6 +312,7 @@ class Index extends React.Component {
                   platform={platform}
                   extraTag={extraTag}
                   onClick={unifyOnClick || this.onUser}
+                  extraTag={extraTag}
                 />
                 {isShowIcon && <View className={styles.headerIcon} onClick={unifyOnClick || this.onClickHeaderIcon}><Icon name='CollectOutlinedBig' className={styles.collectIcon}></Icon></View>}
             </View>

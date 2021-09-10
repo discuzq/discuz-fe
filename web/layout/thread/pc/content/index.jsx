@@ -420,8 +420,7 @@ export default inject('site', 'user')(observer((props) => {
           </div>
         )}
       {
-        hasRedPacket > 0
-        && <PacketOpen onClose={() => threadStore.setRedPacket(0)} money={hasRedPacket} />
+        hasRedPacket > 0 && <PacketOpen onClose={() => threadStore.setRedPacket(0)} money={hasRedPacket} />
       }
     </div>
   );

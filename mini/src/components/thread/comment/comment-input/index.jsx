@@ -94,10 +94,10 @@ const CommentInput = inject('site')(inject('user')((props) => {
       <View className={styles.main}>
         <Avatar
           isShowUserInfo={!props.hideInfoPopip && props.platform === 'pc'}
-          userId={userInfo.id}
+          userId={userInfo?.id}
           circle={true}
-          image={userInfo.avatarUrl}
-          name={userInfo.nickname || ''}
+          image={userInfo?.avatarUrl}
+          name={userInfo?.nickname || ''}
           onClick={(e) => props.onClick && props.onClick(e)}
           unifyOnClick={props.unifyOnClick}
           platform={props.platform}>

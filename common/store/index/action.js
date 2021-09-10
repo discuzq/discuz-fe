@@ -176,7 +176,7 @@ class IndexAction extends IndexStore {
     if (id) {
       this.deleteAssignThreadInLists({ threadId: id });
     }
-    
+
     if (id && this.threads) {
       //  删除列表
       const { pageData = [] } = this.threads;
