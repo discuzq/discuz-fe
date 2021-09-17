@@ -19,13 +19,14 @@ import { debounce } from '@common/utils/throttle-debounce';
 import IframeVideoDisplay from '@components/thread-post/iframe-video-display';
 import Packet from '@components/thread/packet';
 import PacketOpen from '@components/red-packet-animation/h5';
+import { withRouter } from 'next/router';
 
 
 // 插件引入
 /**DZQ->plugin->register<plugin_detail@thread_extension_display_hook>**/
 
 // 帖子内容
-const RenderThreadContent = inject('site', 'user')(observer((props) => {
+const RenderThreadContent = withRouter(inject('site', 'user')(observer((props) => {
   const { store: threadStore, site } = props;
   const { text, indexes } = threadStore?.threadData?.content || {};
   const { parentCategoryName, categoryName } = threadStore?.threadData;
@@ -120,6 +121,8 @@ const RenderThreadContent = inject('site', 'user')(observer((props) => {
     canViewAttachment,
     canViewVideo
   } = threadStore?.threadData?.ability || {};
+
+  const { tipList } = threadStore?.threadData || {};
 
   return (
     <div className={`${styles.container}`}>
@@ -316,6 +319,21 @@ const RenderThreadContent = inject('site', 'user')(observer((props) => {
             <span className={styles.rewardext}>打赏</span>
           </Button>
         </div>
+
+        {/* 打赏人员列表 */}
+        {
+          tipList && tipList.length > 0 && (
+            <div className={styles.moneyList}>
+              <div className={styles.top}>{tipList.length}人打赏</div>
+              <div className={styles.itemList}>
+                {tipList.map(i=>(
+                  <div key={i.userId} onClick={()=>props.router.push(`/user/${i.userId}`)} className={styles.itemAvatar}><img src={i.avatar}></img></div>
+                ))}
+              </div>
+            <div className={styles.bottom}></div>
+          </div>
+          )
+        }
       </div>
 
       {isApproved && (
@@ -369,6 +387,6 @@ const RenderThreadContent = inject('site', 'user')(observer((props) => {
       }
     </div>
   );
-}));
+})));
 
 export default RenderThreadContent;

@@ -14,6 +14,7 @@ import setWxShare from '@common/utils/set-wx-share';
 import htmlToString from '@common/utils/html-to-string';
 import isWeiXin from '@common/utils/is-weixin';
 import { updateViewCountInStorage } from '@common/utils/viewcount-in-storage';
+// import thread from '@components/thread';
 import { updateThreadAssignInfoInLists } from '@common/store/thread-list/list-business';
 
 @inject('site')
@@ -270,6 +271,9 @@ class Detail extends React.Component {
         this.props.thread.fetchAuthorInfo(userId);
       }
     }
+
+    // 查询打赏人员列表
+    this.props.thread.queryTipList({ threadId: id, postId, type: 2, page: 1 });
   }
 
   // 尝试从列表中获取帖子数据

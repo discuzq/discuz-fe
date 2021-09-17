@@ -1,6 +1,6 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import { View, Text } from '@tarojs/components';
+import { View, Text ,Image} from '@tarojs/components';
 import Icon from '@discuzq/design/dist/components/icon/index';
 import Button from '@discuzq/design/dist/components/button/index';
 import RichText from '@discuzq/design/dist/components/rich-text/index';
@@ -130,6 +130,9 @@ const RenderThreadContent = inject('site', 'user')(
       canViewAttachment,
       canViewVideo
     } = threadStore?.threadData?.ability || {};
+
+    const { tipList } = threadStore?.threadData || {};
+
 
     return (
       <View className={`${styles.container}`}>
@@ -334,6 +337,22 @@ const RenderThreadContent = inject('site', 'user')(
               </Button>
             </View>
           )}
+
+          {/* 打赏人员列表 */}
+          {
+            tipList && tipList.length > 0 && (
+              <View className={styles.moneyList}>
+                <View className={styles.top}>{tipList.length}人打赏</View>
+                <View className={styles.itemList}>
+                    {tipList.map(i=>(
+                      <View key={i.userId} onClick={()=>Router.push({ url: `/userPages/user/index?id=${i.userId}` })} className={styles.itemAvatar}><Image className={styles.img} src={i.avatar}></Image></View>
+                    ))}
+                </View>
+                <View className={styles.bottom}></View>
+              </View>
+            )
+          }
+          
         </View>
 
         {isApproved && (

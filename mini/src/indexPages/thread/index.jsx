@@ -224,6 +224,9 @@ class Detail extends React.Component {
       };
       this.props.thread.loadCommentList(params);
     }
+
+    // 查询打赏人员列表
+    this.props.thread.queryTipList({ threadId: id, postId, type: 2, page: 1 });
   }
 
   // 判断缓存是否可用
