@@ -70,6 +70,7 @@ export default class ReplyList extends React.Component {
     const element =
       this.props.data.commentUserId && this.props.data?.commentUser ? (
         <div className={`${styles.commentUser} ${hasAvatarImage ? '' : styles.positionTop}`}>
+          <span className={styles.iconAt}>@</span>
           <div className={styles.replyedAvatar}>
             <Avatar
               className={styles.avatar}

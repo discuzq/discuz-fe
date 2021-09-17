@@ -105,7 +105,9 @@
           height: rem(28);
           position: relative;
           top: rem(3);
-
+          .iconAt{
+            color: $primary-color;
+          }
           .replyedUserName {
             max-width: rem(100);
             font-weight: bold;
@@ -113,7 +115,7 @@
             margin-right: rem($margin-2n);
             line-height: rem(18);
             text-align: left;
-            // color: $primary-color;
+            color: $primary-color;
             @include text-ellipsis();
           }
           .masterBox {

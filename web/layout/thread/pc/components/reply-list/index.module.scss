@@ -112,7 +112,9 @@
           height: rem(20);
           position: relative;
           top: rem(3);
-
+          .iconAt{
+            color: $primary-color;
+          }
           .replyedAvatar {
             display: inline-block;
             margin-right: rem($margin-1n);
@@ -134,7 +136,7 @@
             margin-right: rem($margin-2n);
             line-height: rem(20);
             text-align: left;
-            // color: $primary-color;
+            color: $primary-color;
             @include text-ellipsis();
           }
           .masterBox {
