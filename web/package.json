@@ -13,7 +13,7 @@
     "update": "dzq update"
   },
   "dependencies": {
-    "@discuzq/design": "1.0.82",
+    "@discuzq/design": "1.0.83",
     "@discuzq/discuz-babel-plugin-import": "0.0.1",
     "@discuzq/discuz-plugin-loader": "1.0.7",
     "@discuzq/plugin": "1.0.46",

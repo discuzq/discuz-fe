@@ -496,7 +496,9 @@ class IndexAction extends IndexStore {
       const { pageData } = this.threads || {};
 
       if (pageData) {
-        pageData.unshift(threadInfo);
+        // TODO: 由于porxy不能正常监听unshift，先这样处理，目前只存在首页列表新增帖子
+        this.threadList.addThreadInTargetList({ namespace: 'home', threadInfo });
+        // pageData.unshift(threadInfo);
         // this.threads.pageData = this.threads.pageData.slice();
         const totalCount = Number(this.threads.totalCount)
         this.threads.totalCount = totalCount + 1

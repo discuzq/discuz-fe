@@ -26,7 +26,7 @@ export default (data, params) => {
                 Reflect.set(oTarget, sKey, vValue);
                 return true;
               }
-              // 新增
+              // 新增 TODO: 新增这块还有问题，unshift不能正常监听获取value，push可以
               if (cbType === 'create') {
                 addThreadInTargetList({
                   namespace,
@@ -35,7 +35,6 @@ export default (data, params) => {
               }
               // 修改
               if (cbType === 'modify') {
-                console.log('modify', vValue.likeReward.shareCount);
                 // 更新帖子信息
                 updateAssignThreadInfoInLists({
                   threadId: vValue.threadId,

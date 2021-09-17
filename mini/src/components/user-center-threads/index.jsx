@@ -41,6 +41,7 @@ const UNTOP_ACTIONS = [
 @inject('index')
 @inject('search')
 @inject('thread')
+@inject('threadList')
 @inject('site')
 @inject('user')
 @observer
@@ -65,7 +66,7 @@ class UserCenterThreads extends React.Component {
 
     const ret = await setThreadBeSticked({
       thread,
-      indexStore: this.props.index,
+      indexStore: this.props.threadList,
     });
 
     if (ret.success) {
@@ -85,7 +86,7 @@ class UserCenterThreads extends React.Component {
 
     const ret = await setThreadBeUnSticked({
       thread,
-      indexStore: this.props.index,
+      indexStore: this.props.threadList,
     });
 
     if (ret.success) {
