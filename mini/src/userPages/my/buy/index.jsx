@@ -5,10 +5,12 @@ import Page from '@components/page';
 import withShare from '@common/utils/withShare/withShare';
 import { priceShare } from '@common/utils/priceShare';
 import Taro from '@tarojs/taro';
+import { updateThreadAssignInfoInLists } from '@common/store/thread-list/list-business';
 
 @inject('site')
 @inject('search')
 @inject('topic')
+@inject('threadList')
 @inject('index')
 @inject('user')
 @observer
@@ -19,13 +21,13 @@ class Index extends React.Component {
 
   constructor(props) {
     super(props);
-    this.props.index.registerList({ namespace: 'buy' });
+    this.props.threadList.registerList({ namespace: 'buy' });
   }
 
   async componentDidMount() {
     Taro.hideShareMenu();
-    const { index } = this.props;
-    const threadsResp = await index.fetchList({
+    const { threadList } = this.props;
+    const threadsResp = await threadList.fetchList({
       namespace: 'buy',
       perPage: 10,
       page: this.page,
@@ -34,7 +36,7 @@ class Index extends React.Component {
       },
     });
 
-    index.setList({
+    threadList.setList({
       namespace: 'buy',
       data: threadsResp,
       page: this.page,
@@ -44,13 +46,13 @@ class Index extends React.Component {
   }
 
   componentWillUnmount() {
-    const { index } = this.props;
-    index.clearList({ namespace: 'buy' });
+    const { threadList } = this.props;
+    threadList.clearList({ namespace: 'buy' });
   }
 
   dispatch = async () => {
-    const { index } = this.props;
-    const threadsResp = await index.fetchList({
+    const { threadList } = this.props;
+    const threadsResp = await threadList.fetchList({
       namespace: 'buy',
       perPage: 10,
       page: this.page,
@@ -59,7 +61,7 @@ class Index extends React.Component {
       },
     });
 
-    index.setList({
+    threadList.setList({
       namespace: 'buy',
       data: threadsResp,
       page: this.page,
@@ -84,17 +86,7 @@ class Index extends React.Component {
       const { user } = this.props;
       this.props.index.updateThreadShare({ threadId }).then((result) => {
         if (result.code === 0) {
-          this.props.index.updateAssignThreadInfo(threadId, {
-            updateType: 'share',
-            updatedInfo: result.data,
-            user: user.userInfo,
-          });
-          this.props.search.updateAssignThreadInfo(threadId, {
-            updateType: 'share',
-            updatedInfo: result.data,
-            user: user.userInfo,
-          });
-          this.props.topic.updateAssignThreadInfo(threadId, {
+          updateThreadAssignInfoInLists(threadId, {
             updateType: 'share',
             updatedInfo: result.data,
             user: user.userInfo,

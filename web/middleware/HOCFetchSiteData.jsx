@@ -37,6 +37,7 @@ import { USER_STATUS } from '@common/constants/login';
 export default function HOCFetchSiteData(Component, _isPass) {
   @inject('site')
   @inject('user')
+  @inject('thread')
   @inject('emotion')
   @inject('commonLogin')
   @observer
@@ -420,9 +421,13 @@ export default function HOCFetchSiteData(Component, _isPass) {
       return newProps;
     }
 
-    canPublish() {
-      const { user, site } = this.props;
-      return canPublish(user, site);
+    /**
+     * 是否可以进行发帖回复
+     * @param type 判断类型 comment 评论， reply 回复
+     */
+    canPublish(type = '') {
+      const { user, site, thread } = this.props;
+      return canPublish(user, site, type, thread?.threadData?.threadId);
     }
 
     render() {

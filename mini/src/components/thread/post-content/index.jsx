@@ -27,8 +27,7 @@ import config from '../../../app.config';
 
 const PostContent = ({
   content,
-  useShowMore = false,
-  needShowMore = false, // 是否需要"查看更多"
+  useShowMore = false,// 是否需要"查看更多"
   onRedirectToDetail = noop,
   customHoverBg = false,
   relativeToViewport = true,
@@ -75,7 +74,7 @@ const PostContent = ({
       onRedirectToDetail && onRedirectToDetail();
     } else {
       setOpenedMore(false);
-      setUseShowMore()
+      // setUseShowMore()
       // setShowMore(false);
     }
   }, [contentTooLong]);
@@ -84,7 +83,7 @@ const PostContent = ({
   const onCloseMore = useCallback(e => {
     e && e.stopPropagation();
     setOpenedMore(true);
-    setUseCloseMore();
+    // setUseCloseMore();
   }, [contentTooLong])
 
 
@@ -229,7 +228,7 @@ const PostContent = ({
           }
         </View>
       </View>
-      {needShowMore && showMore && (
+      { useShowMore && showMore && (
         <View className={styles.showMore} onClick={openedMore ? onShowMore : onCloseMore}>
           <View className={styles.hidePercent}>{texts[openedMore ? 'showMore' : 'closeMore']}</View>
           <Icon className={openedMore ? styles.icon : styles.icon_d} name="RightOutlined" size={12} />

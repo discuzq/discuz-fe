@@ -12,10 +12,10 @@ import locals from '@common/utils/local-bridge';
 import getConfig from '@common/config';
 import constants from '@common/constants';
 import Toast from '@discuzq/design/dist/components/toast';
-import { updateMyThreadAvatar } from '@common/store/index/list-business';
+import { updateMyThreadAvatar } from '@common/store/thread-list/list-business';
 
 @inject('user')
-@inject('index')
+@inject('threadList')
 @observer
 export default class index extends Component {
   config = {};
@@ -184,7 +184,7 @@ export default class index extends Component {
           this.props.user.userInfo = { ...this.props.user.userInfo };
           updateMyThreadAvatar({
             avatarUrl: parsedData.Data.avatarUrl,
-            indexStore: this.props.index,
+            threadList: this.props.threadList,
           });
         } else {
           Toast.error({

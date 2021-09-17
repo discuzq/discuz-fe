@@ -80,7 +80,7 @@ class SearchResultH5Page extends React.Component {
 
   render() {
     const { keyword } = this.state;
-    const { searchTopics, searchUsers, searchThreads, searchTopicsError, searchUsersError, searchThreadsError } = this.props.search;
+    const { searchTopics, searchUsers, searchThreads, searchTopicsError, searchUsersError, searchThreadsError, indexThreadsLoading } = this.props.search;
     const { pageData: topicsPageData } = searchTopics || {};
     const { pageData: usersPageData } = searchUsers || {};
     const { pageData: threadsPageData } = searchThreads || {};
@@ -109,7 +109,7 @@ class SearchResultH5Page extends React.Component {
         {(isShowAll || hasThreads) && <SidebarPanel
           title="主题" 
           onShowMore={this.redirectToSearchResultPost}
-          isLoading={!threadsPageData}
+          isLoading={indexThreadsLoading}
           noData={!threadsPageData?.length}
           platform='h5'
           className={threadsPageData?.length && styles.bottom}

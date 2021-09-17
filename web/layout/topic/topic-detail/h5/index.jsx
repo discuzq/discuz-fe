@@ -33,37 +33,41 @@ class TopicH5Page extends React.Component {
     h5Share({ title: content, path: `/topic/topic-detail/${topicId}` });
   }
 
-  renderItem = ({ content = '', threadCount = 0, viewCount = 0, threads = [] }, index) => (
-      <div key={index}>
-        <DetailsHeader title={content} viewNum={viewCount} contentNum={threadCount} onShare={this.onShare} />
-        <div className={styles.themeContent}>
-          {
-            threads?.length
-              ? (
-                threads?.map((item, index) => (
-                  <ThreadContent data={item} key={index} className={styles.item} />
-                ))
-              )
-              : <NoData />
-          }
+  fetchMoreData = () => {
+    const { dispatch } = this.props;
+    return dispatch();
+  };
+
+  renderItem = ({ content = '', threadCount = 0, viewCount = 0 }) => {
+    const threads = this.props.topic?.topicThreads?.pageData || [];
+    return (
+        <div>
+          <DetailsHeader title={content} viewNum={viewCount} contentNum={threadCount} onShare={this.onShare} />
+          <div className={styles.themeContent}>
+            {
+              threads?.length
+                ? (
+                  threads?.map((item, index) => (
+                    <ThreadContent data={item} key={index} className={styles.item} />
+                  ))
+                )
+                : ''
+            }
+          </div>
         </div>
-      </div>
-  )
+    );
+  }
 
   render() {
-    const { pageData } = this.props.topic?.topicDetail || {};
-    const { isError, errorText, fetchTopicInfoLoading = true } = this.props;
+    const { pageData = [], currentPage, totalPage  } = this.props.topic?.topicDetail || {};
     return (
-      <BaseLayout allowRefresh={false} pageName="topicDetail">
-        {
-          fetchTopicInfoLoading ? (
-            <BottomView loadingText='加载中...' className={styles.bottomViewBox} isError={isError} errorText={errorText} />
-          )
-            : (
-              pageData?.map((item, index) => (
-                this.renderItem(item, index)))
-            )
-        }
+      <BaseLayout
+        allowRefresh={false}
+        pageName="topicDetail"
+        noMore={currentPage >= totalPage}
+        onRefresh={this.fetchMoreData}
+      >
+        { this.renderItem(pageData[0] || {}) }
       </BaseLayout>
     );
   }

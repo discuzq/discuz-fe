@@ -139,7 +139,7 @@ const CommentInput = inject('site')(inject('user')((props) => {
 
 
       <div className={styles.footer}>
-        {showEmojis && <Emoji style={style} pc show={showEmojis} emojis={emojis} onClick={onEmojiClick} atTop={false} />}
+        {showEmojis && <div className={styles.emojis}><Emoji style={style} pc show={showEmojis} emojis={emojis} onClick={onEmojiClick} atTop={false} /></div>}
 
         <div className={styles.linkBtn}>
           <Icon

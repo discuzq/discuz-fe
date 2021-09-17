@@ -82,6 +82,7 @@ const Index = (props) => {
           content={text}
           updateViewCount={updateViewCount}
           useShowMore={!openedMore}
+          needShowMore={true}
           onRedirectToDetail={onClick}
           onOpen={onOpen}
           onClose={onClose}

@@ -6,12 +6,13 @@ import Taro from '@tarojs/taro'
 import withShare from '@common/utils/withShare/withShare'
 import { priceShare } from '@common/utils/priceShare';
 import { getCurrentInstance } from '@tarojs/taro';
+import { updateThreadAssignInfoInLists } from '@common/store/thread-list/list-business';
 
 @inject('search')
-@inject('topic')
 @inject('index')
 @inject('user')
 @inject('site')
+@inject('threadList')
 @observer
 @withShare({
   needShareline: false
@@ -20,6 +21,8 @@ class Index extends React.Component {
 
   constructor(props) {
     super(props);
+
+    this.props.threadList.registerList({ namespace: 'search' });
   }
   async componentDidMount() {
     const { search } = this.props;
@@ -28,7 +31,7 @@ class Index extends React.Component {
 
     const hasIndexTopics = !!search.indexTopics;
     const hasIndexUsers = !!search.indexUsers;
-    const hasIndexThreads = !!search.indexThreads;
+    const hasIndexThreads = !!search.indexThreads?.pageData?.length;
     search.getSearchData({ hasTopics: hasIndexTopics, hasUsers: hasIndexUsers, hasThreads: hasIndexThreads, search: keyword });
   }
   getShareData (data) {
@@ -45,9 +48,7 @@ class Index extends React.Component {
       const { user } = this.props
       this.props.index.updateThreadShare({ threadId }).then(result => {
       if (result.code === 0) {
-          this.props.index.updateAssignThreadInfo(threadId, { updateType: 'share', updatedInfo: result.data, user: user.userInfo });
-          this.props.search.updateAssignThreadInfo(threadId, { updateType: 'share', updatedInfo: result.data, user: user.userInfo });
-          this.props.topic.updateAssignThreadInfo(threadId, { updateType: 'share', updatedInfo: result.data, user: user.userInfo });
+        updateThreadAssignInfoInLists(threadId, { updateType: 'share', updatedInfo: result.data, user: user.userInfo });
       }
     });
     }

@@ -63,6 +63,29 @@
       width: rem(76);
     }
   }
+
+  .emojis {
+    position: absolute;
+    left: 0;
+    top: rem(52);
+    height: rem(218);
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: $zindex-backtotop - 5;
+    overflow: hidden scroll;
+    background: $white;
+    border-top: $border-solid-1;
+  
+    :global {
+      .dzq-toolbar-emoji {
+        border-radius: 0;
+        top: 0;
+        height: 100%;
+      }
+    }
+  }
 }
 
 .actived {

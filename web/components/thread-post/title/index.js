@@ -26,8 +26,8 @@ const Title = ({ title, placeholder, isDisplay, onChange,  onFocus, onBlur, ...p
         onFocus={onFocus}
         onBlur={onBlur}
         maxLength={100}
-        focus
         {...props}
+        focus={false}
       />
     </div>
   );

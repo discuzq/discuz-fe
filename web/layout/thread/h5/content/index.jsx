@@ -155,7 +155,7 @@ const RenderThreadContent = withRouter(inject('site', 'user')(observer((props) =
         {threadStore?.threadData?.title && <div className={styles.title}>{threadStore?.threadData?.title}</div>}
 
         {/* 文字 */}
-        {text && <PostContent useShowMore={false} content={text || ''} />}
+        {text && <PostContent needShowMore={false} content={text || ''} />}
 
         {/* 视频 */}
         {parseContent.VIDEO && (

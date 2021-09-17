@@ -3,7 +3,6 @@ import IndexStore from './store';
 import {
   readCategories,
   readStickList,
-  readThreadList,
   updatePosts,
   createThreadShare,
   readRecommends,
@@ -58,7 +57,7 @@ class IndexAction extends IndexStore {
    */
   @action
   async getThreadCommentList(threadId) {
-    const targetThread = this.findAssignThread(threadId);
+    const targetThread = this._findAssignThread(threadId);
 
     if (targetThread && targetThread.data) {
       targetThread.data.isLoading = true;
@@ -75,10 +74,15 @@ class IndexAction extends IndexStore {
 
       if (res.code === 0) {
         targetThread.data.commentList = res?.data?.pageData || [];
-        targetThread.data.requestError.isError = false;
+        targetThread.data.requestError = {
+          isError: false,
+          errorText: '加载失败'
+        }
       } else {
-        targetThread.data.requestError.isError = true;
-        targetThread.data.requestError.errorText = res.msg || '加载失败';
+        targetThread.data.requestError = {
+          isError: true,
+          errorText: res.msg || '加载失败'
+        }
       }
 
       targetThread.data.isLoading = false;
@@ -180,7 +184,6 @@ class IndexAction extends IndexStore {
 
       if (this.threads?.pageData) {
         this.threads.pageData = newPageData;
-        this.changeInfo = { type: 'delete', thread: id }
       }
 
       // 删除置顶
@@ -228,17 +231,10 @@ class IndexAction extends IndexStore {
    */
   @action
   async getReadThreadList({ filter = {}, sequence = 0, perPage = 10, page = 1, isDraft = false } = {}) {
-    // 过滤空字符串
-    const newFilter = filter;
-    if (filter.categoryids && (filter.categoryids instanceof Array)) {
-      const newCategoryIds = filter.categoryids?.filter(item => item);
-      if (!newCategoryIds.length) {
-        delete newFilter.categoryids;
-      }
-    }
     this.latestReq += 1;
     const currentReq = this.latestReq;
-    const result = await readThreadList({ params: { perPage, page, filter: newFilter, sequence } });
+
+    const result = await this.threadList.fetchList({ namespace: this.namespace, perPage, page, filter, sequence });
     if (currentReq !== this.latestReq) {
       return;
     }
@@ -258,25 +254,11 @@ class IndexAction extends IndexStore {
           this.setDrafts(result.data);
         }
       } else {
-        if (this.threads && result.data.pageData && page !== 1) {
-          const nextThreads = result.data.pageData.map((item) => {
-            item.openedMore = false;
-            item.commentList = [];
-            item.isLoading = false;
-            item.requestError = {
-              isError: false,
-              errorText: '加载失败',
-            };
-            return item;
-          });
-
-          this.threads.pageData.push(...nextThreads);
-          this.threads.currentPage = result.data.currentPage;
-        } else {
-          // 首次加载
-          this.threads = null;
-          this.setThreads(this.adapterList(result.data));
-        }
+        this.threadList.setList({
+          namespace: this.namespace,
+          data: { data: this.adapterList(result.data) },
+          page,
+        });
       }
       return result.data;
     } else {
@@ -330,7 +312,7 @@ class IndexAction extends IndexStore {
   }
 
   // 获取指定的帖子数据
-  findAssignThread(threadId) {
+  _findAssignThread(threadId) {
     if (this.threads) {
       const { pageData = [] } = this.threads;
       for (let i = 0; i < pageData.length; i++) {
@@ -387,24 +369,6 @@ class IndexAction extends IndexStore {
   }
 
   /**
-   * 支付成功后，更新帖子列表指定帖子状态
-   * @param {number} threadId 帖子id
-   * @param {object}  obj 更新数据
-   * @returns
-   */
-  @action
-  updatePayThreadInfo(threadId, obj, isUpdatePay = true) {
-    const targetThread = this.findAssignThread(threadId);
-    if (!targetThread || targetThread.length === 0) return;
-
-    const { index } = targetThread;
-    if (this.threads?.pageData) {
-      this.threads.pageData[index] = obj;
-      if (isUpdatePay) this.changeInfo = { type: 'pay', thread: threadId }
-    }
-  }
-
-  /**
    * 合并组合新数据
    * @param {object} sourceData 原帖子数据
    * @param {number} tomId 插件id
@@ -428,14 +392,14 @@ class IndexAction extends IndexStore {
    */
   @action
   updateListThreadIndexes(threadId, tomId, tomValue) {
-    const targetThread = this.findAssignThread(threadId);
+    const targetThread = this._findAssignThread(threadId);
     this.updataThreadIndexesAllData(threadId, tomId, tomValue);
     if (!targetThread) return;
     const { index, data } = targetThread;
     const threadData = this.combineThreadIndexes(data, tomId, tomValue);
     if (this.threads?.pageData) {
       this.threads.pageData[index] = threadData;
-      this.threads.pageData = [...this.threads.pageData];
+      // this.threads.pageData = [...this.threads.pageData];
     }
     this.updateAssignThreadAllData(threadId, threadData);
   }
@@ -443,11 +407,11 @@ class IndexAction extends IndexStore {
   @action
   updataThreadIndexesAllData(threadId, tomId, tomValue) {
     const id = typeofFn.isNumber(threadId) ? threadId : +threadId;
-    const [targetThread] = this.findAssignThreadInLists({ threadId: id });
+    const [targetThread] = this.threadList.findAssignThreadInLists({ threadId: id });
     if (!targetThread) return;
     const { data } = targetThread;
     const threadData = this.combineThreadIndexes(data, tomId, tomValue);
-    this.updateAssignThreadInfoInLists({ threadId: id, threadInfo: threadData });
+    this.threadList.updateAssignThreadInfoInLists({ threadId: id, threadInfo: threadData });
   }
 
   /**
@@ -464,15 +428,12 @@ class IndexAction extends IndexStore {
     this.updateAssignSticksInfo(threadId, threadInfo)
 
     // 更新帖子列表
-    const targetThread = this.findAssignThread(typeofFn.isNumber(threadId) ? threadId : +threadId);
+    const targetThread = this._findAssignThread(typeofFn.isNumber(threadId) ? threadId : +threadId);
     if (!targetThread) return false;
     const { index, data } = targetThread;
     this.threads.pageData[index] = threadInfo;
 
-    this.updateAssignThreadInfoInLists({ threadId: typeofFn.isNumber(threadId) ? threadId : +threadId, threadInfo });
-
-    // 小程序编辑
-    this.changeInfo = { type: 'edit', thread: threadInfo }
+    this.threadList.updateAssignThreadInfoInLists({ threadId: typeofFn.isNumber(threadId) ? threadId : +threadId, threadInfo });
 
     return true;
   }
@@ -510,106 +471,21 @@ class IndexAction extends IndexStore {
   }
 
   /**
-   * 更新帖子列表指定帖子状态
-   * @param {number} threadId 帖子id
-   * @param {object}  obj 更新数据
-   * @returns
-   */
-  @action
-  updateAssignThreadInfo(threadId, obj = {}) {
-    const targetThread = this.findAssignThread(threadId);
-    const targetThreadsInLists = this.findAssignThreadInLists({ threadId });
-
-    const { updateType, updatedInfo, user, openedMore } = obj;
-
-    const threadUpdater = ({
-      data,
-      callback = () => { }
-    }) => {
-      if (!data && !data?.likeReward && !data?.likeReward?.users) return;
-
-      // 更新整个帖子内容
-      if (data && updateType === 'content') {
-        callback(data);
-      }
-
-      // 更新点赞
-      if (updateType === 'like' && !typeofFn.isUndefined(updatedInfo.isLiked) &&
-        !typeofFn.isNull(updatedInfo.isLiked) && user) {
-        const { isLiked, likePayCount = 0 } = updatedInfo;
-        const theUserId = user.userId || user.id;
-        data.isLike = isLiked;
-
-        const userData = threadReducer.createUpdateLikeUsersData(user, 1);
-        // 添加当前用户到按过赞的用户列表
-        const newLikeUsers = threadReducer.setThreadDetailLikedUsers(data.likeReward, !!isLiked, userData);
-
-        data.likeReward.users = newLikeUsers;
-        data.likeReward.likePayCount = likePayCount;
-      }
-
-      // 更新评论
-      if (updateType === 'comment' && data?.likeReward) {
-        data.likeReward.postCount = data.likeReward.postCount + 1;
-      }
-
-      // 更新分享
-      if (updateType === 'share') {
-        data.likeReward.shareCount = data.likeReward.shareCount + 1;
-      }
-
-      // 更新帖子浏览量
-      if (updateType === 'viewCount') {
-        data.viewCount = updatedInfo.viewCount;
-      }
-
-      if (updateType === 'openedMore') {
-        data.openedMore = openedMore;
-      }
-
-      callback(data);
-    }
-
-    if (targetThread && targetThread.length !== 0) {
-      const { index, data } = targetThread;
-
-      threadUpdater({
-        data,
-        callback: (updatedInfo) => {
-          this.threads.pageData[index] = updatedInfo;
-        }
-      })
-    }
-
-    if (targetThreadsInLists && targetThreadsInLists.length !== 0) {
-      targetThreadsInLists.forEach(({ index, page, listName, data }) => {
-        threadUpdater({
-          data,
-          callback: (updatedInfo) => {
-            this.lists[listName].data[page][index] = updatedInfo;
-          }
-        })
-      })
-    }
-
-  }
-
-  /**
    * 添加帖子
    * @param {obj} threadInfo
    */
   @action
   addThread(threadInfo) {
     const { threadId = '' } = threadInfo
-    const targetThread = this.findAssignThread(threadId);
+    const targetThread = this._findAssignThread(threadId);
 
-    const targetThreadInLists = this.findAssignThreadInTargetList({ threadId, namespace: 'my' })
+    const targetThreadInLists = this.threadList.findAssignThreadInTargetList({ threadId, namespace: 'my' })
 
     const addThreadInLists = ({ threadInfo, threadId }) => {
-      if (targetThreadInLists && targetThreadInLists.length !== 0) {
-        this.updateAssignThreadInfoInLists({ threadId, threadInfo });
+      if (targetThreadInLists) {
+        this.threadList.updateAssignThreadInfoInLists({ threadId, threadInfo });
       } else {
-        this.addThreadInTargetList({ namespace: 'my', threadInfo });
+        this.threadList.addThreadInTargetList({ namespace: 'my', threadInfo });
       }
     }
 
@@ -620,13 +496,12 @@ class IndexAction extends IndexStore {
       const { pageData } = this.threads || {};
 
       if (pageData) {
-        pageData.unshift(threadInfo);
-        this.threads.pageData = this.threads.pageData.slice();
+        // TODO: 由于porxy不能正常监听unshift，先这样处理，目前只存在首页列表新增帖子
+        this.threadList.addThreadInTargetList({ namespace: 'home', threadInfo });
+        // pageData.unshift(threadInfo);
+        // this.threads.pageData = this.threads.pageData.slice();
         const totalCount = Number(this.threads.totalCount)
         this.threads.totalCount = totalCount + 1
-
-        // 小程序
-        this.changeInfo = { type: 'add', thread: threadInfo }
       }
     } else {
       this.updateAssignThreadAllData(threadId, threadInfo);

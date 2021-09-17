@@ -11,7 +11,7 @@ import { inject } from 'mobx-react';
 import styles from './index.module.scss';
 
 const CommentInput = inject('site')(inject('user')((props) => {
-  const { onSubmit, onClose, height, initValue = '', placeholder = '写下我的评论...', platform = 'pc', userInfo } = props;
+  const { onSubmit, onClose, height, initValue = '', placeholder = '写下我的评论...', platform = 'pc', userInfo, emojihide } = props;
 
   const textareaRef = createRef();
 
@@ -35,6 +35,10 @@ const CommentInput = inject('site')(inject('user')((props) => {
     setValue(initValue);
   }, [initValue]);
 
+  useEffect(() => {
+    if (emojihide) setShowEmojis(false);
+  }, [emojihide]);
+
   const onSubmitClick = async () => {
     if (typeof onSubmit === 'function') {
       try {
@@ -46,6 +50,8 @@ const CommentInput = inject('site')(inject('user')((props) => {
       } catch (error) {
         console.log(error);
       } finally {
+        // 发布成功隐藏表情
+        setShowEmojis(false);
         setLoading(false);
       }
     }

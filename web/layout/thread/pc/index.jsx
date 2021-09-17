@@ -35,8 +35,6 @@ import classNames from 'classnames';
 @inject('commentPosition')
 @inject('comment')
 @inject('index')
-@inject('topic')
-@inject('search')
 @observer
 class ThreadPCPage extends React.Component {
   constructor(props) {
@@ -325,7 +323,7 @@ class ThreadPCPage extends React.Component {
     const { success, msg } = await this.props.thread.updateEssence(params);
 
     // 更新列表store数据
-    this.props.thread.updateListStore(this.props.index, this.props.search, this.props.topic);
+    this.props.thread.updateListStore();
 
     if (success) {
       Toast.success({
@@ -344,14 +342,7 @@ class ThreadPCPage extends React.Component {
     this.setState({ showDeletePopup: false });
     const id = this.props.thread?.threadData?.id;
 
-    const { success, msg } = await this.props.thread.delete(
-      id,
-      this.props.index,
-      this.props.search,
-      this.props.topic,
-      this.props.site,
-      this.props.user,
-    );
+    const { success, msg } = await this.props.thread.delete(id);
 
     if (success) {
       Toast.success({
@@ -436,7 +427,7 @@ class ThreadPCPage extends React.Component {
       // 更新帖子中的评论数据
       this.props.thread.updatePostCount(this.props.thread.totalCount);
       // 更新列表store数据
-      this.props.thread.updateListStore(this.props.index, this.props.search, this.props.topic);
+      this.props.thread.updateListStore();
 
       // 是否红包帖
       const isRedPack = this.props.thread?.threadData?.displayTag?.isRedPack;
@@ -547,8 +538,6 @@ class ThreadPCPage extends React.Component {
       params,
       this.props.index,
       this.props.user,
-      this.props.search,
-      this.props.topic,
     );
 
     this.likedLoading = false;
@@ -636,7 +625,7 @@ class ThreadPCPage extends React.Component {
     if (success && this.props.thread?.threadData?.threadId) {
       await this.props.thread.fetchThreadDetail(this.props.thread?.threadData?.threadId);
       // 更新首页store数据
-      this.props.thread.updateListStore(this.props.index, this.props.search, this.props.topic);
+      this.props.thread.updateListStore();
     }
   }
 
@@ -666,8 +655,6 @@ class ThreadPCPage extends React.Component {
         params,
         this.props.user,
         this.props.index,
-        this.props.search,
-        this.props.topic,
       );
 
       if (!success) {

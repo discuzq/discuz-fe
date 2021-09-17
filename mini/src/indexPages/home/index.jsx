@@ -6,23 +6,29 @@ import withShare from '@common/utils/withShare/withShare'
 import { inject, observer } from 'mobx-react'
 import { handleString2Arr } from '@common/utils/handleCategory';
 import { priceShare } from '@common/utils/priceShare';
+import { updateThreadAssignInfoInLists } from '@common/store/thread-list/list-business';
 
 @inject('site')
-@inject('search')
-@inject('topic')
 @inject('index')
+@inject('threadList')
 @inject('user')
 @inject('baselayout')
 @withShare()
 @observer
 @withShare({
   needLogin: true,
-  showShareTimeline: false
+  showShareTimeline: true
 })
 class Index extends React.Component {
   state = {
     isError: false,
     errorText: '加载失败'
+  }
+
+  constructor(props) {
+    super(props);
+    const { index, threadList } = this.props;
+    threadList.registerList({ namespace: index.namespace });
   }
 
   componentDidHide() {
@@ -58,9 +64,7 @@ class Index extends React.Component {
       const { user } = this.props
       this.props.index.updateThreadShare({ threadId }).then(result => {
         if (result.code === 0) {
-          this.props.index.updateAssignThreadInfo(threadId, { updateType: 'share', updatedInfo: result.data, user: user.userInfo });
-          this.props.search.updateAssignThreadInfo(threadId, { updateType: 'share', updatedInfo: result.data, user: user.userInfo });
-          this.props.topic.updateAssignThreadInfo(threadId, { updateType: 'share', updatedInfo: result.data, user: user.userInfo });
+          updateThreadAssignInfoInLists(threadId, { updateType: 'share', updatedInfo: result.data, user: user.userInfo });
         }
       });
     }
@@ -97,7 +101,8 @@ class Index extends React.Component {
 
   componentDidShow() {
     const { threads } = this.props.index || {}
-    if (!threads) {
+    console.log(threads)
+    if (!threads?.pageData?.length) {
       this.loadData()
     }
   }

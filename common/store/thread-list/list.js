@@ -2,15 +2,33 @@ import { observable, computed, action, extendObservable } from 'mobx';
 import { readThreadList } from '@server';
 import { get } from '@common/utils/get';
 
-// 定义统一的 list 数据结构
+// 定义统一的单例 list 数据结构
 export default class ListStore {
+  constructor() {
+    if (!ListStore.instance) {
+      ListStore.instance = this;
+    }
+    return ListStore.instance;
+  }
+
+  static getInstance() {
+    if (!this.instance) {
+      return (this.instance = new ListStore());
+    }
+    return this.instance;
+  }
+
   // 所有的 list 集合数据存储
   @observable lists = {};
 
+  /**
+   * 注册业务list到lists集合
+   * @param {*} param0
+   * @returns
+   */
   @action
-  registerList = ({
-    namespace,
-  }) => {
+  registerList = ({ namespace }) => {
+    // window.lists = this.lists;
     if (this.lists[namespace]) return;
     extendObservable(this.lists, {
       [namespace]: {
@@ -22,10 +40,10 @@ export default class ListStore {
         attribs: {},
       },
     });
-  }
+  };
 
   /**
-   * 获取指定命名空间的 list
+   * 获取指定命名空间的列表
    * @param {*} param0
    * @returns
    */
@@ -37,9 +55,13 @@ export default class ListStore {
     }
 
     return this.listAdapter(this.lists[namespace]);
-  }
+  };
 
-  // 列表适配器，可以拍平含有分页的列表数据
+  /**
+   * 列表适配器，可以拍平含有分页的列表数据
+   * @param {*} listInstance 指定列表
+   * @returns {array}
+   */
   @action
   listAdapter = (listInstance) => {
     const { data } = listInstance;
@@ -48,12 +70,30 @@ export default class ListStore {
       listArray = [...listArray, ...pageData];
     });
     return listArray;
-  }
+  };
 
-  // 强制刷新
+  /**
+   * 强制更新所有列表数据
+   */
   @action
   forceUpdateList = () => {
     this.lists = { ...this.lists };
+  };
+
+
+  /**
+   * 更新指定列表的列表数据
+   * @param {*} param0
+   */
+  @action
+  setTargetListDataByList({ namespace, list }) {
+    if (!this.lists[namespace]) {
+      this.registerList({ namespace });
+    }
+
+    this.lists[namespace].data = {
+      1: list,
+    };
   }
 
   // 更新list
@@ -63,7 +103,7 @@ export default class ListStore {
   }
 
   /**
-   * 请求获取 list
+   * 请求获取指定列表的list
    * @param {*} param0
    */
   @action
@@ -73,13 +113,15 @@ export default class ListStore {
       requestPage = this.getAttribute({ namespace, key: 'currentPage' }) + 1 || 1;
     }
     const newFilter = filter;
-    if (filter.categoryids && (filter.categoryids instanceof Array)) {
-      const newCategoryIds = filter.categoryids?.filter(item => item);
+    if (filter.categoryids && filter.categoryids instanceof Array) {
+      const newCategoryIds = filter.categoryids?.filter((item) => item);
       if (!newCategoryIds.length) {
         delete newFilter.categoryids;
       }
     }
-    const result = await readThreadList({ params: { perPage, page: requestPage, filter: newFilter, sequence } });
+    const result = await readThreadList({
+      params: { perPage, page: requestPage, filter: newFilter, sequence },
+    });
     if (result.code === 0 && result.data) {
       return result;
     }
@@ -87,11 +129,10 @@ export default class ListStore {
     this.setListRequestError({ namespace, errorText: result?.msg || '' });
 
     return Promise.reject(result?.msg || '');
-  }
-
+  };
 
   /**
-   * 设置列表错误
+   * 设置指定列表的错误
    * @param {*} param0
    * @returns
    */
@@ -99,13 +140,13 @@ export default class ListStore {
   setListRequestError = ({ namespace, errorText }) => {
     if (!this.lists[namespace]) {
       this.registerList({ namespace });
-    };
+    }
 
     this.lists[namespace].requestError.isError = true;
     this.lists[namespace].requestError.errorText = errorText;
 
     this.lists = { ...this.lists };
-  }
+  };
 
   /**
    * 获取指定列表的错误信息
@@ -119,17 +160,19 @@ export default class ListStore {
     }
 
     return this.lists[namespace].requestError;
-  }
+  };
 
-
+  /**
+   * 删除所有列表中的item
+   * @param {*} param0 
+   */
   @action
   deleteListItem = ({ item }) => {
     this.deleteAssignThreadInLists({ threadId: item.threadId });
-  }
-
+  };
 
   /**
-   * 初始化列表
+   * 初始化指定列表
    * @param {*} param0
    */
   @action
@@ -142,19 +185,22 @@ export default class ListStore {
       this.registerList({ namespace });
     }
 
-    this.lists[namespace].data[listPage] = get(data, 'data.pageData');
+    this.lists[namespace].data[listPage] = observable(get(data, 'data.pageData') || []);
 
-    if (!this.getAttribute({ namespace, key: 'currentPage' }) || Number(this.getAttribute({ namespace, key: 'currentPage' })) <= Number(get(data, 'data.currentPage'))) {
+    if (
+      !this.getAttribute({ namespace, key: 'currentPage' }) ||
+      Number(this.getAttribute({ namespace, key: 'currentPage' })) <= Number(get(data, 'data.currentPage'))
+    ) {
       this.setAttribute({ namespace, key: 'currentPage', value: get(data, 'data.currentPage') });
     }
     this.setAttribute({ namespace, key: 'totalPage', value: get(data, 'data.totalPage') });
     this.setAttribute({ namespace, key: 'totalCount', value: get(data, 'data.totalCount') });
 
     this.lists = { ...this.lists };
-  }
+  };
 
   /**
-   * 清空指定 namespace 的列表
+   * 清空指定列表
    * @param {*} param0
    */
   @action
@@ -170,7 +216,7 @@ export default class ListStore {
 
     // 全量赋值，才能触发渲染
     this.lists = { ...this.lists };
-  }
+  };
 
   /**
    * 获取所有的列表
@@ -179,9 +225,8 @@ export default class ListStore {
   @action
   getAllLists = () => this.lists;
 
-
   /**
-   * 设置附加属性
+   * 设置指定列表的附加属性
    * @param {*} param0
    * @returns
    */
@@ -192,11 +237,10 @@ export default class ListStore {
     this.lists[namespace].attribs[key] = value;
 
     this.lists = { ...this.lists };
-  }
-
+  };
 
   /**
-   * 获取指定的附加属性
+   * 获取指定列表的附加属性
    * @param {*} param0
    * @returns
    */
@@ -205,7 +249,19 @@ export default class ListStore {
     if (!this.lists[namespace]) return null;
 
     return this.lists[namespace].attribs[key];
-  }
+  };
+
+  /**
+   * 获取指定列表的所有附加属性
+   * @param {*} param0
+   * @returns
+   */
+  @action
+  getAttributes = ({ namespace }) => {
+    if (!this.lists[namespace]) return null;
+
+    return this.lists[namespace].attribs;
+  };
 
   /**
    * 在指定列表新增帖子
@@ -242,10 +298,10 @@ export default class ListStore {
     }
 
     this.lists = { ...this.lists };
-  }
+  };
 
   /**
-   * 在所有的列表中找到指定 id 的 thread
+   * 在所有列表中找到指定 id 的 thread
    * @param {*} param0
    */
   @action
@@ -254,58 +310,64 @@ export default class ListStore {
 
     Object.keys(this.lists).forEach((listName) => {
       const listSearchResult = this.findAssignThreadInTargetList({ namespace: listName, threadId });
-
-      resultList = [...resultList, ...listSearchResult];
+      if (listSearchResult) {
+        resultList = [...resultList, listSearchResult];
+      }
     });
 
     return resultList;
-  }
+  };
 
   /**
-   * 在指定的列表里找到指定 id 的 thread
+   * 在指定列表里找到指定 id 的 thread
    * @param {*} param0
    */
   @action
   findAssignThreadInTargetList = ({ threadId, namespace }) => {
     if (!this.lists[namespace]) return null;
 
-    const resultList = [];
+    let result = null;
 
     const { data } = this.lists[namespace];
 
     Object.keys(data).forEach((page) => {
       data[page].forEach((thread, index) => {
         if (thread.threadId === threadId) {
-          resultList.push({
+          result = {
             listName: namespace,
             page,
             index,
             data: thread,
-          });
+          };
         }
       });
     });
 
-    return resultList;
-  }
+    return result;
+  };
 
   /**
-   * 在所有的列表里更新指定的 thread
+   * 在所有列表里更新指定的 thread
    * @param {*} param0
    */
   @action
   updateAssignThreadInfoInLists = ({ threadId, threadInfo }) => {
     const targetThreads = this.findAssignThreadInLists({ threadId });
 
-    targetThreads.forEach(({ listName, page, index }) => {
-      this.lists[listName].data[page][index] = threadInfo;
+    targetThreads.filter(item => !!item?.listName).forEach(({ listName, page, index }) => {
+      if (this.lists?.[listName]?.data?.[page]?.[index]) {
+        this.lists[listName].data[page][index] = {
+          ...this.lists[listName].data[page][index],
+          ...threadInfo,
+        };
+      }
     });
 
     this.lists = { ...this.lists };
-  }
+  };
 
   /**
-   * 在列表中删除指定的 thread
+   * 在所有列表中删除指定的 thread
    * @param {*} param0
    */
   @action
@@ -317,5 +379,5 @@ export default class ListStore {
     });
 
     this.lists = { ...this.lists };
-  }
+  };
 }

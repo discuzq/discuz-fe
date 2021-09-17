@@ -7,6 +7,7 @@ import { withRouter } from 'next/router';
 import UnreadRedDot from '@components/unread-red-dot';
 import { unreadUpdateInterval } from '@common/constants/message';
 import HOCFetchSiteData from '@middleware/HOCFetchSiteData';
+import LoginHelper from '@common/utils/login-helper';
 
 /**
  * BottomNavBar组件
@@ -50,7 +51,10 @@ const BottomNavBar = ({ router, user, fixed = true, placeholder = false, curr = 
         Toast.info({ content: '您暂无发帖权限' });
         return;
       }
-      if (!canPublish()) return;
+      if (!canPublish('comment')) return;
+    }
+    if (i.router === '/') {
+      LoginHelper.clear();
     }
 
     onClick(i, idx)

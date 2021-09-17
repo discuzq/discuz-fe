@@ -8,7 +8,8 @@ import calcCosImageQuality from '@common/utils/calc-cos-image-quality';
 const SmartImg = ({level, autoSize = false, type, src, onClick, mode = '', noSmart = false, size = 0}) => {
     const [isLong, changeIsLong] = useState(false);
 
-    const imgSrc = useMemo(() => {
+  const imgSrc = useMemo(() => {
+        if (!src) return '';
         if (size / 1024 / 1024 > 2) return calcCosImageQuality(src, type, 100);
         if (noSmart) return calcCosImageQuality(src, type, 0);
         return calcCosImageQuality(src, type, level);

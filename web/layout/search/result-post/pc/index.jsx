@@ -46,7 +46,7 @@ class SearchResultPostH5Page extends React.Component {
     const { search, router } = this.props;
     const { keyword = '' } = router.query;
     // 当服务器无法获取数据时，触发浏览器渲染
-    const hasThreads = !!search.threads;
+    const hasThreads = !!search.threads?.pageData?.length;
     if (!hasThreads || (keyword && search.currentKeyword && keyword !== search.currentKeyword)) {
       this.page = 1;
       await search.getThreadList({ search: keyword, scope: '2' });
@@ -72,7 +72,7 @@ class SearchResultPostH5Page extends React.Component {
           title="热门内容"
           type='large'
           isShowMore={false}
-          isLoading={!pageData}
+          isLoading={!currentPage}
           noData={!pageData?.length}
           icon={{ type: 3, name: 'HotOutlined' }}
           mold='plane'

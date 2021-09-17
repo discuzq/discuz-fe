@@ -36,8 +36,7 @@ class WXBind extends Component {
   }
 
   getUserProfileCallback = async (params) => {
-    const { scene: sessionToken, bindPhone = '', loginType, toPage = '' } = getCurrentInstance().router.params;
-
+    const { scene: sessionToken, bindPhone = '', loginType, toPage = '', limitPublishType = '' } = getCurrentInstance()?.router?.params || {};
     try {
       const res = await this.props.miniBind.mobilebrowserBind({
         jsCode: this.props.commonLogin.jsCode,
@@ -63,7 +62,7 @@ class WXBind extends Component {
         const userData = await this.props.user.updateUserInfo(uid);
         const mobile = get(userData, 'mobile', '');
         if (bindPhone && !mobile) { // 需要绑定手机，但是用户未绑定手机时，跳转到绑定手机页面
-          redirectTo({ url: `/userPages/user/bind-phone/index` });
+          redirectTo({ url: `/userPages/user/bind-phone/index?limitPublishType=${limitPublishType}` });
           return;
         }
         this.props.h5QrCode.bindTitle = '已成功绑定，正在跳转到首页';

@@ -21,14 +21,14 @@ import UserCenterThreads from '@components/user-center-threads';
 
 @inject('site')
 @inject('user')
-@inject('index')
+@inject('threadList')
 @observer
 class PCMyPage extends React.Component {
   constructor(props) {
     super(props);
     this.isUnmount = false;
 
-    const myThreadsList = this.props.index.getList({
+    const myThreadsList = this.props.threadList.getList({
       namespace: 'my',
     });
 
@@ -50,13 +50,13 @@ class PCMyPage extends React.Component {
     }
     // 如果不是进入 thread 详情页面
     if (!/thread\//.test(url)) {
-      this.props.index.clearList({ namespace: 'my' });
+      this.props.threadList.clearList({ namespace: 'my' });
     }
   };
 
   fetchUserThreads = async () => {
     try {
-      const userThreadsList = await this.props.index.fetchList({
+      const userThreadsList = await this.props.threadList.fetchList({
         namespace: 'my',
         filter: {
           toUserId: 0,
@@ -64,7 +64,7 @@ class PCMyPage extends React.Component {
         },
       });
       if (!this.unMount) {
-        this.props.index.setList({ namespace: 'my', data: userThreadsList });
+        this.props.threadList.setList({ namespace: 'my', data: userThreadsList });
       }
     } catch (err) {
       console.error(err);
@@ -191,14 +191,14 @@ class PCMyPage extends React.Component {
 
   renderContent = () => {
     const { isLoading } = this.state;
-    const { user, index } = this.props;
-    const { lists } = index;
+    const { user, threadList } = this.props;
+    const { lists } = threadList;
 
-    const myThreadsList = index.getList({
+    const myThreadsList = threadList.getList({
       namespace: 'my',
     });
 
-    const totalCount = index.getAttribute({
+    const totalCount = threadList.getAttribute({
       namespace: 'my',
       key: 'totalCount',
     });
@@ -235,24 +235,24 @@ class PCMyPage extends React.Component {
 
   render() {
     const { isLoading } = this.state;
-    const { index } = this.props;
-    const { lists } = index;
+    const { threadList } = this.props;
+    const { lists } = threadList;
 
-    const myThreadsList = index.getList({
+    const myThreadsList = threadList.getList({
       namespace: 'my',
     });
 
-    const totalPage = index.getAttribute({
+    const totalPage = threadList.getAttribute({
       namespace: 'my',
       key: 'totalPage',
     });
 
-    const currentPage = index.getAttribute({
+    const currentPage = threadList.getAttribute({
       namespace: 'my',
       key: 'currentPage',
     });
 
-    const requestError = index.getListRequestError({ namespace: 'my' });
+    const requestError = threadList.getListRequestError({ namespace: 'my' });
 
     // 判断用户信息loading状态
     const IS_USER_INFO_LOADING = !this.props.user?.username;

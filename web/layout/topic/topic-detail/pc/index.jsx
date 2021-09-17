@@ -32,6 +32,11 @@ class IndexPCPage extends React.Component {
     });
   }
 
+  fetchMoreData = () => {
+    const { dispatch } = this.props;
+    return dispatch();
+  };
+
   // 分享
   onShare = (e) => {
     e.stopPropagation();
@@ -57,8 +62,11 @@ class IndexPCPage extends React.Component {
       </>
    )
 
-  renderItem = ({ content = '', threadCount = 0, viewCount = 0, threads = [] }, index) => (
-      <div className={styles.topicContent} key={index}>
+  renderItem = ({ content = '', threadCount = 0, viewCount = 0 }) => {
+    const threads = this.props.topic?.topicThreads?.pageData || [];
+
+    return (
+      <div className={styles.topicContent}>
         <DetailsHeader title={content} viewNum={viewCount} contentNum={threadCount} onShare={this.onShare} />
         <div className={styles.themeContent}>
           {
@@ -68,34 +76,28 @@ class IndexPCPage extends React.Component {
                   <ThreadContent data={item} key={index} className={styles.item} />
                 ))
               )
-              : <NoData />
+              : ''
           }
         </div>
       </div>
-  )
+    );
+  }
 
   render() {
-    const { pageData = [] } = this.props.topic?.topicDetail || {};
-    const { isError, errorText, fetchTopicInfoLoading = true } = this.props;
+    const { pageData = [], currentPage, totalPage } = this.props.topic?.topicDetail || {};
     return (
     // <List className={styles.topicWrap}>
 
         <BaseLayout
+          noMore={currentPage >= totalPage}
+          onRefresh={this.fetchMoreData}
           onSearch={this.onSearch}
           right={ this.renderRight }
           showRefresh={false}
           className="topic-detail-page"
           pageName="topicDetail"
         >
-          {
-          fetchTopicInfoLoading ? (
-            <BottomView loadingText='加载中...' isError={isError} errorText={errorText} />
-          )
-            : (
-              pageData?.map((item, index) => (
-                this.renderItem(item, index)))
-            )
-        }
+          {this.renderItem(pageData[0] || {})}
         </BaseLayout>
     // </List>
     );

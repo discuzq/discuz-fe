@@ -165,7 +165,7 @@ const RenderThreadContent = inject('site', 'user')(
           {threadStore?.threadData?.title && <View className={styles.title}>{threadStore?.threadData?.title}</View>}
 
           {/* 文字 */}
-          {text && <PostContent needShowMore={false} content={text || ''} />}
+          {text && <PostContent useShowMore={false} content={text || ''} />}
 
           {/* 视频 */}
           {parseContent.VIDEO && (

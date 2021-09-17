@@ -122,7 +122,7 @@ class Index extends Component {
       url = `/indexPages/thread/index?id=${item.threadId}`;
     }
     // 处理点击帖子通知 - 回复(携带评论id, 用于评论定位展示)
-    if (item.type === "replied" && item.threadId && item.postId) {
+    if ((item.type === "replied" || item.type === "related") && item.threadId && item.postId) {
       if (item.isReply) {
         url = `/indexPages/thread/comment/index?id=${item.replyPostId}&threadId=${item.threadId}&postId=${item.postId}&fromMessage=true`;
       } else {

@@ -10,6 +10,7 @@ const SmartImg = ({ level, type, src, onClick, noSmart = false, showLongPicture 
   const img = useRef(null);
 
   const imgSrc = useMemo(() => {
+    if (!src) return '';
     if (size / 1024 / 1024 > 2) return calcCosImageQuality(src, type, 100);
     if (noSmart) return calcCosImageQuality(src, type, 0);
     return calcCosImageQuality(src, type, level);

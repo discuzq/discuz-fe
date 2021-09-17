@@ -106,7 +106,7 @@ class Comment extends React.Component {
 
 
   render() {
-    const { thread, userInfo, canPublish, commentList, deleteComment, isLoading, requestError, postCount } = this.props;
+    const { thread, userInfo, canPublish, commentList, deleteComment, isLoading, requestError, postCount, shareClickRandom } = this.props;
 
     return <>
       <CommentList
@@ -126,7 +126,7 @@ class Comment extends React.Component {
         <ViewMore className={styles.viewMore} onClick={this.onViewMoreClick}></ViewMore>
       )}
 
-      <CommentInput userInfo={userInfo} onSubmit={val => this.onPublishClick(val)}></CommentInput>
+      <CommentInput emojihide={shareClickRandom} userInfo={userInfo} onSubmit={val => this.onPublishClick(val)}></CommentInput>
     </>;
   }
 }

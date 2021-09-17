@@ -31,6 +31,7 @@ import VListStore from './vlist/action';
 import CardStore from './card/action';
 import CommentPosition from './thread/comment-position/action';
 import EmotionStore from './emotion/action';
+import ThreadListStore from './thread-list/list';
 
 useStaticRendering(isServer());
 
@@ -70,7 +71,8 @@ export default function initializeStore(initProps = {}) {
       wallet: new WalletStore(),
       vlist: new VListStore(),
       commentPosition: new CommentPosition(),
-      emotion: new EmotionStore()
+      emotion: new EmotionStore(),
+      threadList: new ThreadListStore(),
     };
   }
   if (store.getStore() === null) {
@@ -106,7 +108,8 @@ export default function initializeStore(initProps = {}) {
       wallet: new WalletStore(),
       vlist: new VListStore(),
       commentPosition: new CommentPosition(),
-      emotion: new EmotionStore()
+      emotion: new EmotionStore(),
+      threadList: new ThreadListStore(),
     });
   }
 

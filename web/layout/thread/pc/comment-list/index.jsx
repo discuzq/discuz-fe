@@ -217,7 +217,7 @@ class RenderCommentList extends React.Component {
       goToLoginPage({ url: '/user/login' });
       return;
     }
-    if (!this.props.canPublish()) return;
+    if (!this.props.canPublish('reply')) return;
     this.commentData = comment;
     this.replyData = null;
     this.setState({
@@ -233,7 +233,7 @@ class RenderCommentList extends React.Component {
       goToLoginPage({ url: '/user/login' });
       return;
     }
-    if (!this.props.canPublish()) return;
+    if (!this.props.canPublish('reply')) return;
     this.commentData = null;
     this.replyData = reply;
     this.replyData.commentId = comment.id;
@@ -406,7 +406,7 @@ class RenderCommentList extends React.Component {
       goToLoginPage({ url: '/user/login' });
       return;
     }
-    if (!this.props.canPublish()) return;
+    if (!this.props.canPublish('reply')) return;
     return true;
   }
 

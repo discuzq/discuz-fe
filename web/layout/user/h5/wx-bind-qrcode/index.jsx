@@ -198,9 +198,26 @@ class WeixinBindQrCodePage extends React.Component {
     return orCodeTips;
   }
 
+  getTips = () => {
+    const { nickname, limitPublishType } = this.props.router.query;
+    let tips = '';
+    switch (limitPublishType) {
+      case 'comment':
+        tips = '绑定微信才能继续发帖'
+        break;
+      case 'reply':
+        tips = '绑定微信才能继续评论'
+        break;
+      default:
+        tips = `${nickname ? `${nickname}，` : ''}请绑定您的微信`
+        break;
+    }
+    return tips;
+  }
+
   render() {
     const { site: { wechatEnv, platform }, router, h5QrCode } = this.props;
-    const { nickname, isSkip = false } = router.query;
+    const { isSkip = false } = router.query;
     return (
       <PcBodyWrap>
       <div className={platform === 'h5' ? layout.container : layout.pc_container}>
@@ -212,7 +229,7 @@ class WeixinBindQrCodePage extends React.Component {
         <div className={platform === 'h5' ? layout.content : layout.pc_content}>
           <div className={platform === 'h5' ? layout.title : layout.pc_title}>绑定微信号</div>
           <div className={platform === 'h5' ? layout.tips : layout.pc_tips}>
-            {nickname ? `${nickname}，` : ''}请绑定您的微信
+            { this.getTips() }
           </div>
           {/* 二维码 start */}
           <WeixinQrCode

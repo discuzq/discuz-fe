@@ -1,7 +1,6 @@
 import { observable, computed } from 'mobx';
 import { APP_THEME } from '@common/constants/site';
 import { get } from '../../utils/get';
-import { DOMAIN_WHITE_LIST } from '../../constants/site';
 
 const WECHAT_ENV_MAP = {
   MINI: 'miniProgram',
@@ -29,11 +28,6 @@ class SiteStore {
 
   @computed get isPC() {
     return this.platform === 'pc';
-  }
-
-  @computed get isDomainWhiteList() {
-    const COMMON_BASE_URL = get(this.envConfig, 'COMMON_BASE_URL', '');
-    return COMMON_BASE_URL === DOMAIN_WHITE_LIST ;
   }
 
   @computed get isSmsOpen() {

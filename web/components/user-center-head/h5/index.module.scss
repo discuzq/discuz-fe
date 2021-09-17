@@ -18,6 +18,9 @@
     left: rem(60);
     top: 60%;
     transform: translateX(-50%) translateY(-100%);
+    .avatarWrap {
+      max-width: none;
+    }
     :global {
       .dzq-avatar {
         border: rem(3) solid;

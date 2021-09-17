@@ -38,6 +38,7 @@ const Index = ({
   onComment = () => {},
   onPraise = () => {},
   updateViewCount = noop,
+  shareIconClick = () => {},
   isCommented = false
 }) => {
   const postList = useMemo(() => {
@@ -83,6 +84,7 @@ const Index = ({
       return ;
     }
     setShow(true)
+    shareIconClick();
   }
   useEffect(() => {
     index.setHiddenTabBar(show);

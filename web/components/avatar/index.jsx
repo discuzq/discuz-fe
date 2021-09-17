@@ -16,6 +16,7 @@ function avatar(props) {
     name = '匿',
     onClick = () => { },
     className = '',
+    wrapClassName = '',
     circle = true,
     size = 'primary',
     isShowUserInfo = false,
@@ -330,7 +331,7 @@ function avatar(props) {
 
   if (currAvatarImage && currAvatarImage !== '') {
     return (
-      <div className={styles.avatarBox} onMouseEnter={onMouseEnterHandler} onMouseLeave={onMouseLeaveHandler}>
+      <div className={`${styles.avatarBox} ${wrapClassName}`} onMouseEnter={onMouseEnterHandler} onMouseLeave={onMouseLeaveHandler}>
         <div onClick={clickAvatar} ref={referenceElement}>
           <Avatar className={className} circle={circle} image={currAvatarImage} size={size}></Avatar>
           {userTypeIcon && (
