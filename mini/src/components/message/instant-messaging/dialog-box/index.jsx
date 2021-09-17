@@ -6,7 +6,7 @@ import Toast from '@discuzq/design/dist/components/toast/index';
 import { diffDate } from '@common/utils/diff-date';
 import classnames from 'classnames';
 import { inject, observer } from 'mobx-react';
-import Taro from '@tarojs/taro';
+import Taro, { setClipboardData } from '@tarojs/taro';
 import styles from './index.module.scss';
 import s9e from '@common/utils/s9e';
 import xss from '@common/utils/xss';
@@ -16,9 +16,11 @@ const DialogBox = (props) => {
   const { readDialogMsgList, dialogMsgList } = message;
 
   const [paddingBottom, setPaddingBottom] = useState(52);
+  const [selectId, setSelectId] = useState(null);
 
   const dialogBoxRef = useRef();
   const timeoutId = useRef();
+  const timeoutCopy = useRef();
   useEffect(() => {
     return () => clearTimeout(timeoutId.current);
   }, []);
@@ -81,6 +83,26 @@ const DialogBox = (props) => {
       );
     }
   }
+  const copy = (text, id) => {
+    setSelectId(id);
+    timeoutCopy.current = setTimeout(() => {
+      setClipboardData({
+        data: text,
+        fail: (err) => {
+          console.error(err);
+          Toast.error({
+            content: '复制失败'
+          })
+        }
+      })
+
+    }, 1000);
+  }
+
+  const copyOver = () => {
+    setSelectId(null);
+    clearTimeout(timeoutCopy.current);
+  }
 
   const renderImage = (data) => {
     const { imageUrl, renderUrl, width, height } = data;
@@ -133,9 +155,9 @@ const DialogBox = (props) => {
                 {imageUrl ? (
                   renderImage(item)
                 ) : (
-                  <View className={styles.msgContent} dangerouslySetInnerHTML={{
+                  <View className={`${styles.msgContent} ${selectId === id ? styles.msgSelect : ''}`} dangerouslySetInnerHTML={{
                     __html: xss(s9e.parseEmoji(text)),
-                  }}></View>
+                  }} onTouchStart={() => {copy(xss(s9e.parseEmoji(text)), id)}} onTouchMove={copyOver} onTouchEnd={copyOver}></View>
                 )}
               </View>
             </React.Fragment>
