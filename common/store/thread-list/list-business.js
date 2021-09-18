@@ -1,6 +1,8 @@
 import threadListStore from './list';
 import threadReducer from '../thread/reducer';
 import typeofFn from '@common/utils/typeof';
+import { readCommentList } from '@server';
+import { extendObservable } from 'mobx';
 
 export const updateMyThreadAvatar = ({ avatarUrl, threadList }) => {
   threadList.registerList({ namespace: 'my' });
@@ -57,9 +59,14 @@ export const updateThreadAssignInfoInLists = (threadId, obj = {}) => {
       data.likeReward.likePayCount = likePayCount;
     }
 
-    // 更新评论
+    // 更新评论：新增
     if (updateType === 'comment' && data?.likeReward) {
       data.likeReward.postCount = data.likeReward.postCount + 1;
+    }
+
+    // 更新评论：减少
+    if (updateType === 'decrement-comment' && data?.likeReward && data.likeReward.postCount > 0) {
+      data.likeReward.postCount = data.likeReward.postCount - 1;
     }
 
     // 更新分享
@@ -103,5 +110,66 @@ export const updatePayThreadInfo = (threadId, obj) => {
   threadListStore.getInstance().updateAssignThreadInfoInLists({
     threadId,
     threadInfo: obj,
+  });
+};
+
+/**
+ * 获取指定帖子下的评论列表
+ * @param {*} threadId 帖子id
+ */
+export const getThreadCommentList = async (threadId) => {
+  const targetThreadList = threadListStore.getInstance().findAssignThreadInLists({ threadId });
+
+  let res;
+
+  if (targetThreadList?.length) {
+    targetThreadList.forEach(async (targetThread) => {
+      console.log(targetThread);
+      if (targetThread && targetThread.data) {
+        if (!Reflect.has(targetThread.data, 'commentList')) {
+          _observerCommentList(targetThread.data);
+        }
+
+        targetThread.data.isLoading = true;
+        if (!res) {
+          res = await readCommentList({
+            params: {
+              filter: {
+                thread: Number(threadId),
+              },
+              page: 1,
+              perPage: 10,
+              index: 1,
+            },
+          });
+        }
+
+        if (res.code === 0) {
+          targetThread.data.commentList = res?.data?.pageData || [];
+          targetThread.data.requestError = {
+            isError: false,
+            errorText: '加载失败',
+          };
+        } else {
+          targetThread.data.requestError = {
+            isError: true,
+            errorText: res.msg || '加载失败',
+          };
+        }
+
+        targetThread.data.isLoading = false;
+      }
+    });
+  }
+};
+
+const _observerCommentList = (thread) => {
+  extendObservable(thread, {
+    commentList: [],
+    requestError: {
+      isError: false,
+      errorText: '加载失败',
+    },
+    isLoading: false,
   });
 };
