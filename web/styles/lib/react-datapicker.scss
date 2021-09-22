@@ -1,10 +1,10 @@
 .react-datepicker {
   // 整个盒子
-  display: flex;
-  height: 342px;
-  font-size: $font-size-middle;
-  border-radius: $border-radius-small;
-  overflow: hidden;
+  display: flex !important;
+  height: 342px !important;
+  font-size: $font-size-middle !important;
+  border-radius: $border-radius-small !important;
+  overflow: hidden !important;
 
   .react-datepicker__header,
   .react-datepicker-time__header {
