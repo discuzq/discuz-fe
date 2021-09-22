@@ -6,7 +6,7 @@
   :global {
     .dzq-popup__overlay {
       width: 100%;
-      background: var(--color-black);
+      background: $black;
       opacity: 0.5;
     }
 
@@ -23,9 +23,9 @@
       padding: 8px 10px;
       font-size: $font-size-primary;
       font-weight: normal;
-      color: var(--color-text-primary);
+      color: $text-color-primary;
       line-height: $font-line-height-primary;
-      background: var(--background-color-text2);
+      background: $text-bg-color2;
       border: none;
       border-radius: 5px;
       overflow: hidden;
@@ -37,7 +37,7 @@
   .title {
     margin-top: $margin-4n;
     font-size: $font-size-middle;
-    color: var(--color-text-primary);
+    color: $text-color-primary;
     font-weight: $font-weight-regular;
     line-height: 18px;
     text-align: left;
@@ -62,8 +62,8 @@
     padding: $padding-4n 0;
     border-bottom: 1px solid $border-color;
     .active {
-      color: #fff;
-      background: #2469f6;
+      color: $white;
+      background: $primary-color;
     }
   }
 
@@ -72,8 +72,8 @@
     border-bottom: 1px solid $border-color;
 
     .active {
-      color: #2469f6;
-      background-color: #e8f0fe;
+      color: $primary-color;
+      background-color: $primary-color10;
     }
   }
 
@@ -81,7 +81,7 @@
     height: 44px;
     line-height: 44px;
     font-size: $font-size-primary;
-    color: #4f5a70;
+    color: $text-color-regular;
     text-align: center;
     @include ios-safe-area-inset-bottom;
   }

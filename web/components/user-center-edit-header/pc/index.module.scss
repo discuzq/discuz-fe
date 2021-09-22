@@ -13,7 +13,7 @@
   justify-content: center;
   border-radius: 50%;
   background-color: $mask-bg-color;
-  color: #fff;
+  color: $white;
 }
 
 .userCenterEditHeader {
@@ -68,7 +68,7 @@
     justify-content: center;
     align-items: center;
     width: 100%;
-    color: #0B0B37;
+    color: $text-color-primary;
     font-size: rem($font-size-middle-extra);
     font-weight: 600;
     line-height: rem(25);

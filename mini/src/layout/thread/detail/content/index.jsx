@@ -1,8 +1,9 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import { View, Text } from '@tarojs/components';
+import { View, Text ,Image} from '@tarojs/components';
 import Icon from '@discuzq/design/dist/components/icon/index';
 import Button from '@discuzq/design/dist/components/button/index';
+import RichText from '@discuzq/design/dist/components/rich-text/index';
 import Router from '@discuzq/sdk/dist/router';
 import ImageDisplay from '@components/thread/image-display';
 import AudioPlay from '@components/thread/audio-play';
@@ -25,15 +26,16 @@ import { parseContentData } from '../../utils';
 import styles from './index.module.scss';
 
 // 插件引入
-/**DZQ->plugin->register<plugin_detail@thread_extension_display_hook>**/
+/** DZQ->plugin->register<plugin_detail@thread_extension_display_hook>**/
 
 // 帖子内容
-const RenderThreadContent = inject('site','user')(
+const RenderThreadContent = inject('site', 'user')(
   observer((props) => {
     const { store: threadStore, site } = props;
     const { text, indexes } = threadStore?.threadData?.content || {};
     const { parentCategoryName, categoryName } = threadStore?.threadData;
     const { hasRedPacket } = threadStore; // 是否有红包领取的数据
+    const { webConfig: { other: { threadOptimize } } } = site;
 
     const tipData = {
       postId: threadStore?.threadData?.postId,
@@ -74,9 +76,9 @@ const RenderThreadContent = inject('site','user')(
     const isReward = threadStore?.threadData?.displayTag?.isReward;
 
     // 是否打赏帖
-    const isBeReward = isFree && threadStore?.threadData?.ability.canBeReward && !isRedPack && !isReward;
+    const isBeReward = isFree && threadOptimize && !isRedPack && !isReward;
     // 是否显示打赏按钮： 免费帖 && 不是自己 && 不是红包 && 不是悬赏 && 允许被打赏
-    const canBeReward = isFree && threadStore?.threadData?.ability.canBeReward && !isRedPack && !isReward;
+    const canBeReward = isFree && threadOptimize && !isRedPack && !isReward;
     // 是否已打赏
     const isRewarded = threadStore?.threadData?.isReward;
 
@@ -121,13 +123,16 @@ const RenderThreadContent = inject('site','user')(
     const onUserClick = () => {
       const userId = threadStore?.threadData?.user?.userId
       if (!userId) return
-      Router.push({ url: `/subPages/user/index?id=${userId}` });
+      Router.push({ url: `/userPages/user/index?id=${userId}` });
     }
     const {
       canDownloadAttachment,
       canViewAttachment,
       canViewVideo
     } = threadStore?.threadData?.ability || {};
+
+    const { tipList } = threadStore?.threadData || {};
+
 
     return (
       <View className={`${styles.container}`}>
@@ -150,7 +155,7 @@ const RenderThreadContent = inject('site','user')(
           </View>
           {props?.user?.isLogin() && isApproved && (
             <View className={styles.more} onClick={onMoreClick}>
-              <Icon size={20} color="#8590A6" name="MoreVOutlined"></Icon>
+              <Icon size={20} className={styles.icon} name="MoreVOutlined"></Icon>
             </View>
           )}
         </View>
@@ -171,6 +176,18 @@ const RenderThreadContent = inject('site','user')(
               v_width={parseContent.VIDEO.width || null}
               status={parseContent.VIDEO.status}
               canViewVideo={canViewVideo}
+            />
+          )}
+
+          {/* 外部视频iframe插入和上面的视频组件是互斥的 */}
+          {(parseContent.IFRAME && parseContent.IFRAME.content) && (
+            <RichText
+              content={parseContent.IFRAME.content}
+              iframeWhiteList={['bilibili', 'youku', 'iqiyi', 'music.163.com', 'qq.com', 'em.iq.com', 'xigua']}
+              onClick={() => { }}
+              onImgClick={() => { }}
+              onLinkClick={() => { }}
+              transformer={parseDom => parseDom}
             />
           )}
 
@@ -282,16 +299,14 @@ const RenderThreadContent = inject('site','user')(
           )}
 
           {
-            DZQPluginCenter.injection('plugin_detail', 'thread_extension_display_hook').map(({render, pluginInfo}) => {
-              return (
+            DZQPluginCenter.injection('plugin_detail', 'thread_extension_display_hook').map(({ render, pluginInfo }) => (
                 <View key={pluginInfo.name}>
                   {render({
-                    site: site,
+                    site,
                     renderData: parseContent.plugin
                   })}
                 </View>
-              )
-            })
+              ))
           }
 
           {/* 标签 */}
@@ -320,6 +335,22 @@ const RenderThreadContent = inject('site','user')(
               </Button>
             </View>
           )}
+
+          {/* 打赏人员列表 */}
+          {
+            tipList && tipList.length > 0 && (
+              <View className={styles.moneyList}>
+                <View className={styles.top}>{tipList.length}人打赏</View>
+                <View className={styles.itemList}>
+                    {tipList.map(i=>(
+                      <View key={i.userId} onClick={()=>Router.push({ url: `/userPages/user/index?id=${i.userId}` })} className={styles.itemAvatar}><Image className={styles.img} src={i.avatar}></Image></View>
+                    ))}
+                </View>
+                <View className={styles.bottom}></View>
+              </View>
+            )
+          }
+          
         </View>
 
         {isApproved && (
@@ -356,7 +387,7 @@ const RenderThreadContent = inject('site','user')(
                 <Tip
                   tipData={tipData}
                   imgs={threadStore?.threadData?.likeReward?.users || []}
-                  showMore={true}
+                  showMore
                   showCount={5}
                 ></Tip>
               </View>

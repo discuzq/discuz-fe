@@ -239,11 +239,9 @@ class index extends Component {
 
   render() {
     return (
-      <div className={`${styles.userMobileWrapper} ${!this.props.user?.canWalletPay && styles.setUserWrapper}`}>
-        <Dialog visible={this.props.visible} onClose={this.handleClose}>
-          {this.renderContent()}
-        </Dialog>
-      </div>
+      <Dialog className={`${styles.userMobileWrapper} ${!this.props.user?.canWalletPay && styles.setUserWrapper}`} visible={this.props.visible} onClose={this.handleClose}>
+        {this.renderContent()}
+      </Dialog>
     );
   }
 }

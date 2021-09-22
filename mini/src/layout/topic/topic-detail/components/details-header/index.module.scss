@@ -22,7 +22,7 @@
     .title {
       font-size: $font-size-middle;
       line-height: 22px;
-      color: var(--color-text-primary);
+      color: $text-color-primary;
       font-weight: 700;
     }
     .siteInfo {
@@ -68,5 +68,5 @@
       opacity: 0.75;
       background-color: $border-color;
     }
-  }  
+  }
 }

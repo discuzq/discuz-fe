@@ -12,7 +12,7 @@
       right: 16px;
       bottom: 24px;
     }
-    
+
     box-sizing: border-box;
     border-radius: 5px;
   }
@@ -31,7 +31,7 @@
     .rule {
       font-size: 14px;
       line-height: 22px;
-      color: #4f5a70;
+      color: $text-color-regular;
       margin-bottom: 16px;
     }
 
@@ -45,8 +45,8 @@
       flex: 1;
 
       .cancelButton {
-        background-color: #eff1f3;
-        color: #4f5a70;
+        background-color: $text-bg-color2;
+        color: $text-color-regular;
         border: none;
       }
 

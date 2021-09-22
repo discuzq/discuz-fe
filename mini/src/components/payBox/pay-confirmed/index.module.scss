@@ -1,7 +1,7 @@
 @import '@common/styles/index.scss';
 
 .payBox {
-  background: var(--color-white);
+  background: $white;
   padding: rem($padding-6n) rem($padding-4n) rem($padding-4n) rem($padding-4n);
   min-height: 337px;
   box-sizing: border-box;
@@ -48,7 +48,7 @@
         }
         .text {
           font-size: $font-size-primary;
-          color: var(--color-text-primary);
+          color: $text-color-primary;
         }
       }
       .right {
@@ -59,7 +59,7 @@
         word-break: break-all;
         .subText {
           font-size: $font-size-label;
-          color: var(--color-text-secondary);
+          color: $text-color-secondary;
           margin-right: $margin-4n;
         }
         :global {
@@ -80,7 +80,7 @@
     padding: $padding-2n 0;
     text-align: center;
     font-size: $font-size-primary;
-    color: var(--color-text-secondary);
+    color: $text-color-secondary;
   }
 
   .btnBox {
@@ -97,7 +97,7 @@
       display: block;
       // width: 100%;
       height: 1px;
-      background: var(--border-line-color);
+      background: $border-color;
       position: relative;
       top: -8px;
       margin: 0 rem(-$margin-4n);

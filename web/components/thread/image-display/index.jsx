@@ -14,7 +14,7 @@ const Index = ({ onClickMore: gotoDetail, imgData = [], flat = false, platform =
   // const [firstImgData, setFirstImgData] = useState(null);
   const [firstImgData, setFirstImgData] = useState({ width: !Array.isArray(imgData) ? imgData[0]?.fileWidth || 0 : 0, height: !Array.isArray(imgData) ? imgData[0]?.fileHeight || 0 : 0 });
 
-  const imagePreviewers = useMemo(() => imgData.map(item => item.url), [imgData]);
+  const imagePreviewers = useMemo(() => imgData.map(item => item?.url), [imgData]);
   useEffect(() => {
     if (visible && ImagePreviewerRef && ImagePreviewerRef.current) {
       ImagePreviewerRef.current.show();
@@ -81,7 +81,7 @@ const Index = ({ onClickMore: gotoDetail, imgData = [], flat = false, platform =
       updateViewCount();
       imgData.forEach((item) => {
         if (item.id === id) {
-          setDefaultImg(item.url);
+          setDefaultImg(item?.url);
           setVisible(true);
         }
       });
@@ -91,7 +91,7 @@ const Index = ({ onClickMore: gotoDetail, imgData = [], flat = false, platform =
   const onClickMore = (e) => {
     e.stopPropagation();
     updateViewCount();
-    setDefaultImg(imgData[4].url);
+    setDefaultImg(imgData[4]?.url);
     setTimeout(() => {
       setVisible(true);
     }, 0);
@@ -131,8 +131,8 @@ const Index = ({ onClickMore: gotoDetail, imgData = [], flat = false, platform =
               <SmartImg
                 postLoad={postLoad}
                 noSmart
-                type={item.fileType}
-                src={item.url}
+                type={item?.fileType}
+                src={item?.url}
                 onClick={() => onClick(item.id)}
                 showLongPicture={showLongPicture} />
             </div>
@@ -193,13 +193,13 @@ export default React.memo(Index);
 const One = ({ type, bigImages, onClick, style, showLongPicture, postLoad }) => {
   const item = bigImages[0];
   return (
-    <div className={`${styles[style]} ${styles[type]}`}>
+    <div className={`${styles[style]} ${styles[type]}`} onClick={e => e.stopPropagation()}>
       <SmartImg
         postLoad={postLoad}
         level={1}
-        type={item.fileType}
-        src={item.thumbUrl}
-        size={item.fileSize}
+        type={item?.fileType}
+        src={item?.thumbUrl}
+        size={item?.fileSize}
         onClick={() => onClick(item.id)}
         showLongPicture={showLongPicture} />
     </div>
@@ -207,35 +207,37 @@ const One = ({ type, bigImages, onClick, style, showLongPicture, postLoad }) => 
 };
 
 const Two = ({ type, bigImages, onClick, style, showLongPicture, postLoad }) => (
-  <Row gutter={4} className={`${styles[style]} ${styles[type]} ${styles.row}`}>
-    {bigImages.map((item, index) => (
-      <Col span={6} className={styles.col} key={index}>
-        <SmartImg
-          postLoad={postLoad}
-          level={1}
-          type={item.fileType}
-          src={item.thumbUrl}
-          size={item.fileSize}
-          onClick={() => onClick(item.id)}
-          showLongPicture={showLongPicture} />
-      </Col>
-    ))}
-  </Row>
+  <div onClick={e => e.stopPropagation()}>
+    <Row gutter={4} className={`${styles[style]} ${styles[type]} ${styles.row}`}>
+      {bigImages.map((item, index) => (
+        <Col span={6} className={styles.col} key={index}>
+          <SmartImg
+            postLoad={postLoad}
+            level={1}
+            type={item?.fileType}
+            src={item?.thumbUrl}
+            size={item?.fileSize}
+            onClick={() => onClick(item.id)}
+            showLongPicture={showLongPicture} />
+        </Col>
+      ))}
+    </Row>
+  </div>
 );
 
 const Three = ({ type, bigImages, smallImages, onClick, style, showLongPicture, postLoad }) => {
   if (type === 'long' || type === 'longitudinal') {
     return (
-      <div className={`${styles[style]} ${styles[type]}`}>
+      <div className={`${styles[style]} ${styles[type]}`} onClick={e => e.stopPropagation()}>
         <Row gutter={4}>
           <Col span={8} className={styles.col}>
             <SmartImg
               level={1}
               postLoad={postLoad}
-              type={bigImages[0].fileType}
-              src={bigImages[0].thumbUrl}
+              type={bigImages[0]?.fileType}
+              src={bigImages[0]?.thumbUrl}
               onClick={() => onClick(bigImages[0].id)}
-              size={bigImages[0].fileSize}
+              size={bigImages[0]?.fileSize}
               showLongPicture={showLongPicture} />
           </Col>
           <Col span={4} className={styles.col}>
@@ -245,10 +247,10 @@ const Three = ({ type, bigImages, smallImages, onClick, style, showLongPicture, 
                   <SmartImg
                     postLoad={postLoad}
                     level={2}
-                    type={item.fileType}
-                    size={item.fileSize}
-                    src={item.thumbUrl}
-                    onClick={() => onClick(item.id)}
+                    type={item?.fileType}
+                    size={item?.fileSize}
+                    src={item?.thumbUrl}
+                    onClick={() => onClick(item?.id)}
                     showLongPicture={showLongPicture} />
                 </Col>
               ))}
@@ -260,14 +262,14 @@ const Three = ({ type, bigImages, smallImages, onClick, style, showLongPicture, 
     );
   }
   return (
-    <div className={`${styles[style]} ${styles[type]}`}>
+    <div className={`${styles[style]} ${styles[type]}`} onClick={e => e.stopPropagation()}>
       <div className={styles.bigImages}>
         <SmartImg
           postLoad={postLoad}
           level={1}
-          type={bigImages[0].fileType}
-          src={bigImages[0].thumbUrl}
-          size={bigImages[0].fileSize}
+          type={bigImages[0]?.fileType}
+          src={bigImages[0]?.thumbUrl}
+          size={bigImages[0]?.fileSize}
           onClick={() => onClick(bigImages[0].id)}
           showLongPicture={showLongPicture} />
       </div>
@@ -277,10 +279,10 @@ const Three = ({ type, bigImages, smallImages, onClick, style, showLongPicture, 
             <SmartImg
               postLoad={postLoad}
               level={2}
-              type={item.fileType}
-              src={item.thumbUrl}
-              size={item.fileSize}
-              onClick={() => onClick(item.id)}
+              type={item?.fileType}
+              src={item?.thumbUrl}
+              size={item?.fileSize}
+              onClick={() => onClick(item?.id)}
               showLongPicture={showLongPicture} />
           </Col>
         ))}
@@ -290,49 +292,51 @@ const Three = ({ type, bigImages, smallImages, onClick, style, showLongPicture, 
 };
 
 const Four = ({ type, bigImages, smallImages, onClick, style, showLongPicture, postLoad }) => (
-  <Row gutter={4} className={styles[style]}>
-    <Col span={8} className={styles.col}>
-      <SmartImg
-        postLoad={postLoad}
-        level={1}
-        type={bigImages[0].fileType}
-        src={bigImages[0].thumbUrl}
-        size={bigImages[0].fileSize}
-        onClick={() => onClick(bigImages[0].id)}
-        showLongPicture={showLongPicture} />
-    </Col>
-    <Col span={4} className={styles.col}>
-      <Row gutter={4} className={styles.smallRow}>
-        {smallImages.map((item, index) => (
-          <Col span={12} key={index} className={styles.smallCol}>
-            <SmartImg
-              postLoad={postLoad}
-              level={3}
-              type={item.fileType}
-              src={item.thumbUrl}
-              size={item.fileSize}
-              onClick={() => onClick(item.id)}
-              showLongPicture={showLongPicture} />
-          </Col>
-        ))}
-      </Row>
-    </Col>
-  </Row>
+  <div onClick={e => e.stopPropagation()}>
+    <Row gutter={4} className={styles[style]}>
+      <Col span={8} className={styles.col}>
+        <SmartImg
+          postLoad={postLoad}
+          level={1}
+          type={bigImages[0]?.fileType}
+          src={bigImages[0]?.thumbUrl}
+          size={bigImages[0]?.fileSize}
+          onClick={() => onClick(bigImages[0]?.id)}
+          showLongPicture={showLongPicture} />
+      </Col>
+      <Col span={4} className={styles.col}>
+        <Row gutter={4} className={styles.smallRow}>
+          {smallImages.map((item, index) => (
+            <Col span={12} key={index} className={styles.smallCol}>
+              <SmartImg
+                postLoad={postLoad}
+                level={3}
+                type={item?.fileType}
+                src={item?.thumbUrl}
+                size={item?.fileSize}
+                onClick={() => onClick(item?.id)}
+                showLongPicture={showLongPicture} />
+            </Col>
+          ))}
+        </Row>
+      </Col>
+    </Row>
+  </div>
 );
 
 
 const Five = ({ type, bigImages, smallImages, onClick, style, imgData = [], onClickMore, showLongPicture, postLoad }) => (
-  <div className={styles[style]}>
+  <div className={styles[style]} onClick={e => e.stopPropagation()}>
     <Row gutter={4} className={styles.bigImages}>
       {bigImages.map((item, index) => (
         <Col span={6} className={styles.col} key={index}>
           <SmartImg
             postLoad={postLoad}
             level={2}
-            type={item.fileType}
-            src={item.thumbUrl}
-            size={item.fileSize}
-            onClick={() => onClick(item.id)}
+            type={item?.fileType}
+            src={item?.thumbUrl}
+            size={item?.fileSize}
+            onClick={() => onClick(item?.id)}
             showLongPicture={showLongPicture} />
         </Col>
       ))}
@@ -343,10 +347,10 @@ const Five = ({ type, bigImages, smallImages, onClick, style, imgData = [], onCl
           <SmartImg
             postLoad={postLoad}
             level={3}
-            type={item.fileType}
-            src={item.thumbUrl}
-            size={item.fileSize}
-            onClick={() => onClick(item.id)}
+            type={item?.fileType}
+            src={item?.thumbUrl}
+            size={item?.fileSize}
+            onClick={() => onClick(item?.id)}
             showLongPicture={showLongPicture} />
           {imgData?.length > 5 && index === smallImages.length - 1 && (
             <div className={styles.modalBox} onClick={onClickMore}>{`+${imgData.length - 5}`}</div>

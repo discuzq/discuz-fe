@@ -13,10 +13,12 @@
     }
   }
   &-header {
+    padding-right: 25px;
     position: relative;
     text-align: center;
     font-size: $font-size-middle;
     font-weight: 600;
+    @include lamp-clamp(2);
     :global {
       .dzq-icon {
         color: $icon-color;

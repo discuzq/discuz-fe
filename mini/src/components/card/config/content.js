@@ -2,8 +2,9 @@ import htmlparser2 from 'htmlparser2';
 import { getByteLen } from '../utils';
 import replaceStringInRegex from '@common/utils/replace-string-in-regex';
 import priceShare from '../card-img/admin-logo-pc.jpg';
-import lookMore from '../card-img/look-more.jpg';
+import lookMoreImg from '../card-img/look-more.jpg';
 import s9e from '@common/utils/s9e'
+import Taro from '@tarojs/taro';
 
 import {
   posterFrameWidth,
@@ -19,9 +20,10 @@ import {
   priceContentHeight,
 } from './constants';
 
-export const getContentConfig = ({ thread, baseHeight }) => {
+export const getContentConfig = async ({ site, thread, baseHeight }) => {
+  const {setSite} = site.webConfig || ''
   const texts = handleTexts(thread, baseHeight);
-  const images = handlePrice(thread) || handleImagesArea(thread, baseHeight, texts.height); // texts.height是：{ originalTextHeight, renderedTextHeight }
+  const images = await handlePrice(thread, setSite) || handleImagesArea(thread, baseHeight, texts.height); // texts.height是：{ originalTextHeight, renderedTextHeight }
   const lookMore = handleLookMore(baseHeight, texts.height, images.height); // images.height是：{ originalImageHeight, renderedImgHeight }
   const categories = handleCategories(thread, baseHeight, texts.height, images.height, lookMore.height);
   const totalContentHeight =
@@ -36,22 +38,35 @@ export const getContentConfig = ({ thread, baseHeight }) => {
   };
 };
 // 处理匿名或无内容时的情况
-const handlePrice = (thread) => {
+const handlePrice = async (thread, setSite) => {
   const { content } = handleContent(thread)
   if(thread.displayTag.isPrice || (!content && !thread.content?.indexes[101]?.body && !thread.content?.indexes.$0?.body)) {
+    let logoUrl =  priceShare;
+    if (setSite?.siteHeaderLogo) {
+        logoUrl = setSite.siteHeaderLogo;
+    }
+    const height = 70
+    const imgInfo = await new Promise((resolve, ) => {
+        Taro.getImageInfo({
+            src: logoUrl,
+            success: (res) => {
+                resolve(res)
+            }
+        })
+    })
+    const imgWidth = imgInfo.width * height / imgInfo.height
     return {
       height: {
         renderedImgHeight: priceContentHeight
       },
       images: [
-        // 站点logo
         {
-          url: priceShare,
-          x: 96,
+          url: logoUrl,
+          x: 355 - imgWidth / 2,
           y: 228,
-          width: 518,
-          height: 87.48,
-          zIndex: 10,
+          height: 70,
+          width: imgWidth,
+          zIndex: 20,
         }
       ]
     }
@@ -66,7 +81,8 @@ const handleTexts = (thread, baseHeight) => {
   const { title = '', titleHeight = 0 } = handleTitle(thread);
 
   // 获取文字内容的最大行数
-  const maxTextLineNum = handleTextLineNum(baseHeight);
+  // const maxTextLineNum = handleTextLineNum(baseHeight);
+  const maxTextLineNum = parseInt(contentHeight / baseLineHeight)
   if (contentHeight > maxTextLineNum * baseLineHeight) {
     contentHeight = maxTextLineNum * baseLineHeight;
   }
@@ -170,7 +186,7 @@ const handleLookMore = (baseHeight = 0, contentTextHeight = {}, imagesHeight = {
       images: [
         // 扫码查看全部内容
         {
-          url: lookMore,
+          url: lookMoreImg,
           height: baseLineHeight - 16,
           width: 260,
           x: 236,

@@ -102,7 +102,8 @@ class PostPage extends React.Component {
   handleRouteChange = (url) => {
     // 如果不是修改支付密码的页面则重置发帖信息
     if ((url || '').indexOf('/my/edit/paypwd') === -1
-    && (url || '').indexOf('/pay/middle') === -1) {
+    && (url || '').indexOf('/pay/middle') === -1
+    && (url || '').indexOf('/my/edit/find-paypwd') === -1) {
       if (this.vditor) this.vditor.setValue('');
       this.props.threadPost.resetPostData();
     }
@@ -740,17 +741,17 @@ class PostPage extends React.Component {
       }
     }
 
-    let contentText = threadPost.postData.contentText;
+    let { contentText } = threadPost.postData;
     const images = contentText.match(/<img.*?\/>/g)?.filter(image => (!image.match('alt="attachmentId-') && !image.includes('emoji')));
     if (images && images.length) {
-      const fileurls = images.map(img => {
+      const fileurls = images.map((img) => {
         const src = img.match(/\"(.*?)\"/);
         if (src) return src[1];
         return false;
       });
 
       const toastInstance = Toast.loading({
-        content: `图片转存中...`,
+        content: '图片转存中...',
         hasMask: true,
         duration: 0,
       });

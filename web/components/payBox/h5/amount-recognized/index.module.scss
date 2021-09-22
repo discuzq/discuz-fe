@@ -2,7 +2,7 @@
 
 // 外部容器
 .amountWrapper {
-  background: var(--color-white);
+  background: $white;
   // height: rem(300);
   font-size: rem($font-size-large);
   padding: rem($padding-4n);
@@ -24,7 +24,7 @@
       display: block;
       // width: 100%;
       height: rem(1);
-      background: var(--border-line-color);
+      background: $border-color;
       position: relative;
       top: rem(-8);
       margin: 0 rem(-$margin-4n);

@@ -2,11 +2,11 @@
 
 .container {
   width: 100%;
-  background-color: var(--color-white);
+  background-color: $white;
   box-sizing: border-box;
   .header {
     font-size: $font-size-middle;
-    color: var(--color-text-primary);
+    color: $text-color-primary;
     display: flex;
     align-items: center;
   }
@@ -30,7 +30,7 @@
   border-bottom-right-radius: 0;
   max-width: 750px;
   padding: 0 $padding-6n;
-  background-color: var(--color-white);
+  background-color: $white;
 }
 
 .bottom {

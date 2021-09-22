@@ -3,7 +3,7 @@
 .container {
   padding: rem($padding-4n) 0;
   background-color: $white;
-  border-bottom: 1px solid var(--border-line-color);
+  border-bottom: 1px solid $border-color;
 
   .title {
     @include text-ellipsis();

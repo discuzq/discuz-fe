@@ -60,7 +60,7 @@
   }
 }
 .totalAmountH5 {
-  color: var(--color-white);
+  color: $white;
   text-align: left;
   padding-top: rem(40);
   .moneyTitle {
@@ -79,7 +79,7 @@
 .amountStatusPC {
   display: flex;
   justify-content: space-around;
-  color: var(--color-white);
+  color: $white;
   text-align: center;
   .statusTitle {
     font-weight: normal;
@@ -124,7 +124,7 @@
   width: 100%;
   display: flex;
   justify-content: space-between;
-  color: var(--color-white);
+  color: $white;
   text-align: left;
   .statusTitle {
     font-weight: normal;

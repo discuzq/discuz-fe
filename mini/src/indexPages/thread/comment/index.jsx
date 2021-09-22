@@ -60,7 +60,7 @@ class CommentDetail extends React.Component {
       const res = await readCommentDetail({
         params: {
           perPage: 20,
-          pid: Number(id),
+          postId: Number(id),
         },
       });
 

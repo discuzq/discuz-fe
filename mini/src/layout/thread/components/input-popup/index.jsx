@@ -123,7 +123,7 @@ const InputPop = (props) => {
     setShowPicture(false);
 
     textareaRef.current.blur();
-    setFocus(false);
+    // setFocus(false);
 
     // 请求表情地址
     if (!emojis?.length) {
@@ -294,7 +294,7 @@ const InputPop = (props) => {
                 onChange={debounce((e) => {
                   handleChange(e)
                 }, 100)}
-                // onFocus={() => setShowEmojis(false)}
+                onClick={() => { setShowEmojis(false), textareaRef.current.focus(); }}
                 placeholder={inputText}
                 disabled={loading}
                 placeholderClass={styles.placeholder}

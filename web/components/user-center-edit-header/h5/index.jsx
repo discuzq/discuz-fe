@@ -109,6 +109,9 @@ export default class index extends Component {
         this.setState({
           isUploadBackgroundUrl: false,
         });
+      })
+      .finally(() => {
+        this.backgroundUploaderRef.current.value = '';
       });
   };
 
@@ -158,7 +161,7 @@ export default class index extends Component {
             )}
           </div>
           <div className={styles.headImgBox}>
-            <Avatar image={this.user.avatarUrl} size="big" name={this.user.nickname} />
+            <Avatar wrapClassName={styles.avatarWrap} image={this.user.avatarUrl} size="big" name={this.user.nickname} />
             {/* 相机图标 */}
             <div className={styles.userCenterEditCameraIcon} onClick={this.handleAvatarUpload}>
               <Icon name="CameraOutlined" />

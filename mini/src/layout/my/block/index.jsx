@@ -31,7 +31,7 @@ class Index extends React.Component {
 
   // 点击头像去到他人页面
   handleOnClick = (item) => {
-    Router.push({ url: `/subPages/user/index?id=${item.denyUserId}` });
+    Router.push({ url: `/userPages/user/index?id=${item.denyUserId}` });
   };
 
   // 加载更多函数

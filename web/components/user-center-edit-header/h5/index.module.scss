@@ -13,7 +13,7 @@
   justify-content: center;
   border-radius: 50%;
   background-color: $mask-bg-color;
-  color: #fff;
+  color: $white;
 }
 
 .userCenterEditHeader {
@@ -26,6 +26,9 @@
     left: 50%;
     top: rem(228);
     transform: translateX(-50%) translateY(-100%);
+    .avatarWrap {
+      max-width: none;
+    }
     :global {
       .dzq-avatar {
         border: rem(3) solid;

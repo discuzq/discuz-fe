@@ -7,7 +7,7 @@
   margin: 0 rem($margin-4n);
   height: rem(175);
   border-radius: rem($border-radius-small);
-  background-color: var(--color-white);
+  background-color: $white;
   &__icon {
     margin: rem($margin-1n);
     width: rem(25);

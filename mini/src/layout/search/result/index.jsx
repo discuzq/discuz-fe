@@ -19,7 +19,7 @@ class SearchResultPage extends React.Component {
   constructor(props) {
     super(props);
     const { keyword = '' } = getCurrentInstance().router.params;
-  
+
     this.state = {
       keyword,
     };
@@ -62,7 +62,7 @@ class SearchResultPage extends React.Component {
   };
 
   onUserClick = (userId) => {
-    Taro.navigateTo({url: `/subPages/user/index?id=${userId}`});
+    Taro.navigateTo({url: `/userPages/user/index?id=${userId}`});
   };
 
   onTopicClick = data => console.log('topic click', data);
@@ -76,7 +76,7 @@ class SearchResultPage extends React.Component {
   render() {
     const { keyword } = this.state;
 
-    const { searchTopics, searchUsers, searchThreads, searchTopicsError, searchUsersError, searchThreadsError } = this.props.search;
+    const { searchTopics, searchUsers, searchThreads, searchTopicsError, searchUsersError, searchThreadsError, indexThreadsLoading } = this.props.search;
     const { pageData: topicsPageData } = searchTopics || {};
     const { pageData: usersPageData } = searchUsers || {};
     const { pageData: threadsPageData } = searchThreads || {};
@@ -88,7 +88,7 @@ class SearchResultPage extends React.Component {
         <SearchInput onSearch={this.onSearch} onCancel={this.onCancel} defaultValue={keyword} searchWhileTyping/>
 
         {(isShowAll || hasUsers) && <SidebarPanel
-          title="用户" 
+          title="用户"
           onShowMore={this.redirectToSearchResultUser}
           isLoading={!usersPageData}
           noData={!usersPageData?.length}
@@ -103,9 +103,9 @@ class SearchResultPage extends React.Component {
         </SidebarPanel>}
 
         {(isShowAll || hasThreads) && <SidebarPanel
-          title="主题" 
+          title="主题"
           onShowMore={this.redirectToSearchResultPost}
-          isLoading={!threadsPageData}
+          isLoading={indexThreadsLoading}
           noData={!threadsPageData?.length}
           platform='h5'
           className={threadsPageData?.length && styles.bottom}
@@ -120,7 +120,7 @@ class SearchResultPage extends React.Component {
         </SidebarPanel>}
 
         {(isShowAll || hasTopics) && <SidebarPanel
-          title="话题" 
+          title="话题"
           onShowMore={this.redirectToSearchResultTopic}
           isLoading={!topicsPageData}
           noData={!topicsPageData?.length}

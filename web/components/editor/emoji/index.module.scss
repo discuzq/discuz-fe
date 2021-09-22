@@ -9,7 +9,7 @@
   height: rem(175);
   border-radius: rem($border-radius-small);
   border: $border-solid-1;
-  background-color: var(--color-white);
+  background-color: $white;
 
   &__inner {
     display: flex;
@@ -79,5 +79,5 @@
   height: rem(175);
   border-radius: rem($border-radius-small);
   border: $border-solid-1;
-  background-color: var(--color-white);
+  background-color: $white;
 }

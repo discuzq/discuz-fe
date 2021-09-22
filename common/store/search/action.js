@@ -143,6 +143,42 @@ class SearchAction extends SearchStore {
     this.setThreads(null)
   }
 
+    /**
+   * 发现模块 - 重置主体模块报错信息
+    */
+    @action
+    resetTopicsError(type) {
+      if (type === 0) {
+        this.indexTopicsError = { isError: false, errorText: '' }
+        return;
+      }
+      this.searchTopicsError = { isError: false, errorText: '' }
+    }
+
+    /**
+   * 发现模块 - 重置用户模块报错信息
+    */
+    @action
+    resetUsersError(type) {
+      if (type === 0) {
+        this.indexUsersError = { isError: false, errorText: '' }
+        return;
+      }
+      this.searchUsersError = { isError: false, errorText: '' }
+    }
+
+    /**
+   * 发现模块 - 重置帖子模块报错信息
+    */
+    @action
+    resetThreadsError(type) {
+      if (type === 0) {
+        this.indexThreadsError = { isError: false, errorText: '' }
+        return;
+      }
+      this.searchThreadsError = { isError: false, errorText: '' }
+    }
+
   /**
    * 发现模块 - 首页数据
    * @param {object} search * 搜索值
@@ -184,13 +220,13 @@ class SearchAction extends SearchStore {
     }
 
     if ( !hasThreads ) {
-      tasks.push(readThreadList({ params: { filter: { search }, perPage: newPerPage, page: 1, scope: '2' } }))
+      tasks.push(this.threadList.fetchList({ namespace: 'search', filter: { search }, perPage: newPerPage, page: 1, sequence: '2' }))
     } else {
       tasks.push(Promise.resolve({}))
     }
-
+    this.indexThreadsLoading = true;
     const result = await Promise.all(tasks)
-
+    this.indexThreadsLoading = false;
     if ( !hasTopics ) {
       const res = result[0]
        
@@ -202,8 +238,9 @@ class SearchAction extends SearchStore {
           this.searchTopicsError = { isError: true, errorText: msg || '加载失败' }
         }
       }
-      
-      type === 0 ? this.setIndexTopics(code === 0 ? data : {}) : this.setSearchTopics(code === 0 ? data : {});
+
+      this.resetTopicsError(type);
+      type === 0 ? this.setIndexTopics(code === 0 ? data : null) : this.setSearchTopics(code === 0 ? data : {});
     }
 
     if ( !hasUsers ) {
@@ -218,7 +255,8 @@ class SearchAction extends SearchStore {
         }
       }
 
-      type === 0 ? this.setIndexUsers(code === 0 ? data : {}) : this.setSearchUsers(code === 0 ? data : {});
+      this.resetUsersError(type);
+      type === 0 ? this.setIndexUsers(code === 0 ? data : null) : this.setSearchUsers(code === 0 ? data : {});
     }
 
     if ( !hasThreads ) {
@@ -233,7 +271,8 @@ class SearchAction extends SearchStore {
         }
       }
 
-      type === 0 ? this.setIndexThreads(code === 0 ? data : {}) : this.setSearchThreads(code === 0 ? data : {});
+      this.resetThreadsError(type);
+      type === 0 ? this.setIndexThreads(code === 0 ? data : null) : this.setSearchThreads(code === 0 ? data : {});
     }
   };
 
@@ -299,9 +338,7 @@ class SearchAction extends SearchStore {
 
     if (result.code === 0 && result.data) {
       if (this.threads && result.data.pageData && page !== 1) {
-        this.threads.pageData.push(...result.data.pageData);
-        const newPageData = this.threads.pageData.slice();
-        this.setThreads({ ...result.data, pageData: newPageData });
+        this.setThreads(result.data);
       } else {
         // 首次加载，先置空，是为了列表回到顶部
         this.setThreads({ pageData: [] });
@@ -343,36 +380,6 @@ class SearchAction extends SearchStore {
     }
     return null;
   };
-
-   /**
-   * 删除帖子操作
-   * @param {string} id 帖子id
-   * @returns
-   */
-    @action
-    async deleteThreadsData({ id } = {}) {
-      if (!id) {
-        return
-      }
- 
-      if (this.threads) {
-       const { pageData = [] } = this.threads;
-       const newPageData = pageData.filter(item => item.threadId !== id)
- 
-       if (this.threads?.pageData) {
-         this.threads.pageData = newPageData;
-       }
-     }
- 
-     if (this.indexThreads) {
-       const { pageData = [] } = this.indexThreads;
-       const newPageData = pageData.filter(item => item.threadId !== id)
- 
-       if (this.indexThreads?.pageData) {
-         this.indexThreads.pageData = newPageData;
-       }
-     }
-    }
 
   /**
    * 更新用户状态
@@ -441,118 +448,6 @@ class SearchAction extends SearchStore {
       })
     }
     return users
-  }
-
-  /**
-   * 支付成功后，更新帖子列表指定帖子状态
-   * @param {number} threadId 帖子id
-   * @param {object}  obj 更新数据
-   * @returns
-   */
-   @action
-   updatePayThreadInfo(threadId, obj) {
-     const targetThreads = this.findAssignThread(threadId);
-     if (!targetThreads || targetThreads.length === 0) return;
-
-     targetThreads.forEach(targetThread => {
-      const { index, store } = targetThread;
-      if (store?.pageData) {
-        store.pageData[index] = obj;
-      }
-     })
-   }
- 
-   /**
-    * 更新帖子列表指定帖子状态
-    * @param {number} threadId 帖子id
-    * @param {object}  obj 更新数据
-    * @param {boolean} obj.isLike 是否更新点赞
-    * @param {boolean} obj.isPost 是否更新评论数
-    * @param {boolean} obj.user 当前操作的用户
-    * @returns
-    */
-    @action
-    updateAssignThreadInfo(threadId, obj = {}) {
-      const targetThreads = this.findAssignThread(threadId);
-      if (!targetThreads || targetThreads.length === 0) return;
-
-      targetThreads.forEach(targetThread => {
-        if (!targetThread) return;
-
-        const { index, data, store } = targetThread; // 这里是数组
-        const { updateType, updatedInfo, user } = obj;
-
-        if(!data && !data?.likeReward && !data?.likeReward?.users) return;
-  
-        // 更新点赞
-        if (updateType === 'like' && !typeofFn.isUndefined(updatedInfo.isLiked) &&
-            !typeofFn.isNull(updatedInfo.isLiked) && user) {
-          const { isLiked, likePayCount = 0 } = updatedInfo;
-          const theUserId = user.userId || user.id;
-          data.isLike = isLiked;
-    
-          const userData = threadReducer.createUpdateLikeUsersData(user, 1);
-          // 添加当前用户到按过赞的用户列表
-          const newLikeUsers = threadReducer.setThreadDetailLikedUsers(data.likeReward, !!isLiked, userData);
-        
-          data.likeReward.users = newLikeUsers;
-          data.likeReward.likePayCount = likePayCount;
-        }
-
-        // 更新评论
-        if (updateType === 'comment' && data?.likeReward) {
-          data.likeReward.postCount = data.likeReward.postCount + 1;
-        }
-
-        // 更新分享
-        if (updateType === 'share') {
-          data.likeReward.shareCount = data.likeReward.shareCount + 1;
-        }
-
-        // 更新帖子浏览量
-        if (updateType === 'viewCount') {
-          data.viewCount = updatedInfo.viewCount;
-        }
-
-        if (store.pageData) {
-          store.pageData[index] = data;
-        }
-      });
-
-
-    }
-
-   // 获取指定的帖子数据
-  findAssignThread(threadId) {
-    const threadArr = []
-    if (this.threads) {
-      const { pageData = [] } = this.threads;
-      for (let i = 0; i < pageData.length; i++)  {
-        if (pageData[i].threadId === threadId) {
-          threadArr.push({ index: i, data: pageData[i], store: this.threads });
-        }
-      }
-    }
-
-    if (this.indexThreads) {
-      const { pageData = [] } = this.indexThreads;
-      for (let i = 0; i < pageData.length; i++)  {
-        if (pageData[i].threadId === threadId) {
-          threadArr.push({ index: i, data: pageData[i], store: this.indexThreads });
-        }
-      }
-    }
-
-    if (this.searchThreads) {
-      const { pageData = [] } = this.searchThreads;
-      for (let i = 0; i < pageData.length; i++)  {
-        if (pageData[i].threadId === threadId) {
-          threadArr.push({ index: i, data: pageData[i], store: this.searchThreads });
-        }
-      }
-    }
-
-    return threadArr
   }
 }
 

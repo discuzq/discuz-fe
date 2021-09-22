@@ -37,6 +37,7 @@ import { USER_STATUS } from '@common/constants/login';
 export default function HOCFetchSiteData(Component, _isPass) {
   @inject('site')
   @inject('user')
+  @inject('thread')
   @inject('emotion')
   @inject('commonLogin')
   @observer
@@ -70,7 +71,7 @@ export default function HOCFetchSiteData(Component, _isPass) {
           // 当站点信息获取成功，进行当前用户信息查询
           if (siteConfig && siteConfig.code === 0 && siteConfig?.data?.user?.userId) {
             userInfo = await readUser({
-              params: { pid: siteConfig.data.user.userId },
+              params: { userId: siteConfig.data.user.userId },
             }, ctx);
             userPermissions = await readPermissions({}, ctx);
 
@@ -162,7 +163,7 @@ export default function HOCFetchSiteData(Component, _isPass) {
       // 判断是否有token
       if (siteConfig && siteConfig.user) {
         if ((!user || !user.userInfo) && (!serverUser || !serverUser.userInfo)) {
-          const userInfo = await readUser({ params: { pid: siteConfig.user.userId } });
+          const userInfo = await readUser({ params: { userId: siteConfig.user.userId } });
           const userPermissions = await readPermissions({});
 
           // 添加用户发帖权限
@@ -420,9 +421,13 @@ export default function HOCFetchSiteData(Component, _isPass) {
       return newProps;
     }
 
-    canPublish() {
-      const { user, site } = this.props;
-      return canPublish(user, site);
+    /**
+     * 是否可以进行发帖回复
+     * @param type 判断类型 comment 评论， reply 回复
+     */
+    canPublish(type = '') {
+      const { user, site, thread } = this.props;
+      return canPublish(user, site, type, thread?.threadData?.threadId);
     }
 
     render() {

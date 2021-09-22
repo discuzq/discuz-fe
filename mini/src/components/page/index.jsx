@@ -14,14 +14,15 @@ import Taro from '@tarojs/taro';
 import { REVIEWING } from '@common/store/login/util';
 import LoginHelper from '@common/utils/login-helper';
 import {readForum} from '@server';
+import ShareError from '@components/share-error/index';
 
 const INDEX_URL = '/indexPages/home/index';
 const PARTNER_INVITE_URL = '/subPages/forum/partner-invite/index';
-const BIND_NICKNAME_URL = '/subPages/user/bind-nickname/index';
+const BIND_NICKNAME_URL = '/userPages/user/bind-nickname/index';
 const CLOSE_URL = '/subPage/close/index';
 const PAGE_404_URL = '/subPages/404/index';
 const PAGE_500_URL = '/subPages/500/index';
-const STATUS_URL = '/subPages/user/status/index'; // 用户状态提示页
+const STATUS_URL = '/userPages/user/status/index'; // 用户状态提示页
 
 
 @inject('user')
@@ -97,8 +98,8 @@ export default class Page extends React.Component {
       // TODO: 强制绑定方案待定
       if (user.isLogin()) {
         // // 绑定微信：开启微信，没有绑定微信
-        // if ((site.isOffiaccountOpen || site.isMiniProgramOpen) && path !== '/subPages/user/wx-bind-qrcode/index' && !user.isBindWechat) {
-        //   Router.redirect({url: '/subPages/user/wx-bind-qrcode/index'});
+        // if ((site.isOffiaccountOpen || site.isMiniProgramOpen) && path !== '/userPages/user/wx-bind-qrcode/index' && !user.isBindWechat) {
+        //   Router.redirect({url: '/userPages/user/wx-bind-qrcode/index'});
         //   return false;
         // }
         // 前置：没有开启微信
@@ -131,7 +132,9 @@ export default class Page extends React.Component {
 
   //
   async getSiteData() {
+    const { site } = this.props;
     const siteResult = await readForum({});
+    site.setSiteConfig(siteResult.data);
     // 一切异常建议进入小程序体验
     this.setState({
       _status: siteResult.code !== 0 ? 'error' : 'pass'
@@ -148,10 +151,7 @@ export default class Page extends React.Component {
         if ( this.state._status === 'pass' ) {
           return children;
         } else {
-          return (<View className={styles.loadingBox}>
-            <View style={{textAlign: 'center'}}>数据异常</View>
-            <View style={{textAlign: 'center'}}>进入小程序了解详情</View>
-          </View>)
+          return <ShareError/>;
         }
       } else {
         this.getSiteData();
@@ -196,6 +196,11 @@ export default class Page extends React.Component {
           </View>
         </Popup>
       );
+    }
+    const options = Taro.getLaunchOptionsSync();
+     // 分享朋友圈时，如果站点是付费站点，则直接提示用户需要付费
+    if (options && options.scene === 1154 && this?.props?.site?.siteMode === 'pay') {
+      return <ShareError type='pay'/>;
     }
 
     // 如果被劫持到其它页面，则不展示当前页

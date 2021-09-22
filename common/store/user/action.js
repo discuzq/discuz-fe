@@ -429,7 +429,7 @@ class UserAction extends SiteStore {
   // 登录后获取新的用户信息
   @action
   async updateUserInfo(id) {
-    const userInfo = await readUser({ params: { pid: id } });
+    const userInfo = await readUser({ params: { userId: id } });
     if (!userInfo || userInfo?.code !== 0) {
       return;
     }
@@ -549,7 +549,7 @@ class UserAction extends SiteStore {
   @action
   async getAssignUserInfo(userId) {
     try {
-      const userInfo = await readUser({ params: { pid: userId } });
+      const userInfo = await readUser({ params: { userId: userId } });
       if (userInfo.code === 0 && userInfo.data) {
         return userInfo.data;
       }
@@ -1027,25 +1027,6 @@ class UserAction extends SiteStore {
     this.userShieldTotalPage = 1; // 总页数
     this.userShieldTotalCount = 0; // 总条数
   };
-
-  /**
-   * 支付成功后，更新帖子列表指定帖子状态
-   * @param {number} threadId 帖子id
-   * @param {object}  obj 更新数据
-   * @returns
-   */
-  @action
-  updatePayThreadInfo(threadId, obj) {
-    const targetThreads = this.findAssignThread(threadId);
-    if (!targetThreads || targetThreads.length === 0) return;
-
-    targetThreads.forEach((targetThread) => {
-      const { index, key, data, store } = targetThread;
-      if (store[key] && store[key][index]) {
-        store[key][index] = obj;
-      }
-    });
-  }
 
   // 生成微信换绑二维码，仅在 PC 使用
   @action

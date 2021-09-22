@@ -17,18 +17,6 @@ export const ERROR_PAGE_TIPS = {
   apply: '出bug了 页面暂时无法展示'
 }
 
-// 用户名白名单（用户体验换绑）
-export const USERNAME_WHITE_LIST = [
-  'cody123', // 韩元杰
-  'jerryhan', // 韩元杰小号
-  '182796707977', // 郑剑熊
-  'LWL123', // 文溪
-  '黑哈哈', // 崔晋瑜
-  'LamHo', // 林浩
-]
-// 域名白名单（用户体验换绑）
-export const DOMAIN_WHITE_LIST = 'https://discuz.chat/';
-
 /**
  * 后端错误码
 **/
@@ -80,22 +68,22 @@ export const WEB_SITE_JOIN_WHITE_LIST = [
 // mini端站点加入路由白名单
 export const MINI_SITE_JOIN_WHITE_LIST = [
   '/pages/index/index', // 小程序进入页
-  '/subPages/user/wx-auth/index', // 快捷登录
-  '/subPages/user/wx-select/index', // 微信落地页
-  '/subPages/user/bind-phone/index', // 绑定手机号
-  '/subPages/user/bind-nickname/index', // 设置昵称
-  '/subPages/user/status/index', // 状态
-  '/subPages/user/wx-bind/index', // 小程序绑定
-  '/subPages/user/wx-authorization/index', // 微信授权
-  '/subPages/user/wx-bind-username/index', // 用户名绑定
-  '/subPages/user/wx-bind-phone/index', // 绑定手机号
-  '/subPages/my/edit/find/paypwd/index', // 忘记密码
-  '/subPages/user/supplementary/index', // 补充信息
-  '/subPages/user/rebind/index', // 微信换绑
-  '/subPages/user/wx-rebind-action/index', // 换绑授权
-  '/subPages/my/index', // 个人中心
+  '/userPages/user/wx-auth/index', // 快捷登录
+  '/userPages/user/wx-select/index', // 微信落地页
+  '/userPages/user/bind-phone/index', // 绑定手机号
+  '/userPages/user/bind-nickname/index', // 设置昵称
+  '/userPages/user/status/index', // 状态
+  '/userPages/user/wx-bind/index', // 小程序绑定
+  '/userPages/user/wx-authorization/index', // 微信授权
+  '/userPages/user/wx-bind-username/index', // 用户名绑定
+  '/userPages/user/wx-bind-phone/index', // 绑定手机号
+  '/userPages/my/edit/find/paypwd/index', // 忘记密码
+  '/userPages/user/supplementary/index', // 补充信息
+  '/userPages/user/rebind/index', // 微信换绑
+  '/userPages/user/wx-rebind-action/index', // 换绑授权
+  '/userPages/my/index', // 个人中心
   '/subPages/forum/partner-invite/index', // 站点加入
-  '/subPages/my/edit/paypwd/index', // 设置支付密码
+  '/userPages/my/edit/paypwd/index', // 设置支付密码
 ];
 
 // mini端站点，用户账号审核中可以访问的路由白名单
@@ -103,10 +91,10 @@ export const REVIEWING_USER_WHITE_LIST = [
   '/pages/index/index', // 启动页
   '/indexPages/home/index', // 首页
   '/subPages/thread/index', // 帖子详情页
-  '/subPages/user/status/index', // 用户状态提示页
+  '/userPages/user/status/index', // 用户状态提示页
   '/subPages/forum/partner-invite/index', // 站点加入
-  '/subPages/user/supplementary/index', // 补充信息
-  '/subPages/user/bind-phone/index', // 绑定手机号
+  '/userPages/user/supplementary/index', // 补充信息
+  '/userPages/user/bind-phone/index', // 绑定手机号
 ];
 
 // web端站点，用户账号审核中可以访问的路由白名单

@@ -3,7 +3,7 @@
 .code {
   width: 100%;
   // height: rem(115);
-  background: var(--color-white);
+  background: $white;
   display: flex;
   border-radius: rem($border-radius-small);
   padding: rem($padding-4n);
@@ -21,7 +21,7 @@
     .codeTextVisit {
       font-size: rem($font-size-large);
       line-height: rem($font-line-height-primary);
-      color: var(--color-text-primary);
+      color: $text-color-primary;
       font-weight: bold;
     }
     .codeTextLogo {

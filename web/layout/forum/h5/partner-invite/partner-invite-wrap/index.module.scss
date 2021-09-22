@@ -1,6 +1,6 @@
 @import '@common/styles/index.scss';
 .page {
-  background-color: var(--background-color-text2);
+  background-color: $text-bg-color2;
 }
 
 // 右侧卡片内容 start
@@ -31,7 +31,7 @@
       margin-left: -60px;
       top: -60px;
       border-radius: $border-radius-circle;
-      background: var(--color-white);
+      background: $white;
       border: 1px solid $white;
       overflow: hidden;
       z-index: 3;

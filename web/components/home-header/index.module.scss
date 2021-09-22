@@ -27,7 +27,7 @@
     .left{
       font-size: rem($font-size-base);
       line-height: rem($font-line-height-base);
-      color: var(--color-white);
+      color: $white;
       display: flex;
       align-items: center;
       flex-direction: row;
@@ -72,7 +72,7 @@
       font-weight: normal;
       font-size: rem($font-size-primary);
       line-height: rem($font-line-height-middle);
-      color: var(--color-white);
+      color: $white;
     }
   }
   .siteInfo {

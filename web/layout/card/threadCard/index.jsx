@@ -57,6 +57,10 @@ const ThreadCard = inject('user', 'card')(observer((props) => {
     text = '';
     parseContent = '';
   }
+
+  const filterIframe = /<iframe(([\s\S])*?)<\/iframe>/g; // iframe标签不支持生成h5海报
+
+  // console.log(threadStore?.threadData,text, 1);
   return (
     <div>
       {isReady && (
@@ -84,7 +88,7 @@ const ThreadCard = inject('user', 'card')(observer((props) => {
           {title && <div className={styles.title}>{title}</div>}
 
           {/* 文字 */}
-          {text && <PostContent useShowMore={false} content={text || ''} className={styles.content}/>}
+          {text && <PostContent needShowMore={false} content={text.replace(filterIframe, '') || ''} className={styles.content}/>}
 
 
           {/* 图片 */}

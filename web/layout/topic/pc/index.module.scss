@@ -16,7 +16,7 @@
   .section {
     margin-bottom: rem($margin-10);
     padding: 0 rem($padding-6n);
-    background: var(--color-white);
+    background: $white;
     border-radius: rem($border-radius-small);
     box-shadow: 0 0 rem($padding-2n) rgba(241, 243, 244, 0.16);
   }

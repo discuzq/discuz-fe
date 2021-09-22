@@ -42,9 +42,16 @@ class RenderCommentList extends React.Component {
       placeholder: '写下我的评论...', // 默认回复框placeholder内容
       commentId: null,
     };
-
+    this.comment10Ref = React.createRef();
     this.commentData = null;
     this.replyData = null;
+  }
+
+  componentDidMount() {
+    // 从首页评论点击更多进来，定位到第10条评论位置
+    if (this.props?.thread?.isPositionToComment && this.comment10Ref.current) {
+      this.comment10Ref.current.scrollIntoView();
+    }
   }
 
   // 评论列表排序
@@ -210,7 +217,7 @@ class RenderCommentList extends React.Component {
       goToLoginPage({ url: '/user/login' });
       return;
     }
-    if (!this.props.canPublish()) return;
+    if (!this.props.canPublish('reply')) return;
     this.commentData = comment;
     this.replyData = null;
     this.setState({
@@ -226,7 +233,7 @@ class RenderCommentList extends React.Component {
       goToLoginPage({ url: '/user/login' });
       return;
     }
-    if (!this.props.canPublish()) return;
+    if (!this.props.canPublish('reply')) return;
     this.commentData = null;
     this.replyData = reply;
     this.replyData.commentId = comment.id;
@@ -399,7 +406,7 @@ class RenderCommentList extends React.Component {
       goToLoginPage({ url: '/user/login' });
       return;
     }
-    if (!this.props.canPublish()) return;
+    if (!this.props.canPublish('reply')) return;
     return true;
   }
 
@@ -475,32 +482,34 @@ class RenderCommentList extends React.Component {
               key={val.id || index}
               ref={val.id === postId ? this.props.positionRef : null}
             >
-              <CommentList
-                data={val}
-                key={val.id}
-                avatarClick={userId => this.onUserClick(userId)}
-                replyAvatarClick={(reply, floor) => this.replyAvatarClick(reply, val, floor)}
-                likeClick={() => this.likeClick(val)}
-                replyClick={() => this.replyClick(val)}
-                deleteClick={() => this.deleteClick(val)}
-                editClick={() => this.editClick(val)}
-                replyLikeClick={reply => this.replyLikeClick(reply, val)}
-                replyReplyClick={reply => this.replyReplyClick(reply, val)}
-                replyDeleteClick={reply => this.replyDeleteClick(reply, val)}
-                reportClick={() => this.reportClick(val)}
-                onCommentClick={() => this.onCommentClick(val)}
-                onSubmit={(val, imageList) => this.createReply(val, imageList)}
-                isShowOne={true}
-                isShowInput={this.state.commentId === val.id}
-                onAboptClick={() => this.onAboptClick(val)}
-                isShowAdopt={
-                  // 是帖子作者 && 是悬赏帖 && 评论人不是作者本人
-                  isSelf && isReward && this.props.thread?.threadData?.userId !== val.userId
-                }
-                threadId={this.props.thread.threadData.userId}
-                active={val.id === postId}
-                isAnonymous={isAnonymous}
-              ></CommentList>
+              <div ref ={ index === 10 ? this.comment10Ref : null}>
+                <CommentList
+                  data={val}
+                  key={val.id}
+                  avatarClick={userId => this.onUserClick(userId)}
+                  replyAvatarClick={(reply, floor) => this.replyAvatarClick(reply, val, floor)}
+                  likeClick={() => this.likeClick(val)}
+                  replyClick={() => this.replyClick(val)}
+                  deleteClick={() => this.deleteClick(val)}
+                  editClick={() => this.editClick(val)}
+                  replyLikeClick={reply => this.replyLikeClick(reply, val)}
+                  replyReplyClick={reply => this.replyReplyClick(reply, val)}
+                  replyDeleteClick={reply => this.replyDeleteClick(reply, val)}
+                  reportClick={() => this.reportClick(val)}
+                  onCommentClick={() => this.onCommentClick(val)}
+                  onSubmit={(val, imageList) => this.createReply(val, imageList)}
+                  isShowOne={true}
+                  isShowInput={this.state.commentId === val.id}
+                  onAboptClick={() => this.onAboptClick(val)}
+                  isShowAdopt={
+                    // 是帖子作者 && 是悬赏帖 && 评论人不是作者本人
+                    isSelf && isReward && this.props.thread?.threadData?.userId !== val.userId
+                  }
+                  threadId={this.props.thread.threadData.userId}
+                  active={val.id === postId}
+                  isAnonymous={isAnonymous}
+                ></CommentList>
+              </div>
             </div>
           ))}
         </div>

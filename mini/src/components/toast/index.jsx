@@ -6,7 +6,7 @@ import { getLaunchOptionsSync } from '@tarojs/taro'
 const launchOptionInfo = getLaunchOptionsSync();
 const noop = () => {
   // 主动设置跳转，触发单页模式自带的toast提示
-  goToLoginPage({ url: '/subPages/user/wx-auth/index' });
+  goToLoginPage({ url: '/userPages/user/wx-auth/index' });
 };
 if (launchOptionInfo?.scene === 1154) {
   ToastRef.info = noop;

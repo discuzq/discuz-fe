@@ -40,7 +40,7 @@
         font-size: rem(14);
         line-height: rem(17);
         text-align: left;
-        color: #fff;
+        color: $white;
         max-width: rem(200);
         white-space: nowrap;
         overflow: hidden;
@@ -51,7 +51,7 @@
         font-size: rem(12);
         line-height: rem(16);
         text-align: left;
-        color: #fff;
+        color: $white;
       }
     }
   }
@@ -92,7 +92,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  
+
   .lookmoreImg {
     height: rem(20);
   }
@@ -119,7 +119,7 @@
       font-size: rem(16);
       line-height: rem(24);
       text-align: left;
-      color: #0b0b37;
+      color: $text-color-primary;
       margin-left: rem(8);
       vertical-align: middle
     }
@@ -133,6 +133,6 @@
     font-size: rem(14);
     line-height: rem(24);
     text-align: left;
-    color: #0b0b37;
+    color: $text-color-primary;
   }
 }

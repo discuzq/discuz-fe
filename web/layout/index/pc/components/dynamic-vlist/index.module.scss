@@ -7,7 +7,7 @@
   margin-bottom: rem(10);
   .contnetTop {
     width: 100%;
-    background: var(--color-white);
+    background: $white;
     box-sizing: border-box;
     border-bottom-left-radius: rem(5);
     border-bottom-right-radius: rem(5);
@@ -37,7 +37,7 @@
 
   &:after {
     content: '';
-    background-color: var(--border-line-color);
+    background-color: $border-color;
     height: 1px;
     position: absolute;
     right: rem(24);
@@ -79,7 +79,7 @@
     // }
     display: flex;
     align-items: center;
-    background: var(--color-white);
+    background: $white;
     border-top-left-radius: rem(5);
     border-top-right-radius: rem(5);
     flex-wrap: wrap;
@@ -100,7 +100,7 @@
   @include media('s-pc') {
     margin: 0 rem($padding-4n);
   }
-  border-bottom: 1px solid var(--border-line-color);
+  border-bottom: 1px solid $border-color;
 }
 .topNewContent {
   padding: rem($padding-10) 0;

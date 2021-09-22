@@ -8,11 +8,11 @@
     justify-content: center;
     flex-direction: column;
     .main{
-        color: var(--color-text-primary);
+        color: $text-color-primary;
         font-size: rem(36);
     }
     .sub{
-        color: var(--color-text-primary);
+        color: $text-color-primary;
         font-size: rem($font-size-large);
         margin-top: rem($margin-4n);
     }

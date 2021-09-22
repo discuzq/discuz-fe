@@ -59,7 +59,7 @@ class WeixinBindQrCodePage extends React.Component {
         name = user.nickname;
       }
 
-      let redirectUri = `${wechatEnv === 'miniProgram' ? '/subPages/user/wx-auth/index' : `${window.location.origin}/user/wx-auth`}?loginType=${platform}&action=wx-bind&nickname=${name}`;
+      let redirectUri = `${wechatEnv === 'miniProgram' ? '/userPages/user/wx-auth/index' : `${window.location.origin}/user/wx-auth`}?loginType=${platform}&action=wx-bind&nickname=${name}`;
       redirectUri += platform === 'h5' && bindPhone ? '&bindPhone=1' : '';
       redirectUri += platform === 'h5' && toPage ? `&toPage=${toPage}` : '';
       await this.props.h5QrCode.generate({
@@ -180,9 +180,44 @@ class WeixinBindQrCodePage extends React.Component {
     });
   }
 
+  getOrCodeTips = () => {
+    const { site: { platform, wechatEnv } } = this.props;
+    let orCodeTips = '';
+    switch (platform) {
+      case 'pc':
+        orCodeTips = '请使用微信，扫码绑定';
+        break;
+      case 'h5':
+        if (wechatEnv === 'miniProgram') {
+          orCodeTips = '请在小程序中完成微信绑定';
+          break;
+        }
+        orCodeTips = '长按保存二维码，并在微信中识别此二维码，即可完成绑定';
+        break;
+    }
+    return orCodeTips;
+  }
+
+  getTips = () => {
+    const { nickname, limitPublishType } = this.props.router.query;
+    let tips = '';
+    switch (limitPublishType) {
+      case 'comment':
+        tips = '绑定微信才能继续发帖'
+        break;
+      case 'reply':
+        tips = '绑定微信才能继续评论'
+        break;
+      default:
+        tips = `${nickname ? `${nickname}，` : ''}请绑定您的微信`
+        break;
+    }
+    return tips;
+  }
+
   render() {
     const { site: { wechatEnv, platform }, router, h5QrCode } = this.props;
-    const { nickname, isSkip = false } = router.query;
+    const { isSkip = false } = router.query;
     return (
       <PcBodyWrap>
       <div className={platform === 'h5' ? layout.container : layout.pc_container}>
@@ -194,14 +229,14 @@ class WeixinBindQrCodePage extends React.Component {
         <div className={platform === 'h5' ? layout.content : layout.pc_content}>
           <div className={platform === 'h5' ? layout.title : layout.pc_title}>绑定微信号</div>
           <div className={platform === 'h5' ? layout.tips : layout.pc_tips}>
-            {nickname ? `${nickname}，` : ''}请绑定您的微信
+            { this.getTips() }
           </div>
           {/* 二维码 start */}
           <WeixinQrCode
             refresh={() => {this.generateQrCode()}}
             isValid={h5QrCode.isQrCodeValid}
             orCodeImg={h5QrCode.qrCode}
-            orCodeTips={platform === 'h5' ? '长按保存二维码，并在微信中识别此二维码，即可完成登录' : '请使用微信，扫码登录'}
+            orCodeTips={this.getOrCodeTips()}
           />
           {/* 二维码 end */}
           { isSkip && <span className={layout.skip} onClick={this.handleSkipWechatButtonClick}>跳过</span> }

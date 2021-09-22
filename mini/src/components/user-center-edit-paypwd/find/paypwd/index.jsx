@@ -133,7 +133,7 @@ class index extends Component {
           return;
         }
         setTimeout(() => {
-          Taro.redirectTo({ url: '/subPages/my/edit/index' });
+          Taro.redirectTo({ url: '/userPages/my/edit/index' });
           this.initState();
         }, 200);
       })

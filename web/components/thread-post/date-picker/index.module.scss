@@ -6,10 +6,10 @@
   }
 
   .datepicker-navbar-btn {
-    color: #4f5a70 !important;
+    color: $text-color-regular !important;
     width: 145px;
     height: 90px;
-    background-color: #eff1f3;
+    background-color: $text-bg-color2;
     position: relative;
     &:after {
       position: absolute;
@@ -21,7 +21,7 @@
       left: 168px;
     }
     &:hover {
-      background-color: #2469f6;
+      background-color: $primary-color;
       color: white;
     }
   }

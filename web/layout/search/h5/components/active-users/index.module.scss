@@ -42,7 +42,7 @@
       margin-top: rem(12);
       font-size: rem($font-size-primary);
       line-height: rem(18);
-      color: var(--color-text-primary);
+      color: $text-color-primary;
     }
   }
 }

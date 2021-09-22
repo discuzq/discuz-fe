@@ -2,10 +2,12 @@ import { observable, computed } from 'mobx';
 import htmlToString from '../../utils/html-to-string';
 import s9e from '../../utils/s9e';
 import { parseContentData } from '@layout/thread/utils';
+import ThreadListStore from  '../thread-list/list';
 
 class ThreadStore {
   constructor(props) {
     this.threadData = props?.thread;
+    this.threadList = new ThreadListStore();
   }
   @observable threadData = null; // 帖子信息
   @observable hasRedPacket = 0 // 是否有可领取的红包信息
@@ -22,6 +24,7 @@ class ThreadStore {
   @observable isAuthorInfoError = false;
   @observable contentImgLength = 0; // 内容区域的加载完成的图片的个数
   @observable scrollDistance = 0;
+  @observable pageDataListType = null; // 记录使用了的是哪个列表数据
 
   // 是否帖子数据准备好
   @computed get isReady() {

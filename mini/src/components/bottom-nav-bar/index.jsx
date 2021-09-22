@@ -8,6 +8,7 @@ import { inject, observer } from 'mobx-react';
 import Router from '@discuzq/sdk/dist/router';
 import UnreadRedDot from '@components/unread-red-dot';
 import { unreadUpdateInterval } from '@common/constants/message';
+import canPublish from '@common/utils/can-publish';
 
 /**
  * BottomNavBar组件
@@ -20,11 +21,12 @@ const routes = [
   'subPages/search/index',
   'indexPages/thread/post/index',
   'subPages/message/index',
-  'subPages/my/index'
+  'userPages/my/index'
 ]
 
 @inject('index')
 @inject('user')
+@inject('site')
 @inject('message')
 @observer
 class BottomNavBar extends React.Component {
@@ -44,7 +46,7 @@ class BottomNavBar extends React.Component {
       { icon: 'FindOutlined', text: '发现', active: this.checkCurrActiveTab(curr, 'search'), router: '/subPages/search/index' },
       { icon: 'PlusOutlined', router: '/indexPages/thread/post/index' },
       { icon: 'MailOutlined', text: '消息', active: this.checkCurrActiveTab(curr, 'message'), router: '/subPages/message/index' },
-      { icon: 'ProfessionOutlined', text: '我的', active: this.checkCurrActiveTab(curr, 'my'), router: '/subPages/my/index' },
+      { icon: 'ProfessionOutlined', text: '我的', active: this.checkCurrActiveTab(curr, 'my'), router: '/userPages/my/index' },
     ]
 
     this.setState({ tabs })
@@ -68,6 +70,7 @@ class BottomNavBar extends React.Component {
         Taro.showToast({ title: '您暂无发帖权限', icon: 'none' });
         return;
       }
+      if(!canPublish(this.props.user, this.props.site, 'comment')) return;
     }
 
     const { onClick = noop } = this.props

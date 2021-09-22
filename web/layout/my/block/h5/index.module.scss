@@ -3,12 +3,12 @@
 .shieldBox {
   width: 100%;
   height: 100%;
-  background-color: var(--background-color);
+  background-color: $body-bg-color;
 }
 .titleBox {
   width: 100%;
   height: rem(53);
-  background-color: var(--color-white);
+  background-color: $white;
   font-size: rem($font-size-primary);
   color: $text-color-regular;
   padding: 0 rem($padding-4n);
@@ -18,7 +18,7 @@
 
 .list {
   flex: 1;
-  background-color: var(--color-white);
+  background-color: $white;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -32,7 +32,7 @@
   width: 100%;
   height: rem(70);
   padding: 0 rem($padding-4n);
-  background-color: var(--color-white);
+  background-color: $white;
   box-sizing: border-box;
 }
 .haieldImgBox {
@@ -41,7 +41,7 @@
   display: flex;
   justify-content: space-between;
   padding: rem($padding-4n) 0;
-  border-bottom: rem(1) solid var(--border-line-color);
+  border-bottom: rem(1) solid $border-color;
   box-sizing: border-box;
 }
 .haieldImgHead {
@@ -50,7 +50,7 @@
     font-weight: normal;
     font-size: rem($font-size-primary);
     line-height: rem(17);
-    color: var(--color-text-primary);
+    color: $text-color-primary;
     margin: rem(9) 0 0 rem(8);
   }
 }
@@ -62,7 +62,7 @@
   font-size: rem($font-size-label);
   width: rem(72);
   height: rem(25);
-  color: var(--color-white);
+  color: $white;
   border-radius: rem(5);
   line-height: rem(26);
   text-align: center;

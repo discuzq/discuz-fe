@@ -7,8 +7,9 @@ import { getCurrentInstance } from '@tarojs/taro';
 import Page from '@components/page';
 import withShare from '@common/utils/withShare/withShare'
 import { priceShare } from '@common/utils/priceShare';
+import { updateThreadAssignInfoInLists } from '@common/store/thread-list/list-business';
 
-@inject('search')
+@inject('threadList')
 @inject('topic')
 @inject('index')
 @inject('user')
@@ -17,11 +18,9 @@ import { priceShare } from '@common/utils/priceShare';
 class Index extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {
-      fetchTopicInfoLoading: true,
-      isError: false,
-      errorText: '加载失败',
-    }
+    this.state = {}
+
+    this.props.threadList.registerList({ namespace: this.props.topic.namespace });
   }
   page = 1;
   perPage = 10;
@@ -46,9 +45,7 @@ class Index extends React.Component {
       const { user } = this.props
       this.props.index.updateThreadShare({ threadId }).then(result => {
       if (result.code === 0) {
-          this.props.index.updateAssignThreadInfo(threadId, { updateType: 'share', updatedInfo: result.data, user: user.userInfo });
-          this.props.search.updateAssignThreadInfo(threadId, { updateType: 'share', updatedInfo: result.data, user: user.userInfo });
-          this.props.topic.updateAssignThreadInfo(threadId, { updateType: 'share', updatedInfo: result.data, user: user.userInfo });
+        updateThreadAssignInfoInLists(threadId, { updateType: 'share', updatedInfo: result.data, user: user.userInfo });
       }
     });
     }
@@ -68,23 +65,26 @@ class Index extends React.Component {
       topic.setTopicDetail(null)
       this.page = 1;
       try {
-        await topic.getTopicsDetail({ topicId: id });
-        this.setState({
-          fetchTopicInfoLoading:false,
-        })
+        await topic.getTopicsDetail({ perPage: this.perPage, page: this.page, topicId: id });
       }
       catch (errMsg){
-        this.setState({
-          isError: true,
-          errorText: errMsg
-        })
+        console.log(errMsg);
       }
       // this.toastInstance?.destroy();
     // }
 
   }
+
+  dispatch = async () => {
+    const { topic } = this.props;
+    const { id = '' } = getCurrentInstance().router.params;
+    this.page += 1;
+    await topic.getTopicsDetail({perPage: this.perPage, page: this.page, topicId: id});
+    return;
+  }
+
   render() {
-    return <Page><IndexPage dispatch={this.dispatch} fetchTopicInfoLoading={this.state.fetchTopicInfoLoading} isError={this.state.isError} errorText={this.state.errorText}/></Page>;
+    return <Page><IndexPage dispatch={this.dispatch} /></Page>;
   }
 }
 

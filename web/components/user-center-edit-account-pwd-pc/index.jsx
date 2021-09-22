@@ -228,8 +228,7 @@ export default class index extends Component {
   render() {
     const { isSubmit } = this.state;
     return (
-      <div className={styles.userMobileWrapper}>
-        <Dialog visible={this.props.visible} position="center" maskClosable={true} onClose={this.props.onClose}>
+        <Dialog className={styles.userMobileWrapper} visible={this.props.visible} position="center" maskClosable={true} onClose={this.props.onClose}>
           <div className={styles.userMobileContent}>
             <div className={styles.title}>
               <span className={styles.text}>{this.props.user?.hasPassword ? '修改密码' : '设置密码'}</span>
@@ -257,7 +256,6 @@ export default class index extends Component {
             </div>
           </div>
         </Dialog>
-      </div>
     );
   }
 }

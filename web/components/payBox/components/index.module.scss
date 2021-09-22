@@ -28,7 +28,7 @@
   }
   // 交易类型label提示
   .acExplainLabel {
-    color: var(--color-text-regular);
+    color: $text-color-regular;
     margin-right: rem($margin-4n);
     flex-shrink: 0;
   }
@@ -39,7 +39,7 @@
     @include text-ellipsis();
   }
   .acExplainNum {
-    color: var(--color-error);
+    color: $error-color;
     font-size: rem($font-size-middle);
     font-weight: 600;
   }
@@ -58,7 +58,7 @@
 }
 
 .title {
-  color: var(--color-text-primary);
+  color: $text-color-primary;
   font-size: rem($font-size-large);
   padding: rem($padding-4n);
   margin-top: rem($margin-4n);
@@ -90,10 +90,10 @@
     }
 
     // &.curr{
-    //   border-bottom-color: #C5C6CA;
+    //   border-bottom-color: $text-color-placeholder;
     // }
     // &.activation{
-    //   border-bottom-color: #C5C6CA;
+    //   border-bottom-color: $text-color-placeholder;
     // }
   }
 
@@ -111,10 +111,10 @@
     }
 
     // &.curr{
-    //   border-color: #C5C6CA;
+    //   border-color: $text-color-placeholder;
     // }
     // &.activation{
-    //   border-color: #C5C6CA;
+    //   border-color: $text-color-placeholder;
     // }
   }
 }

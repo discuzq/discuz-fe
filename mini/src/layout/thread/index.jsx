@@ -9,7 +9,7 @@ import footer from './footer.module.scss';
 
 import NoMore from './components/no-more';
 import LoadingTips from './components/loading-tips';
-import styleVar from '@common/styles/theme/default.scss.json';
+// import styleVar from '@common/styles/theme/default.scss.json';
 import Icon from '@discuzq/design/dist/components/icon/index';
 import Input from '@discuzq/design/dist/components/input/index';
 import Toast from '@components/toast';
@@ -33,6 +33,7 @@ import classNames from 'classnames';
 import { debounce } from '@common/utils/throttle-debounce';
 import styles from './post/index.module.scss';
 import Router from '@discuzq/sdk/dist/router';
+import canPublish from '@common/utils/can-publish';
 import { parseContentData } from './utils';
 
 @inject('site')
@@ -41,8 +42,6 @@ import { parseContentData } from './utils';
 @inject('commentPosition')
 @inject('comment')
 @inject('index')
-@inject('topic')
-@inject('search')
 @inject('payBox')
 @observer
 class ThreadH5Page extends React.Component {
@@ -205,7 +204,7 @@ class ThreadH5Page extends React.Component {
   async onCollectionClick() {
     if (!this.props.user.isLogin()) {
       Toast.info({ content: '请先登录!' });
-      goToLoginPage({ url: '/subPages/user/wx-auth/index' });
+      goToLoginPage({ url: '/userPages/user/wx-auth/index' });
       return;
     }
 
@@ -304,11 +303,13 @@ class ThreadH5Page extends React.Component {
 
   // 点击评论
   onInputClick() {
-    if (!this.props.user.isLogin()) {
+    const {user, site, thread } = this.props;
+    if (!user.isLogin()) {
       Toast.info({ content: '请先登录!' });
-      goToLoginPage({ url: '/subPages/user/wx-auth/index' });
+      goToLoginPage({ url: '/userPages/user/wx-auth/index' });
       return;
     }
+    if(!canPublish(user, site, 'reply', thread?.threadData?.threadId)) return;
     this.commentType = 'comment';
 
     this.setState({
@@ -332,7 +333,7 @@ class ThreadH5Page extends React.Component {
   onShareClick = () => {
     if (!this.props.user.isLogin()) {
       Toast.info({ content: '请先登录!' });
-      goToLoginPage({ url: '/subPages/user/wx-auth/index' });
+      goToLoginPage({ url: '/userPages/user/wx-auth/index' });
       return;
     }
 
@@ -345,7 +346,7 @@ class ThreadH5Page extends React.Component {
   onOperClick = (type) => {
     if (!this.props.user.isLogin()) {
       Toast.info({ content: '请先登录!' });
-      goToLoginPage({ url: '/subPages/user/wx-auth/index' });
+      goToLoginPage({ url: '/userPages/user/wx-auth/index' });
       return;
     }
 
@@ -396,9 +397,16 @@ class ThreadH5Page extends React.Component {
   };
 
   // 生成海报
-  onPosterShare() {
+  async onPosterShare() {
     const threadId = this.props.thread?.threadData?.id;
     const threadData = this.props.thread?.threadData;
+
+    const { success, msg } = await this.props.thread.shareThread(threadId, this.props.index, this.props.search, this.props.topic);
+    if (!success) {
+      Toast.error({
+        content: msg,
+      });
+    }
     Taro.eventCenter.once('page:init', () => {
       Taro.eventCenter.trigger('message:detail', threadData);
     });
@@ -513,14 +521,7 @@ class ThreadH5Page extends React.Component {
     this.setState({ showDeletePopup: false });
     const id = this.props.thread?.threadData?.id;
 
-    const { success, msg } = await this.props.thread.delete(
-      id,
-      this.props.index,
-      this.props.search,
-      this.props.topic,
-      this.props.site,
-      this.props.user,
-    );
+    const { success, msg } = await this.props.thread.delete(id);
 
     if (success) {
       Toast.success({
@@ -609,7 +610,7 @@ class ThreadH5Page extends React.Component {
       }
 
       // 更新列表store数据
-      this.props.thread.updateListStore(this.props.index, this.props.search, this.props.topic);
+      this.props.thread.updateListStore();
 
       if (isApproved) {
         Toast.success({
@@ -637,7 +638,7 @@ class ThreadH5Page extends React.Component {
     const id = this.props.thread?.threadData?.id;
     const params = {
       id,
-      pid: this.comment.id,
+      postId: this.comment.id,
       content: val,
       attachments: [],
     };
@@ -683,11 +684,13 @@ class ThreadH5Page extends React.Component {
 
   // 点击评论的回复
   replyClick(comment) {
-    if (!this.props.user.isLogin()) {
+    const {user, site, thread } = this.props;
+    if (!user.isLogin()) {
       Toast.info({ content: '请先登录!' });
-      goToLoginPage({ url: '/subPages/user/wx-auth/index' });
+      goToLoginPage({ url: '/userPages/user/wx-auth/index' });
       return;
     }
+    if(!canPublish(user, site, 'reply', thread?.threadData?.threadId)) return;
     this.commentType = 'reply';
 
     this.commentData = comment;
@@ -703,7 +706,7 @@ class ThreadH5Page extends React.Component {
   replyReplyClick(reply, comment) {
     if (!this.props.user.isLogin()) {
       Toast.info({ content: '请先登录!' });
-      goToLoginPage({ url: '/subPages/user/wx-auth/index' });
+      goToLoginPage({ url: '/userPages/user/wx-auth/index' });
       return;
     }
     this.commentType = 'reply';
@@ -788,12 +791,12 @@ class ThreadH5Page extends React.Component {
     if (floor === 2) {
       const { userId } = reply;
       if (!userId) return;
-      Router.push({ url: `/subPages/user/index?id=${userId}` });
+      Router.push({ url: `/userPages/user/index?id=${userId}` });
     }
     if (floor === 3) {
       const { commentUserId } = reply;
       if (!commentUserId) return;
-      Router.push({ url: `/subPages/user/index?id=${commentUserId}` });
+      Router.push({ url: `/userPages/user/index?id=${commentUserId}` });
     }
   }
 
@@ -809,7 +812,7 @@ class ThreadH5Page extends React.Component {
   async onLikeClick() {
     if (!this.props.user.isLogin()) {
       Toast.info({ content: '请先登录!' });
-      goToLoginPage({ url: '/subPages/user/wx-auth/index' });
+      goToLoginPage({ url: '/userPages/user/wx-auth/index' });
       return;
     }
 
@@ -832,7 +835,7 @@ class ThreadH5Page extends React.Component {
   async onPayClick() {
     if (!this.props.user.isLogin()) {
       Toast.info({ content: '请先登录!' });
-      goToLoginPage({ url: '/subPages/user/wx-auth/index' });
+      goToLoginPage({ url: '/userPages/user/wx-auth/index' });
       return;
     }
 
@@ -843,7 +846,7 @@ class ThreadH5Page extends React.Component {
     if (success && this.props.thread?.threadData?.threadId) {
       await this.props.thread.fetchThreadDetail(this.props.thread?.threadData?.threadId);
       // 更新列表store数据
-      this.props.thread.updateListStore(this.props.index, this.props.search, this.props.topic);
+      this.props.thread.updateListStore();
     }
   }
 
@@ -851,7 +854,7 @@ class ThreadH5Page extends React.Component {
   onRewardClick() {
     if (!this.props.user.isLogin()) {
       Toast.info({ content: '请先登录!' });
-      goToLoginPage({ url: '/subPages/user/wx-auth/index' });
+      goToLoginPage({ url: '/userPages/user/wx-auth/index' });
       return;
     }
 
@@ -871,10 +874,7 @@ class ThreadH5Page extends React.Component {
 
       const { success, msg } = await this.props.thread.rewardPay(
         params,
-        this.props.user,
-        this.props.index,
-        this.props.search,
-        this.props.topic,
+        this.props.user
       );
 
       if (!success) {
@@ -901,7 +901,7 @@ class ThreadH5Page extends React.Component {
   onAboptClick(data) {
     if (!this.props.user.isLogin()) {
       Toast.info({ content: '请先登录!' });
-      goToLoginPage({ url: '/subPages/user/wx-auth/index' });
+      goToLoginPage({ url: '/userPages/user/wx-auth/index' });
       return;
     }
 
@@ -923,7 +923,7 @@ class ThreadH5Page extends React.Component {
 
         // 重新获取帖子详细
         await this.props.thread.fetchThreadDetail(params.threadId);
-        this.props.thread.updateListStore(this.props.index, this.props.search, this.props.topic);
+        this.props.thread.updateListStore();
 
         Toast.success({
           content: `悬赏${data}元`,
@@ -1125,15 +1125,17 @@ class ThreadH5Page extends React.Component {
                   <Icon size="20" name="MessageOutlined"></Icon>
                 </View>
                 <Icon
-                  color={this.props.thread?.threadData?.isLike ? styleVar['--color-primary'] : ''}
-                  className={footer.icon}
+                  className={classNames(footer.icon, {
+                    [footer.isliked]: this.props.thread?.threadData?.isLike,
+                  })}
                   onClick={debounce(() => this.onLikeClick(), 500)}
                   size="20"
                   name="LikeOutlined"
                 ></Icon>
                 <Icon
-                  color={this.props.thread?.isFavorite ? styleVar['--color-primary'] : ''}
-                  className={footer.icon}
+                  className={classNames(footer.icon, {
+                    [footer.isliked]: this.props.thread?.isFavorite,
+                  })}
                   onClick={debounce(() => this.onCollectionClick(), 500)}
                   size="20"
                   name="CollectOutlinedBig"

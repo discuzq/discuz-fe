@@ -17,7 +17,7 @@
 
 // 外部容器
 .amountWrapper {
-  background: var(--color-white);
+  background: $white;
   min-height: rem(280);
   width: rem(409);
   font-size: rem($font-size-large);
@@ -58,7 +58,7 @@
     color: $text-color-secondary;
     text-shadow: 0 -1 0 0;
     &:hover {
-      color: var(--color-info);
+      color: $info-color;
     }
   }
 }

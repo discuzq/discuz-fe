@@ -2,7 +2,7 @@
 
 .titleBox {
   height: rem(53);
-  background-color: var(--color-white);
+  background-color: $white;
   font-size: rem($font-size-primary);
   color: $text-color-regular;
   padding: 0 rem($padding-4n);

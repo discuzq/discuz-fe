@@ -98,6 +98,9 @@ export default class index extends Component {
         this.setState({
           isUploadBackgroundUrl: false,
         });
+      })
+      .finally(() => {
+        this.backgroundUploaderRef.current.value = '';
       });
   };
 

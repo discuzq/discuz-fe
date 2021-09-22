@@ -8,6 +8,7 @@ import Router from '@discuzq/sdk/dist/router';
 import UnreadRedDot from '@components/unread-red-dot';
 
 @inject('user')
+@inject('site')
 @inject('message')
 @observer
 class UserCenterAction extends React.Component {
@@ -26,17 +27,17 @@ class UserCenterAction extends React.Component {
 
   // 点击我的购买
   handleMyBuy = () => {
-    Router.push({ url: '/subPages/my/buy/index' });
+    Router.push({ url: '/userPages/my/buy/index' });
   }
 
   // 点击我的收藏
   handleMyCollect = () => {
-    Router.push({ url: '/subPages/my/collect/index' });
+    Router.push({ url: '/userPages/my/collect/index' });
   }
 
   // 草稿箱
   handleMyDraft = () => {
-    Router.push({ url: '/subPages/my/draft/index' });
+    Router.push({ url: '/userPages/my/draft/index' });
   }
 
   // 点击站点信息
@@ -51,7 +52,7 @@ class UserCenterAction extends React.Component {
 
   // 点击我的屏蔽
   handleMyBlock = () => {
-    Router.push({ url: '/subPages/my/block/index' });
+    Router.push({ url: '/userPages/my/block/index' });
   };
 
   componentDidMount() {
@@ -60,6 +61,7 @@ class UserCenterAction extends React.Component {
 
   render() {
     const { totalUnread } = this.props.message;
+    const { webConfig: { other: { threadOptimize } } } = this.props.site;
     return (
       <View className={styles.userActionMobile}>
         <View className={styles.userCenterAction}>
@@ -106,17 +108,8 @@ class UserCenterAction extends React.Component {
             </View>
           </View>
         </View>
+
         <View className={styles.userCenterAction}>
-          <View onClick={this.handleMyBuy} className={styles.userCenterActionItemContainer}>
-            <View className={styles.userCenterActionItem}>
-              <View className={styles.userCenterActionItemIcon}>
-                <Badge>
-                  <Icon name={'ShoppingCartOutlined'} color={'#4F5A70'} size={20} />
-                </Badge>
-              </View>
-              <View className={styles.userCenterActionItemDesc}>我的购买</View>
-            </View>
-          </View>
 
           <View className={styles.userCenterActionItemContainer}>
             <View onClick={this.handleMyDraft} className={styles.userCenterActionItem}>
@@ -140,6 +133,19 @@ class UserCenterAction extends React.Component {
             </View>
           </View>
 
+          <View onClick={this.handleMyBuy} className={styles.userCenterActionItemContainer}
+            style={threadOptimize ? {} : { visibility: 'hidden', order: 4 }}
+          >
+            <View className={styles.userCenterActionItem}>
+              <View className={styles.userCenterActionItemIcon}>
+                <Badge>
+                  <Icon name={'ShoppingCartOutlined'} color={'#4F5A70'} size={20} />
+                </Badge>
+              </View>
+              <View className={styles.userCenterActionItemDesc}>我的购买</View>
+            </View>
+          </View>
+
           <View className={styles.userCenterActionItemContainer} style={{ visibility: this.props.user.isAdmini && 'hidden' }}>
             <View onClick={this.handleMyInvite} className={styles.userCenterActionItem}>
               <View className={styles.userCenterActionItemIcon}>
@@ -150,7 +156,9 @@ class UserCenterAction extends React.Component {
               <View className={styles.userCenterActionItemDesc}>推广邀请</View>
             </View>
           </View>
+
         </View>
+
       </View>
     );
   }

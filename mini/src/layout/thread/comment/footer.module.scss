@@ -10,12 +10,12 @@
         font-size: 14px;
         line-height: 24px;
         text-align: left;
-        color: #4F5A70;
+        color: $text-color-regular;
       }
     }
     .dzq-input__inner {
       border-radius: 18px;
-      background-color: #fafafb !important;
+      background-color: $text-bg-color !important;
       border: 1px solid #fefefe !important;
       padding-left: 42px !important;
     }

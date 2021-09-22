@@ -22,6 +22,6 @@
   margin-left: rem($padding-4n);
   font-size: $font-size-primary;
   line-height: $font-line-height-primary;
-  color: var(--color-text-secondary);
+  color: $text-color-secondary;
   word-break: keep-all;
 }

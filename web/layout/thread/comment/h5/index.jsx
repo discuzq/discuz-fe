@@ -13,6 +13,7 @@ import InputPopup from '../../h5/components/input-popup';
 import ReportPopup from '../../h5/components/report-popup';
 import goToLoginPage from '@common/utils/go-to-login-page';
 import footer from './footer.module.scss';
+import OperationPopup from '../components/operation-popup';
 
 @inject('site')
 @inject('user')
@@ -30,6 +31,7 @@ class CommentH5Page extends React.Component {
       commentSort: true, // ture 评论从旧到新 false 评论从新到旧
       showDeletePopup: false, // 是否弹出删除弹框
       showReplyDeletePopup: false, // 是否弹出回复删除弹框
+      showOperationPopup: false, // 是否弹出操作内容弹框
       inputText: '请输入内容', // 默认回复框placeholder内容
       showEmojis: false,
       showPicture: false,
@@ -37,6 +39,7 @@ class CommentH5Page extends React.Component {
 
     this.commentData = null;
     this.replyData = null;
+    this.operationData = null;
     this.recordCommentLike = {
       // 记录当前评论点赞状态
       id: null,
@@ -249,7 +252,7 @@ class CommentH5Page extends React.Component {
       goToLoginPage({ url: '/user/login' });
       return;
     }
-    if (!this.props.canPublish()) return ;
+    if (!this.props.canPublish('reply')) return ;
     this.commentData = comment;
     this.replyData = null;
     this.setState({
@@ -265,7 +268,7 @@ class CommentH5Page extends React.Component {
       goToLoginPage({ url: '/user/login' });
       return;
     }
-    if (!this.props.canPublish()) return ;
+    if (!this.props.canPublish('reply')) return;
     this.commentData = null;
     this.replyData = reply;
     this.replyData.commentId = comment.id;
@@ -402,9 +405,78 @@ class CommentH5Page extends React.Component {
     this.setState({ showPicture: true });
     this.replyClick(this.props.comment.commentDetail);
   }
+
+
+  onGotoThread = () => {
+    const { threadId } = this.props.comment;
+    this.props.router.push(`/thread/${threadId}`);
+  }
+
+  // 点击内容
+  onCommentClick = (data) => {
+    this.operationData = data || null;
+    this.setState({showOperationPopup: true});
+  }
+
+  // 点击内容操作框中的选项
+  onOperationClick = (val) => {
+    const commentDetail = this.props.comment.commentDetail;
+    if (!this.props.user.isLogin()) {
+      Toast.info({ content: '请先登录!' });
+      goToLoginPage({ url: '/user/login' });
+      return;
+    }
+    // 回复
+    if (val === 'reply') {
+      if (this.operationData) {
+        this.replyReplyClick(this.operationData, commentDetail);
+      } else {
+        this.replyClick(commentDetail);
+      }
+    };
+    // 复制
+    if (val === 'copy') {
+      if (this.operationData) {
+        this.onCopyClick(this.operationData);
+      } else {
+        this.onCopyClick(commentDetail);
+      }
+    };
+    // 举报
+    if (val === 'report') {
+      this.setState({ showReportPopup: true });
+    }
+    this.setState({showOperationPopup: false});
+  }
+
+  // 点击复制
+  onCopyClick = (data) => {
+    const { content } = data || {};
+    this.copy(content);
+    Toast.success({ content: '复制成功' });
+  }
+
+  // 复制方法
+  copy = (content) => {
+    let oInput = document.createElement('input');
+    oInput.value = content;
+    document.body.appendChild(oInput);
+    oInput.select();
+  
+    oInput.readOnly = true;
+    oInput.id = 'copyInp';
+  
+    document.execCommand('Copy');
+    oInput.setAttribute('onfocus', undefined);
+    oInput.blur();
+    oInput.className = 'oInput';
+    oInput.style.display = 'none';
+  }
+
   render() {
     const { commentDetail: commentData, isReady } = this.props.comment;
     const { isAnonymous } = this.props.thread?.threadData || '';
+    const { query } = this.props.router;
     // 更多弹窗权限
     const morePermissions = {
       // canEdit: commentData?.canEdit,
@@ -460,12 +532,14 @@ class CommentH5Page extends React.Component {
               replyReplyClick={reply => this.replyReplyClick(reply, commentData)}
               replyAvatarClick={(reply, floor) => this.replyAvatarClick(reply, commentData, floor)}
               replyDeleteClick={reply => this.replyDeleteClick(reply, commentData)}
+              onCommentClick={reply => this.onCommentClick(reply)}
               onMoreClick={() => this.onMoreClick()}
               isHideEdit={true}
               threadId={this.props.thread?.threadData?.userId}
               postId={this.props.comment.postId}
               positionRef={this.positionRef}
               isAnonymous={isAnonymous}
+              originThread={query.fromMessage ? <div className={styles.originThread} onClick={this.onGotoThread}>查看原帖</div> : false}
             ></CommentList>
           )}
         </div>
@@ -545,6 +619,13 @@ class CommentH5Page extends React.Component {
             onCancel={() => this.setState({ showReportPopup: false })}
             onOkClick={data => this.onReportOk(data)}
           ></ReportPopup>
+
+          {/* 操作内容弹层 */}
+          <OperationPopup
+            visible={this.state.showOperationPopup}
+            onCancel={() => this.setState({ showOperationPopup: false })}
+            onOperationClick={val => this.onOperationClick(val)}
+          ></OperationPopup>
         </div>
       </div>
     );

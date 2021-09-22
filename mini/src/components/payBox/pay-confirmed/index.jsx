@@ -124,7 +124,7 @@ export default class PayBox extends React.Component {
   }
 
   goSetPayPwa() {
-    Taro.navigateTo({ url: `/subPages/my/edit/paypwd/index?type=paybox` });
+    Taro.navigateTo({ url: `/userPages/my/edit/paypwd/index?type=paybox` });
     this.props.payBox.visible = false;
   }
 

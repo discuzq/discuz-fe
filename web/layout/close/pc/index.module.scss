@@ -17,14 +17,14 @@
     }
     .main{
         margin-top: rem(24);
-        color: var(--color-text-primary);
+        color: $text-color-primary;
         font-size: rem($font-size-large);
         line-height: rem($font-line-height-primary);
         padding: 0 rem(40);
     }
     .sub{
         margin-top: rem(8);
-        color: var(--color-text-secondary);
+        color: $text-color-secondary;
         font-size: rem($font-size-label);
         line-height: rem($font-line-height-primary);
         padding: 0 rem(40);

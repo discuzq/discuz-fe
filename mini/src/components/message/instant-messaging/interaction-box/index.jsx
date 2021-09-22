@@ -47,7 +47,7 @@ const InteractionBox = (props) => {
           />
           <View className={styles.tools}>
             <View>
-              <Icon name="SmilingFaceOutlined" size={20} color={'var(--color-text-secondary)'} onClick={() => {
+              <Icon name="SmilingFaceOutlined" className={styles.icon} size={20} onClick={() => {
                 if (disabledChat) {
                   return Toast.info({ content: `私信已被禁用` });
                 }
@@ -55,7 +55,7 @@ const InteractionBox = (props) => {
               }} />
             </View>
             <View className={styles.pictureUpload}>
-              <Icon name="PictureOutlinedBig" size={20} color={'var(--color-text-secondary)'} onClick={() => {
+              <Icon name="PictureOutlinedBig" size={20} className={styles.icon} onClick={() => {
                 if (disabledChat) {
                   return Toast.info({ content: `私信已被禁用` });
                 }

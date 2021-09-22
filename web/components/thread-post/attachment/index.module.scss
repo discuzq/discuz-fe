@@ -22,12 +22,12 @@
         font-size: 14px;
         line-height: 18px;
         text-align: left;
-        color: #0b0b37;
+        color: $text-color-primary;
       }
       .size {
         margin-left: 8px;
         font-size: 12px;
-        color: #4f5a70;
+        color: $text-color-regular;
       }
     }
   }
@@ -36,7 +36,7 @@
     height: 52px;
     margin: 0 16px;
     font-size: 14px;
-    color: #8590A6;
+    color: $text-color-secondary;
     text-align: center;
     line-height: 52px;
     background: $body-bg-color;

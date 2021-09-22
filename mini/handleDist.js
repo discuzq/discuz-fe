@@ -67,6 +67,7 @@ const miniConfig = require('./src/app.config');
   }
   subPagesAddWxss('./dist/subPages/', 'subPages');
   subPagesAddWxss('./dist/indexPages/', 'indexPages');
+  subPagesAddWxss('./dist/userPages/', 'userPages');
 
 
   // 复制依赖文件
@@ -78,11 +79,24 @@ const miniConfig = require('./src/app.config');
   copy('./dist/indexPages/common.js', './dist/subPages/common.js');
   copy('./dist/indexPages/common.wxss', './dist/subPages/common.wxss');
 
+  copy('./dist/indexPages/common.js', './dist/userPages/common.js');
+  copy('./dist/indexPages/common.wxss', './dist/userPages/common.wxss');
 
+
+  // app.js添加对discuzq.js的引用
   const appjs = './dist/app.js';
   const data = fs.readFileSync(appjs, 'utf8').split(/\r\n|\n|\r/gm);
   data.unshift(`require("./discuzq"),`);
-  fs.writeFileSync(appjs, data.join('\r\n'))
+  fs.writeFileSync(appjs, data.join('\r\n'));
+
+  // 复制生成discuzq.wxss文件
+  fs.rename("./dist/pages/index/index.wxss", "./dist/discuzq.wxss", function() {});
+
+  // app.wxss添加对discuzq.wxss的引用
+  const appwxss = './dist/app.wxss';
+  const wxssData = fs.readFileSync(appwxss, 'utf8').split(/\r\n|\n|\r/gm);
+  wxssData.push(`@import "./discuzq.wxss";`);
+  fs.writeFileSync(appwxss, wxssData.join('\r\n'));
 
 
   console.log('dist目录处理成功，请在微信开发者工具中进行调试！');

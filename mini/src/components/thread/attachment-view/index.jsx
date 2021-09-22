@@ -15,6 +15,7 @@ import { ATTACHMENT_FOLD_COUNT } from '@common/constants';
 import Router from '@discuzq/sdk/dist/router';
 import { readDownloadAttachmentStatus } from '@server';
 import { downloadAttachmentMini } from '@common/utils/download-attachment-mini';
+import goToLoginPage from '@common/utils/go-to-login-page';
 
 /**
  * 附件
@@ -33,8 +34,9 @@ const Index = ({
   thread = null,
   baselayout,
   updateViewCount = noop,
-  canViewAttachment = true,
-  canDownloadAttachment = true,
+  unifyOnClick = null,
+  canViewAttachment = false,
+  canDownloadAttachment = false,
 }) => {
   let downloadUrl = null; // 存放下载链接
   let isDownload = false; // 状态是否允许下载
@@ -87,7 +89,12 @@ const Index = ({
     // 下载需要登录态，判断是否登录
     if (!user.isLogin()) {
       Toast.info({ content: '请先登录!' });
-      goToLoginPage({ url: '/subPages/user/wx-auth/index' });
+      goToLoginPage({ url: '/userPages/user/wx-auth/index' });
+      return;
+    }
+
+    if (!canDownloadAttachment) {
+      Toast.warning({ content: '暂⽆权限下载附件' });
       return;
     }
 
@@ -105,7 +112,7 @@ const Index = ({
         const params = downloadAttachmentParams(url);
         isDownload = await downloadAttachmentStatus(params);
       });
-      
+
       if (!isDownload) return;
 
 
@@ -130,23 +137,23 @@ const Index = ({
 
       Taro.downloadFile({
         url: item.url,
-        success: function (res) {
+        success (res) {
           Taro.openDocument({
             filePath: res.tempFilePath,
-            success: function (res) {
+            success (res) {
               Toast.info({content: "下载成功"});
               // 下载成功后向后端发送一个携带登录态的请求，记录下载次数
               downloadAttachmentMini(downloadUrl);
             },
-            fail: function (error) {
+            fail (error) {
               Toast.info({ content: "小程序暂不支持下载此类文件，请点击“链接”复制下载链接" });
               console.error(error.errMsg)
             },
-            complete: function () {
+            complete () {
             }
           })
         },
-        fail: function (error) {
+        fail (error) {
           if(error?.errMsg.indexOf("domain list") !== -1) {
             Toast.info({ content: "下载链接不在域名列表中" });
           } else if(error?.errMsg.indexOf("invalid url") !== -1) {
@@ -156,7 +163,7 @@ const Index = ({
           }
           console.error(error.errMsg)
         },
-        complete: function () {
+        complete () {
           // downloading[index] = false;
           // setDownloading([...downloading]);
         }
@@ -216,9 +223,9 @@ const Index = ({
 
         Taro.setClipboardData({
           data: url,
-          success: function (res) {
+          success (res) {
             Taro.getClipboardData({
-              success: function (res) {
+              success (res) {
               }
             })
           }
@@ -236,14 +243,12 @@ const Index = ({
   }
 
     // 音频播放
-  const isAttachPlayable = (file) => {
-    return AUDIO_FORMAT.includes(file?.extension?.toUpperCase())
-  };
+  const isAttachPlayable = (file) => AUDIO_FORMAT.includes(file?.extension?.toUpperCase());
 
   const beforeAttachPlay = async (file) => {
     // 该文件已经通过校验，能直接播放
     if (file.readyToPlay) {
-      return true;  
+      return true;
     }
 
     if (!isPay) {
@@ -263,7 +268,7 @@ const Index = ({
     const audioContext = audioRef?.current?.getState()?.audioCtx;
     updateViewCount();
     if( audioContext && baselayout && audioWrapperRef) {
-      
+
       // 暂停之前正在播放的视频
       if(baselayout.playingVideoDom) {
         Taro.createVideoContext(baselayout.playingVideoDom)?.pause();
@@ -296,9 +301,9 @@ const Index = ({
             fileName={fileName}
             onPlay={() => onPlay(audioRef, audioWrapperRef)}
             fileSize={handleFileSize(parseFloat(item.fileSize || 0))}
-            beforePlay={async () => await beforeAttachPlay(item)}
-            onDownload={throttle(() => onDownLoad(item, index), 1000)}
-            onLink={throttle(() => onLinkShare(item), 1000)}
+            beforePlay={unifyOnClick || (async () => await beforeAttachPlay(item))}
+            onDownload={unifyOnClick || (throttle(() => onDownLoad(item, index), 1000))}
+            onLink={unifyOnClick || (throttle(() => onLinkShare(item), 1000))}
           />
         </View>
       );
@@ -316,11 +321,11 @@ const Index = ({
           </View>
 
           <View className={styles.right}>
-            <Text onClick={throttle(() => onLinkShare(item), 1000)}>链接</Text>
+            <Text onClick={unifyOnClick || (throttle(() => onLinkShare(item), 1000))}>链接</Text>
             <View className={styles.label}>
               { downloading[index] ?
                 <Spin className={styles.spinner} type="spinner" /> :
-                <Text onClick={throttle(() => onDownLoad(item, index), 1000)}>下载</Text>
+                <Text onClick={unifyOnClick || (throttle(() => onDownLoad(item, index), 1000))}>下载</Text>
               }
             </View>
           </View>
@@ -329,14 +334,12 @@ const Index = ({
     );
   };
 
-  const Pay = ({ item, index, type }) => {
-    return (
+  const Pay = ({ item, index, type }) => (
       <View className={`${styles.container} ${styles.containerPay}`} key={index} onClick={onPay}>
         <Image src={getAttachmentIconLink(type)} className={styles.containerIcon} mode="widthfix"/>
         <Text className={styles.content}>{item.fileName}</Text>
       </View>
     );
-  };
 
   // 是否展示 查看更多
   const [isShowMore, setIsShowMore] = useState(false);

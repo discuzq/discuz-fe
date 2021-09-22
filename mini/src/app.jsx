@@ -6,9 +6,12 @@ import Router from '@discuzq/sdk/dist/router';
 import setTitle from '@common/utils/setTitle';
 import LoginHelper from '@common/utils/login-helper'
 import { STORAGE_KEY } from '@common/utils/viewcount-in-storage';
-import locals from '@common/utils/local-bridge';
-
 import './app.scss';
+
+// 本地调试时全局引入组件库样式，生产构建时在pages/index中进行引入
+if (process.env.NODE_ENV === 'development') {
+  require('@discuzq/theme/src/index.scss');
+}
 
 class App extends Component {
 

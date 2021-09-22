@@ -9,7 +9,9 @@ import withShare from '@common/utils/withShare/withShare';
 import { priceShare } from '@common/utils/priceShare';
 import { updateViewCountInStorage } from '@common/utils/viewcount-in-storage';
 import Toast from '@components/toast';
+import ShareError from '@components/share-error/index';
 import ErrorMiniPage from '../../layout/error/index';
+import { updateThreadAssignInfoInLists } from '@common/store/thread-list/list-business';
 
 // const MemoToastProvider = React.memo(ToastProvider);
 @inject('site')
@@ -17,8 +19,7 @@ import ErrorMiniPage from '../../layout/error/index';
 @inject('user')
 @inject('commentPosition')
 @inject('index')
-@inject('search')
-@inject('topic')
+@inject('threadList')
 @inject('baselayout')
 @withShare({
   showShareTimeline: true
@@ -28,6 +29,7 @@ class Detail extends React.Component {
     super(props);
     this.state = {
       isServerError: false,
+      serverErrorType: 'error',
       serverErrorMsg: '',
     };
   }
@@ -90,7 +92,7 @@ class Detail extends React.Component {
         }
       );
     }
-    this.props.thread.shareThread(threadId, this.props.index, this.props.search, this.props.topic);
+    this.props.thread.shareThread(threadId);
 
     return (
       priceShare({ isAnonymous, isPrice, path }) || {
@@ -109,15 +111,7 @@ class Detail extends React.Component {
     const viewCount = await updateViewCountInStorage(threadId, viewCountMode === 0);
     if (viewCount) {
       this.props.thread.updateViewCount(viewCount);
-      this.props.index.updateAssignThreadInfo(threadId, {
-        updateType: 'viewCount',
-        updatedInfo: { viewCount },
-      });
-      this.props.search.updateAssignThreadInfo(threadId, {
-        updateType: 'viewCount',
-        updatedInfo: { viewCount },
-      });
-      this.props.topic.updateAssignThreadInfo(threadId, {
+      updateThreadAssignInfoInLists(threadId, {
         updateType: 'viewCount',
         updatedInfo: { viewCount },
       });
@@ -145,24 +139,21 @@ class Detail extends React.Component {
   async getThreadDataFromList(id) {
     if (id) {
       let threadData;
-      // 首页iebook
-      const indexRes = this.props.index.findAssignThread(Number(id));
-      threadData = indexRes?.data;
 
-      // 发现列表
-      if (!threadData) {
-        const searchRes = this.props.search.findAssignThread(Number(id));
-        threadData = searchRes[0]?.data;
-      }
-
-      // 话题列表
-      if (!threadData) {
-        const topicRes = this.props.topic.findAssignThread(Number(id));
-        threadData = topicRes?.data;
+      let listType = '';
+      const targetThreadList = this.props.threadList.findAssignThreadInLists({ threadId: Number(id) });
+      if (targetThreadList?.length) {
+        targetThreadList.forEach((targetThread) => {
+          if (!threadData && targetThread.data) {
+            listType = targetThread.listName;
+            threadData = targetThread.data;
+          }
+        });
       }
 
       if (threadData?.threadId && !threadData?.displayTag?.isRedPack && !threadData?.displayTag?.isReward) {
         this.props.thread.setThreadData(threadData);
+        this.props.thread.setPageDataListType(listType); // 记录使用的是哪个列表数据
       }
     }
   }
@@ -186,6 +177,18 @@ class Detail extends React.Component {
         if (res.code > -5000 && res.code < -4000) {
           this.setState({
             serverErrorMsg: res.msg,
+          });
+        }
+
+        if (res.code === -3001) {
+          this.setState({
+            serverErrorType: 'permission',
+          });
+        }
+
+        if (res.code === -3006) {
+          this.setState({
+            serverErrorType: 'pay',
           });
         }
 
@@ -221,6 +224,9 @@ class Detail extends React.Component {
       };
       this.props.thread.loadCommentList(params);
     }
+
+    // 查询打赏人员列表
+    this.props.thread.queryTipList({ threadId: id, postId, type: 2, page: 1 });
   }
 
   // 判断缓存是否可用
@@ -260,6 +266,12 @@ class Detail extends React.Component {
   }
 
   render() {
+    const options = Taro.getLaunchOptionsSync();
+    const { serverErrorType } = this.state;
+    // 分享朋友圈时，如果页面错误则返回提示
+    if (options && options.scene === 1154 && this.state.isServerError) {
+      return <ShareError type={serverErrorType}/>;
+    }
     return this.state.isServerError ? (
       <ErrorMiniPage text={this.state.serverErrorMsg} />
     ) : (

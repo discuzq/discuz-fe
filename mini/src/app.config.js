@@ -38,6 +38,19 @@ const config = {
         'search/result/index',
         'topic/index',
         'topic/topic-detail/index',
+        'wallet/index',
+        'wallet/frozen/index',
+        'wallet/withdrawal/index',
+        'forum/index',
+        'forum/partner-invite/index',
+        'invite/index',
+        'message/index',
+      ],
+    },
+    {
+      root: 'userPages',
+      pages: [
+        'user/index',
         'user/wx-bind/index',
         'user/wx-select/index',
         'user/wx-bind-username/index',
@@ -51,10 +64,6 @@ const config = {
         'user/reset-password/index',
         'user/rebind/index',
         'user/wx-rebind-action/index',
-        'wallet/index',
-        'wallet/frozen/index',
-        'wallet/withdrawal/index',
-        'message/index',
         'my/index',
         'my/buy/index',
         'my/collect/index',
@@ -71,10 +80,6 @@ const config = {
         'my/fans/index',
         'my/follows/index',
         'my/block/index',
-        'forum/index',
-        'forum/partner-invite/index',
-        'invite/index',
-        'user/index',
         'my/renew/index',
       ],
     },
@@ -93,6 +98,14 @@ const config = {
     'pages/index/index': {
       network: 'all',
       packages: ['indexPages'],
+    },
+    'indexPages/home/index': {
+      network: 'all',
+      packages: ['subPages'],
+    },
+    'indexPages/thread/index': {
+      network: 'all',
+      packages: ['userPages'],
     },
   }
 };

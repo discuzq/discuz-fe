@@ -6,7 +6,7 @@
   height: 25px;
   border-radius: 5px;
   background: #f0f1f3;
-  color: #4f5a70;
+  color: $text-color-regular;
   margin: 9px 8px 9px 0;
   max-width: 70%;
 
@@ -30,6 +30,6 @@
 }
 
 .chose {
-  color: var(--color-primary);
+  color: $primary-color;
   background: #E8F0FE;
 }

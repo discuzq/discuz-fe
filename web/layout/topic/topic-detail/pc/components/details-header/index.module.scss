@@ -8,7 +8,7 @@
   .title {
     font-size: rem($font-size-middle);
     line-height: rem($font-line-height-primary);
-    color: var(--color-primary);
+    color: $primary-color;
     margin-bottom: rem($margin-4n);
     font-weight: 700;
   }
@@ -22,11 +22,11 @@
     }
     .text {
       font-size: rem($font-size-primary);
-      color: var(--color-text-secondary);
+      color: $text-color-secondary;
     }
     .content {
       font-size: rem($font-size-primary);
-      color: var(--color-text-secondary);
+      color: $text-color-secondary;
       padding: 0 rem($padding-2n);
     }
     .share {
@@ -43,7 +43,7 @@
     cursor: pointer;
     a {
       font-size: rem($font-size-primary);
-      color: var(--color-text-secondary);
+      color: $text-color-secondary;
       text-decoration: none;
     }
   }

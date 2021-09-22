@@ -22,7 +22,7 @@
   display: flex;
 
   .userCenterBodyItem {
-    
+
   }
 
   .userCenterBodyRightItem {
@@ -105,7 +105,7 @@
   padding: 0 rem($padding-6n);
   border-top-left-radius: rem($border-radius-small);
   border-top-right-radius: rem($border-radius-small);
-  background: var(--color-white);
+  background: $white;
 }
 
 .MemberShipCardWrapperPc {

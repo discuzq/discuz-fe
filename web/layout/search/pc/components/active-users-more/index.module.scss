@@ -28,23 +28,23 @@
         font-weight: 700;
         font-size: rem($font-size-middle);
         line-height: rem(18);
-        color: var(--color-text-primary);
+        color: $text-color-primary;
         margin-right: rem($margin-2n);
       }
       .group {
         font-size: rem($font-size-primary);
         line-height: rem($font-line-height-small);
-        color: var(--color-text-secondary);
+        color: $text-color-secondary;
       }
     }
     .num {
       display: flex;
       align-items: center;
-      color: var(--color-text-regular);
+      color: $text-color-regular;
       .numItem {
         font-size: rem($font-size-primary);
         line-height: rem($font-line-height-small);
-        color: var(--color-primary);
+        color: $primary-color;
         padding: 0 rem($padding-2n);
         margin-right: rem(1);
         position: relative;
@@ -55,7 +55,7 @@
           content: '|';
           font-size: rem(12);
           line-height: rem($font-line-height-small);
-          color: var(--border-line-color);
+          color: $border-color;
         }
         &:first-child {
           padding-left: 0;
@@ -68,7 +68,7 @@
         }
       }
       .numTitle {
-        color: var(--color-text-regular);
+        color: $text-color-regular;
         margin-right: rem($margin-5);
       }
     }
@@ -88,27 +88,27 @@
     }
 
     .follow {
-      background-color: var(--color-primary);
-      border-color: var(--color-primary);
+      background-color: $primary-color;
+      border-color: $primary-color;
       &:hover {
-        border-color: var(--color-primary);
-        background-color: var(--color-primary);
+        border-color: $primary-color;
+        background-color: $primary-color;
       }
     }
     .isFollow {
-      background-color: var(--color-primary5);
-      border-color: var(--color-primary5);
+      background-color: $primary-disabled-color;
+      border-color: $primary-disabled-color;
       &:hover {
-        background-color: var(--color-primary5);
-        border-color: var(--color-primary5);
+        background-color: $primary-disabled-color;
+        border-color: $primary-disabled-color;
       }
     }
     .withdraw {
-      background-color: var(--color-warn);
-      border-color: var(--color-warn);
+      background-color: $warn-color;
+      border-color: $warn-color;
       &:hover {
-        background-color: var(--color-warn);
-        border-color: var(--color-warn);
+        background-color: $warn-color;
+        border-color: $warn-color;
       }
     }
   }

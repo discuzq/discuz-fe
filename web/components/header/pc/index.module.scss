@@ -14,13 +14,13 @@
       padding: rem($padding-2n) 2%;
     }
     box-sizing: border-box;
-    background: var(--color-white);
+    background: $white;
     position: fixed;
     top: 0;
     left: 0;
     height: rem(60);
     width: 100%;
-    border-bottom: 1px solid var(--border-line-color);
+    border-bottom: 1px solid $border-color;
     z-index: $zindex-backtotop;
     .headerContent {
       max-width: rem(1420);
@@ -89,19 +89,19 @@
             &:hover {
               p,
               div {
-                color: var(--color-primary);
+                color: $primary-color;
               }
             }
             &:not(:last-child) {
               margin-right: rem(32);
             }
             div {
-              color: var(--color-text-secondary);
+              color: $text-color-secondary;
             }
             .iconText {
               font-size: rem($font-size-primary);
               margin-left: rem($margin-2n);
-              color: var(--color-text-regular);
+              color: $text-color-regular
             }
             @include media('xl-pc') {
               .iconText {

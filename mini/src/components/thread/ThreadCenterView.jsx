@@ -7,16 +7,16 @@ import PostContent from './post-content';
 import ProductItem from './product-item';
 import VideoPlay from './video-play';
 import VoteDisplay from './vote-display';
-import { handleAttachmentData } from './utils';
+import { handleAttachmentData , getElementRect, randomStr, noop, handleLink } from './utils';
 import AttachmentView from './attachment-view';
 import ImageDisplay from './image-display';
 import Packet from './packet';
 import styles from './index.module.scss';
 import { View, Text } from '@tarojs/components';
-import { getElementRect, randomStr, noop } from './utils'
+
 
 // 插件引入
-/**DZQ->plugin->register<plugin_index@thread_extension_display_hook>**/
+/** DZQ->plugin->register<plugin_index@thread_extension_display_hook>**/
 
 /**
  * 帖子内容组件
@@ -35,8 +35,10 @@ const Index = (props) => {
     changeHeight = noop,
     useShowMore = true,
     setUseShowMore = noop,
+    setUseCloseMore = noop,
     updateViewCount = noop,
-    onTextItemClick
+    onTextItemClick,
+    unifyOnClick = null,
   } = props;
 
   const {
@@ -81,6 +83,7 @@ const Index = (props) => {
             relativeToViewport={relativeToViewport}
             changeHeight={changeHeight}
             useShowMore={useShowMore}
+            setUseCloseMore={setUseCloseMore}
             setUseShowMore={setUseShowMore}
             onTextItemClick={onTextItemClick}
           />
@@ -110,20 +113,22 @@ const Index = (props) => {
             iframeWhiteList={['bilibili', 'youku', 'iqiyi', 'music.163.com', 'qq.com', 'em.iq.com', 'xigua']}
             onClick={() => { }}
             onImgClick={() => { }}
-            onLinkClick={() => { }}
+            onLinkClick={(node) => {
+              handleLink(node);
+            }}
             transformer={parseDom => parseDom}
           />
         )}
         {imageData?.length ? (
-            <ImageDisplay
-              platform="h5"
-              imgData={imageData}
-              isPay={needPay}
-              onPay={onPay}
-              onClickMore={onClick}
-              relativeToViewport={relativeToViewport}
-              updateViewCount={updateViewCount}
-            />
+          <ImageDisplay
+            platform="h5"
+            imgData={imageData}
+            isPay={needPay}
+            onPay={onPay}
+            onClickMore={onClick}
+            relativeToViewport={relativeToViewport}
+            updateViewCount={updateViewCount}
+          />
         ) : null}
         {rewardData && (
           <Packet
@@ -146,32 +151,31 @@ const Index = (props) => {
             onClick={onClick}
           />
         )}
-        {audioData && <AudioPlay url={audioData.mediaUrl} isPay={needPay} onPay={onPay} updateViewCount={updateViewCount}/>}
-        {fileData?.length ? <AttachmentView 
-            threadId={threadId}
-            attachments={fileData}
-            onPay={onPay}
-            isPay={needPay}
-            updateViewCount={updateViewCount}
-            canViewAttachment={canViewAttachment}
-            canDownloadAttachment={canDownloadAttachment}
-          /> 
+        {audioData && <AudioPlay url={audioData.mediaUrl} isPay={needPay} onPay={onPay} updateViewCount={updateViewCount} />}
+        {fileData?.length ? <AttachmentView
+          threadId={threadId}
+          unifyOnClick={unifyOnClick}
+          attachments={fileData}
+          onPay={onPay}
+          isPay={needPay}
+          updateViewCount={updateViewCount}
+          canViewAttachment={canViewAttachment}
+          canDownloadAttachment={canDownloadAttachment}
+        />
           : null
         }
 
         {/* 投票帖子展示 */}
         {voteData && <VoteDisplay voteData={voteData} updateViewCount={props.updateViewCount} threadId={threadId} />}
         {
-          DZQPluginCenter.injection('plugin_index', 'thread_extension_display_hook').map(({render, pluginInfo}) => {
-            return (
+          DZQPluginCenter.injection('plugin_index', 'thread_extension_display_hook').map(({ render, pluginInfo }) => (
               <View key={pluginInfo.name}>
                 {render({
                   site: props.site,
                   renderData: plugin
                 })}
               </View>
-            )
-          })
+            ))
         }
       </>
     );

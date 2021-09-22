@@ -21,12 +21,14 @@ import IframeVideoDisplay from '@components/thread-post/iframe-video-display';
 
 import Packet from '@components/thread/packet';
 import PacketOpen from '@components/red-packet-animation/web';
+import { withRouter } from 'next/router';
+
 
 // 插件引入
 /**DZQ->plugin->register<plugin_detail@thread_extension_display_hook>**/
 
 // 帖子内容
-export default inject('site', 'user')(observer((props) => {
+export default withRouter(inject('site', 'user')(observer((props) => {
   const { store: threadStore, site } = props;
   const { text, indexes } = threadStore?.threadData?.content || {};
   const { parentCategoryName, categoryName } = threadStore?.threadData;
@@ -75,7 +77,7 @@ export default inject('site', 'user')(observer((props) => {
   // 是否打赏帖
   const isBeReward = isFree && threadStore?.threadData?.ability.canBeReward && !isRedPack && !isReward;
   // 是否显示打赏按钮： 免费帖 && 不是自己 && 不是红包 && 不是悬赏 && 允许被打赏
-  const canBeReward = isFree && threadStore?.threadData?.ability.canBeReward && !isRedPack && !isReward;
+  // const canBeReward = isFree && !isRedPack && !isReward;
   // 是否已打赏
   const isRewarded = threadStore?.threadData?.isReward;
 
@@ -130,6 +132,7 @@ export default inject('site', 'user')(observer((props) => {
     canViewVideo
   } = threadStore?.threadData?.ability || {};
 
+  const { tipList } = threadStore?.threadData || {};
 
   return (
     <div className={`${topic.container}`}>
@@ -201,7 +204,7 @@ export default inject('site', 'user')(observer((props) => {
         {threadStore?.threadData?.title && <div className={topic.title}>{threadStore?.threadData?.title}</div>}
 
         {/* 文字 */}
-        {text && <PostContent useShowMore={false} content={text || ''} usePointer={false} />}
+        {text && <PostContent needShowMore={false} content={text || ''} usePointer={false} />}
 
         {/* 视频 */}
         {parseContent.VIDEO && (
@@ -333,16 +336,16 @@ export default inject('site', 'user')(observer((props) => {
         )}
 
         {
-            DZQPluginCenter.injection('plugin_detail', 'thread_extension_display_hook').map(({render, pluginInfo}) => {
-              return (
-                <div key={pluginInfo.name}>
-                  {render({
-                    site: site,
-                    renderData: parseContent.plugin
-                  })} 
-                </div>
-              )
-            })
+          DZQPluginCenter.injection('plugin_detail', 'thread_extension_display_hook').map(({ render, pluginInfo }) => {
+            return (
+              <div key={pluginInfo.name}>
+                {render({
+                  site: site,
+                  renderData: parseContent.plugin
+                })}
+              </div>
+            )
+          })
         }
 
         {/* 标签 */}
@@ -364,15 +367,28 @@ export default inject('site', 'user')(observer((props) => {
           </div>
         )}
 
-        {/* 打赏 */}
-        {canBeReward && isApproved && !isSelf && (
-          <Button onClick={onRewardClick} className={topic.rewardButton} type="primary" size="large">
-            <div className={topic.buttonIconText}>
-              <Icon className={topic.buttonIcon} name="HeartOutlined" size={19}></Icon>
-              <span className={topic.buttonText}>打赏</span>
+        {/* 打赏 产品说web端全部放开，直接显示 */}
+        <Button onClick={onRewardClick} className={topic.rewardButton} type="primary" size="large">
+          <div className={topic.buttonIconText}>
+            <Icon className={topic.buttonIcon} name="HeartOutlined" size={19}></Icon>
+            <span className={topic.buttonText}>打赏</span>
+          </div>
+        </Button>
+
+        {/* 打赏人员列表 */}
+        {
+          tipList && tipList.length > 0 && (
+            <div className={topic.moneyList}>
+              <div className={topic.top}>{tipList.length}人打赏</div>
+              <div className={topic.itemList}>
+                  {tipList.map(i=>(
+                    <div key={i.userId} onClick={()=>props.router.push(`/user/${i.userId}`)} className={topic.itemAvatar}><img src={i.avatar}></img></div>
+                  ))}
+              </div>
+              <div className={topic.bottom}></div>
             </div>
-          </Button>
-        )}
+          )
+        }
       </div>
 
       {/* 点赞分享 */}
@@ -420,9 +436,8 @@ export default inject('site', 'user')(observer((props) => {
           </div>
         )}
       {
-        hasRedPacket > 0
-        && <PacketOpen onClose={() => threadStore.setRedPacket(0)} money={hasRedPacket} />
+        hasRedPacket > 0 && <PacketOpen onClose={() => threadStore.setRedPacket(0)} money={hasRedPacket} />
       }
     </div>
   );
-}));
+})));

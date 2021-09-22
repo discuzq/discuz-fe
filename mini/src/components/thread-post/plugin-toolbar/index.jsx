@@ -16,7 +16,8 @@ import { THREAD_TYPE } from '@common/constants/thread-post';
 
 
 const Index = inject('site', 'user', 'threadPost')(observer((props) => {
-  const { threadPost, clickCb, onCategoryClick, onSetplugShow, user, operationType } = props;
+  const { threadPost, clickCb, onCategoryClick, onSetplugShow, user, operationType, site } = props;
+  const { webConfig: { other: { threadOptimize } } } = site;
 
   // 控制插件icon的显示/隐藏
   const [plugShow, setplugShow] = useState(false);
@@ -44,6 +45,7 @@ const Index = inject('site', 'user', 'threadPost')(observer((props) => {
     if (item.type === THREAD_TYPE.voice && postData?.audio?.mediaUrl) return activeCls;
     if (item.type === THREAD_TYPE.video && postData?.video?.thumbUrl) return activeCls;
     if (item.type === THREAD_TYPE.image && Object.keys(postData?.images || []).length > 0) return activeCls;
+    if (item.type === THREAD_TYPE.vote && postData?.vote?.voteTitle) return activeCls;
     if (item.type === THREAD_TYPE.anonymity && postData?.anonymous) return activeCls;
     return cls;
   };
@@ -57,6 +59,11 @@ const Index = inject('site', 'user', 'threadPost')(observer((props) => {
       if (item.type === THREAD_TYPE.video || item.type === THREAD_TYPE.voice) {
         canInsert = tep[item.type] && props?.isOpenQcloudVod;
       }
+
+      if (item.type === THREAD_TYPE.reward || item.type === THREAD_TYPE.anonymity || item.type === THREAD_TYPE.goods) {
+        canInsert = tep[item.type] && threadOptimize;
+      }
+
       return canInsert;
     });
     setCanInsertplugsin(canInsert);
@@ -80,20 +87,20 @@ const Index = inject('site', 'user', 'threadPost')(observer((props) => {
     });
 
     // 插件注入 TODO: 暂时注释掉
-    // plugs = plugs.concat(DZQPluginCenter.injection('plugin_post', 'post_extension_entry_hook').map(({render, pluginInfo}) => {
-    //   const clsName = getIconCls(null);
-    //   return (
-    //     <View key={pluginInfo.pluginName} className={clsName}>
-    //       {render({
-    //         site: props.site,
-    //         onConfirm: props.threadPost.setPluginPostData,
-    //         renderData: props.threadPost.postData.plugin,
-    //         showPluginDialog: props.showPluginDialog,
-    //         closePluginDialog: props.closePluginDialog
-    //       })}
-    //     </View>
-    //   )
-    // }));
+    plugs = plugs.concat(DZQPluginCenter.injection('plugin_post', 'post_extension_entry_hook').map(({render, pluginInfo}) => {
+      const clsName = getIconCls(null);
+      return (
+        <View key={pluginInfo.pluginName} className={clsName}>
+          {render({
+            site: props.site,
+            onConfirm: props.threadPost.setPluginPostData,
+            renderData: props.threadPost.postData.plugin,
+            showPluginDialog: props.showPluginDialog,
+            closePluginDialog: props.closePluginDialog
+          })}
+        </View>
+      )
+    }));
 
     return (
       <View className={styles['plugin-icon-container']}>

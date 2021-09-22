@@ -10,6 +10,7 @@ import { withRouter } from 'next/router';
 
 @inject('site')
 @inject('index')
+@inject('threadList')
 @observer
 class Index extends React.Component {
   page = 1;
@@ -38,12 +39,12 @@ class Index extends React.Component {
 
   constructor(props) {
     super(props);
-    const { serverIndex, index } = this.props;
+    const { serverIndex, index, threadList } = this.props;
     this.state = {
       totalCount: 0,
       page: 1,
     };
-    index.registerList({ namespace: 'buy' });
+    threadList.registerList({ namespace: 'buy' });
     if (serverIndex && serverIndex.threads) {
       index.setThreads(serverIndex.threads);
       this.state.page = 2;
@@ -56,10 +57,10 @@ class Index extends React.Component {
 
   async componentDidMount() {
     this.props.router.events.on('routeChangeStart', this.beforeRouterChange);
-    const { index } = this.props;
+    const { index, threadList } = this.props;
     const hasThreadsData = !!index.threads;
     if (!hasThreadsData) {
-      const threadsResp = await index.fetchList({
+      const threadsResp = await threadList.fetchList({
         namespace: 'buy',
         perPage: 10,
         page: this.state.page,
@@ -68,7 +69,7 @@ class Index extends React.Component {
         },
       });
 
-      index.setList({
+      threadList.setList({
         namespace: 'buy',
         data: threadsResp,
         page: this.state.page,
@@ -92,8 +93,8 @@ class Index extends React.Component {
   }
 
   clearStoreThreads = () => {
-    const { index } = this.props;
-    index.clearList({ namespace: 'buy' });
+    const { threadList } = this.props;
+    threadList.clearList({ namespace: 'buy' });
   };
 
   beforeRouterChange = (url) => {
@@ -104,8 +105,8 @@ class Index extends React.Component {
   };
 
   dispatch = async () => {
-    const { index } = this.props;
-    const threadsResp = await index.fetchList({
+    const { threadList } = this.props;
+    const threadsResp = await threadList.fetchList({
       namespace: 'buy',
       perPage: 10,
       page: this.state.page,
@@ -114,7 +115,7 @@ class Index extends React.Component {
       },
     });
 
-    index.setList({
+    threadList.setList({
       namespace: 'buy',
       data: threadsResp,
       page: this.state.page,

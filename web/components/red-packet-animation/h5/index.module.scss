@@ -20,6 +20,7 @@
         background-repeat: no-repeat;
         background-position: 50% 50%;
         border-radius: rem(10);
+        left:5px;
         .moneyText {
             opacity: 0;
             transition: opacity 0.1s linear 0.7s;
@@ -55,7 +56,7 @@
         }
         .open {
             font-size: rem(25);
-            color: #4f5a70;
+            color: $text-color-regular;
         }
         .bottom {
             width: rem(320);

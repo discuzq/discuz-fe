@@ -2,7 +2,7 @@
 @import '@common/styles/index.scss';
 
 .payconfirmWrapper {
-  background: var(--color-white);
+  background: $white;
   // min-height: rem(452);
   width: rem(409);
   font-size: rem($font-size-large);
@@ -162,7 +162,7 @@
     }
     .walletSettingPwd {
       font-size: rem($font-size-primary);
-      color: var(--color-primary3);
+      color: $primary-color3;
       cursor: pointer;
       &:hover {
         text-decoration: underline;
@@ -263,10 +263,10 @@
     }
 
     // &.curr{
-    //   border-color: #C5C6CA;
+    //   border-color: $text-color-placeholder;
     // }
     // &.activation{
-    //   border-color: #C5C6CA;
+    //   border-color: $text-color-placeholder;
     // }
   }
 }

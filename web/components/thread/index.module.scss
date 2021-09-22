@@ -59,7 +59,7 @@
   left: 0;
   top: rem(-16);
   bottom: 0;
-  background-color: rgba($color: #000, $alpha: 0.5);
+  background-color: $mask-bg-color;
   z-index: 10;
   display: flex;
   align-items: center;
@@ -114,9 +114,4 @@
     flex: 1;
     height: auto;
   }
-}
-
-
-.viewMore {
-  padding: 0 0 rem($padding-6n) 0;
 }

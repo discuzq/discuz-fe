@@ -13,9 +13,12 @@ import Router from '@discuzq/sdk/dist/router';
 import PostContent from '@components/thread/post-content';
 import { debounce } from '@common/utils/throttle-debounce';
 import styles from './index.module.scss';
-import redPacketMini from '../../../../../../web/public/dzq-img/redpacket-mini.png';
-import coin from '../../../../../../web/public/dzq-img/coin.png';
+// import redPacketMini from '../../../../../../web/public/dzq-img/redpacket-mini.png';
+// import coin from '../../../../../../web/public/dzq-img/coin.png';
 import ReplyList from '../reply-list/index';
+
+const coin = 'https://imgcache.qq.com/operation/dianshi/other/coin.e66d1d9205f2d6a18b38fe29b733eb109e168504.png';
+const redPacketMini = 'https://imgcache.qq.com/operation/dianshi/other/redpacket-mini.10b46eefd630a5d5d322d6bbc07690ac4536ee2d.png';
 
 @observer
 class CommentList extends React.Component {
@@ -28,10 +31,8 @@ class CommentList extends React.Component {
     this.needReply = this.props?.data?.lastThreeComments; // 评论的回复
   }
 
-  toCommentDetail = () => {
-    if (this.state.isShowOne) {
-      typeof this.props.onCommentClick === 'function' && this.props.onCommentClick();
-    }
+  toCommentDetail = (data) => {
+    typeof this.props.onCommentClick === 'function' && this.props.onCommentClick(data);
   };
 
   filterContent() {
@@ -176,7 +177,7 @@ class CommentList extends React.Component {
                       <Text className={styles.masterText}>作者</Text>
                     </View>
                   )}
-                  {!!groups?.isDisplay  && (
+                  {!!groups?.isDisplay && (
                     <View className={styles.groups}>{groups?.name || groups?.groupName}</View>
                   )}
                 </View>
@@ -206,6 +207,7 @@ class CommentList extends React.Component {
                 ''
               )}
             </View>
+
             {/* 底部操作栏 */}
             {this.props.data?.user && (
               <View className={styles.commentListFooter}>
@@ -217,9 +219,10 @@ class CommentList extends React.Component {
                         赞&nbsp;{this.props?.data?.likeCount > 0 ? this.props.data.likeCount : ''}
                       </Text>
                     </View>
-                    <View className={styles.commentReply}>
-                      <Text onClick={() => this.replyClick()}>回复</Text>
-                    </View>
+                    {!this.props.disabledReply && <View className={styles.commentReply}>
+                        <Text onClick={() => this.replyClick()}>回复</Text>
+                      </View>
+                    }
                     {this.props.isShowAdopt && (
                       <View className={styles.commentAdopt}>
                         <Text onClick={() => this.props.onAboptClick()}>采纳</Text>
@@ -237,6 +240,9 @@ class CommentList extends React.Component {
                     )}
                   </View>
                 </View>
+                {
+                  this.props.originThread || ''
+                }
                 {this.props.data?.replyCount - 1 > 0 && this.state.isShowOne ? (
                   <View className={styles.moreReply} onClick={() => this.toCommentDetail()}>
                     查看之前{this.props.data?.replyCount - 1}条回复...
@@ -251,7 +257,7 @@ class CommentList extends React.Component {
                         data={this.needReply[0]}
                         key={this.needReply[0].id}
                         isShowOne
-                        avatarClick={(floor) => this.replyAvatarClick(this.needReply[0],floor)}
+                        avatarClick={(floor) => this.replyAvatarClick(this.needReply[0], floor)}
                         likeClick={() => this.replyLikeClick(this.needReply[0])}
                         replyClick={() => this.replyReplyClick(this.needReply[0])}
                         deleteClick={() => this.replyDeleteClick(this.needReply[0])}
@@ -268,7 +274,7 @@ class CommentList extends React.Component {
                             likeClick={() => this.replyLikeClick(val)}
                             replyClick={() => this.replyReplyClick(val)}
                             deleteClick={() => this.replyDeleteClick(val)}
-                            toCommentDetail={() => this.toCommentDetail()}
+                            toCommentDetail={() => this.toCommentDetail(val)}
                             active={val.id === this.props.postId}
                             threadId={this.props.threadId}
                             isAnonymous={this.props.isAnonymous}
@@ -280,6 +286,7 @@ class CommentList extends React.Component {
                 )}
               </View>
             )}
+
           </View>
         </View>
       </View>

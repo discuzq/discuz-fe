@@ -15,7 +15,7 @@ import styles from './index.module.scss';
 /**
  * 帖子内容展示
  * @prop {string}   content 内容
- * @prop {boolean}  useShowMore 是否需要"查看更多"
+ * @prop {boolean}  needShowMore 是否需要"查看更多"
  * @prop {function} onRedirectToDetail 跳转到详情页面，当点击内容或查看更多内容超出屏幕时跳转到详情页面
  * @prop {function} onOpen 内容展开事件
  * @prop {function} onTextItemClick 文本内容块点击事件（会覆盖内容里的a跳转）
@@ -23,11 +23,13 @@ import styles from './index.module.scss';
 
 const PostContent = ({
   content,
-  useShowMore = true, // 是否需要"查看更多"
+  needShowMore = true, // 是否需要"查看更多"
+  useShowMore = false,
   onRedirectToDetail = noop,
   customHoverBg = false,
   usePointer = true,
   onOpen = noop,
+  onClose = noop,
   updateViewCount = noop,
   transformer = parsedDom => parsedDom,
   onTextItemClick = null,
@@ -43,11 +45,14 @@ const PostContent = ({
   const [curImageUrl, setCurImageUrl] = useState('');
   const ImagePreviewerRef = useRef(null); // 富文本中的图片也要支持预览
   const contentWrapperRef = useRef(null);
-  let mouseInDrag = false; // 鼠标是否有拖拽行为，比如拖拽选中文本时
+  let mousePosition = { x: 0, y: 0 };
 
   const texts = {
     showMore: '查看更多',
+    closeMore: '折叠',
   };
+
+  const [openedMore, setOpenedMore] = useState(useShowMore);
 
   // 过滤内容
   const filterContent = useMemo(() => {
@@ -65,10 +70,20 @@ const PostContent = ({
         // 内容过长直接跳转到详情页面
         onRedirectToDetail && onRedirectToDetail();
       } else {
+        setOpenedMore(false);
         onOpen();
-        setShowMore(false);
       }
     },
+    [contentTooLong],
+  );
+
+  // 点击收起更多
+  const onShowClose = useCallback(e => {
+    e && e.stopPropagation();
+    setOpenedMore(true);
+    updateViewCount();
+    onClose();
+  },
     [contentTooLong],
   );
 
@@ -77,9 +92,14 @@ const PostContent = ({
     if (e.target.localName === 'a') {
       return;
     }
-    if (mouseInDrag) {
-      return; // 如果有拖拽选中过文件不触发点击事情
+    if (e.pageX !== mousePosition.x || e.pageY !== mousePosition.y) {
+      console.log(e.pageX !== mousePosition.x || e.pageY !== mousePosition.y, e, mousePosition)
+      return; // 如果有拖动行为 不触发点击事情
     }
+    // if (mouseInDrag) {
+    //   console.log(mouseInDrag);
+    //   return; // 如果有拖拽选中过文件不触发点击事情
+    // }
     e && e.stopPropagation();
     // 点击图片不跳转，图片不包含表情
     if (!(e?.target?.getAttribute('src') && e?.target?.className?.indexOf('qq-emotion') === -1)) {
@@ -145,7 +165,7 @@ const PostContent = ({
       setShowMore(true);
     }
     if (length > 1200) { // 超过一页的超长文本
-      if (useShowMore) getCutContentForDisplay(1200);
+      if (openedMore) getCutContentForDisplay(1200);
       setContentTooLong(true);
     } else {
       setContentTooLong(false);
@@ -157,33 +177,25 @@ const PostContent = ({
     }
   }, [filterContent]);
 
+
   return (
     <div className={classnames(styles.container, usePointer ? styles.usePointer : '')} {...props}>
       <div
         ref={contentWrapperRef}
-        className={`${styles.contentWrapper} ${(useShowMore && showMore) ? styles.hideCover : ''} ${customHoverBg ? styles.bg : ''}`}
+        className={`${styles.contentWrapper} ${(openedMore && showMore) ? styles.hideCover : ''} ${customHoverBg ? styles.bg : ''}`}
         onClick={showMore ? onShowMore : handleClick}
-        onMouseMove={() => {
-          mouseInDrag = true;
-        }}
-        onMouseDown={() => {
-          mouseInDrag = false;
-        }}
-        onMouseUp={() => {
-          const tt = setTimeout(() => {
-            mouseInDrag = false;
-            clearTimeout(tt);
-          }, 0);
+        onMouseDown={e => {
+          mousePosition = { x: e.pageX, y: e.pageY }; // 记录一下点击鼠标时的坐标，判断是否有拖动行为
         }}
       >
         <div className={styles.content}>
           <RichText
-            content={useShowMore && cutContentForDisplay ? cutContentForDisplay : urlToLink(filterContent)}
+            content={openedMore && cutContentForDisplay ? cutContentForDisplay : urlToLink(filterContent)}
             onClick={handleClick}
             onImgClick={handleImgClick}
             onLinkClick={handleLinkClick}
             transformer={transformer}
-            iframeWhiteList={['bilibili', 'youku', 'iqiyi', 'music.163.com', 'qq.com']}
+            iframeWhiteList={['bilibili', 'youku', 'iqiyi', 'music.163.com', 'ixigua', 'qq.com', 'myqcloud.com', window.location.hostname]}
           />
           {imageVisible && (
             <ImagePreviewer
@@ -200,14 +212,15 @@ const PostContent = ({
           }
         </div>
       </div>
-      {useShowMore && showMore && (
-        <div className={styles.showMore} onClick={onShowMore}>
-          <div className={styles.hidePercent}>{texts.showMore}</div>
-          <Icon className={styles.icon} name="RightOutlined" size={12} />
+      {needShowMore && showMore && (
+        <div className={styles.showMore} onClick={openedMore ? onShowMore : onShowClose}>
+          {/* {useShowMore + ''} */}
+          <div className={styles.hidePercent}>{texts[openedMore ? 'showMore' : 'closeMore']}</div>
+          <Icon className={openedMore ? styles.icon : styles.icon_d} name="RightOutlined" size={12} />
         </div>
       )}
     </div>
   );
 };
 
-export default React.memo(PostContent);
+export default PostContent;

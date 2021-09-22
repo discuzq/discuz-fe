@@ -22,10 +22,10 @@ export function parseContentData(indexes) {
         if ( typeMap[tomId] ) {
           parseContent[typeMap[tomId]] = body;
         } else {
-          const { _plugin } = body;
+          const { _plugin } = body || {};
           if ( _plugin ) {
             parseContent.plugin[_plugin.name] = {
-              tomId, 
+              tomId,
               body
             };
           }

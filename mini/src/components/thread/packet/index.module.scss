@@ -41,7 +41,7 @@
 }
 
 .root{
-  @include cursor-on-pc; 
+  @include cursor-on-pc;
   margin:0 auto;
 
   @media screen and (max-width: 343px)  {
@@ -107,7 +107,7 @@
   }
 
   .xuanshang{
-  
+
     margin:0 auto;
     width: rem(343);
     height:rem(74);
@@ -117,7 +117,7 @@
     position: relative;
     &::after , &::before{
       content: '';
-      background-color: #fff;
+      background-color: $white;
       width: 8px;
       height:rem(38);
       border-radius: 4px;
@@ -177,14 +177,14 @@
         font-family: "PingFang SC Bold";
         font-weight: bold;
         font-size: rem(16);
-        color: #4f5a70;
+        color: $text-color-regular;
         line-height: rem(42);
         text-align: center;
       }
       &::after ,&::before{
         width: 8px;
         height:8px;
-        background-color: #fff;
+        background-color: $white;
         position: absolute;
         left:-4px;
         content: '';

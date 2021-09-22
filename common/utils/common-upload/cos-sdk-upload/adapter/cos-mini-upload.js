@@ -1,12 +1,9 @@
 import { getCosTmpKey, updateAttachment } from '@common/server';
 import time from '@discuzq/sdk/dist/time';
-// const COS = require('./cos-wx-sdk-v5');
+const COS = require('./cos-wx-sdk-v5');
 
 export default (options) => {
   return new Promise(async (resolve, reject) => {
-
-    reject();
-    return;
 
     const {
       file,

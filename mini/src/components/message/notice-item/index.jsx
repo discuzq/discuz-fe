@@ -101,7 +101,7 @@ class Index extends Component {
       _content = tip + _content;
     }
 
-    let t = xss(s9e.parse(this.filterTag(_content)));
+    let t = xss(s9e.parseEmoji(this.filterTag(_content)));
     t = (typeof t === 'string') ? t : '';
 
     return t;
@@ -111,7 +111,7 @@ class Index extends Component {
   toUserCenter = (e, canJump, item) => {
     e.stopPropagation();
     if (!canJump || !item.nickname || !item.userId) return;
-    Taro.navigateTo({ url: `/subPages/user/index?id=${item.userId}` })
+    Taro.navigateTo({ url: `/userPages/user/index?id=${item.userId}` })
   }
 
   // 跳转主题详情or私信
@@ -122,9 +122,9 @@ class Index extends Component {
       url = `/indexPages/thread/index?id=${item.threadId}`;
     }
     // 处理点击帖子通知 - 回复(携带评论id, 用于评论定位展示)
-    if (item.type === "replied" && item.threadId && item.postId) {
+    if ((item.type === "replied" || item.type === "related") && item.threadId && item.postId) {
       if (item.isReply) {
-        url = `/indexPages/thread/comment/index?id=${item.replyPostId}&threadId=${item.threadId}&postId=${item.postId}`;
+        url = `/indexPages/thread/comment/index?id=${item.replyPostId}&threadId=${item.threadId}&postId=${item.postId}&fromMessage=true`;
       } else {
         url = `/indexPages/thread/index?id=${item.threadId}&postId=${item.postId}`;
       }
@@ -146,7 +146,7 @@ class Index extends Component {
   }
 
   render() {
-    const { type, item = {}, isLast } = this.props;
+    const { type, item = { }, isLast } = this.props;
     const avatarUrl = this.getAvatar(item.avatar);
 
     return (
@@ -231,7 +231,7 @@ Index.propTypes = {
 
 Index.defaultProps = {
   type: 'account',
-  item: {},
+  item: { },
 }
 
 export default Index;

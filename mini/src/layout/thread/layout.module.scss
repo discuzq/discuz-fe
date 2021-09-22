@@ -90,7 +90,7 @@
     }
     .dzq-input__inner {
       &::placeholder {
-        color: #c5c6ca;
+        color: $text-color-placeholder;
       }
     }
   }

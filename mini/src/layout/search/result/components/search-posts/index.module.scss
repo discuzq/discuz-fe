@@ -5,7 +5,7 @@
   }
   .hr {
     height: rem(10);
-    background-color: var(--background-color-text2);
+    background-color: $text-bg-color2;
     margin: 0 rem(-16);
   }
 }

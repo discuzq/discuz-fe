@@ -10,7 +10,7 @@
 .header {
   height: rem(20);
   line-height: rem(20);
-  
+
   font-weight: normal;
   font-size: rem($font-size-primary);
   text-align: left;
@@ -27,16 +27,16 @@
     .dzq-input__inner {
       height: rem(44);
       border: none;
-      
+
       font-weight: 600;
       font-size: rem(30);
       text-align: left;
-      color: #c5c6ca;
+      color: $text-color-placeholder;
     }
   }
 
   .moneyIcon {
-    
+
     font-weight: 600;
     font-size: rem(30);
     text-align: left;
@@ -45,7 +45,7 @@
   }
 
   .moneyIcon-Red {
-    
+
     font-weight: 600;
     font-size: rem(30);
     text-align: left;
@@ -69,7 +69,7 @@
 .leastMoney {
   height: rem(17);
   line-height: rem(17);
-  
+
   font-weight: normal;
   font-size: rem($font-size-label);
   text-align: left;

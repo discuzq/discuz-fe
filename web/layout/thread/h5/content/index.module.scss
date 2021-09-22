@@ -201,3 +201,55 @@
   padding: 0;
   background: none;
 }
+
+.moneyList{
+  text-align: center;
+  width: 243px;
+  margin: 30px auto 0;
+  .top{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color:$text-color-primary;
+    &::after{
+      width: 80px;
+      height: 1px;
+      background-color: #EEEEEE;
+      content: '';
+      margin-left: 15px;
+    }
+    &::before{
+      content: '';
+      width: 80px;
+      height: 1px;
+      background-color: #EEEEEE;
+      margin-right: 15px;
+    }
+  }
+
+  .itemList{
+    padding-top: 15px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    .itemAvatar{
+      margin: 5px 3px 0;
+      >img{
+        width: 24px;
+        height:24px;
+        border-radius: 50%;
+        display: inline-block;
+      }
+    }
+  }
+
+  .bottom{
+      width: 100px;
+      height: 1px;
+      background-color: $primary-color;
+      margin-top: 15px;
+      margin-bottom: 20px;
+      display: inline-block;
+  }
+}

@@ -45,7 +45,7 @@
     .threadCount {
         font-size: rem($font-size-small);
         // 这个目前也没有定义
-        color: var(--color-text-secondary);
+        color: $text-color-secondary;
     }
 }
 

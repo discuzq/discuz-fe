@@ -228,7 +228,7 @@
   .invite_list_itemLine{
     height: rem(1);
     width: calc(100vw - 64px);
-    background: var(--border-line-color);
+    background: $border-color;
     position: absolute;
     left: rem(16);
     bottom: 0;

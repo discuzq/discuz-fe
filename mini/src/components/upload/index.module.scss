@@ -77,7 +77,7 @@ $width: rem(169);
           height: rem(40);
           line-height: rem(40);
           text-align: center;
-          background-color: rgba($color: #000, $alpha: .5);
+          background-color: $mask-bg-color;
         }
 
         .dzq-upload__btntext {

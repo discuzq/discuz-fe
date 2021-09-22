@@ -3,7 +3,7 @@
 .examine {
   width: 100%;
   height: rem(52);
-  background: var(--color-warn9);
+  background: $warn-color9;
   text-align: center;
   line-height: rem(52);
   position: absolute;
@@ -21,7 +21,7 @@
       color: $warn-color;
       vertical-align: middle;
     }
-  
+
     .tipsText {
       margin-left: rem($margin-2n);
       font-size: $font-size-base;

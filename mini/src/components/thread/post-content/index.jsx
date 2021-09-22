@@ -25,14 +25,15 @@ import config from '../../../app.config';
  * @prop {function} onTextItemClick 文本内容块点击事件（会覆盖内容里的a跳转）
  */
 
- const PostContent = ({
+const PostContent = ({
   content,
-  useShowMore = true,
+  useShowMore = false,// 是否需要"查看更多"
   onRedirectToDetail = noop,
   customHoverBg = false,
   relativeToViewport = true,
   changeHeight = noop,
   setUseShowMore = noop,
+  setUseCloseMore = noop,
   updateViewCount = noop,
   transformer = parsedDom => parsedDom,
   onTextItemClick = null,
@@ -52,7 +53,11 @@ import config from '../../../app.config';
 
   const texts = {
     showMore: '查看更多',
+    closeMore: '折叠',
   };
+
+  const [openedMore, setOpenedMore] = useState(useShowMore);
+
   // 过滤内容
   const filterContent = useMemo(() => {
     let newContent = content ? s9e.parse(content) : '';
@@ -68,20 +73,30 @@ import config from '../../../app.config';
       // 内容过长直接跳转到详情页面
       onRedirectToDetail && onRedirectToDetail();
     } else {
-      setUseShowMore()
-      setShowMore(false);
+      setOpenedMore(false);
+      // setUseShowMore()
+      // setShowMore(false);
     }
   }, [contentTooLong]);
 
-  const handleClick = (e, node) => {
+  // 点击收起更多
+  const onCloseMore = useCallback(e => {
     e && e.stopPropagation();
-    const {url, isExternaLink } = handleLink(node)
-    if(isExternaLink) return
+    setOpenedMore(true);
+    // setUseCloseMore();
+  }, [contentTooLong])
+
+
+  const handleClick = (e, node) => {
+    if(node && node.name === 'image') return
+    e && e.stopPropagation();
+    const { url, isExternaLink } = handleLink(node)
+    if (isExternaLink) return
 
     if (url) {
-      Router.push({url})
+      Router.push({ url })
     } else {
-      if(clickedImageId.current !== e.target.id) {
+      if (clickedImageId.current !== e.target.id) {
         onRedirectToDetail()
       }
     }
@@ -102,9 +117,9 @@ import config from '../../../app.config';
 
     // 内链跳转
     let content = e?.children[0]?.data || "";
-    if(content.indexOf("http") === -1) {
+    if (content.indexOf("http") === -1) {
       content = content[0] !== '/' ? '/' + content : content;
-      if(appPageLinks.indexOf(content) !== -1) {
+      if (appPageLinks.indexOf(content) !== -1) {
         Taro.navigateTo({ url: content });
       }
     }
@@ -113,7 +128,7 @@ import config from '../../../app.config';
   // 点击富文本中的图片
   const handleImgClick = (node, event) => {
     updateViewCount();
-    if(node?.attribs?.src) {
+    if (node?.attribs?.src) {
       setImageVisible(true);
       setCurImageUrl(node.attribs.src);
       clickedImageId.current = event?.target?.id;
@@ -126,7 +141,7 @@ import config from '../../../app.config';
     let ctnSubstring = ctn.substring(0, maxContentLength); // 根据长度截断
 
     const cutPoint = (ctnSubstring.lastIndexOf("<img") > 0) ?
-                      ctnSubstring.lastIndexOf("<img") : ctnSubstring.length;
+      ctnSubstring.lastIndexOf("<img") : ctnSubstring.length;
 
     ctnSubstring = ctnSubstring.substring(0, cutPoint);
     setCutContentForDisplay(ctnSubstring);
@@ -136,7 +151,7 @@ import config from '../../../app.config';
     const _text = replaceStringInRegex(text, "emoj", '');
     const images = _text.match(/<img\s+[^<>]*src=[\"\'\\]+([^\"\']*)/gm) || [];
 
-    for(let i = 0; i < images.length; i++) {
+    for (let i = 0; i < images.length; i++) {
       images[i] = images[i].replace(/<img\s+[^<>]*src=[\"\'\\]+/gm, "") || "";
     }
     return images;
@@ -144,9 +159,9 @@ import config from '../../../app.config';
 
   const generateAppRelativePageLinks = () => {
     const pageLinks = [];
-    for(const pkg of config.subPackages) {
+    for (const pkg of config.subPackages) {
       const root = pkg.root;
-      for(const page of pkg.pages) {
+      for (const page of pkg.pages) {
         pageLinks.push(`/${root}/${page}`);
       }
     }
@@ -167,36 +182,36 @@ import config from '../../../app.config';
       setShowMore(true);
     }
     if (length > 1200) { // 超过一页的超长文本
-      if (useShowMore) getCutContentForDisplay(1200);
+      if (openedMore) getCutContentForDisplay(1200);
       setContentTooLong(true);
     } else {
       setContentTooLong(false);
     }
 
     const imageUrlList = getImagesFromText(filterContent);
-    if(imageUrlList.length) {
+    if (imageUrlList.length) {
       setImageUrlList(imageUrlList);
     }
 
     generateAppRelativePageLinks();
 
   }, [filterContent]);
-  
+
   return (
     <View className={styles.container} {...props}>
       <View
         ref={contentWrapperRef}
-        className={`${styles.contentWrapper} ${useShowMore && showMore ? styles.hideCover : ''} ${customHoverBg ? styles.bg : ''}`}
+        className={`${styles.contentWrapper} ${openedMore && showMore ? styles.hideCover : ''} ${customHoverBg ? styles.bg : ''}`}
         onClick={!showMore ? onShowMore : handleClick}
       >
         <View className={styles.content}>
           <RichText
-            content={(useShowMore && cutContentForDisplay) ? cutContentForDisplay : urlToLink(filterContent)}
+            content={(openedMore && cutContentForDisplay) ? cutContentForDisplay : urlToLink(filterContent)}
             onClick={handleClick}
             onImgClick={handleImgClick}
             onLinkClick={handleLinkClick}
             transformer={transformer}
-            iframeWhiteList={['bilibili', 'youku', 'iqiyi', 'music.163.com', 'qq.com']}
+            iframeWhiteList={['bilibili', 'youku', 'iqiyi', 'music.163.com', 'ixigua', 'qq.com', 'myqcloud.com']}
           />
           {imageVisible && (
             <ImagePreviewer
@@ -213,10 +228,10 @@ import config from '../../../app.config';
           }
         </View>
       </View>
-      {useShowMore && showMore && (
-        <View className={styles.showMore} onClick={onShowMore}>
-          <View className={styles.hidePercent}>{texts.showMore}</View>
-          <Icon className={styles.icon} name="RightOutlined" size={12} />
+      { useShowMore && showMore && (
+        <View className={styles.showMore} onClick={openedMore ? onShowMore : onCloseMore}>
+          <View className={styles.hidePercent}>{texts[openedMore ? 'showMore' : 'closeMore']}</View>
+          <Icon className={openedMore ? styles.icon : styles.icon_d} name="RightOutlined" size={12} />
         </View>
       )}
     </View>

@@ -16,10 +16,13 @@ import dynamic from 'next/dynamic';
 import DynamicLoading from '@components/dynamic-loading';
 import { debounce, throttle } from '@common/utils/throttle-debounce.js';
 import Autoplay from '@common/utils/autoplay';
+import PacketOpen from '@components/red-packet-animation/web';
+
 
 @inject('site')
 @inject('user')
 @inject('index')
+@inject('thread')
 @inject('baselayout')
 @observer
 class IndexH5Page extends React.Component {
@@ -218,7 +221,9 @@ class IndexH5Page extends React.Component {
   };
 
   render() {
-    const { index } = this.props;
+    const { index, thread} = this.props;
+    const { hasRedPacket } = thread;
+
     const { isFinished } = this.state;
     const { threads = {}, currentCategories, filter, threadError, sticks } = index;
     const { currentPage, totalPage, pageData } = threads || {};
@@ -267,6 +272,10 @@ class IndexH5Page extends React.Component {
           visible={this.state.visible}
           onSubmit={this.changeFilter}
         />
+
+        {
+          hasRedPacket > 0 && <PacketOpen onClose={() => thread.setRedPacket(0)} money={hasRedPacket} />
+        }
       </BaseLayout>
     );
   }

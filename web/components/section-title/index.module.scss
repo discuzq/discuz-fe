@@ -5,7 +5,7 @@
   justify-content: space-between;
   align-items: center;
   padding: rem($padding-6n) 0;
-  border-bottom: 1px solid var(--border-line-color);
+  border-bottom: 1px solid $border-color;
   box-sizing: border-box;
   background-color: $white;
   .title {
@@ -18,7 +18,7 @@
   justify-content: space-between;
   align-items: center;
   padding: rem($padding-4n) 0;
-  border-bottom: 1px solid var(--border-line-color);
+  border-bottom: 1px solid $border-color;
   box-sizing: border-box;
   background-color: $white;
   .title {
@@ -28,7 +28,7 @@
 .title {
   font-weight: 700;
   line-height: rem($font-line-height-primary);
-  color: var(--color-text-primary);
+  color: $text-color-primary;
   margin-left: rem($padding-2n);
   @include lamp-clamp(1);
 }
@@ -45,7 +45,7 @@
   cursor: pointer;
   .rightIcon {
     margin-left: rem($margin-1n);
-    color: var(--color-text-secondary);
+    color: $text-color-secondary;
   }
 }
 .noMargin {
@@ -56,18 +56,18 @@
   align-items: center;
   @include cursor-on-pc;
   font-size: rem($font-size-primary);
-  color: var(--color-text-primary);
+  color: $text-color-primary;
   line-height: rem($font-line-height-primary);
   &:hover {
-    color: var(--color-primary);
+    color: $primary-color;
     .rightIcon {
-      color: var(--color-primary) !important;
+      color: $primary-color !important;
     }
   }
 }
 .num {
   font-size: rem($font-size-label);
-  color: var(--color-text-secondary);
+  color: $text-color-secondary;
   margin-left: rem($margin-2n);
   line-height: rem($font-line-height-primary);
 }

@@ -12,10 +12,13 @@ import { debounce } from '@common/utils/throttle-debounce.js';
 import styles from './index.module.scss';
 import IndexTabs from './components/tabs'
 import ThreadList from '@components/virtual-list'
+import PacketOpen from '@components/red-packet-animation';
+
 
 @inject('site')
 @inject('user')
 @inject('index')
+@inject('thread')
 @inject('baselayout')
 @observer
 class IndexH5Page extends React.Component {
@@ -127,9 +130,11 @@ class IndexH5Page extends React.Component {
   };
 
   render() {
-    const { index, user } = this.props;
+    const { index, user, thread} = this.props;
+    const { hasRedPacket } = thread;
+
     const { isFinished, isClickTab } = this.state;
-    const { threads = {}, currentCategories, filter, threadError } = index;
+    const { threads = {}, TwoDThreads, currentCategories, filter, threadError } = index;
     const { currentPage = 1, totalPage, pageData } = threads || {};
     return (
       <BaseLayout
@@ -156,7 +161,7 @@ class IndexH5Page extends React.Component {
 
           {
             !this.isNormal ? (
-              <ThreadList data={pageData} isClickTab={isClickTab} wholePageIndex={currentPage - 1}/>
+              <ThreadList data={TwoDThreads} isClickTab={isClickTab} wholePageIndex={currentPage - 1}/>
             ) : (
               pageData?.map((item, index) => (
                 <ThreadContent
@@ -164,6 +169,7 @@ class IndexH5Page extends React.Component {
                   showBottomStyle={index !== pageData.length - 1}
                   data={item}
                   className={styles.listItem}
+                  enableCommentList={true}
                 />
               ))
             )
@@ -178,6 +184,9 @@ class IndexH5Page extends React.Component {
           onSubmit={this.changeFilter}
           permissions={user.threadExtendPermissions}
         />
+        {
+          hasRedPacket > 0 && <PacketOpen onClose={() => thread.setRedPacket(0)} money={hasRedPacket} />
+        }
       </BaseLayout>
     );
   }

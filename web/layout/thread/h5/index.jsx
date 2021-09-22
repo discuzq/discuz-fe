@@ -9,7 +9,7 @@ import footer from './footer.module.scss';
 import NoMore from './components/no-more';
 import LoadingTips from '@components/thread-detail-pc/loading-tips';
 
-import styleVar from '@common/styles/theme/default.scss.json';
+// import styleVar from '@common/styles/theme/default.scss.json';
 import { Icon, Input, Toast } from '@discuzq/design';
 import Header from '@components/header';
 import goToLoginPage from '@common/utils/go-to-login-page';
@@ -43,8 +43,6 @@ import MorePopop from '@components/more-popop';
 @inject('commentPosition')
 @inject('comment')
 @inject('index')
-@inject('topic')
-@inject('search')
 @inject('card')
 @inject('vlist')
 @observer
@@ -127,7 +125,7 @@ class ThreadH5Page extends React.Component {
       if (this.props?.thread?.isPositionToComment) {
         // TODO:需要监听帖子内容加载完成事件
         setTimeout(() => {
-          this.threadBodyRef.current.scrollTo(0, this.position);
+          this.threadBodyRef?.current?.scrollTo(0, this.position);
         }, 1000);
         return;
       }
@@ -231,7 +229,7 @@ class ThreadH5Page extends React.Component {
       goToLoginPage({ url: '/user/login' });
       return;
     }
-    if (!this.props.canPublish()) return;
+    if (!this.props.canPublish('reply')) return;
     this.setState({
       showCommentInput: true,
     });
@@ -374,7 +372,7 @@ class ThreadH5Page extends React.Component {
     const { success, msg } = await this.props.thread.updateEssence(params);
 
     // 更新列表store数据
-    this.props.thread.updateListStore(this.props.index, this.props.search, this.props.topic);
+    this.props.thread.updateListStore();
 
     if (success) {
       Toast.success({
@@ -393,14 +391,7 @@ class ThreadH5Page extends React.Component {
     this.setState({ showDeletePopup: false });
     const id = this.props.thread?.threadData?.id;
 
-    const { success, msg } = await this.props.thread.delete(
-      id,
-      this.props.index,
-      this.props.search,
-      this.props.topic,
-      this.props.site,
-      this.props.user,
-    );
+    const { success, msg } = await this.props.thread.delete(id);
 
     if (success) {
       Toast.success({
@@ -463,7 +454,7 @@ class ThreadH5Page extends React.Component {
       // 更新帖子中的评论数据
       this.props.thread.updatePostCount(this.props.thread.totalCount);
       // 更新列表store数据
-      this.props.thread.updateListStore(this.props.index, this.props.search, this.props.topic);
+      this.props.thread.updateListStore();
 
       // 是否红包帖
       const isRedPack = this.props.thread?.threadData?.displayTag?.isRedPack;
@@ -504,7 +495,7 @@ class ThreadH5Page extends React.Component {
     const id = this.props.thread?.threadData?.id;
     const params = {
       id,
-      pid: this.comment.id,
+      postId: this.comment.id,
       content: val,
       attachments: [],
     };
@@ -564,8 +555,6 @@ class ThreadH5Page extends React.Component {
       params,
       this.props.index,
       this.props.user,
-      this.props.search,
-      this.props.topic,
     );
 
     if (!success) {
@@ -578,8 +567,15 @@ class ThreadH5Page extends React.Component {
   // 分享
   async onShareClick() {
     // 判断是否在微信浏览器
-    if (isWeiXin()) {
-      this.setState({ isShowWeiXinShare: true });
+    if (!isWeiXin()) return;
+    this.setState({ isShowWeiXinShare: true });
+    const data = this.props.thread.threadData;
+    const threadId = data.id;
+    const { success, msg } = await this.props.thread.shareThread(threadId, this.props.index, this.props.search, this.props.topic);
+    if (!success) {
+      Toast.error({
+        content: msg,
+      });
     }
   }
   handleClick = () => {
@@ -603,7 +599,7 @@ class ThreadH5Page extends React.Component {
 
     const id = this.props.thread?.threadData?.id;
 
-    const { success, msg } = await this.props.thread.shareThread(id);
+    const { success, msg } = await this.props.thread.shareThread(id, this.props.index, this.props.search, this.props.topic);
 
     if (!success) {
       Toast.error({
@@ -614,11 +610,20 @@ class ThreadH5Page extends React.Component {
   handleWxShare = () => {
     this.setState({ isShowWeiXinShare: true });
     this.onShareClose();
+    this.onShareClick();
   };
-  createCard = () => {
+  createCard = async () => {
     const data = this.props.thread.threadData;
     const threadId = data.id;
     const { card } = this.props;
+
+    const { success, msg } = await this.props.thread.shareThread(threadId, this.props.index, this.props.search, this.props.topic);
+    if (!success) {
+      Toast.error({
+        content: msg,
+      });
+    }
+
     card.setThreadData(data);
     Router.push({ url: `/card?threadId=${threadId}` });
   };
@@ -637,7 +642,7 @@ class ThreadH5Page extends React.Component {
     if (success && this.props.thread?.threadData?.threadId) {
       await this.props.thread.fetchThreadDetail(this.props.thread?.threadData?.threadId);
       // 更新列表store数据
-      this.props.thread.updateListStore(this.props.index, this.props.search, this.props.topic);
+      this.props.thread.updateListStore();
     }
   }
 
@@ -666,9 +671,6 @@ class ThreadH5Page extends React.Component {
       const { success, msg } = await this.props.thread.rewardPay(
         params,
         this.props.user,
-        this.props.index,
-        this.props.search,
-        this.props.topic,
       );
 
       if (!success) {
@@ -903,15 +905,17 @@ class ThreadH5Page extends React.Component {
                   <Icon size="20" name="MessageOutlined"></Icon>
                 </div>
                 <Icon
-                  color={this.props.thread?.threadData?.isLike ? styleVar['--color-primary'] : ''}
-                  className={footer.icon}
+                  className={classNames(footer.icon, {
+                    [footer.isliked]: this.props.thread?.threadData?.isLike,
+                  })}
                   onClick={debounce(() => this.onLikeClick(), 500)}
                   size="20"
                   name="LikeOutlined"
                 ></Icon>
                 <Icon
-                  color={this.props.thread?.isFavorite ? styleVar['--color-primary'] : ''}
-                  className={footer.icon}
+                  className={classNames(footer.icon, {
+                    [footer.isliked]: this.props.thread?.isFavorite,
+                  })}
                   onClick={debounce(() => this.onCollectionClick(), 500)}
                   size="20"
                   name="CollectOutlinedBig"

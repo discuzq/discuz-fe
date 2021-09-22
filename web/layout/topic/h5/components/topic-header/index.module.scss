@@ -14,7 +14,7 @@
   }
   :global(.dzq-dropdown__trigger) {
     font-size: rem($font-size-primary);
-    color: var(--color-primary);
+    color: $primary-color;
   }
   :global(.dzq-dropdown-menu__item) {
     padding: rem($padding-10) 0;

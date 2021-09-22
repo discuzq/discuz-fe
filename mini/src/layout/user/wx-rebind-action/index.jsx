@@ -11,7 +11,7 @@ import { get } from '@common/utils/get';
 import LoginHelper from '@common/utils/login-helper';
 import HomeHeader from '@components/home-header';
 import styles from './index.module.scss';
-import { getParamCode, getUserProfile } from '../../../subPages/user/common/utils';
+import { getParamCode, getUserProfile } from '../../../userPages/user/common/utils';
 // const MemoToastProvider = React.memo(ToastProvider);
 
 @inject('site')

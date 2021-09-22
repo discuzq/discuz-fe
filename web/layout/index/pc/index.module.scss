@@ -47,7 +47,7 @@
   align-items: center;
   justify-content: center;
   font-size: rem($font-size-primary);
-  color: var(--color-text-secondary);
+  color: $text-color-secondary;
   .spin {
     margin-right: rem(4);
   }

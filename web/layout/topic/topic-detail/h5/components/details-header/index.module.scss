@@ -16,7 +16,7 @@
   .title {
     font-size: rem($font-size-middle);
     line-height: rem(22);
-    color: var(--color-text-primary);
+    color: $text-color-primary;
     font-weight: 700;
   }
   .siteInfo {

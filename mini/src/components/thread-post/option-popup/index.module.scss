@@ -7,7 +7,7 @@
 
     .dzq-popup__container {
       width: 100%;
-      background: var(--color-white);
+      background: $white;
       border-radius: 10px 10px 0 0;
     }
   }
@@ -17,11 +17,11 @@
     font-size: $font-size-middle;
     text-align: center;
     line-height: $font-line-height-small;
-    background: var(--color-white);
+    background: $white;
 
     .item {
       padding: $padding-4n;
-      color: var(--color-text-primary);
+      color: $text-color-primary;
       border-bottom: $border-solid-1;
     }
     .btn {
