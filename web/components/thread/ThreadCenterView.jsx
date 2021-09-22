@@ -50,12 +50,6 @@ const Index = (props) => {
     canViewVideo
   } = props?.data?.ability || {};
 
-    const {
-      canDownloadAttachment,
-      canViewAttachment,
-      canViewVideo
-    } = props?.data?.ability || {};
-
   // 标题显示37个字符
   const newTitle = useMemo(() => {
     if (title.length > 100) {
