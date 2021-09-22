@@ -65,58 +65,57 @@
   .react-datepicker__month {
     margin: $margin-4n;
   }
-}
-
-.react-datepicker__day-name,
-.react-datepicker__day,
-.react-datepicker__time-name {
-  width: 24px !important;
-  height: 24px !important;
-  line-height: 24px !important;
-  margin-left: 10px !important;
-  margin-bottom: 8px !important;
-  margin-top: 8px !important;
-}
-
-.react-datepicker__day:hover,
-.react-datepicker__month-text:hover,
-.react-datepicker__quarter-text:hover,
-.react-datepicker__year-text:hover,
-.react-datepicker__day--keyboard-selected {
-  background-color: $primary-color;
-  border-radius: $border-radius-small;
-  color: $white;
-}
-
-.react-datepicker__day--disabled:hover {
-  background-color: $white;
-  color: $text-color-placeholder;
-}
-
-.react-datepicker__time-list {
-  height: 280px !important;
-}
-
-.react-datepicker__time-list-item {
-  height: 20px;
-  display: flex;
-  align-items: center;
-}
-
-.react-datepicker__time-list-item--selected {
-  height: 20px;
-  background-color: $primary-color !important;
-}
-
-.react-datepicker__navigation {
-  border: $border-radius-big solid transparent;
-
-  &--previous {
-    border-right-color: $border-color;
+  .react-datepicker__day-name,
+  .react-datepicker__day,
+  .react-datepicker__time-name {
+    width: 24px !important;
+    height: 24px !important;
+    line-height: 24px !important;
+    margin-left: 10px !important;
+    margin-bottom: 8px !important;
+    margin-top: 8px !important;
   }
 
-  &--next {
-    border-left-color: $border-color;
+  .react-datepicker__day:hover,
+  .react-datepicker__month-text:hover,
+  .react-datepicker__quarter-text:hover,
+  .react-datepicker__year-text:hover,
+  .react-datepicker__day--keyboard-selected {
+    background-color: $primary-color;
+    border-radius: $border-radius-small;
+    color: $white;
+  }
+
+  .react-datepicker__day--disabled:hover {
+    background-color: $white;
+    color: $text-color-placeholder;
+  }
+
+  .react-datepicker__time-list {
+    height: 280px !important;
+  }
+
+  .react-datepicker__time-list-item {
+    height: 20px;
+    display: flex;
+    align-items: center;
+  }
+
+  .react-datepicker__time-list-item--selected {
+    height: 20px;
+    background-color: $primary-color !important;
+  }
+
+  .react-datepicker__navigation {
+    border: $border-radius-big solid transparent !important;
+
+    &--previous {
+      border-right-color: $border-color !important;
+    }
+
+    &--next {
+      border-left-color: $border-color !important;
+    }
   }
 }
 
