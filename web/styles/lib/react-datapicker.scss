@@ -6,8 +6,8 @@
   border-radius: $border-radius-small;
   overflow: hidden;
 
-  &__header,
-  &-time__header {
+  .react-datepicker__header,
+  .react-datepicker-time__header {
     padding-top: 16px;
     font-size: $font-size-middle;
     border-radius: 0;
@@ -15,54 +15,54 @@
     background: $white;
   }
 
-  &-time__header {
+  .react-datepicker-time__header {
     padding-top: 0;
   }
 
-  &__time-container {
+  .react-datepicker__time-container {
     border-left: $border-solid-1;
   }
 
-  &__current-month,
-  &__day-name {
+  .react-datepicker__current-month,
+  .react-datepicker__day-name {
     font-size: $font-size-middle;
     color: $text-color-primary;
   }
 
-  &__time-container,
-  &__time-box {
+  .react-datepicker__time-container,
+  .react-datepicker__time-box {
     width: 90px;
   }
 
-  &__time-list {
+  .react-datepicker__time-list {
     @include scrollbar();
   }
 
-  &__day--weekend,
-  &__time-list-item,
-  &__day {
+  .react-datepicker__day--weekend,
+  .react-datepicker__time-list-item,
+  .react-datepicker__day {
     font-size: $font-size-base;
     color: $text-color-regular;
   }
 
-  &__day--disabled {
+  .react-datepicker__day--disabled {
     font-size: $font-size-base;
     color: $text-color-placeholder;
   }
 
-  &__day--selected {
+  .react-datepicker__day--selected {
     color: $white;
     background-color: $primary-color;
     border-radius: $border-radius-small;
   }
 
-  &__day--today {
+  .react-datepicker__day--today {
     color: $white;
     background-color: $primary-color6;
     border-radius: $border-radius-small;
   }
 
-  &__month {
+  .react-datepicker__month {
     margin: $margin-4n;
   }
 }
