@@ -21,12 +21,14 @@ import IframeVideoDisplay from '@components/thread-post/iframe-video-display';
 
 import Packet from '@components/thread/packet';
 import PacketOpen from '@components/red-packet-animation/web';
+import { withRouter } from 'next/router';
+
 
 // 插件引入
 /**DZQ->plugin->register<plugin_detail@thread_extension_display_hook>**/
 
 // 帖子内容
-export default inject('site', 'user')(observer((props) => {
+export default withRouter(inject('site', 'user')(observer((props) => {
   const { store: threadStore, site } = props;
   const { text, indexes } = threadStore?.threadData?.content || {};
   const { parentCategoryName, categoryName } = threadStore?.threadData;
@@ -130,6 +132,7 @@ export default inject('site', 'user')(observer((props) => {
     canViewVideo
   } = threadStore?.threadData?.ability || {};
 
+  const { tipList } = threadStore?.threadData || {};
 
   return (
     <div className={`${topic.container}`}>
@@ -371,6 +374,21 @@ export default inject('site', 'user')(observer((props) => {
             <span className={topic.buttonText}>打赏</span>
           </div>
         </Button>
+
+        {/* 打赏人员列表 */}
+        {
+          tipList && tipList.length > 0 && (
+            <div className={topic.moneyList}>
+              <div className={topic.top}>{tipList.length}人打赏</div>
+              <div className={topic.itemList}>
+                  {tipList.map(i=>(
+                    <div key={i.userId} onClick={()=>props.router.push(`/user/${i.userId}`)} className={topic.itemAvatar}><img src={i.avatar}></img></div>
+                  ))}
+              </div>
+              <div className={topic.bottom}></div>
+            </div>
+          )
+        }
       </div>
 
       {/* 点赞分享 */}
@@ -422,4 +440,4 @@ export default inject('site', 'user')(observer((props) => {
       }
     </div>
   );
-}));
+})));

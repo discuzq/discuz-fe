@@ -111,7 +111,6 @@ const Index = ({ visible = false, onHidden = () => {}, tipData = {}, router, isC
   };
 
   const loadMoreData = () => {
-
     if (current === 0) {
       allPageNum.current += 1;
       return singleLoadData({ page: allPageNum.current, type: current });

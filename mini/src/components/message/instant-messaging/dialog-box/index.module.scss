@@ -167,6 +167,12 @@
       right: -20px;
     }
   }
+  .msgSelect{
+    background-color: $body-bg-select2 !important;
+    &:before{
+      border-left-color: $body-bg-select2 !important;
+    }
+  }
 }
 
 .itself {
@@ -184,6 +190,12 @@
     &:before {
       border-right-color: $comment-bg-color;
       left: -20px;
+    }
+  }
+  .msgSelect{
+    background-color: $body-bg-select !important;
+    &:before{
+      border-right-color: $body-bg-select !important;
     }
   }
 }

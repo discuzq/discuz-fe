@@ -351,7 +351,7 @@ function avatar(props) {
   }
 
   return (
-    <div className={styles.avatarBox} onMouseEnter={onMouseEnterHandler} onMouseLeave={onMouseLeaveHandler}>
+    <div className={`${styles.avatarBox} ${wrapClassName}`} onMouseEnter={onMouseEnterHandler} onMouseLeave={onMouseLeaveHandler}>
       <div onClick={clickAvatar} ref={referenceElement}>
         <Avatar className={className} circle={circle} text={userName} size={size} onClick={clickAvatar}></Avatar>
         {userTypeIcon && (

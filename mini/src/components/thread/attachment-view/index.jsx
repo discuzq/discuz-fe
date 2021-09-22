@@ -98,6 +98,11 @@ const Index = ({
       return;
     }
 
+    if (!canDownloadAttachment) {
+      Toast.warning({ content: '暂⽆权限下载附件' });
+      return;
+    }
+
     if (!isPay) {
       if(!item || !threadId) return;
       const attachmentId = item.id;
@@ -132,23 +137,23 @@ const Index = ({
 
       Taro.downloadFile({
         url: item.url,
-        success: function (res) {
+        success (res) {
           Taro.openDocument({
             filePath: res.tempFilePath,
-            success: function (res) {
+            success (res) {
               Toast.info({content: "下载成功"});
               // 下载成功后向后端发送一个携带登录态的请求，记录下载次数
               downloadAttachmentMini(downloadUrl);
             },
-            fail: function (error) {
+            fail (error) {
               Toast.info({ content: "小程序暂不支持下载此类文件，请点击“链接”复制下载链接" });
               console.error(error.errMsg)
             },
-            complete: function () {
+            complete () {
             }
           })
         },
-        fail: function (error) {
+        fail (error) {
           if(error?.errMsg.indexOf("domain list") !== -1) {
             Toast.info({ content: "下载链接不在域名列表中" });
           } else if(error?.errMsg.indexOf("invalid url") !== -1) {
@@ -158,7 +163,7 @@ const Index = ({
           }
           console.error(error.errMsg)
         },
-        complete: function () {
+        complete () {
           // downloading[index] = false;
           // setDownloading([...downloading]);
         }
@@ -218,9 +223,9 @@ const Index = ({
 
         Taro.setClipboardData({
           data: url,
-          success: function (res) {
+          success (res) {
             Taro.getClipboardData({
-              success: function (res) {
+              success (res) {
               }
             })
           }
@@ -238,9 +243,7 @@ const Index = ({
   }
 
     // 音频播放
-  const isAttachPlayable = (file) => {
-    return AUDIO_FORMAT.includes(file?.extension?.toUpperCase())
-  };
+  const isAttachPlayable = (file) => AUDIO_FORMAT.includes(file?.extension?.toUpperCase());
 
   const beforeAttachPlay = async (file) => {
     // 该文件已经通过校验，能直接播放
@@ -331,14 +334,12 @@ const Index = ({
     );
   };
 
-  const Pay = ({ item, index, type }) => {
-    return (
+  const Pay = ({ item, index, type }) => (
       <View className={`${styles.container} ${styles.containerPay}`} key={index} onClick={onPay}>
         <Image src={getAttachmentIconLink(type)} className={styles.containerIcon} mode="widthfix"/>
         <Text className={styles.content}>{item.fileName}</Text>
       </View>
     );
-  };
 
   // 是否展示 查看更多
   const [isShowMore, setIsShowMore] = useState(false);
