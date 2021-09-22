@@ -175,7 +175,8 @@
       padding: 0 $padding-6n;
     }
     .dzq-modal__body {
-      height: calc(100vh - 120px);
+      height: calc(100vh - 120px - constant(safe-area-inset-bottom));
+      height: calc(100vh - 120px - env(safe-area-inset-bottom));
       overflow-y: scroll;
       overflow-x: hidden;
     }
@@ -194,6 +195,9 @@
 }
 .dzqp-act.mini {
   :global {
+    .dzq-modal__container {
+      padding-top: 0;
+    }
     .dzq-modal__header {
       padding: 0;
       height: 40px;
@@ -206,7 +210,8 @@
       display: none;
     }
     .dzq-modal__body {
-      height: calc(100vh - 140px);
+      height: calc(100vh - 130px - constant(safe-area-inset-bottom));
+      height: calc(100vh - 130px - env(safe-area-inset-bottom));
     }
   }
 }

@@ -24,12 +24,13 @@ export default class CustomApplyEntry extends React.Component {
     const { siteData } = this.props;
     const { navInfo = {} } = siteData.threadPost || {};
     const navStyle = {
-      paddingTop: `${navInfo.statusBarHeight}px`,
+      marginTop: `${navInfo.statusBarHeight}px`,
+      height: `${navInfo.navHeight}px`,
     };
     Dialog.confirm({
       isNew: true,
       className: classNames(styles['dzqp-act'], styles.h5, styles.mini),
-      style: navStyle,
+      headerStyle: navStyle,
       title: '创建活动报名',
       content: <CustomApplyEntryContent {...this.props} onChange={this.change} />,
       onConfirm: this.handleDialogConfirm,
