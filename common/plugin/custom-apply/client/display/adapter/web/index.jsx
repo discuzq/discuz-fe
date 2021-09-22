@@ -186,7 +186,7 @@ class CustomApplyDisplay extends React.Component {
                 <span className={styles['wrapper-tip_detail']}>{ body?.position?.location }</span>
               </div>
             </div>)}
-            {body?.totalNumber && (
+            {body?.totalNumber !== 0 && (
               <div className={styles['wrapper-content__limit']}>
                 限<span className={styles['text-primary']}>{body?.totalNumber}</span>人参与
               </div>
