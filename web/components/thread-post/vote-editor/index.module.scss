@@ -27,6 +27,7 @@
   }
   .label {
     color: $text-color-regular;
+    min-width: 28px;
 
     .tips {
       margin-left: 8px;
