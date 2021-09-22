@@ -7,16 +7,16 @@ import PostContent from './post-content';
 import ProductItem from './product-item';
 import VideoPlay from './video-play';
 import VoteDisplay from './vote-display';
-import { handleAttachmentData } from './utils';
+import { handleAttachmentData , getElementRect, randomStr, noop, handleLink } from './utils';
 import AttachmentView from './attachment-view';
 import ImageDisplay from './image-display';
 import Packet from './packet';
 import styles from './index.module.scss';
 import { View, Text } from '@tarojs/components';
-import { getElementRect, randomStr, noop, handleLink } from './utils'
+
 
 // 插件引入
-/**DZQ->plugin->register<plugin_index@thread_extension_display_hook>**/
+/** DZQ->plugin->register<plugin_index@thread_extension_display_hook>**/
 
 /**
  * 帖子内容组件
@@ -168,16 +168,14 @@ const Index = (props) => {
         {/* 投票帖子展示 */}
         {voteData && <VoteDisplay voteData={voteData} updateViewCount={props.updateViewCount} threadId={threadId} />}
         {
-          DZQPluginCenter.injection('plugin_index', 'thread_extension_display_hook').map(({ render, pluginInfo }) => {
-            return (
+          DZQPluginCenter.injection('plugin_index', 'thread_extension_display_hook').map(({ render, pluginInfo }) => (
               <View key={pluginInfo.name}>
                 {render({
                   site: props.site,
                   renderData: plugin
                 })}
               </View>
-            )
-          })
+            ))
         }
       </>
     );

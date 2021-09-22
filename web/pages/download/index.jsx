@@ -3,11 +3,11 @@ import { inject, observer } from 'mobx-react';
 import { Toast } from '@discuzq/design';
 import isWeiXin from '@common/utils/is-weixin';
 import Router from '@discuzq/sdk/dist/router';
-import { readDownloadAttachmentStatus } from '@server';
+import { readDownloadAttachmentStatus, readThreadDetail } from '@server';
 import goToLoginPage from '@common/utils/go-to-login-page';
 import HOCFetchSiteData from '@middleware/HOCFetchSiteData';
 import { downloadAttachment } from '@common/utils/download-attachment-web';
-import { readThreadDetail } from '@server';
+
 import { parseContentData } from '@layout/thread/utils';
 
 
@@ -53,9 +53,9 @@ class Download extends React.Component {
     const attachmentUrl = this.getAttachmentLink(attachmentsId, attachment);
     const params = {
       sign: paramArr[0].split('=')[1],
-      attachmentsId: attachmentsId,
+      attachmentsId,
       isCode: 1,
-    }
+    };
     // 获取链接状态，先判断链接是否可以下载文件
     const isDownload = await this.downloadAttachmentStatus(params);
     if (isDownload) {
@@ -71,8 +71,8 @@ class Download extends React.Component {
       const parseContent = parseContentData(res?.data?.content?.indexes);
       return {
         canDownloadAttachment: res?.data?.ability?.canDownloadAttachment,
-        attachment: parseContent && parseContent.VOTE
-      }
+        attachment: parseContent && parseContent.VOTE,
+      };
     }
   }
 
@@ -108,7 +108,7 @@ class Download extends React.Component {
     }
     return false;
   }
-  
+
   render() {
     return <div></div>;
   }
