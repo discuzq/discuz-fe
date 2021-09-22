@@ -207,7 +207,7 @@ class Index extends Component {
 
   // 从本地缓存中获取数据
   getPostDataFromLocal = () => localData.getThreadPostDataLocal(
-    this.props.user.userInfo.id,
+    this.props.user.userInfo?.id,
     this.inst.router.params.id,
   );
 

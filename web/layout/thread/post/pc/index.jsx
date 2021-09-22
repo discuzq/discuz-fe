@@ -267,7 +267,6 @@ class ThreadPCPage extends React.Component {
 
                   {
                     DZQPluginCenter.injection('plugin_post', 'post_extension_content_hook').map(({render, pluginInfo}) => {
-
                       return (
                         <div key={pluginInfo.pluginName}>
                           {render({
@@ -346,6 +345,7 @@ class ThreadPCPage extends React.Component {
                   pc
                   isOpenQcloudVod={this.props.site.isOpenQcloudVod}
                   site={this.props.site}
+                  threadPost={this.props.threadPost}
                   postData={postData}
                   onAttachClick={(item, ...props) => {
                     this.hintHide();

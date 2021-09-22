@@ -286,8 +286,8 @@ const RenderThreadContent = withRouter(inject('site', 'user')(observer((props) =
             DZQPluginCenter.injection('plugin_detail', 'thread_extension_display_hook').map(({ render, pluginInfo }) => (
                 <div key={pluginInfo.name}>
                   {render({
-                    site,
-                    renderData: parseContent.plugin,
+                    site: { ...site, isDetailPage: true  },
+                    renderData: parseContent.plugin
                   })}
                 </div>
             ))

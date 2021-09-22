@@ -3,5 +3,6 @@
     "version": "1.0.0",
     "target": ["plugin_index", "plugin_detail"],
     "hookName": "thread_extension_display_hook",
-    "platform": ["pc", "h5", "mini"]
+    "platform": ["pc", "h5", "mini"],
+    "disables": true
 }

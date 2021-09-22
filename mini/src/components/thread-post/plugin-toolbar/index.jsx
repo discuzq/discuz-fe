@@ -86,13 +86,13 @@ const Index = inject('site', 'user', 'threadPost')(observer((props) => {
       );
     });
 
-    // 插件注入 TODO: 暂时注释掉
+    // 插件注入
     plugs = plugs.concat(DZQPluginCenter.injection('plugin_post', 'post_extension_entry_hook').map(({render, pluginInfo}) => {
       const clsName = getIconCls(null);
       return (
         <View key={pluginInfo.pluginName} className={clsName}>
           {render({
-            site: props.site,
+            site: { ...props.site, threadPost: props.threadPost },
             onConfirm: props.threadPost.setPluginPostData,
             renderData: props.threadPost.postData.plugin,
             showPluginDialog: props.showPluginDialog,

@@ -8,6 +8,7 @@ import HOCFetchSiteData from '../middleware/HOCFetchSiteData';
 import ViewAdapter from '@components/view-adapter';
 import isServer from '@common/utils/is-server';
 import browser from '@common/utils/browser';
+import getRouterCategory from '@common/utils/getRouterCategory';
 
 @inject('site')
 @inject('index')
@@ -25,37 +26,48 @@ class Index extends React.Component {
 
   page = 1;
   prePage = 10;
-  // static async getInitialProps(ctx, { user, site }) {
-  //   const categories = await readCategories({}, ctx);
-  //   const sticks = await readStickList({}, ctx);
+  static async getInitialProps(ctx, { user, site }) {
+    const result = getRouterCategory(ctx, site);
+    const { essence = 0, sequence = 0, attention = 0, sort = 1 } = result;
+    const newTypes = handleString2Arr(result, 'types');
 
-  //   const threads = await readThreadList({ params: { filter: {
-  //     sort: 1,
-  //     attention: 0,
-  //     essence: 0
-  //   }, sequence: 0, perPage: 10, page: 1 } }, ctx);
+    const categoryIds = handleString2Arr(result, 'categoryids');
 
-  //   return {
-  //     serverIndex: {
-  //       categories: categories && categories.code === 0 ? categories.data : null,
-  //       sticks: sticks && sticks.code === 0 ? sticks.data : null,
-  //       threads: threads && threads.code === 0 ? threads.data : null,
-  //     },
-  //   };
-  // }
+    const categories = await readCategories({}, ctx);
+    const sticks = await readStickList({ params: { categoryIds } }, ctx);
+    const threads = await readThreadList({
+      params: {
+        perPage: 10,
+        page: 1,
+        sequence,
+        filter: { categoryids: categoryIds, types: newTypes, essence, attention, sort },
+      },
+    }, ctx);
+
+    return {
+      serverIndex: {
+        categories: categories && categories.code === 0 ? categories.data : null,
+        sticks: sticks && sticks.code === 0 ? sticks.data : null,
+        threads: threads && threads.code === 0 ? threads.data : null,
+      },
+    };
+  }
 
   constructor(props) {
     super(props);
     const { serverIndex, index, threadList } = this.props;
     threadList.registerList({ namespace: index.namespace });
+
+    this.handleRouterCategory()
+    // console.log(serverIndex.threads);
+    // const { serverIndex, index } = this.props;
     // 初始化数据到store中
-    // serverIndex && serverIndex.categories && index.setCategories(serverIndex.categories);
-    // serverIndex && serverIndex.sticks && index.setSticks(serverIndex.sticks);
-    // serverIndex && serverIndex.threads && index.setThreads(serverIndex.threads);
+    serverIndex && serverIndex.categories && index.setCategories(serverIndex.categories);
+    serverIndex && serverIndex.sticks && index.setSticks(serverIndex.sticks);
+    serverIndex && serverIndex.threads && index.setThreads(serverIndex.threads);
   }
 
   componentDidMount() {
-    this.handleRouterCategory()
 
     const { index } = this.props;
     const { essence = 0, sequence = 0, attention = 0, sort = 1 } = index.filter;
@@ -92,44 +104,14 @@ class Index extends React.Component {
     // 识别通过分享过来的url
     // 若包含categoryId参数，则定位到具体的categoryId数据
     const { router, index, site } = this.props;
-    let { categoryId = '', sequence = '0' } = router.query || {}
 
-    // 路由中带值
-    if (categoryId || sequence !== '0') {
-      let ids = categoryId.split('_').map(item => {
-        // 判断categoryId是否是数字。可能是all/default
-        const id = /^\d+$/.test(item) ? Number(item) : item
+    const result = getRouterCategory(router, site);
+    const { categoryids, sequence } = result;
+    index.topMenuIndex = `${sequence}`
+    index.setFilter(result);
 
-        return id
-      }).filter(item => item)
+    !isServer() && this.setUrl(categoryids, sequence);
 
-      // H5处理方案
-      if (sequence === '1' && !ids?.length && site.platform === 'h5') {
-        ids = ['default']
-      }
-
-      if (ids.indexOf('default') !== -1 && sequence === '0' && site.platform === 'h5') {
-        sequence = '1'
-      }
-
-      // PC处理方案
-      if (!ids?.length && site.platform === 'pc') {
-        ids = ['all']
-      }
-
-      // 设置PC端顶部
-      if (sequence !== '0' && site.platform === 'pc') {
-        index.topMenuIndex = `${sequence}`
-      }
-
-      const newFilter = { ...index.filter, categoryids: ids, sequence };
-
-      index.setFilter(newFilter);
-    } else {
-      // 路由中不带值，从store中获取
-      const { categoryids, sequence: seq } = index.filter || {}
-      this.setUrl(categoryids, seq)
-    }
   }
 
   // 根据选中的筛选项，设置地址栏 

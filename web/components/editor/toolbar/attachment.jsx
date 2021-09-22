@@ -217,13 +217,13 @@ function AttachmentToolbar(props) {
       ) : null;
     });
 
-    // 插件注入 TODO: 暂时注释掉
+    // 插件注入
     defaultEntryList = defaultEntryList.concat(DZQPluginCenter.injection('plugin_post', 'post_extension_entry_hook').map(({render, pluginInfo}) => {
       const clsName = getIconCls(null);
       return (
         <div key={pluginInfo.pluginName} className={clsName}>
           {render({
-            site: props.site,
+            site: { ...props.site },
             onConfirm: props.onPluginSetPostData,
             renderData: props.postData.plugin
           })}

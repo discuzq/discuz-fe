@@ -302,7 +302,7 @@ const RenderThreadContent = inject('site', 'user')(
             DZQPluginCenter.injection('plugin_detail', 'thread_extension_display_hook').map(({ render, pluginInfo }) => (
                 <View key={pluginInfo.name}>
                   {render({
-                    site,
+                    site: { ...site, isDetailPage: true  },
                     renderData: parseContent.plugin
                   })}
                 </View>
@@ -350,7 +350,7 @@ const RenderThreadContent = inject('site', 'user')(
               </View>
             )
           }
-          
+
         </View>
 
         {isApproved && (

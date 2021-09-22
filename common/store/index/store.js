@@ -55,7 +55,13 @@ class IndexStore {
   set threads(data) {
     if (!data) {
       this.threadList.clearList({ namespace: this.namespace });
+      return;
     }
+    this.threadList.setList({
+      namespace: this.namespace,
+      data: { data },
+      page: data.currentPage,
+    });
   }
 
   @computed get hasThreadsData() {

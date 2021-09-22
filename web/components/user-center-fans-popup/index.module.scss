@@ -39,21 +39,21 @@
     .dzq-divider {
       margin: 0;
     }
-  } 
+  }
  }
 
 
-:global {
-  .dzq-modal__container {
-    padding: {
-      left: rem(8);
-      right: rem(8);
-      top: 0;
-      bottom: 0;
-    }
-  }
+// :global {
+//   .dzq-modal__container {
+//     padding: {
+//       left: rem(8);
+//       right: rem(8);
+//       top: 0;
+//       bottom: 0;
+//     }
+//   }
 
-  .dzq-modal__body {
-    padding: 0;
-  }
-}
+//   .dzq-modal__body {
+//     padding: 0;
+//   }
+// }

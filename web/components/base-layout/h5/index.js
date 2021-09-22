@@ -7,7 +7,7 @@ import { PullDownRefresh } from '@discuzq/design';
 import { noop } from '@components/thread/utils';
 import BacktoTop from '@components/list/backto-top';
 import styles from './index.module.scss';
-
+import isServer from '@common/utils/is-server';
 /**
 * PC端集成布局组件
 * @prop {function} children 内容区域中间视图组件
@@ -39,7 +39,7 @@ const BaseLayout = forwardRef((props, ref) => {
     footer,
     disabledList = false,
   } = props;
-  const winHeight = window.innerHeight;
+  const winHeight = isServer() ? 667 : window.innerHeight;
   const [height, setHeight] = useState(600);
 
   const pullDownWrapper = useRef(null);

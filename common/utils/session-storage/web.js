@@ -5,9 +5,15 @@ export default class Storage {
 
     const isBrowser = typeof window !== 'undefined';
     if(storageType === "local") {
-      this.storage = isBrowser ? window.localStorage : {};
+      this.storage = isBrowser ? window.localStorage : {
+        setItem: () => {},
+        getItem: () => {}
+      };
     } else {
-      this.storage = isBrowser ? window.sessionStorage : {};
+      this.storage = isBrowser ? window.sessionStorage : {
+        setItem: () => {},
+        getItem: () => {}
+      };
     }
   }
 

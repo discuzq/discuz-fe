@@ -33,7 +33,6 @@ class CopyRight extends React.Component {
     marginTop !== undefined && (style.marginTop = `${marginTop}${isNaN(marginTop) ? '' : 'px'}`);
     marginBottom !== undefined && (style.marginBottom = `${marginBottom}${isNaN(marginBottom) ? '' : 'px'}`);
 
-    const curSiteUrl = window.location.origin;
     const curYear = new Date().getFullYear();
 
     return (
