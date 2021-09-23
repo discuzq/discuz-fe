@@ -354,7 +354,7 @@
   }
 
   .itemList{
-    padding-top: 20px;
+    padding: 20px 0;
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
@@ -368,13 +368,5 @@
         display: inline-block;
       }
     }
-  }
-
-  .bottom{
-      width: 100px;
-      height: 1px;
-      background-color: $primary-color;
-      margin-top: 26px;
-      display: inline-block;
   }
 }

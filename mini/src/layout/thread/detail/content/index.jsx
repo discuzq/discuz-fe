@@ -346,7 +346,6 @@ const RenderThreadContent = inject('site', 'user')(
                       <View key={i.userId} onClick={()=>Router.push({ url: `/userPages/user/index?id=${i.userId}` })} className={styles.itemAvatar}><Image className={styles.img} src={i.avatar}></Image></View>
                     ))}
                 </View>
-                <View className={styles.bottom}></View>
               </View>
             )
           }

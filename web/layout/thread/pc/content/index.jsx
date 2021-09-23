@@ -385,7 +385,6 @@ export default withRouter(inject('site', 'user')(observer((props) => {
                     <div key={i.userId} onClick={()=>props.router.push(`/user/${i.userId}`)} className={topic.itemAvatar}><img src={i.avatar}></img></div>
                   ))}
               </div>
-              <div className={topic.bottom}></div>
             </div>
           )
         }

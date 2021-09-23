@@ -328,7 +328,6 @@ const RenderThreadContent = withRouter(inject('site', 'user')(observer((props) =
                   <div key={i.userId} onClick={() => props.router.push(`/user/${i.userId}`)} className={styles.itemAvatar}><img src={i.avatar}></img></div>
                 ))}
               </div>
-            <div className={styles.bottom}></div>
           </div>
           )
         }
