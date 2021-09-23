@@ -293,7 +293,6 @@ class ThreadAction extends ThreadStore {
   @action
   async rewardPay(params, UserStore) {
     const { success, msg } = await rewardPay(params);
-    console.log(params,11)
 
     // 支付成功重新请求帖子数据
     if (success) {

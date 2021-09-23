@@ -240,11 +240,10 @@
     flex-wrap: wrap;
     .itemAvatar{
       margin: 5px 3px 0;
-      .img{
-        width: 24px;
-        height:24px;
-        border-radius: 50%;
-        display: inline-block;
+      :global {
+        .dzq-avatar__text {
+          font-size: $font-size-label;
+        }
       }
     }
   }

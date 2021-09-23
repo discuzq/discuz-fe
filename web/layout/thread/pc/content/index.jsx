@@ -18,6 +18,7 @@ import { minus } from '@common/utils/calculate';
 import { parseContentData } from '../../utils';
 import { debounce } from '@common/utils/throttle-debounce';
 import IframeVideoDisplay from '@components/thread-post/iframe-video-display';
+import Avatar from '@components/avatar';
 
 import Packet from '@components/thread/packet';
 import PacketOpen from '@components/red-packet-animation/web';
@@ -382,7 +383,13 @@ export default withRouter(inject('site', 'user')(observer((props) => {
               <div className={topic.top}>{tipList.length}人打赏</div>
               <div className={topic.itemList}>
                   {tipList.map(i=>(
-                    <div key={i.userId} onClick={()=>props.router.push(`/user/${i.userId}`)} className={topic.itemAvatar}><img src={i.avatar}></img></div>
+                    <div key={i.userId} onClick={()=>props.router.push(`/user/${i.userId}`)} className={topic.itemAvatar}>
+                      <Avatar
+                        image={i.avatar}
+                        name={i.nickname}
+                        size='small'
+                      />
+                    </div>
                   ))}
               </div>
             </div>

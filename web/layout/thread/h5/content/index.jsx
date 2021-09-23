@@ -17,6 +17,7 @@ import UserInfo from '@components/thread/user-info';
 import styles from './index.module.scss';
 import { debounce } from '@common/utils/throttle-debounce';
 import IframeVideoDisplay from '@components/thread-post/iframe-video-display';
+import Avatar from '@components/avatar';
 import Packet from '@components/thread/packet';
 import PacketOpen from '@components/red-packet-animation/h5';
 import { withRouter } from 'next/router';
@@ -327,8 +328,14 @@ const RenderThreadContent = withRouter(inject('site', 'user')(observer((props) =
             <div className={styles.moneyList}>
               <div className={styles.top}>{tipList.length}人打赏</div>
               <div className={styles.itemList}>
-                {tipList.map(i => (
-                  <div key={i.userId} onClick={() => props.router.push(`/user/${i.userId}`)} className={styles.itemAvatar}><img src={i.avatar}></img></div>
+                {tipList.map(i=>(
+                  <div key={i.userId} onClick={()=>props.router.push(`/user/${i.userId}`)} className={styles.itemAvatar}>
+                      <Avatar
+                        image={i.avatar}
+                        name={i.nickname}
+                        size='small'
+                      />
+                  </div>
                 ))}
               </div>
           </div>

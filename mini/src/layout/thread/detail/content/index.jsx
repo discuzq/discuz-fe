@@ -19,7 +19,7 @@ import classnames from 'classnames';
 import UserInfo from '@components/thread/user-info';
 import Packet from '@components/thread/packet'
 import PacketOpen from '@components/red-packet-animation';
-
+import Avatar from '@components/avatar';
 
 import { setClipboardData } from '@tarojs/taro';
 import { parseContentData } from '../../utils';
@@ -343,7 +343,13 @@ const RenderThreadContent = inject('site', 'user')(
                 <View className={styles.top}>{tipList.length}人打赏</View>
                 <View className={styles.itemList}>
                     {tipList.map(i=>(
-                      <View key={i.userId} onClick={()=>Router.push({ url: `/userPages/user/index?id=${i.userId}` })} className={styles.itemAvatar}><Image className={styles.img} src={i.avatar}></Image></View>
+                      <View key={i.userId} onClick={()=>Router.push({ url: `/userPages/user/index?id=${i.userId}` })} className={styles.itemAvatar}>
+                        <Avatar
+                          image={i.avatar}
+                          name={i.nickname}
+                          size='small'
+                        />
+                      </View>
                     ))}
                 </View>
               </View>
