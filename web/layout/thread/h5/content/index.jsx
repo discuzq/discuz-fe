@@ -23,7 +23,7 @@ import { withRouter } from 'next/router';
 
 
 // 插件引入
-/** DZQ->plugin->register<plugin_detail@thread_extension_display_hook>**/
+/**DZQ->plugin->register<plugin_detail@thread_extension_display_hook>**/
 
 // 帖子内容
 const RenderThreadContent = withRouter(inject('site', 'user')(observer((props) => {
