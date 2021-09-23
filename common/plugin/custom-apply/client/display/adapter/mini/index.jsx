@@ -27,6 +27,7 @@ class CustomApplyDisplay extends React.Component {
       minutes: 0,
       seconds: 0,
       isApplyEnd: false, // 报名时间是否已结束
+      isApplyStart: false, // 报名时间是否已开始
     };
   }
 
@@ -34,23 +35,41 @@ class CustomApplyDisplay extends React.Component {
     if (!countDownIns) countDownIns = new CountDown();
     const { renderData } = this.props;
     const { body } = renderData || {};
-    if (body?.registerEndTime) {
+    if (body?.registerEndTime || body?.registerStartTime) {
+      const start = body?.registerStartTime?.replace(/-/g, '/');
       const time = body?.registerEndTime?.replace(/-/g, '/');
-      countDownIns.start(time, (res) => {
-        const { days, hours, minutes, seconds } = res;
-        // const ms = (days * 24 * 60) + (hours * 60) + minutes;
-        this.setState({ minutes, seconds, days, hours });
-        if (days === 0 && hours === 0 && minutes === 0 && seconds === 0) {
-          this.setState({ isApplyEnd: true });
-          countDownIns?.stop();
-        }
-      });
+
+      if (new Date().getTime() < new Date(start).getTime()) {
+        countDownIns.start(start, (res) => {
+          const { days, hours, minutes, seconds } = res;
+          this.setState({ minutes, seconds, days, hours });
+          if (days === 0 && hours === 0 && minutes === 0 && seconds === 0) {
+            this.setState({ isApplyStart: true });
+            this.applyStartCountDown(time);
+          }
+        });
+      } else {
+        this.setState({ isApplyStart: true });
+        this.applyStartCountDown(time);
+      }
     }
   }
 
   componentWillUnmount() {
     if (!countDownIns) countDownIns?.stop();
   }
+
+  applyStartCountDown = (time) => {
+    countDownIns.start(time, (res) => {
+      const { days, hours, minutes, seconds } = res;
+      // const ms = (days * 24 * 60) + (hours * 60) + minutes;
+      this.setState({ minutes, seconds, days, hours });
+      if (days === 0 && hours === 0 && minutes === 0 && seconds === 0) {
+        this.setState({ isApplyEnd: true });
+        countDownIns?.stop();
+      }
+    });
+  };
 
   getUserCls = (users = []) => {
     if (users.length >= 3) return styles.three;
@@ -60,7 +79,8 @@ class CustomApplyDisplay extends React.Component {
 
   getActStatusText = () => {
     const { body } = this.props.renderData || {};
-    const { isApplyEnd } = this.state;
+    const { isApplyEnd, isApplyStart } = this.state;
+    if (!isApplyStart) return '报名未开始';
     if (body?.isMemberFull) return '人数已满';
     if (isApplyEnd) return '报名已结束';
   };
@@ -122,12 +142,12 @@ class CustomApplyDisplay extends React.Component {
 
   render() {
     const { siteData, renderData } = this.props;
-    const { isApplyEnd, minutes, seconds, days, hours } = this.state;
+    const { isApplyEnd, minutes, seconds, days, hours, isApplyStart } = this.state;
     if (!renderData) return null;
     const { body } = renderData || {};
     const { isRegistered } = body;
-    const isCanNotApply = body?.isExpired
-      || body?.isMemberFull || isApplyEnd;
+    // 过期 || 已满 || 结束 || 未开始
+    const isCanNotApply = body?.isExpired || body?.isMemberFull || isApplyEnd || !isApplyStart;
 
     const { popupShow } = this.state;
     return (
@@ -144,7 +164,8 @@ class CustomApplyDisplay extends React.Component {
                   <Text className={styles['text-primary']}>{days}</Text>天
                   <Text className={styles['text-primary']}>{hours}</Text>小时
                   <Text className={styles['text-primary']}>{minutes}</Text>分
-                  <Text className={styles['text-primary']}>{seconds}</Text>秒结束报名
+                  <Text className={styles['text-primary']}>{seconds}</Text>秒
+                  {isApplyStart ? '结束报名' : '开始报名'}
                 </>
               )}
               {isApplyEnd && (

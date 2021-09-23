@@ -80,9 +80,8 @@ export default class CustomApplyEntry extends React.Component {
 
   checkApplyStartTime = (time) => {
     const { body } = this.state;
-    const { activityStartTime, activityEndTime, registerEndTime } = body || {};
-    if (this.getTimestamp(time) < this.getTimestamp(activityStartTime)
-      || this.getTimestamp(time) > this.getTimestamp(activityEndTime)
+    const { activityEndTime, registerEndTime } = body || {};
+    if (this.getTimestamp(time) > this.getTimestamp(activityEndTime)
       || (registerEndTime && this.getTimestamp(time) > this.getTimestamp(registerEndTime))) {
       return false;
     }
@@ -92,7 +91,7 @@ export default class CustomApplyEntry extends React.Component {
   checkApplyEndTime = (time) => {
     const { body } = this.state;
     const { activityStartTime, registerStartTime, activityEndTime } = body || {};
-    if (this.getTimestamp(time) < this.getTimestamp(activityStartTime)
+    if ((!registerStartTime && this.getTimestamp(time) < this.getTimestamp(activityStartTime))
       || this.getTimestamp(time) > this.getTimestamp(activityEndTime)
       || (registerStartTime && this.getTimestamp(time) < this.getTimestamp(registerStartTime))) {
       return false;
@@ -276,7 +275,6 @@ export default class CustomApplyEntry extends React.Component {
                   {isPc
                     ? <DatePicker
                         selected={body.registerStartTime}
-                        minDate={body.activityStartTime}
                         maxDate={body.activityEndTime}
                         onChange={date => this.handleTimeChange(date, TimeType.applyStart)}
                         showTimeSelect
@@ -293,7 +291,7 @@ export default class CustomApplyEntry extends React.Component {
                   {isPc
                     ? <DatePicker
                         selected={body.registerEndTime}
-                        minDate={body.activityStartTime}
+                        minDate={body.registerStartTime || body.activityStartTime}
                         maxDate={body.activityEndTime}
                         onChange={date => this.handleTimeChange(date, TimeType.applyEnd)}
                         showTimeSelect

@@ -8,7 +8,7 @@
     margin-bottom: $margin-4n;
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
+    align-items: center;
     line-height: 1;
     &__left {
       flex: 1;
@@ -123,9 +123,9 @@
       align-items: flex-start;
       justify-content: space-between;
     }
-    .wrapper-tip_title {
-      margin-bottom: $margin-2n;
-    }
+    // .wrapper-tip_title {
+    //   margin-bottom: $margin-2n;
+    // }
     .wrapper-tip__content {
       display: inline-flex;
       flex-direction: column;
