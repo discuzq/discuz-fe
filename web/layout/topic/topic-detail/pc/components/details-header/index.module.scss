@@ -2,7 +2,7 @@
 
 .container {
   padding: rem($padding-4n);
-  background: var( --color-white);
+  background: $white;
   border-radius: rem($border-radius-small);
   overflow: hidden;
   .title {

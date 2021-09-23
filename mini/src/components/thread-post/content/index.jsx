@@ -81,7 +81,8 @@ const Index = forwardRef(({
             className={classNames(styles.textarea, !!value && styles['textarea-editing'], styles['textarea-min-height'])}
             style={(bottomHeight > 0 || showEmoji) ? `max-height:${defaultHeight}px` : ''}
             placeholderClass={styles['textarea-placeholder']}
-            value={value}
+            // value={value}
+            value={debounce(() => value, 0)}
             disabled={disabled}
             focus
             placeholder={placeholder}
@@ -108,9 +109,9 @@ const Index = forwardRef(({
           ref={ref}
           className={classNames(styles.textarea, !!value && styles['textarea-editing'])}
           placeholderClass={styles['textarea-placeholder']}
-          value={value}
           disabled={disabled}
           placeholder={placeholder}
+          value={debounce(() => value, 0)}
           maxlength={maxLength}
           style={(bottomHeight > 0 || showEmoji)
             ? `height:${defaultHeight}px;`

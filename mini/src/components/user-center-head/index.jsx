@@ -15,25 +15,39 @@ import styles from './index.module.scss';
 import throttle from '@common/utils/thottle.js';
 import LoginHelper from '@common/utils/login-helper';
 import MemberShipCard from '@components/member-ship-card';
+import checkImgExists from '@common/utils/check-image-exists';
 
 @inject('site')
 @inject('user')
 @observer
 class index extends Component {
+  static defaultProps = {
+    isOtherPerson: false, // 表示是否是其他人
+  };
+
   constructor(props) {
     super(props);
     const { id } = getCurrentInstance().router.params;
     this.state = {
       isFollowedLoading: false, // 是否点击关注
       isPreviewAvatar: false, // 是否预览头像
+      previewAvatarUrl: null, // 预览头像链接
     };
 
     this.targetUserId = id;
   }
 
-  static defaultProps = {
-    isOtherPerson: false, // 表示是否是其他人
-  };
+  async componentDidMount() {
+    const { previewAvatarUrl } = this.state;
+    const { user } = this.props;
+    if(previewAvatarUrl === user.avatarUrl) {
+      return;
+    }
+    const imgUrl = await checkImgExists(user.originalAvatarUrl, user.avatarUrl);
+    this.setState({
+      previewAvatarUrl: imgUrl
+    })
+  }
 
   previewerRef = React.createRef(null);
 
@@ -252,6 +266,7 @@ class index extends Component {
     const { targetUser } = this;
     const user = this.props.isOtherPerson ? targetUser || {} : this.props.user;
     const { webConfig: { other: { threadOptimize } } } = this.props.site;
+    const { previewAvatarUrl } = this.state;
 
     return (
       <View className={styles.h5box}>
@@ -351,11 +366,11 @@ class index extends Component {
             <Text className={styles.shieldText}>{user.isDeny ? '解除屏蔽' : '屏蔽'}</Text>
           </View>
         )}
-        {user.originalAvatarUrl && (
+        {previewAvatarUrl && (
           <ImagePreviewer
             ref={this.previewerRef}
-            imgUrls={[user.originalAvatarUrl]}
-            currentUrl={user.originalAvatarUrl}
+            imgUrls={[previewAvatarUrl]}
+            currentUrl={previewAvatarUrl}
           />
         )}
       </View>

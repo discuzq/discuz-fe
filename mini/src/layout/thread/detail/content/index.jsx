@@ -26,7 +26,7 @@ import { parseContentData } from '../../utils';
 import styles from './index.module.scss';
 
 // 插件引入
-/**DZQ->plugin->register<plugin_detail@thread_extension_display_hook>**/
+/** DZQ->plugin->register<plugin_detail@thread_extension_display_hook>**/
 
 // 帖子内容
 const RenderThreadContent = inject('site', 'user')(
@@ -299,16 +299,14 @@ const RenderThreadContent = inject('site', 'user')(
           )}
 
           {
-            DZQPluginCenter.injection('plugin_detail', 'thread_extension_display_hook').map(({ render, pluginInfo }) => {
-              return (
+            DZQPluginCenter.injection('plugin_detail', 'thread_extension_display_hook').map(({ render, pluginInfo }) => (
                 <View key={pluginInfo.name}>
                   {render({
-                    site: site,
+                    site: { ...site, isDetailPage: true  },
                     renderData: parseContent.plugin
                   })}
                 </View>
-              )
-            })
+              ))
           }
 
           {/* 标签 */}
@@ -357,7 +355,7 @@ const RenderThreadContent = inject('site', 'user')(
               </View>
             )
           }
-          
+
         </View>
 
         {isApproved && (
@@ -394,7 +392,7 @@ const RenderThreadContent = inject('site', 'user')(
                 <Tip
                   tipData={tipData}
                   imgs={threadStore?.threadData?.likeReward?.users || []}
-                  showMore={true}
+                  showMore
                   showCount={5}
                 ></Tip>
               </View>

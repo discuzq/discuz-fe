@@ -341,7 +341,7 @@ export default withRouter(inject('site', 'user')(observer((props) => {
             return (
               <div key={pluginInfo.name}>
                 {render({
-                  site: site,
+                  site: { ...site, isDetailPage: true },
                   renderData: parseContent.plugin
                 })}
               </div>

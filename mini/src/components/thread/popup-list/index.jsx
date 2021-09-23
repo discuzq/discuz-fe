@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { inject, observer } from 'mobx-react';
+import { readRegisterList } from '@discuzq/sdk/dist/api/plugin/read-register';
 import Tabs from '@discuzq/design/dist/components/tabs/index';
 import Popup from '@discuzq/design/dist/components/popup/index';
 import Icon from '@discuzq/design/dist/components/icon/index';
@@ -18,7 +19,7 @@ import { View, Text } from '@tarojs/components'
  * @prop {string}  onHidden 关闭视图的回调
  */
 
- const Index = ({ visible = false, onHidden = () => {}, tipData = {}, router, index }) => {
+ const Index = ({ visible = false, onHidden = () => {}, tipData = {}, router, index, isCustom = false, activityId }) => {
 
   const allPageNum = useRef(1);
   const likePageNum = useRef(1);
@@ -43,7 +44,30 @@ import { View, Text } from '@tarojs/components'
     }
   }, [visible]);
 
-  const loadData = async ({ type }) => {
+  const fetchActApplyPeople = async (page = 1) => {
+    const result = await readRegisterList({ params: { activityId, page } });
+    const { code, data, msg } = result || {};
+    if (code === 0) {
+      const { pageData = [], totalPage, currentPage, totalCount } = data || {};
+      const list = page > 1 ? [...(all?.pageData?.list || []), ...pageData] : pageData;
+      setAll({
+        pageData: {
+          list,
+          allCount: totalCount,
+        },
+        currentPage,
+        totalPage,
+      });
+    } else {
+      setRequestError(true);
+      setErrorText(msg);
+    }
+    return result;
+  };
+   const loadData = async ({ type }) => {
+    if (isCustom) {
+      return fetchActApplyPeople();
+    }
     const { postId = '', threadId = '' } = tipData;
 
     const res = await readLikedUsers({ params: { threadId, postId, type, page: 1 } });
@@ -56,7 +80,10 @@ import { View, Text } from '@tarojs/components'
     return res;
   };
 
-  const singleLoadData = async ({ page = 1, type = 1 } = {}) => {
+   const singleLoadData = async ({ page = 1, type = 1 } = {}) => {
+    if (isCustom) {
+      return fetchActApplyPeople(page);
+    }
     const { postId = '', threadId = '' } = tipData;
     type = (type === TYPE_PAID) ? TYPE_REWARD : type;
     const res = await readLikedUsers({ params: { threadId, postId, page, type } });
@@ -131,7 +158,7 @@ import { View, Text } from '@tarojs/components'
     </View>
   );
 
-  const tabItems = [
+  let tabItems = [
     {
       icon: '',
       title: '全部',
@@ -157,6 +184,8 @@ import { View, Text } from '@tarojs/components'
       number: all?.pageData?.rewardCount || 0,
     },
   ];
+
+  if (isCustom) tabItems = [tabItems[0]];
 
   const renderTabPanel = platform => (
     tabItems.map((dataSource, index) => {

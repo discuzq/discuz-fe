@@ -6,6 +6,7 @@ import Icon from '@discuzq/design/dist/components/icon';
 import { readEmoji } from '@common/server';
 import Avatar from '@components/avatar';
 import Emoji from '@components/emoji';
+import { debounce } from '@common/utils/throttle-debounce.js';
 import classnames from 'classnames';
 import { inject } from 'mobx-react';
 import styles from './index.module.scss';
@@ -113,7 +114,7 @@ const CommentInput = inject('site')(inject('user')((props) => {
           className={`${styles.input}`}
           maxLength={5000}
           showLimit={false}
-          value={value}
+          value={debounce(() => value, 0)}
           onChange={(e) => setValue(e.target.value)}
           placeholder={placeholderState}
           disabled={loading}

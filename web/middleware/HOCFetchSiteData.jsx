@@ -3,7 +3,7 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import isServer from '@common/utils/is-server';
 import getPlatform from '@common/utils/get-platform';
-import { readForum, readUser, readPermissions, readEmoji } from '@server';
+import { readForum, readUser, readPermissions, readEmoji, readPluginList } from '@server';
 import Router from '@discuzq/sdk/dist/router';
 import { withRouter } from 'next/router';
 import clearLoginStatus from '@common/utils/clear-login-status';
@@ -46,6 +46,7 @@ export default function HOCFetchSiteData(Component, _isPass) {
     static async getInitialProps(ctx) {
       try {
 
+        // 将ctx保存到global
         global.ctx = ctx;
 
         let platform = 'static';
@@ -81,6 +82,11 @@ export default function HOCFetchSiteData(Component, _isPass) {
             userData = (userInfo && userInfo.code === 0) ? userInfo.data : null;
             userPermissions = (userPermissions && userPermissions.code === 0) ? userPermissions.data : null;
           }
+
+          // 获取插件信息
+          const pluginConfig = await readPluginList({}, ctx);
+          if (pluginConfig.code === 0) serverSite.pluginConfig = pluginConfig.data;
+
           // 传入组件的私有数据
           if (siteConfig && siteConfig.code === 0 && Component.getInitialProps) {
             __props = await Component.getInitialProps(ctx, { user: userData, site: serverSite });
@@ -117,6 +123,8 @@ export default function HOCFetchSiteData(Component, _isPass) {
       serverSite && serverSite.platform && site.setPlatform(serverSite.platform);
       serverSite && serverSite.closeSite && site.setCloseSiteConfig(serverSite.closeSite);
       serverSite && serverSite.webConfig && site.setSiteConfig(serverSite.webConfig);
+      serverSite && serverSite.pluginConfig && site.setPluginConfig(serverSite.pluginConfig);
+
       serverUser && serverUser.userInfo && user.setUserInfo(serverUser.userInfo);
       serverUser && serverUser.userPermissions && user.setUserPermissions(serverUser.userPermissions);
       serverUser && serverUser.userPermissions && user.setUserPermissions(serverUser.userPermissions);
@@ -153,7 +161,9 @@ export default function HOCFetchSiteData(Component, _isPass) {
         if (!siteConfig) {
           const result = await readForum({});
           result.data && site.setSiteConfig(result.data);
-
+          // 获取插件信息
+          const pluginConfig = await readPluginList();
+          if (pluginConfig.code === 0) site.setPluginConfig(pluginConfig.data);
           // 设置全局状态
           this.setAppCommonStatus(result);
           siteConfig = result.data || null;

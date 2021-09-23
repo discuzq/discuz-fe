@@ -1,0 +1,29 @@
+@import '@common/styles/index.scss';
+
+.dzqp-post-widget {
+  padding: 0 20px;
+  display: flex;
+  height: 50px;
+  background-color: $text-bg-color;
+  border-radius: $border-radius-small;
+  font-size: $font-size-label;
+  align-items: center;
+  justify-content: space-between;
+
+  &__left {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__icon {
+    color: $primary-color;
+    font-size: 20px !important;
+    font-weight: bold;
+  }
+
+  &__text {
+    display: inline-block;
+    margin-left: $margin-10;
+  }
+}

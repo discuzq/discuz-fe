@@ -4,11 +4,10 @@ import { inject, observer } from 'mobx-react';
 import styles from './index.module.scss';
 import DDialog from '@components/dialog';
 import DatePicker from 'react-datepicker';
-import DatePickers from '@components/thread/date-picker'
+import DatePickers from '@components/thread/date-picker';
 import { formatDate } from '@common/utils/format-date';
 
 const Index = ({ cancel, pc, visible, threadPost }) => {
-
   const data = JSON.parse(JSON.stringify(threadPost.postData));
   const initSubitems = [{
     id: 0,
@@ -30,9 +29,7 @@ const Index = ({ cancel, pc, visible, threadPost }) => {
 
   const vote = () => {
     let subitemsCopy = [...subitems];
-    subitemsCopy = subitemsCopy.filter(item => {
-      return !!item.content;
-    });
+    subitemsCopy = subitemsCopy.filter(item => !!item.content);
 
     if (!title) {
       Toast.info({ content: '标题不能为空' });
@@ -50,27 +47,26 @@ const Index = ({ cancel, pc, visible, threadPost }) => {
     }
 
 
-
     setSubitems(subitemsCopy);
     threadPost.setPostData({
       vote: {
-        voteId: voteId,
+        voteId,
         voteTitle: title,
         choiceType: type,
         expiredAt: formatDate(new Date(time), 'yyyy/MM/dd hh:mm:ss'),
         subitems: subitemsCopy,
-      }
+      },
     });
     cancel();
   };
 
   const content = (
-    <div className={styles['vote-editor']} onClick={e => e.stopPropagation()} style={ pc ? {} : {overflow: 'auto', paddingBottom: '59px'}}>
+    <div className={styles['vote-editor']} onClick={e => e.stopPropagation()} style={ pc ? {} : { overflow: 'auto', paddingBottom: '59px' }}>
 
-      <div className={styles['line-box']} style={{justifyContent: 'unset'}}>
+      <div className={styles['line-box']} style={{ justifyContent: 'unset' }}>
         <div className={styles.label}>标题</div>
-        <div className={styles.item} style={{marginLeft: '16px'}}>
-          <Input mode="text" placeholder="标题最多支持25个字" value={title} onChange={e => setTitle(e.target.value.trim().substr(0, 25))} />
+        <div className={styles.item} style={{ marginLeft: '16px' }}>
+          <Input autoFocus="true" mode="text" placeholder="标题最多支持25个字" value={title} onChange={e => setTitle(e.target.value.trim().substr(0, 25))} />
         </div>
       </div>
 
@@ -82,10 +78,10 @@ const Index = ({ cancel, pc, visible, threadPost }) => {
       </div>
 
       {subitems.map((item, index) => (
-        <div className={styles['line-box']} key={index} style={{justifyContent: 'unset'}}>
+        <div className={styles['line-box']} key={index} style={{ justifyContent: 'unset' }}>
           <div className={styles.label}>{`${index + 1}.`}</div>
-          <div className={styles.item} style={{marginLeft: '16px'}}>
-            <Input mode="text" value={item.content} onChange={e => {
+          <div className={styles.item} style={{ marginLeft: '16px' }}>
+            <Input mode="text" value={item.content} onChange={(e) => {
               const arr = [...subitems];
               arr[index].content = e.target.value.trim().substr(0, 20);
               setSubitems(arr);
@@ -93,7 +89,7 @@ const Index = ({ cancel, pc, visible, threadPost }) => {
           </div>
           {/* 删除选项按钮 */}
           <Icon
-              style={{visibility: subitems.length > 2 ? 'visible' : 'hidden'}}
+              style={{ visibility: subitems.length > 2 ? 'visible' : 'hidden' }}
               name="DeleteOutlined"
               className={styles['delete-icon']}
               onClick={(e) => {
@@ -107,7 +103,7 @@ const Index = ({ cancel, pc, visible, threadPost }) => {
 
       <div className={`${styles['line-box']} ${styles['add-btn']}`}>
         <Button
-          style={{visibility: subitems.length < 20 ? 'visible' : 'hidden'}}
+          style={{ visibility: subitems.length < 20 ? 'visible' : 'hidden' }}
           onClick={() => {
             const arr = [...subitems];
             arr.push({
@@ -170,7 +166,7 @@ const Index = ({ cancel, pc, visible, threadPost }) => {
             isOpen={show}
             onCancels={() => setShow(false)}
           />
-          <div className={styles.btn} style={{position: pc ? 'absolute' : 'fixed'}}>
+          <div className={styles.btn} style={{ position: pc ? 'absolute' : 'fixed' }}>
             <Button onClick={() => cancel()}>取消</Button>
             <Button type="primary" onClick={() => {}}>确定</Button>
           </div>
@@ -180,7 +176,7 @@ const Index = ({ cancel, pc, visible, threadPost }) => {
 
       {/* 按钮 */}
       {!pc && (
-        <div className={styles.btn} style={{position: pc ? 'absolute' : 'fixed'}}>
+        <div className={styles.btn} style={{ position: pc ? 'absolute' : 'fixed' }}>
           <Button onClick={() => {
             cancel();
           }}>

@@ -1,10 +1,26 @@
 import { action } from 'mobx';
-import { readForum } from '@server';
+import { readForum, readPluginList } from '@server';
 import SiteStore from './store';
 
 class SiteAction extends SiteStore {
   constructor(props) {
     super(props);
+  }
+
+  /**
+   * 获取插件配置信息
+   */
+  @action
+  async getPluginConfig() {
+    const result = await readPluginList();
+    const { code, data } = result;
+    if (code === 0) this.pluginConfig = data;
+    return result;
+  }
+
+  @action
+  setPluginConfig(config) {
+    this.pluginConfig = config;
   }
 
   @action

@@ -10,10 +10,11 @@ import { getCurrentInstance } from '@tarojs/taro';
 import PayBoxProvider from '@components/payBox/payBoxProvider';
 import { MINI_SITE_JOIN_WHITE_LIST, REVIEWING_USER_WHITE_LIST } from '@common/constants/site';
 import { ToastProvider } from '@discuzq/design/dist/components/toast/ToastProvider';
+import { DialogProvider } from '@discuzq/design/dist/components/dialog/dialogProvider';
 import Taro from '@tarojs/taro';
 import { REVIEWING } from '@common/store/login/util';
 import LoginHelper from '@common/utils/login-helper';
-import {readForum} from '@server';
+import {readForum, readPluginList} from '@server';
 import ShareError from '@components/share-error/index';
 
 const INDEX_URL = '/indexPages/home/index';
@@ -135,6 +136,8 @@ export default class Page extends React.Component {
     const { site } = this.props;
     const siteResult = await readForum({});
     site.setSiteConfig(siteResult.data);
+    const pluginConfig = await readPluginList();
+    if (pluginConfig.code === 0) site.setPluginConfig(pluginConfig.data);
     // 一切异常建议进入小程序体验
     this.setState({
       _status: siteResult.code !== 0 ? 'error' : 'pass'
@@ -213,6 +216,7 @@ export default class Page extends React.Component {
       <View className={`${styles['dzq-page']} dzq-theme--${site.theme} ${className}`}>
         <PayBoxProvider>{this.createContent()}</PayBoxProvider>
         {!disabledToast && <ToastProvider></ToastProvider>}
+        <DialogProvider />
       </View>
     );
   }

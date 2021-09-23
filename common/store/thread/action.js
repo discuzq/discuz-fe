@@ -121,7 +121,7 @@ class ThreadAction extends ThreadStore {
     return ret;
   }
 
-  //设置当前可领取的红包状态 
+  //设置当前可领取的红包状态
   @action
   setRedPacket(num) {
     this.hasRedPacket = num;

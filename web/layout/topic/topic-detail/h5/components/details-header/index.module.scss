@@ -4,7 +4,7 @@
   position: relative;
   box-sizing: border-box;
   padding: rem(24) rem($padding-4n);
-  background: var( --color-white);
+  background: $white;
   overflow: hidden;
   height: rem(107);
   display: flex;

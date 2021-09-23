@@ -19,7 +19,7 @@ class MapDialog extends React.Component {
   render() {
     const { site: { isPC } } = this.props;
 
-    if (isPC) {
+    if (isPC || this.props.pc) {
       return (
         <DDialog
           pc

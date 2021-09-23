@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Tabs, Popup, Icon, Spin } from '@discuzq/design';
+import { readRegisterList } from '@discuzq/sdk/dist/api/plugin/read-register';
 import UserItem from '../user-item';
 import styles from './index.module.scss';
 import ReactDOM from 'react-dom';
@@ -13,9 +14,10 @@ import { withRouter } from 'next/router';
  * 帖子点赞、打赏点击之后的弹出视图
  * @prop {string}  visible 视图是否显示
  * @prop {string}  onHidden 关闭视图的回调
+ * @param {boolean} isCustom 自定义，主要是报名插件需要使用
  */
 
-const Index = ({ visible = false, onHidden = () => {}, tipData = {}, router }) => {
+const Index = ({ visible = false, onHidden = () => {}, tipData = {}, router, isCustom = false, activityId }) => {
 
   const allPageNum = useRef(1);
   const likePageNum = useRef(1);
@@ -40,7 +42,32 @@ const Index = ({ visible = false, onHidden = () => {}, tipData = {}, router }) =
     }
   }, [visible]);
 
+  const fetchActApplyPeople = async (page = 1) => {
+    const result = await readRegisterList({ params: { activityId, page } });
+    const { code, data, msg } = result || {};
+    if (code === 0) {
+      const { pageData = [], totalPage, currentPage, totalCount } = data || {};
+      const list = page > 1 ? [...(all?.pageData?.list || []), ...pageData] : pageData;
+      setAll({
+        pageData: {
+          list,
+          allCount: totalCount,
+        },
+        currentPage,
+        totalPage,
+      });
+    } else {
+      setRequestError(true);
+      setErrorText(msg);
+    }
+    return result;
+  };
+
   const loadData = async ({ type }) => {
+    if (isCustom) {
+      return fetchActApplyPeople();
+    }
+
     const { postId = '', threadId = '' } = tipData;
 
     const res = await readLikedUsers({ params: { threadId, postId, type, page: 1 } });
@@ -54,6 +81,10 @@ const Index = ({ visible = false, onHidden = () => {}, tipData = {}, router }) =
   };
 
   const singleLoadData = async ({ page = 1, type = 1 } = {}) => {
+    if (isCustom) {
+      return fetchActApplyPeople(page);
+    }
+
     const { postId = '', threadId = '' } = tipData;
     type = (type === TYPE_PAID) ? TYPE_REWARD : type;
     const res = await readLikedUsers({ params: { threadId, postId, page, type } });
@@ -128,7 +159,7 @@ const Index = ({ visible = false, onHidden = () => {}, tipData = {}, router }) =
     </div>
   );
 
-  const tabItems = [
+  let tabItems = [
     {
       icon: '',
       title: '全部',
@@ -154,6 +185,8 @@ const Index = ({ visible = false, onHidden = () => {}, tipData = {}, router }) =
       number: all?.pageData?.rewardCount || 0,
     },
   ];
+
+  if (isCustom) tabItems = [tabItems[0]];
 
   const renderTabPanel = platform => (
     tabItems.map((dataSource, index) => {

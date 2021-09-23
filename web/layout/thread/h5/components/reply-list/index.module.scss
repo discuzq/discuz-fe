@@ -66,7 +66,7 @@
         }
       }
       .replyListText {
-        margin-top: rem($margin-1n);
+        // margin-top: rem($margin-1n);
         font-size: rem($font-size-middle);
         text-align: left;
         color: $text-color-primary;
@@ -104,7 +104,7 @@
           justify-content: flex-start;
           height: rem(28);
           position: relative;
-          top: rem(3);
+          top: rem(5);
 
           .replyedUserName {
             max-width: rem(100);
@@ -113,7 +113,7 @@
             margin-right: rem($margin-2n);
             line-height: rem(18);
             text-align: left;
-            // color: $primary-color;
+            color: $primary-color;
             @include text-ellipsis();
           }
           .masterBox {

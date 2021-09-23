@@ -98,7 +98,7 @@ $margin16: rem($margin-4n);
     }
   }
   &__item {
-    display: inline-block;
+    display: inline-flex;
     margin-left: $margin-5n;
     color: $icon-color;
     cursor: pointer;

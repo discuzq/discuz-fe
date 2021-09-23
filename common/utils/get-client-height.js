@@ -4,6 +4,7 @@
  */
 export function getClientHeight() {
   let winHeight;
+  if (typeof window === 'undefined') return 0;
   if (window.innerHeight) {
     winHeight = window.innerHeight;
   } else if ((document.body) && (document.body.clientHeight)) {
@@ -18,6 +19,7 @@ export function getClientHeight() {
 
 export function getVisualViewpost() {
   let visualHeight;
+  if (typeof window === 'undefined') return 0;
   if (window.visualViewport) {
     visualHeight = window.visualViewport.height;
   } else {

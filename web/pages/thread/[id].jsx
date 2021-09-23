@@ -14,7 +14,7 @@ import setWxShare from '@common/utils/set-wx-share';
 import htmlToString from '@common/utils/html-to-string';
 import isWeiXin from '@common/utils/is-weixin';
 import { updateViewCountInStorage } from '@common/utils/viewcount-in-storage';
-import thread from '@components/thread';
+// import thread from '@components/thread';
 import { updateThreadAssignInfoInLists } from '@common/store/thread-list/list-business';
 
 @inject('site')
