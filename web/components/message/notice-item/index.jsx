@@ -137,7 +137,7 @@ class Index extends Component {
       url = `/thread/${item.threadId}`;
     }
     // 处理点击帖子通知 - 回复(携带评论id, 用于评论定位展示)
-    if (item.type === "replied" && item.threadId && item.postId) {
+    if ((item.type === "replied" || item.type === "related") && item.threadId && item.postId) {
       if (item.isReply) {
         url = `/thread/comment/${item.replyPostId}?threadId=${item.threadId}&postId=${item.postId}&fromMessage=true`; // 添加一个是否来自消息中心的标识来展示查看原帖按钮
       } else {

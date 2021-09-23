@@ -125,3 +125,6 @@ export { default as readDownloadAttachmentStatus } from './common/readDownloadAt
 
 // 投票
 export { default as createVote } from './thread/create-vote';
+
+// 插件配置信息列表
+export { default as readPluginList } from './read-plugin-list-config';

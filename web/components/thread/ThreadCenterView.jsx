@@ -159,7 +159,7 @@ const Index = (props) => {
             return (
               <div key={pluginInfo.name}>
                 {render({
-                  site: props.site,
+                  site: { ...props.site, recomputeRowHeights: props.recomputeRowHeights, threadId },
                   renderData: plugin
                 })}
               </div>

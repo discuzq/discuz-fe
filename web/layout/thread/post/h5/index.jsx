@@ -443,6 +443,7 @@ class ThreadCreate extends React.Component {
           {/* 调整了一下结构，因为这里的工具栏需要固定 */}
           <AttachmentToolbar
             site={this.props.site}
+            threadPost={this.props.threadPost}
             isOpenQcloudVod={this.props.site.isOpenQcloudVod}
             onPluginSetPostData={this.props.threadPost.setPluginPostData}
             postData={postData}

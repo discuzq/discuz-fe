@@ -109,12 +109,14 @@ class Comment extends React.Component {
     const { thread, userInfo, canPublish, commentList, deleteComment, isLoading, requestError, postCount, shareClickRandom } = this.props;
 
     return <>
-      <CommentList
-        thread={thread}
-        canPublish={canPublish}
-        commentList={commentList}
-        deleteComment={deleteComment}>
-      </CommentList>
+      {
+        commentList && <CommentList
+          thread={thread}
+          canPublish={canPublish}
+          commentList={commentList}
+          deleteComment={deleteComment}>
+        </CommentList>
+      }
 
       {isLoading ? (
         <LoadingTips type="init"></LoadingTips>

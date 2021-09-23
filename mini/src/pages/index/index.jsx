@@ -7,7 +7,7 @@ import Icon from '@discuzq/design/dist/components/icon/index';
 import Toast from '@discuzq/design/dist/components/toast';
 import clearLoginStatus from '@common/utils/clear-login-status';
 import Router from '@discuzq/sdk/dist/router';
-import {readForum, readUser, readPermissions} from '@server';
+import {readForum, readUser, readPermissions, readPluginList} from '@server';
 import Taro from '@tarojs/taro';
 import {
   JUMP_TO_404,
@@ -141,7 +141,8 @@ class Index extends React.Component {
         const isPass = this.setAppCommonStatus(siteResult);
         if(!isPass) return;
         site.setSiteConfig(siteResult.data);
-
+        const pluginConfig = await readPluginList();
+        if (pluginConfig.code === 0) site.setPluginConfig(pluginConfig.data);
         webConfig = siteResult.data;
       } else {
         webConfig = site.webConfig;

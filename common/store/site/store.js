@@ -13,6 +13,7 @@ class SiteStore {
     this.envConfig = props.envConfig;
     this.webConfig = props.webConfig;
     this.platform = props.platform;
+    this.pluginConfig = props.pluginConfig;
   }
 
   envConfig = {};
@@ -22,6 +23,7 @@ class SiteStore {
   @observable theme = APP_THEME.light;
   @observable isUserLoginVisible = null;
   @observable errPageType = null;
+  @observable pluginConfig = null; // 插件配置
   @computed get isRegister() {
     return !this.isSmsOpen && this.wechatEnv === 'none' && this.registerClose;
   }

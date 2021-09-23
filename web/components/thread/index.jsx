@@ -16,7 +16,7 @@ import { noop } from '@components/thread/utils';
 import { updateViewCountInStorage } from '@common/utils/viewcount-in-storage';
 import Comment from './comment';
 import HOCFetchSiteData from '@middleware/HOCFetchSiteData';
-import { updateThreadAssignInfoInLists, updatePayThreadInfo } from '@common/store/thread-list/list-business';
+import { updateThreadAssignInfoInLists, updatePayThreadInfo, getThreadCommentList } from '@common/store/thread-list/list-business';
 
 @inject('site')
 @inject('index')
@@ -71,27 +71,17 @@ class Index extends React.Component {
 
     if (threadId !== '') {
       // 请求评论数据
-      if (this.props.enableCommentList) {
-        if (this.props?.site?.platform === 'pc') {
-          this.setState({
-            showCommentList: !this.state.showCommentList,
-          });
-          if (!this.state.showCommentList && likeReward.postCount > 0) {
-            await this.props.index.getThreadCommentList(threadId);
-          }
-          return;
-        }
-        if (this.props?.site?.platform === 'h5') {
-          if (likeReward.postCount === 0 || this.state.showCommentList) {
-            this.setState({
-              showCommentList: !this.state.showCommentList,
-            });
-            return;
-          }
-        }
+      if (this.props?.site?.platform === 'h5' && (likeReward.postCount > 0 && !this.state.showCommentList)) {
+        this.props.thread.positionToComment();
+        this.props.router.push(`/thread/${threadId}`);
+        return;
       }
-      this.props.thread.positionToComment();
-      this.props.router.push(`/thread/${threadId}`);
+      this.setState({
+        showCommentList: !this.state.showCommentList,
+      });
+      if (!this.state.showCommentList) {
+        await getThreadCommentList(threadId);
+      }
     } else {
       console.log('帖子不存在');
     }
@@ -248,9 +238,13 @@ class Index extends React.Component {
     const postCount = this.props.data?.likeReward?.postCount;
 
     if (postCount > 0) {
-      this.props.data.likeReward.postCount = postCount - 1;
+      const { data } = this.props;
+      const { threadId = '' } = data || {};
+      updateThreadAssignInfoInLists(threadId, {
+        updateType: 'decrement-comment',
+      });
 
-      if (this.props.data.likeReward.postCount === 0) {
+      if (postCount - 1 === 0) {
         this.setState({
           showCommentList: false,
         });
@@ -260,8 +254,11 @@ class Index extends React.Component {
 
   // 新增评论
   createComment = () => {
-    const postCount = this.props.data?.likeReward?.postCount;
-    this.props.data.likeReward.postCount = postCount + 1;
+    const { data } = this.props;
+    const { threadId = '' } = data || {};
+    updateThreadAssignInfoInLists(threadId, {
+      updateType: 'comment',
+    });
   };
 
   updateViewCount = async () => {
@@ -306,7 +303,7 @@ class Index extends React.Component {
       payType,
       isAnonymous,
       diffTime,
-      commentList = [],
+      commentList,
     } = data || {};
     const { isEssence, isPrice, isRedPack, isReward } = displayTag || {};
 
@@ -406,7 +403,7 @@ class Index extends React.Component {
 }
 
 Index.defaultProps = {
-  enableCommentList: false, // 是否开启评论列表
+  enableCommentList: true, // 是否开启评论列表
 };
 
 // eslint-disable-next-line new-cap
