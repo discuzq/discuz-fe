@@ -21,6 +21,8 @@ class CustomApplyDisplay extends React.Component {
     this.state = {
       popupShow: false,
       loading: false,
+      days: 0,
+      hours: 0,
       minutes: 0,
       seconds: 0,
       isApplyEnd: false, // 报名时间是否已结束
@@ -35,8 +37,8 @@ class CustomApplyDisplay extends React.Component {
       const time = body?.registerEndTime?.replace(/-/g, '/');
       countDownIns.start(time, (res) => {
         const { days, hours, minutes, seconds } = res;
-        const ms = (days * 24 * 60) + (hours * 60) + minutes;
-        this.setState({ minutes: ms, seconds });
+        // const ms = (days * 24 * 60) + (hours * 60) + minutes;
+        this.setState({ minutes, seconds, days, hours });
         if (days === 0 && hours === 0 && minutes === 0 && seconds === 0) {
           this.setState({ isApplyEnd: true });
           countDownIns?.stop();
@@ -58,7 +60,6 @@ class CustomApplyDisplay extends React.Component {
   getActStatusText = () => {
     const { body } = this.props.renderData || {};
     const { isApplyEnd } = this.state;
-    if (body?.isExpired) return '活动已过期';
     if (body?.isMemberFull) return '人数已满';
     if (isApplyEnd) return '报名已结束';
   };
@@ -76,25 +77,20 @@ class CustomApplyDisplay extends React.Component {
     const res = await action({ data: { activityId } });
     this.setState({ loading: false });
     if (res.code === 0) {
-      let authorInfo = {};
-      // 是否是详情页
-      if (siteData.isDetailPage) {
-        authorInfo = thread?.threadData?.user;
-      } else {
-        const { data } = index._findAssignThread(siteData?.threadId) || {};
-        authorInfo = data?.user || {};
-      }
-      const uid = authorInfo.userId;
+      const authorInfo = user.userInfo;
+      const uid = authorInfo.id;
       const users = registerUsers.filter(item => item.userId !== uid);
-      let currentNumber = body?.currentNumber - 1;
+      let currentNumber = body?.currentNumber;
       // 没有报名
       if (!isRegistered) {
         users.unshift({
           userId: uid,
-          avatar: authorInfo.avatar,
+          avatar: authorInfo.avatarUrl,
           nickname: authorInfo.nickname,
         });
         currentNumber = body?.currentNumber + 1;
+      } else {
+        currentNumber = body?.currentNumber - 1;
       }
       const tid = siteData.isDetailPage ? thread?.threadData?.id : siteData?.threadId;
       const tomValue = {
@@ -103,7 +99,7 @@ class CustomApplyDisplay extends React.Component {
           isRegistered: !isRegistered,
           registerUsers: users,
           currentNumber,
-          isMemberFull: currentNumber === totalNumber,
+          isMemberFull: currentNumber === totalNumber && totalNumber > 0,
         },
         tomId,
         threadId: tid,
@@ -125,7 +121,7 @@ class CustomApplyDisplay extends React.Component {
 
   render() {
     const { siteData, renderData } = this.props;
-    const { isApplyEnd, minutes, seconds } = this.state;
+    const { isApplyEnd, minutes, seconds, days, hours } = this.state;
     if (!renderData) return null;
     const { body } = renderData || {};
     const { isRegistered } = body;
@@ -140,12 +136,16 @@ class CustomApplyDisplay extends React.Component {
               {body?.title && body?.title}
             </div>
             <div className={styles['wrapper-header__right']}>
-              {(minutes !== 0 || seconds !== 0) && (
+              {!isApplyEnd && (
                 <>
-                  还有<span className={styles['text-primary']}>{minutes}</span>分<span className={styles['text-primary']}>{seconds}</span>秒结束报名
+                  还有
+                  <span className={styles['text-primary']}>{days}</span>天
+                  <span className={styles['text-primary']}>{hours}</span>小时
+                  <span className={styles['text-primary']}>{minutes}</span>分
+                  <span className={styles['text-primary']}>{seconds}</span>秒结束报名
                 </>
               )}
-              {(minutes === 0 && seconds === 0) && (
+              {isApplyEnd && (
                 <>
                   活动已结束
                 </>
@@ -171,16 +171,16 @@ class CustomApplyDisplay extends React.Component {
               </>
             )}
             <div className={classNames(styles['wrapper-content__tip'], styles.mt4n)}>
-              <Icon name="TimeOutlined" />
+              <Icon name="TimeOutlined" size="12" />
               <div className={styles['wrapper-tip__content']}>
                 <span className={styles['wrapper-tip_title']}>活动时间</span>
                 <span className={styles['wrapper-tip_detail']}>
-                  {body?.activityStartTime}~{body?.activityEndTime}
+                  {body?.activityStartTime} ~ {body?.activityEndTime}
                 </span>
               </div>
             </div>
             {body?.position?.location && (<div className={styles['wrapper-content__tip']}>
-              <Icon name="PositionOutlined" />
+              <Icon name="PositionOutlined" size="12" />
               <div className={styles['wrapper-tip__content']}>
                 <span className={styles['wrapper-tip_title']}>活动地址</span>
                 <span className={styles['wrapper-tip_detail']}>{ body?.position?.location }</span>
@@ -208,7 +208,7 @@ class CustomApplyDisplay extends React.Component {
                 <Button
                   type="primary"
                   loading={this.state.loading}
-                  className={classNames({
+                  className={classNames(styles.applybtn, {
                     [styles.isregisterd]: isRegistered,
                   })}
                   onClick={this.handleActOperate}

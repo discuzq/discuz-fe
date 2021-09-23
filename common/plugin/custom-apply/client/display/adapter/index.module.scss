@@ -18,7 +18,7 @@
       @include text-ellipsis();
     }
     &__right {
-      width: 150px;
+      width: 190px;
       font-size: $font-size-label;
       text-align: right;
       color: $text-color-secondary;
@@ -43,16 +43,24 @@
     &__tip {
       margin-bottom: $margin-2n;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       font-size: $font-size-label;
       color: $text-color-secondary;
       :global {
         .dzq-icon {
           margin-right: $margin-2n;
+          line-height: 20px;
         }
       }
+      .wrapper-tip__content {
+        line-height: 20px;
+      }
       .wrapper-tip_title {
+        font-size: $font-size-label;
         margin-right: $margin-1n;
+      }
+      .wrapper-tip_detail {
+        font-size: $font-size-label;
       }
       &.mt4n {
         margin-top: $margin-4n;
@@ -76,6 +84,7 @@
         cursor: pointer;
         :global {
           .dzq-avatar {
+            border: 1px solid $white;
             &:nth-child(1) {
               position: absolute;
               left: 0;
@@ -138,4 +147,7 @@
   background-color: $text-bg-color2 !important;
   color: $text-color-primary !important;
   border: none !important;
+}
+.applybtn {
+  width: 116px !important;
 }
