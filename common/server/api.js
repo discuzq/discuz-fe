@@ -61,7 +61,27 @@ function reasetData(data) {
 http.interceptors.request.use(
   // 设置userAgent
   // 设置请求头
+
+
   (config) => {
+    if (isServer()) {
+
+      const { url, baseURL, __context } = config;
+      const reg = /^((ht|f)tps?):\/\/[\w\-]+(\.[\w\-]+)+([\w\-\.,@?^=%&:\/~\+#]*[\w\-\@?^=%&\/~\+#])?$/;
+      // ssr的情况下，如果没有baseURL，或者请求的url并非一个完整的url，那么需要获取上下文中的host做拼接
+      if ( config.baseURL === '' || !reg.test(url) ) {
+        if ( __context && __context.req && __context.req.headers && __context.req.headers.host ) {
+          const proto = __context.req.connection.encrypted ? 'https://' : 'http://';
+          const host = `${proto}${__context.req.headers.host}`;
+          config.url = `${host}${url}`;
+        } else {
+          const proto = global.ctx.req.connection.encrypted ? 'https://' : 'http://';
+          const host = `${proto}${global.ctx.req.headers.host}`;
+          config.url = `${host}${url}`;
+        }
+      }
+    }
+
     // eslint-disable-next-line no-param-reassign
     config = setUserAgent(config);
     config = setStatisticParams(config);

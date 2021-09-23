@@ -102,11 +102,8 @@
           justify-content: flex-start;
           height: 28px;
           position: relative;
-          top: 3px;
-          .iconAt{
-            color: $primary-color;
-            display: inline-block;
-          }
+          top: 5px;
+
           .replyedUserName {
             max-width: 100px;
             font-weight: bold;

@@ -320,7 +320,7 @@ class CommentH5Page extends React.Component {
   async createReply(val, imageList) {
     const valuestr = val.replace(/\s/g, '');
     // 如果内部为空，且只包含空格或空行
-    if (!valuestr) {
+    if (!(valuestr || imageList.length)) {
       Toast.info({ content: '请输入内容' });
       return;
     }

@@ -206,7 +206,7 @@ const CommentInput = inject('site')((props) => {
 
   const onFail = (ret) => {
     const msg = ret?.msg;
-    const code = ret?.code === -7075; // 错误码为-7075时为不允许上传敏感图
+    const code = ret?.code === -7075 || ret?.code === -4002; // 错误码为-7075时为不允许上传敏感图
     Toast.error({
       content: code ? msg : '图片上传失败',
     });

@@ -46,6 +46,7 @@ export default function HOCFetchSiteData(Component, _isPass) {
     static async getInitialProps(ctx) {
       try {
 
+        // 将ctx保存到global
         global.ctx = ctx;
 
         let platform = 'static';
