@@ -90,25 +90,25 @@
     .text {
       font-size: rem($font-size-middle);
       line-height: rem(24);
-      color: var( --color-white);
+      color: $white;
       font-weight: normal;
       opacity: 0.6;
     }
     .shareText {
       font-size: rem($font-size-middle);
       line-height: rem(24);
-      color: var( --color-white);
+      color: $white;
       font-weight: normal;
     }
     .content {
       font-size: rem($font-size-middle);
-      color: var( --color-white);
+      color: $white;
       font-weight: normal;
       padding-left: rem($padding-2n);
     }
     .shareIcon {
       display: inline-block;
-      color: var( --color-white);
+      color: $white;
       padding-right: rem($padding-2n);
       box-sizing: border-box;
     }

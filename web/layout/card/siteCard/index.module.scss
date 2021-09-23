@@ -70,13 +70,13 @@
     .text {
       font-size: rem($font-size-middle);
       line-height: rem(24);
-      color: var( --color-white);
+      color: $white;
       font-weight: normal;
       opacity: 0.6;
     }
     .content {
       font-size: rem($font-size-middle);
-      color: var( --color-white);
+      color: $white;
       font-weight: normal;
       padding-left: rem($padding-2n);
     }

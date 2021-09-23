@@ -283,14 +283,17 @@ const RenderThreadContent = withRouter(inject('site', 'user')(observer((props) =
         )}
 
           {
-            DZQPluginCenter.injection('plugin_detail', 'thread_extension_display_hook').map(({ render, pluginInfo }) => (
-                <div key={pluginInfo.name}>
-                  {render({
-                    site: { ...site, isDetailPage: true  },
-                    renderData: parseContent.plugin
-                  })}
-                </div>
-            ))
+          DZQPluginCenter && DZQPluginCenter.injection('plugin_detail', 'thread_extension_display_hook').map(({ render, pluginInfo }) => {
+            return (
+              <div key={pluginInfo.name}>
+                {render({
+                  site: { ...site, isDetailPage: true },
+                  renderData: parseContent.plugin
+                })}
+              </div>
+            )
+          }
+            )
           }
 
           {/* 标签 */}
