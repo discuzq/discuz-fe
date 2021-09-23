@@ -38,6 +38,10 @@ export default class CustomApplyEntryContent extends React.Component {
     this.timeRef = React.createRef();
   }
 
+  componentDidMount() {
+    if (!this.props.renderData) this.props.onChange(this.state.body);
+  }
+
   componentDidUpdate(prevProps) {
     if ((this.props?.renderData?.body?.activityStartTime !== prevProps?.renderData?.body?.activityStartTime)
       && this.props?.renderData?.body.activityStartTime) {

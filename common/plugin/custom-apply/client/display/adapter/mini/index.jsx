@@ -142,7 +142,7 @@ class CustomApplyDisplay extends React.Component {
               {body?.title && body?.title}
             </View>
             <View className={styles['wrapper-header__right']}>
-              {minutes && seconds && (
+              {(minutes !== 0 || seconds !== 0) && (
                 <>
                   还有<Text className={styles['text-primary']}>{minutes}</Text>分<Text className={styles['text-primary']}>{seconds}</Text>秒结束报名
                 </>
