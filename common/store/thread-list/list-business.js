@@ -32,6 +32,10 @@ export const updateThreadAssignInfoInLists = (threadId, obj = {}) => {
 
   const { updateType, updatedInfo, user, openedMore } = obj;
 
+  // 分享数量
+  let shareCount = 0;
+  let commentCount = 0;
+
   const threadUpdater = ({ data, callback = () => {} }) => {
     if (!data && !data?.likeReward && !data?.likeReward?.users) return;
 
@@ -61,7 +65,10 @@ export const updateThreadAssignInfoInLists = (threadId, obj = {}) => {
 
     // 更新评论：新增
     if (updateType === 'comment' && data?.likeReward) {
-      data.likeReward.postCount = data.likeReward.postCount + 1;
+      if (!commentCount) {
+        commentCount = (data?.likeReward?.postCount || 0) + 1;
+      }
+      data.likeReward.postCount = commentCount;
     }
 
     // 更新评论：减少
@@ -71,7 +78,10 @@ export const updateThreadAssignInfoInLists = (threadId, obj = {}) => {
 
     // 更新分享
     if (updateType === 'share') {
-      data.likeReward.shareCount = data.likeReward.shareCount + 1;
+      if (!shareCount) {
+        shareCount = (data?.likeReward?.shareCount || 0) + 1;
+      }
+      data.likeReward.shareCount = shareCount;
     }
 
     // 更新帖子浏览量
@@ -89,7 +99,6 @@ export const updateThreadAssignInfoInLists = (threadId, obj = {}) => {
   if (targetThreadList?.length) {
     targetThreadList.forEach((targetThread) => {
       const { index, data, listName, page } = targetThread;
-
       threadUpdater({
         data,
         callback: (updatedInfo) => {
