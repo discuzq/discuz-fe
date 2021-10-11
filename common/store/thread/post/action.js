@@ -571,10 +571,10 @@ class ThreadPostAction extends ThreadPostStore {
   // 插件扩展action
   // 同步插件功能结果到store
   @action.bound
-  setPluginPostData(data) {
+  setPluginPostData(data, _isShow = false) {
     const {
       _pluginInfo,
-      postData
+      postData,
     } = data;
     const { pluginName } = _pluginInfo;
     const { tomId, body } = postData;
@@ -586,8 +586,10 @@ class ThreadPostAction extends ThreadPostStore {
         _plugin: {
           name: pluginName
         }
-      }
+      },
+      _isShow,
     }
+    console.log(this.postData.plugin[pluginName]);
     this.postData = { ...this.postData };
   }
 

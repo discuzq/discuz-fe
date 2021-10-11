@@ -45,6 +45,9 @@ export default class CustomApplyEntry extends React.Component {
       && this.props?.renderData?.body.activityStartTime) {
       this.setState({ body: formatPostData(this.props?.renderData?.body) });
     }
+    if (this.props?.renderData?._isShow !== prevProps?.renderData?._isShow && this.props?.renderData?._isShow) {
+      this.setState({ visible: true });
+    }
   }
 
   handleTimeChange = (date, type) => {
