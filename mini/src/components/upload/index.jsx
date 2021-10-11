@@ -55,13 +55,12 @@ function DzqUpload(props) {
   };
 
   // 上传附件
-  const createAttachment = (file, progress) => {
-    return new Promise((resolve, reject) => {
+  const createAttachment = (file, progress) => new Promise((resolve, reject) => {
       const tempFilePath = file.path || file.tempFilePath;
       const token = locals.get(constants.ACCESS_TOKEN_NAME);
       const { COMMON_BASE_URL = '' } = props?.site?.envConfig;
       const uploadTask = Taro.uploadFile({
-        url: `${COMMON_BASE_URL}/apiv3/attachments`,
+        url: `${COMMON_BASE_URL}/api/v3/attachments`,
         filePath: tempFilePath,
         name: 'file',
         header: {
@@ -88,7 +87,6 @@ function DzqUpload(props) {
         progress(res);
       });
     });
-  };
 
   // TODO: 因为上传组件不支持传class和style，所以在外面增加了一层dom
   const clsName = isCustomUploadIcon
