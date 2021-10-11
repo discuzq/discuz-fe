@@ -37,10 +37,16 @@ export default class CustomApplyEntry extends React.Component {
     });
   };
 
+  getTimestamp = time => new Date(time).getTime();
+
   handleDialogConfirm = () => {
     const { body } = this.state;
     if (!body.activityStartTime || !body.activityEndTime) {
       Toast.info({ content: '活动开始时间和结束时间必填' });
+      return false;
+    }
+    if (this.getTimestamp(body.activityEndTime) <= this.getTimestamp(new Date())) {
+      Toast.info({ content: '活动结束时间必须大于当前时间' });
       return false;
     }
     const { renderData } = this.props;

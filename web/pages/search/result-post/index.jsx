@@ -14,7 +14,7 @@ import HOCFetchSiteData from '@middleware/HOCFetchSiteData';
 class Index extends React.Component {
   static async getInitialProps(ctx) {
     const search = ctx?.query?.keyword || '';
-    const result = await readThreadList({ params: { filter: { scope: '0', filter: { sort: '3', search } } } }, ctx);
+    const result = await readThreadList({ params: { scope: '0', filter: { sort: '3', search } } }, ctx);
 
     return {
       serverSearch: {
@@ -46,7 +46,7 @@ class Index extends React.Component {
       this.page += 1;
     }
 
-    await search.getThreadList({ search: keyword, perPage: this.perPage, page: this.page, scope: '2' });
+    await search.getThreadList({ search: keyword, perPage: this.perPage, page: this.page, scope: '0', sort: '3' });
 
     return;
   }
