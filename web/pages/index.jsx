@@ -90,8 +90,8 @@ class Index extends React.Component {
 
     if (!index.hasThreadsData) {
       this.props.index.getReadThreadList({
-        sequence, 
-        filter: { categoryids: categoryIds, types: newTypes, essence, attention, sort } 
+        sequence,
+        filter: { categoryids: categoryIds, types: newTypes, essence, attention, sort }
       });
     } else {
       // 如果store中有值，则需要获取之前的分页数
@@ -106,15 +106,18 @@ class Index extends React.Component {
     const { router, index, site } = this.props;
 
     const result = getRouterCategory(router, site);
-    const { categoryids, sequence } = result;
-    index.topMenuIndex = `${sequence}`
+    const { categoryids, sequence, attention, essence } = result;
+    // pc端topmenu的选中
+    if (sequence === '1') index.topMenuIndex = `${sequence}`;
+    else if (essence === 1) index.topMenuIndex = '2';
+    else if (attention === 1) index.topMenuIndex = '3';
     index.setFilter(result);
 
     !isServer() && this.setUrl(categoryids, sequence);
 
   }
 
-  // 根据选中的筛选项，设置地址栏 
+  // 根据选中的筛选项，设置地址栏
   setUrl = (categoryIds = [], sequence = 0) => {
     const url = (categoryIds?.length || sequence !== 0)  ? `/?categoryId=${categoryIds.join('_')}&sequence=${sequence}` : '/'
     this.props.router.replace(url)

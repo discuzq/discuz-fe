@@ -55,14 +55,14 @@ export const getActiveId = (categories, categoryIds) => {
       return ['all', cid]
   }
 
-  
+
   let id = categoryIds[0]
   const newId = resetCategoryIds(id);
   // 如果categoryIds中的元素有多个，那应该是一级分类被选中了
   if (categoryIds?.length > 1 || newId === '') {
       return [id, cid]
   }
-  
+
   // 确定id是否是二级分类，如果是二级分类，则返回一级分类的pid
   categories.forEach((item) => {
       if (item.children?.length) {
@@ -74,7 +74,7 @@ export const getActiveId = (categories, categoryIds) => {
         }
       }
   });
-    
+
   return [id, cid];
 }
 
