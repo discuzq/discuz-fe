@@ -104,13 +104,15 @@ class Index extends React.Component {
     // 识别通过分享过来的url
     // 若包含categoryId参数，则定位到具体的categoryId数据
     const { router, index, site } = this.props;
+    // 是否显示了推荐tab
+    const isShowRecommend = site.checkSiteIsOpenDefautlThreadListData();
 
     const result = getRouterCategory(router, site);
     const { categoryids, sequence, attention, essence } = result;
     // pc端topmenu的选中
     if (sequence === '1') index.topMenuIndex = `${sequence}`;
-    else if (essence === 1) index.topMenuIndex = '1';
-    else if (attention === 1) index.topMenuIndex = '2';
+    else if (essence === 1) index.topMenuIndex = isShowRecommend ? '2' : '1';
+    else if (attention === 1) index.topMenuIndex = isShowRecommend ? '3' : '2';
     index.setFilter(result);
 
     !isServer() && this.setUrl(categoryids, sequence);
