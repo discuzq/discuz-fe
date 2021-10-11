@@ -29,6 +29,9 @@ class UserStore {
   @observable userThreadsTotalCount = 0;
   @observable userThreadsTotalPage = 1;
 
+  // 付费用户组
+  @observable payGroups = [];
+
   @observable userLikes = {};
 
   // 编辑模式下的 username

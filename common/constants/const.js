@@ -164,3 +164,50 @@ export const draftOption = [
     type: THREAD_TYPE.abandonDraft,
   },
 ];
+
+// 付费用户组的主题样式
+export const payGroupLevelStyle = {
+  0: {
+    bgImg: 'https://imgcache.qq.com/operation/dianshi/other/ship-card-pc.e7c12e08843409af87f3898e25ef67d1d4334339.png',
+  },
+  1: {
+    bgImg: 'https://imgcache.qq.com/operation/dianshi/other/2.3ecfa6ceb2c739701572aa9d3e8084a7a626e94c.png',
+    groupNameColor: '#393b42',
+    desAndDateColor: '#8e8f94',
+    leftBtnTextColor: '#efefef',
+    rightBtnBgColor: 'rgba(57, 59, 66, 0.1)',
+    otherColor: '#797a7d',
+  },
+  2: {
+    bgImg: 'https://imgcache.qq.com/operation/dianshi/other/1.517f7a52bc5ae1f4b5695dc80f02e79211e27290.png',
+    groupNameColor: '#2f1801',
+    desAndDateColor: '#6c562d',
+    leftBtnTextColor: '#f7ecc7',
+    rightBtnBgColor: 'rgba(47, 24, 1, 0.1)',
+    otherColor: '#624a1e',
+  },
+  3: {
+    bgImg: 'https://imgcache.qq.com/operation/dianshi/other/3.d7570bef4fd539e135081a017028cef85ee6df74.png',
+    groupNameColor: '#3a3d63',
+    desAndDateColor: '#505279',
+    leftBtnTextColor: '#c8cde8',
+    rightBtnBgColor: 'rgba(58, 61, 99, 0.1)',
+    otherColor: '#474b7a',
+  },
+  4: {
+    bgImg: 'https://imgcache.qq.com/operation/dianshi/other/4.2804d984fa9756208062e6115dfa0461653daf8d.png',
+    groupNameColor: '#fdf2f0',
+    desAndDateColor: '#f3e2dc',
+    leftBtnTextColor: '#683b41',
+    rightBtnBgColor: 'rgba(245, 225, 220, 0.1)',
+    otherColor: '#f5e1dc',
+  },
+  5: {
+    bgImg: 'https://imgcache.qq.com/operation/dianshi/other/5.e1f86ee2189404ab35e45922fbc79c360d395386.png',
+    groupNameColor: '#f4d0b1',
+    desAndDateColor: '#ceb6b2',
+    leftBtnTextColor: '#14131d',
+    rightBtnBgColor: 'rgba(244, 208, 177, 0.1)',
+    otherColor: '#f4d0b1',
+  },
+};

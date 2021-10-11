@@ -22,6 +22,7 @@ import {
   getSignInFields,
   h5Rebind,
   miniRebind,
+  getPayGroups
 } from '@server';
 import { get } from '../../utils/get';
 import locals from '@common/utils/local-bridge';
@@ -63,6 +64,17 @@ class UserAction extends SiteStore {
       }
 
       this.targetUsers = { ...this.targetUsers };
+    }
+  }
+
+  // 获取当前用户的付费用户组
+  @action
+  async getPayGroups() {
+    const res = await getPayGroups();
+    const { code, data } = res;
+    if (code === 0) {
+      this.payGroups = data;
+      return data;
     }
   }
 
