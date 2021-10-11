@@ -223,6 +223,7 @@ class PostPage extends React.Component {
       file,
       onUploading: () => {},
       onComplete: (res, file) => {
+        console.log(res, file);
         this.handleVodUploadComplete(res, file, THREAD_TYPE.video);
         toastInstance?.destroy();
       },

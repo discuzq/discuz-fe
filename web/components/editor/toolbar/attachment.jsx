@@ -1,3 +1,4 @@
+/* eslint-disable spaced-comment */
 /**
  * 附件操作栏比如：图片上传、视频上传、语音上传等
  */
@@ -176,7 +177,6 @@ function AttachmentToolbar(props) {
 
 
   const icons = () => {
-
     let defaultEntryList = attachIcon.map((item) => {
       const { permission } = props;
       if (props.pc && item.type === THREAD_TYPE.voice) return null;
@@ -199,7 +199,7 @@ function AttachmentToolbar(props) {
       return isShow ? (
         <div key={item.name} className={clsName}>
           <Icon
-            onClick={e => {
+            onClick={(e) => {
               handleAttachClick(e, item);
               trggerInput(item);
             }}
@@ -227,14 +227,14 @@ function AttachmentToolbar(props) {
           {render({
             site: { ...props.site },
             onConfirm: props.onPluginSetPostData,
-            renderData: props.postData.plugin
+            renderData: props.postData.plugin,
           })}
         </div>
-      )
+      );
     }));
 
     return defaultEntryList;
-  }
+  };
 
 
   if (props.pc) return icons();
