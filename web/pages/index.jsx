@@ -109,8 +109,8 @@ class Index extends React.Component {
     const { categoryids, sequence, attention, essence } = result;
     // pc端topmenu的选中
     if (sequence === '1') index.topMenuIndex = `${sequence}`;
-    else if (essence === 1) index.topMenuIndex = '2';
-    else if (attention === 1) index.topMenuIndex = '3';
+    else if (essence === 1) index.topMenuIndex = '1';
+    else if (attention === 1) index.topMenuIndex = '2';
     index.setFilter(result);
 
     !isServer() && this.setUrl(categoryids, sequence);
