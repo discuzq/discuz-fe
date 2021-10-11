@@ -15,7 +15,7 @@
         font-size: rem(14);
         line-height: rem(20);
         text-align: left;
-        color: #0b0b37;
+        color: $text-color-primary;
     }
     .siteName {
         margin-top: 4px;
@@ -23,6 +23,6 @@
         font-size: rem(12);
         line-height: rem(17);
         text-align: left;
-        color: #8590a6;
+        color: $text-color-secondary;
     }
 }

@@ -235,8 +235,7 @@ class index extends Component {
     const { currentStep, list = [], isBlur, bindMobile, isSubmit } = this.state;
     const valuePassCheck = currentStep === 'second' ? this.validateTel(bindMobile) : true;
     return (
-      <div className={styles.userMobileWrapper}>
-        <Dialog visible={this.props.visible} onClose={this.props.onClose}>
+        <Dialog className={styles.userMobileWrapper} visible={this.props.visible} onClose={this.props.onClose}>
           <div className={styles.userMobileContent}>
             <div className={styles.title}>
               <span className={styles.titleValue}>{currentStep === 'first' ? '验证旧手机' : '绑定手机号'}</span>
@@ -302,7 +301,6 @@ class index extends Component {
             </div>
           </div>
         </Dialog>
-      </div>
     );
   }
 }

@@ -273,7 +273,13 @@ class ThreadPostAction extends ThreadPostStore {
     if (plugin) {
       for (let key in plugin) {
         contentIndexes[plugin[key].tomId] = {
-          ...plugin[key]
+          ...plugin[key],
+        };
+        const { body = {} } = contentIndexes[plugin[key].tomId];
+        let {  _plugin } = contentIndexes[plugin[key].tomId];
+        if (!_plugin) _plugin = { name: key };
+        if (body) {
+          contentIndexes[plugin[key].tomId].body._plugin = _plugin;
         }
       }
     }
@@ -357,42 +363,42 @@ class ThreadPostAction extends ThreadPostStore {
     const plugin = {};
     // 插件格式化
     Object.keys(contentindexes).forEach((index) => {
-      const tomId = Number(contentindexes[index].tomId);
-      if (tomId === THREAD_TYPE.image) {
+      const tomId = contentindexes[index].tomId.toString();
+      if (tomId === THREAD_TYPE.image.toString()) {
         const imageBody = contentindexes[index].body || [];
         imageBody.forEach((item) => {
           images[item.id] = { ...item, type: item.fileType, name: item.fileName };
         });
       }
-      else if (tomId === THREAD_TYPE.file) {
+      else if (tomId === THREAD_TYPE.file.toString()) {
         const fileBody = contentindexes[index].body || [];
         fileBody.forEach((item) => {
           files[item.id] = { ...item, type: item.fileType, name: item.fileName };
         });
       }
-      else if (tomId === THREAD_TYPE.voice) {
+      else if (tomId === THREAD_TYPE.voice.toString()) {
         audio = contentindexes[index].body || {};
         const audioId = audio.id || audio.threadVideoId;
         audio.id = audioId;
       }
-      else if (tomId === THREAD_TYPE.vote) {
+      else if (tomId === THREAD_TYPE.vote.toString()) {
         vote = contentindexes[index].body[0] || {};
       }
-      else if (tomId === THREAD_TYPE.goods) product = contentindexes[index].body;
-      else if (tomId === THREAD_TYPE.video) {
+      else if (tomId === THREAD_TYPE.goods.toString()) product = contentindexes[index].body;
+      else if (tomId === THREAD_TYPE.video.toString()) {
         video = contentindexes[index].body || {};
         video.thumbUrl = video.mediaUrl;
         const videoId = video.id || video.threadVideoId;
         video.id = videoId;
       }
-      else if (tomId === THREAD_TYPE.redPacket) {
+      else if (tomId === THREAD_TYPE.redPacket.toString()) {
         const redBody = contentindexes[index]?.body || {}
         const { money = 0, number = 0, rule = 1 } = redBody;
         const price = rule === 0 ? money / number : money;
         redpacket = { ...redBody, price };
       }
       // expiredAt: rewardQa.times, price: rewardQa.value, type: 0
-      else if (tomId === THREAD_TYPE.reward) {
+      else if (tomId === THREAD_TYPE.reward.toString()) {
         const times = contentindexes[index].body.expiredAt
           ? formatDate(contentindexes[index].body.expiredAt?.replace(/-/g, '/'), 'yyyy/MM/dd hh:mm')
           : formatDate(new Date().getTime() + (25 * 3600 * 1000), 'yyyy/MM/dd hh:mm');
@@ -402,17 +408,18 @@ class ThreadPostAction extends ThreadPostStore {
           times,
           value,
         };
-      } else if (tomId === THREAD_TYPE.iframe) {
+      } else if (tomId === THREAD_TYPE.iframe.toString()) {
         iframe = contentindexes[index].body || { };
       }
       else {
-        const { body } = contentindexes[index];
-        const { _plugin } = body;
+        const { body = {}, _plugin } = contentindexes[index];
+        // const { _plugin } = body;
         if (!_plugin) return;
-        const { name } = _plugin;
+        const { name } = _plugin || {};
         plugin[name] = {
           tomId,
-          body
+          body,
+          _plugin,
         }
       }
     });
@@ -497,7 +504,7 @@ class ThreadPostAction extends ThreadPostStore {
     return { parent, child };
   }
 
-  @action
+  @action.bound
   getCategoriesCanCreate() {
     const len = this.categories.length;
     if (!len) return;

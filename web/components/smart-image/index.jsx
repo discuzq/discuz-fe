@@ -10,6 +10,7 @@ const SmartImg = ({ level, type, src, onClick, noSmart = false, showLongPicture 
   const img = useRef(null);
 
   const imgSrc = useMemo(() => {
+    if (!src) return '';
     if (size / 1024 / 1024 > 2) return calcCosImageQuality(src, type, 100);
     if (noSmart) return calcCosImageQuality(src, type, 0);
     return calcCosImageQuality(src, type, level);
@@ -30,7 +31,7 @@ const SmartImg = ({ level, type, src, onClick, noSmart = false, showLongPicture 
   }, [img]);
   return (
         <div className={styles.box}>
-            <img ref={img} src={imgSrc} onLoad={imgOnload} onClick={onClick}/>
+            <img  alt="图片" ref={img} src={imgSrc} onLoad={imgOnload} onClick={onClick}/>
             {!noSmart && isLong && <div className={styles.longImgBox}><p className={styles.longImgText}>长图</p></div>}
         </div>
   );

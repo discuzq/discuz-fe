@@ -77,7 +77,7 @@ class PartnerInviteH5Page extends React.Component {
       invite.setInviteCode(inviteCode);
       const inviteResp = await readUser({
         params: {
-          pid: inviteCode.length === 32 ? 1 : inviteCode,
+          userId: inviteCode.length === 32 ? 1 : inviteCode,
         },
       });
 
@@ -221,7 +221,7 @@ class PartnerInviteH5Page extends React.Component {
           <View className={layout.bottom}>
             {inviteCode ? (
               <View className={layout.bottom_tips}>
-                {/* <img className={layout.bottom_tips_img} src={ invitorAvatar } alt=""/> */}
+                {/* <img className={layout.bottom_tips_img} src={ invitorAvatar } alt={invitorAvatar}/> */}
                 <Avatar
                   size="small"
                   text={invitorName?.substring(0, 1)}

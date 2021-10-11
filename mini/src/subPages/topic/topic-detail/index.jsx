@@ -18,11 +18,7 @@ import { updateThreadAssignInfoInLists } from '@common/store/thread-list/list-bu
 class Index extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {
-      fetchTopicInfoLoading: true,
-      isError: false,
-      errorText: '加载失败',
-    }
+    this.state = {}
 
     this.props.threadList.registerList({ namespace: this.props.topic.namespace });
   }
@@ -69,23 +65,26 @@ class Index extends React.Component {
       topic.setTopicDetail(null)
       this.page = 1;
       try {
-        await topic.getTopicsDetail({ topicId: id });
-        this.setState({
-          fetchTopicInfoLoading:false,
-        })
+        await topic.getTopicsDetail({ perPage: this.perPage, page: this.page, topicId: id });
       }
       catch (errMsg){
-        this.setState({
-          isError: true,
-          errorText: errMsg
-        })
+        console.log(errMsg);
       }
       // this.toastInstance?.destroy();
     // }
 
   }
+
+  dispatch = async () => {
+    const { topic } = this.props;
+    const { id = '' } = getCurrentInstance().router.params;
+    this.page += 1;
+    await topic.getTopicsDetail({perPage: this.perPage, page: this.page, topicId: id});
+    return;
+  }
+
   render() {
-    return <Page><IndexPage dispatch={this.dispatch} fetchTopicInfoLoading={this.state.fetchTopicInfoLoading} isError={this.state.isError} errorText={this.state.errorText}/></Page>;
+    return <Page><IndexPage dispatch={this.dispatch} /></Page>;
   }
 }
 

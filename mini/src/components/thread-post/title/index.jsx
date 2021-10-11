@@ -9,6 +9,8 @@
 import React, { memo } from 'react';
 import { View } from '@tarojs/components';
 import Input from '@discuzq/design/dist/components/input/index';
+import { debounce, throttle } from '@common/utils/throttle-debounce.js';
+
 import styles from './index.module.scss';
 
 import PropTypes from 'prop-types';
@@ -20,7 +22,7 @@ const Index = ({ value, show, placeholder, onChange, onBlur, onFocus }) => {
       onClick={e => e.stopPropagation()}
     >
       <Input
-        value={value}
+        value={debounce(() => value, 0)}
         mode='text'
         placeholder={placeholder}
         onChange={e => onChange(e.target.value)}

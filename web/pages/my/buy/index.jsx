@@ -57,35 +57,9 @@ class Index extends React.Component {
 
   async componentDidMount() {
     this.props.router.events.on('routeChangeStart', this.beforeRouterChange);
-    const { index, threadList } = this.props;
-    const hasThreadsData = !!index.threads;
-    if (!hasThreadsData) {
-      const threadsResp = await threadList.fetchList({
-        namespace: 'buy',
-        perPage: 10,
-        page: this.state.page,
-        filter: {
-          complex: 4,
-        },
-      });
-
-      threadList.setList({
-        namespace: 'buy',
-        data: threadsResp,
-        page: this.state.page,
-      });
-
-      this.setState({
-        totalCount: threadsResp?.totalCount,
-        totalPage: threadsResp?.totalPage,
-      });
-
-      if (this.state.page <= threadsResp?.totalPage) {
-        this.setState({
-          page: this.state.page + 1,
-        });
-      }
-    }
+    const { index } = this.props;
+    if (index.hasThreadsData) return;
+    this.dispatch();
   }
 
   componentWillUnmount() {
@@ -120,7 +94,8 @@ class Index extends React.Component {
       data: threadsResp,
       page: this.state.page,
     });
-    if (this.state.page <= threadsResp.totalPage) {
+
+    if (this.state.page <= threadsResp?.data.totalPage) {
       this.setState({
         page: this.state.page + 1,
       });

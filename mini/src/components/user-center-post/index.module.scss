@@ -1,54 +1,67 @@
 @import '@common/styles/index.scss';
 
 .userCenterPost {
-    padding: rem($padding-4n);
-    cursor: pointer;
-    padding-bottom: rem($padding-6n);
+  padding: $padding-4n;
+  cursor: pointer;
 
-    .userCenterPostContent {
-        display: flex;
-        width: 100%;
+  .userCenterPostContent {
+    display: flex;
+    width: 100%;
 
-        .userCenterPostAvatar {
-            padding-top: rem($padding-4n);
-            margin-right: rem($margin-2n);
+    .userCenterPostAvatar {
+      padding-top: $padding-4n;
+      margin-right: $margin-2n;
+    }
+  }
+
+  .userCenterPostTitle {
+    font-size: $font-size-middle;
+    color: $text-color-primary;
+    font-weight: 600;
+    height: 22px;
+    line-height: 22px;
+  }
+
+  .userCenterPostInfo {
+    display: flex;
+    padding-top: $padding-4n;
+
+    input {
+      -webkit-appearance: none;
+    }
+
+    .userCenterPostInput {
+      width: 100%;
+
+      input {
+        padding-left: $padding-4n;
+        // background-color: $body-bg-color;
+        border-color: $border-color;
+      }
+      :global {
+        .input-placeholder {
+          color: $text-color-placeholder;
         }
+      }
     }
+  }
 
-    .userCenterPostTitle {
-        font-size: rem($font-size-middle);
-        color: $text-color-primary;
-        font-weight: 600;
+  .userCenterPostList {
+    padding-top: $padding-6n;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .userCenterPostBtn {
+    width: 100%;
+    text-align: right;
+    margin-top: $margin-4n;
+
+    .btn {
+      width: 76px;
+      height: 36px;
+      padding: 0;
+      line-height: 36px;
     }
-
-    .userCenterPostInfo {
-        display: flex;
-        padding-top: rem($padding-4n);
-
-        input {
-            -webkit-appearance: none;
-        }
-
-
-        .userCenterPostInput {
-            width: 100%;
-
-            input {
-                padding-left: $padding-4n;
-                background-color: $body-bg-color;
-                border-color: $border-color;
-            }
-            :global {
-                .input-placeholder {
-                    color: var(--color-text-placeholder);
-                }
-            }
-        }
-    }
-
-    .userCenterPostList {
-        padding-top: rem($padding-6n);
-        display: flex;
-        justify-content: space-between;
-    }
+  }
 }

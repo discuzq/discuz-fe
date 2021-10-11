@@ -139,15 +139,16 @@ class ThreadPCPage extends React.Component {
   // 滚动到指定位置
   scrollToPostion(scrollBodyRef) {
     // 是否定位到评论位置
-    if (this.props?.thread?.isPositionToComment) {
-      // 当内容加载完成后，获取评论区所在的位置
-      this.position = this.commentDataRef?.current?.offsetTop - 50;
-      // TODO:需要监听帖子内容加载完成事件
-      setTimeout(() => {
-        scrollBodyRef?.current?.scrollTo(0, this.position);
-      }, 1000);
-      return;
-    }
+    // if (this.props?.thread?.isPositionToComment) {
+    //   // 当内容加载完成后，获取评论区所在的位置
+    //   this.position = this.commentDataRef?.current?.offsetTop - 50;
+    //   // TODO:需要监听帖子内容加载完成事件
+    //   setTimeout(() => {
+    //     scrollBodyRef?.current?.scrollTo(0, this.position);
+    //   }, 1000);
+    //   return;
+    // }
+
 
     // 滚动到记录的指定位置
     scrollBodyRef?.current?.scrollTo(0, this.props.thread.scrollDistance);
@@ -454,7 +455,7 @@ class ThreadPCPage extends React.Component {
     const id = this.props.thread?.threadData?.id;
     const params = {
       id,
-      pid: this.comment.id,
+      postId: this.comment.id,
       content: val,
       attachments: [],
     };
@@ -758,13 +759,14 @@ class ThreadPCPage extends React.Component {
         )}
 
         {/* 回复详情内容 */}
-        <div className={`${layout.bottom}`} ref={this.commentDataRef}>
+        <div className={`${layout.bottom}`}>
           {isCommentReady && isApproved ? (
             <Fragment>
               {/* 第一段列表 */}
               {isCommentReady && isShowCommentList && (
                 <Fragment>
                   <RenderCommentList
+                    commentDataRef={this.commentDataRef}
                     isPositionComment={true}
                     router={this.props.router}
                     sort={flag => this.onSortChange(flag)}

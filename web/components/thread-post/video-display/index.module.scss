@@ -30,7 +30,7 @@
     justify-content: flex-end;
     border-top-left-radius: $border-radius-small;
     border-top-right-radius: $border-radius-small;
-    background-color: rgba($color: #000, $alpha: .5);
+    background-color: $mask-bg-color;
     z-index: 1;
 
     :global {

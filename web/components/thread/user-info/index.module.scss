@@ -1,5 +1,8 @@
 @import '@common/styles/index.scss';
-
+.user-link{
+  text-decoration: none;
+  display: block;
+}
 .contianer {
   position: relative;
   display: flex;

@@ -189,7 +189,7 @@
   display: inline-block;
   // TODO:token  $text-color-regular不生效
   // color: $text-color-regular;
-  color: #4f5a70;
+  color: $text-color-regular;
   background: #f0f1f3; // TODO:token
   font-size: rem($font-size-label);
   padding: rem($padding-1n) rem($padding-1n);
@@ -322,6 +322,45 @@
     border: rem(1) solid $warn-color;
     &::after {
       background-color: $warn-color;
+    }
+  }
+}
+
+
+.moneyList{
+  text-align: center;
+  width: 343px;
+  margin: 30px auto 0;
+  .top{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color:$text-color-primary;
+    &::after{
+      width: 80px;
+      height: 1px;
+      background-color: #EEEEEE;
+      content: '';
+      margin-left: 15px;
+    }
+    &::before{
+      content: '';
+      width: 80px;
+      height: 1px;
+      background-color: #EEEEEE;
+      margin-right: 15px;
+    }
+  }
+
+  .itemList{
+    padding: 20px 0;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    .itemAvatar{
+      margin: 5px 3px 0;
+      cursor: pointer;
     }
   }
 }

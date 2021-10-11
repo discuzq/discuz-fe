@@ -4,7 +4,7 @@ import styles from './index.module.scss';
 import { handleAttachmentData, noop } from '@components/thread/utils';
 import replaceSearchResultContent from '@common/utils/replace-search-result-content';
 import FilterRichText from '@components/filter-rich-text'
-
+import SiteMapLink from '@components/site-map-link';
 /**
  * 话题组件
  * @prop {title:string, content:string, hotCount:number, contentCount:number} data 话题数据
@@ -28,9 +28,10 @@ const TopicItem = ({ data, onClick = noop, index, footer }) => {
 
   return (
     <div className={styles.item} onClick={click}>
+      <SiteMapLink href={`/topic/topic-detail/${data.topicId}`} text={`#${data.content}#`}/>
       <div className={styles.imgBox}>
         { imageData.length > 0 && imageData[0].thumbUrl ? (
-            <img className={styles.img} src={imageData[0].thumbUrl}/>
+            <img alt="图片" className={styles.img} src={imageData[0].thumbUrl}/>
           ) : `${data.content[0]}`
         }
       </div>

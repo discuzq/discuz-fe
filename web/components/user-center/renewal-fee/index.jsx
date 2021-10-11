@@ -35,15 +35,15 @@ class RenewalFee extends Component {
 
   render() {
     return (
-      <div className={styles.renewalFeeWrapper}>
-        <Dialog visible={this.props.visible} position="center" maskClosable={true}>
+      <Dialog className={styles.renewalDialog} visible={this.props.visible} position="center" maskClosable={true} onClose={this.onClose}>
+        <div className={styles.renewalFeeWrapper}>
           <div className={styles.renewalFeeContent}>
             {/* 关闭按钮 */}
             <div className={styles.renewalFeeClose} onClick={this.onClose}>
               <Icon name="CloseOutlined" size={12} color="#fff" />
             </div>
             <div className={styles.siteBg}>
-              <img className={styles.siteBgImage} src={this.props.site?.siteBackgroundImage} />
+              <img alt="图片" className={styles.siteBgImage} src={this.props.site?.siteBackgroundImage} />
             </div>
             <div className={styles.menuInfo}>
               <div className={styles.menuItem}>
@@ -78,8 +78,8 @@ class RenewalFee extends Component {
               <div className={styles.effectTimer}>有效期：{this.props.site?.siteExpire}天</div>
             </div>
           </div>
-        </Dialog>
-      </div>
+        </div>
+      </Dialog>
     );
   }
 }

@@ -13,10 +13,11 @@ import ThreadCenterView from './ThreadCenterView';
 import { debounce, noop, getElementRect, randomStr } from './utils'
 import { View, Text } from '@tarojs/components'
 import { getImmutableTypeHeight } from './getHeight'
-import { updateThreadAssignInfoInLists, updatePayThreadInfo } from '@common/store/thread-list/list-business';
+import { updateThreadAssignInfoInLists, updatePayThreadInfo, getThreadCommentList } from '@common/store/thread-list/list-business';
+import canPublish from '@common/utils/can-publish';
 import Skeleton from './skeleton';
 import { updateViewCountInStorage } from '@common/utils/viewcount-in-storage';
-
+import Comment from './comment';
 @inject('site')
 @inject('index')
 @inject('user')
@@ -30,7 +31,9 @@ class Index extends React.Component {
       isSendingLike: false,
       minHeight: 0,
       useShowMore: true,
-      videoH: 0
+      videoH: 0,
+      showCommentList: false,
+      shareClickRandom: '', // 主要是用于关闭表情
     }
 
     this.threadStyleId = `thread-style-id-${randomStr()}`
@@ -65,18 +68,28 @@ class Index extends React.Component {
   }
 
   // 评论
-  onComment = (e) => {
+  onComment = async (e) => {
     e && e.stopPropagation();
 
     if (!this.allowEnter()) {
       return
     }
 
-    const { threadId = '' } = this.props.data || {};
+    const { threadId = '', likeReward } = this.props.data || {};
 
     if (threadId !== '') {
-      this.props.thread.positionToComment()
-      Router.push({ url: `/indexPages/thread/index?id=${threadId}` })
+      // 请求评论数据
+      if (likeReward.postCount > 0 && !this.state.showCommentList) {
+        this.props.thread.positionToComment()
+        Router.push({ url: `/indexPages/thread/index?id=${threadId}` })
+        return;
+      }
+      this.setState({
+        showCommentList: !this.state.showCommentList,
+      });
+      if (!this.state.showCommentList) {
+        await getThreadCommentList(threadId);
+      }
     } else {
       console.log('帖子不存在');
     }
@@ -94,7 +107,7 @@ class Index extends React.Component {
     // 对没有登录的先登录
     if (!this.props.user.isLogin()) {
       Toast.info({ content: '请先登录!' });
-      goToLoginPage({ url: '/subPages/user/wx-auth/index' });
+      goToLoginPage({ url: '/userPages/user/wx-auth/index' });
       return;
     }
     const { data = {}, user } = this.props;
@@ -123,7 +136,7 @@ class Index extends React.Component {
     // 对没有登录的先做
     if (!this.props.user.isLogin()) {
       Toast.info({ content: '请先登录!' });
-      goToLoginPage({ url: '/subPages/user/wx-auth/index' });
+      goToLoginPage({ url: '/userPages/user/wx-auth/index' });
       return;
     }
 
@@ -134,11 +147,11 @@ class Index extends React.Component {
     const thread = this.props.data;
     const { success } = await threadPay(thread, this.props.user?.userInfo);
 
-      // 支付成功重新请求帖子数据
-      if (success && thread?.threadId) {
-        const { code, data } = await this.props.thread.fetchThreadDetail(thread?.threadId);
-        if (code === 0 && data) {
-          updatePayThreadInfo(thread?.threadId, data);
+    // 支付成功重新请求帖子数据
+    if (success && thread?.threadId) {
+      const { code, data } = await this.props.thread.fetchThreadDetail(thread?.threadId);
+      if (code === 0 && data) {
+        updatePayThreadInfo(thread?.threadId, data);
 
         if (typeof this.props.dispatch === "function") {
           this.props.dispatch(thread?.threadId, data);
@@ -176,7 +189,7 @@ class Index extends React.Component {
     if (!!isAnonymous) {
       this.onClick()
     } else {
-      Router.push({ url: `/subPages/user/index?id=${user?.userId}` });
+      Router.push({ url: `/userPages/user/index?id=${user?.userId}` });
     }
   }
 
@@ -204,6 +217,7 @@ class Index extends React.Component {
     }
     return true
   }
+
   onShare = () => {
     const { threadId = '', user } = this.props.data || {};
     this.props.index.updateThreadShare({ threadId }).then(result => {
@@ -227,8 +241,34 @@ class Index extends React.Component {
     }
   }
 
+  // 删除评论
+  deleteComment = () => {
+    const postCount = this.props.data?.likeReward?.postCount;
+    if (postCount > 0) {
+      const { data } = this.props;
+      const { threadId = '' } = data || {};
+      updateThreadAssignInfoInLists(threadId, {
+        updateType: 'decrement-comment',
+      });
+      if (postCount - 1 === 0) {
+        this.setState({
+          showCommentList: false,
+        });
+      }
+    }
+  };
+  // 新增评论
+  createComment = () => {
+    const { data } = this.props;
+    const { threadId = '' } = data || {};
+    updateThreadAssignInfoInLists(threadId, {
+      updateType: 'comment',
+    });
+  };
+  canPublish = () => canPublish(this.props.user, this.props.site)
+
   render() {
-    const { data, className = '', site = {}, showBottomStyle = true, isShowIcon = false, unifyOnClick = null, relativeToViewport = true, onTextItemClick = null, extraTag } = this.props;
+    const { data, thread:threadStore, className = '', site = {}, showBottomStyle = true, isShowIcon = false, unifyOnClick = null, relativeToViewport = true, onTextItemClick = null,extraTag} = this.props;
     const { platform = 'pc' } = site;
     if (!data) {
       return <NoData />;
@@ -247,13 +287,15 @@ class Index extends React.Component {
       payType,
       content,
       isAnonymous,
-      diffTime
+      diffTime,
+      commentList,
     } = data || {};
     const { text } = content
     const { isEssence, isPrice, isRedPack, isReward } = displayTag;
     const { getShareData, getShareContent } = this.props.user
     const { shareNickname, shareAvatar, shareThreadid, shareContent } = this.props.user
-    const { minHeight, useShowMore, videoH } = this.state
+    const { minHeight, useShowMore, videoH, shareClickRandom } = this.state
+
     return (
       <View className={`${styles.container} ${className} ${showBottomStyle && styles.containerBottom} ${platform === 'pc' && styles.containerPC}`} style={{ minHeight: `${minHeight}px` }} id={this.threadStyleId}>
         {
@@ -276,6 +318,7 @@ class Index extends React.Component {
                   platform={platform}
                   extraTag={extraTag}
                   onClick={unifyOnClick || this.onUser}
+                  extraTag={extraTag}
                 />
                 {isShowIcon && <View className={styles.headerIcon} onClick={unifyOnClick || this.onClickHeaderIcon}><Icon name='CollectOutlinedBig' className={styles.collectIcon}></Icon></View>}
               </View>
@@ -308,6 +351,7 @@ class Index extends React.Component {
                 onPraise={this.onPraise}
                 unifyOnClick={unifyOnClick}
                 isLiked={isLike}
+                isCommented={this.state.showCommentList}
                 isSendingLike={this.state.isSendingLike}
                 tipData={{ postId, threadId, platform, payType }}
                 platform={platform}
@@ -321,13 +365,35 @@ class Index extends React.Component {
                 data={data}
                 user={this.props.user}
                 updateViewCount={this.updateViewCount}
+                shareIconClick={() => this.setState({ shareClickRandom: Math.random() })}
               />
             </>
           ) : <Skeleton style={{ minHeight: `${minHeight}px` }} />
         }
-      </View>
-    );
-  }
+
+        {/* 评论列表 */}
+        {this.state.showCommentList && (
+          <Comment
+            thread={{
+              threadData: {
+                id: data.threadId,
+                ...data,
+              },
+            }}
+            threadStore={threadStore}
+            userInfo={this.props.user.userInfo}
+            canPublish={this.canPublish}
+            commentList={commentList}
+            deleteComment={this.deleteComment}
+            createComment={this.createComment}
+            isLoading={data.isLoading}
+            requestError={data.requestError}
+            postCount={data?.likeReward?.postCount}
+            platform={platform}
+            shareClickRandom={shareClickRandom}
+          ></Comment>
+        )}
+      </  }
 }
 
 // eslint-disable-next-line new-cap

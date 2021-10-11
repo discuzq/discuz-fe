@@ -23,7 +23,7 @@
         font-size: rem($font-size-primary);
         line-height: rem($font-line-height-primary);
         text-align: center;
-        color: var(--color-text-secondary);
+        color: $text-color-secondary;
     }
     .btn{
         margin-top: rem(40);

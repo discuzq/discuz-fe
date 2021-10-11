@@ -75,8 +75,8 @@
   }
 
   .containerNum3 {
-    
-    &.panorama, 
+
+    &.panorama,
     &.transverse{
       .bigImages {
         height: rem(126);
@@ -93,7 +93,7 @@
         }
       }
     }
-    
+
     &.long,
     &.longitudinal{
       height: rem(258);
@@ -152,7 +152,7 @@
       width: rem(170);
       height: rem(260);
     }
-    
+
   }
 }
 
@@ -213,7 +213,7 @@
   }
 
   .containerNum3 {
-    &.panorama, 
+    &.panorama,
     &.transverse{
       .bigImages {
         height: rem(266);
@@ -229,7 +229,7 @@
         }
       }
     }
-    
+
     &.long,
     &.longitudinal{
       height: rem(532);
@@ -246,7 +246,7 @@
         height: 100%;
       }
     }
-    
+
   }
 
   .containerNum2 {
@@ -291,7 +291,7 @@
     }
   }
 }
- 
+
 .modalBox {
   position: absolute;
   top: 0;
@@ -303,11 +303,11 @@
   justify-content: center;
   font-weight: 600;
   font-size: rem($font-size-large);
-  color: var(--color-white);
+  color: $white;
   border-radius: rem($border-radius-small);
   background-color: rgba(0, 0, 0, 0.5);
 }
-  
+
 
 
 

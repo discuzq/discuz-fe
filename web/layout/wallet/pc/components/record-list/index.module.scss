@@ -11,12 +11,12 @@
   padding: 0 rem($padding-4n);
   border-radius: rem(5) rem(5) 0 0;
   background-color: $comment-bg-color;
-  
+
   font-weight: normal;
   font-size: rem($font-size-primary);
   text-align: left;
   line-height: rem(36);
-  color: #4f5a70;
+  color: $text-color-regular;
 
   .left {
     width: 40%;
@@ -63,7 +63,7 @@
 
   .left {
     width: 40%;
-    
+
     font-weight: normal;
     font-size: rem($font-size-primary);
   }
@@ -80,27 +80,27 @@
     justify-content: space-around;
     text-align: left;
     .type {
-      
+
       width: 33%;
       font-weight: normal;
       color: $text-color-primary;
     }
     .status {
-      
+
       width: 33%;
       font-weight: normal;
-      // color: var(--color-text-primary);
+      // color: $text-color-primary;
     }
     .money {
       width: 33%;
-      
+
       font-weight: 600;
       font-size: rem($font-size-middle);
       color: $error-color;
     }
     .time {
       width: 33%;
-      
+
       font-weight: normal;
       color: $text-color-secondary;
     }

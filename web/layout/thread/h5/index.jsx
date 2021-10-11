@@ -9,7 +9,7 @@ import footer from './footer.module.scss';
 import NoMore from './components/no-more';
 import LoadingTips from '@components/thread-detail-pc/loading-tips';
 
-import styleVar from '@common/styles/theme/default.scss.json';
+// import styleVar from '@common/styles/theme/default.scss.json';
 import { Icon, Input, Toast } from '@discuzq/design';
 import Header from '@components/header';
 import goToLoginPage from '@common/utils/go-to-login-page';
@@ -125,7 +125,7 @@ class ThreadH5Page extends React.Component {
       if (this.props?.thread?.isPositionToComment) {
         // TODO:需要监听帖子内容加载完成事件
         setTimeout(() => {
-          this.threadBodyRef.current.scrollTo(0, this.position);
+          this.threadBodyRef?.current?.scrollTo(0, this.position);
         }, 1000);
         return;
       }
@@ -229,7 +229,7 @@ class ThreadH5Page extends React.Component {
       goToLoginPage({ url: '/user/login' });
       return;
     }
-    if (!this.props.canPublish()) return;
+    if (!this.props.canPublish('reply')) return;
     this.setState({
       showCommentInput: true,
     });
@@ -495,7 +495,7 @@ class ThreadH5Page extends React.Component {
     const id = this.props.thread?.threadData?.id;
     const params = {
       id,
-      pid: this.comment.id,
+      postId: this.comment.id,
       content: val,
       attachments: [],
     };
@@ -567,8 +567,15 @@ class ThreadH5Page extends React.Component {
   // 分享
   async onShareClick() {
     // 判断是否在微信浏览器
-    if (isWeiXin()) {
-      this.setState({ isShowWeiXinShare: true });
+    if (!isWeiXin()) return;
+    this.setState({ isShowWeiXinShare: true });
+    const data = this.props.thread.threadData;
+    const threadId = data.id;
+    const { success, msg } = await this.props.thread.shareThread(threadId, this.props.index, this.props.search, this.props.topic);
+    if (!success) {
+      Toast.error({
+        content: msg,
+      });
     }
   }
   handleClick = () => {
@@ -592,7 +599,7 @@ class ThreadH5Page extends React.Component {
 
     const id = this.props.thread?.threadData?.id;
 
-    const { success, msg } = await this.props.thread.shareThread(id);
+    const { success, msg } = await this.props.thread.shareThread(id, this.props.index, this.props.search, this.props.topic);
 
     if (!success) {
       Toast.error({
@@ -603,11 +610,20 @@ class ThreadH5Page extends React.Component {
   handleWxShare = () => {
     this.setState({ isShowWeiXinShare: true });
     this.onShareClose();
+    this.onShareClick();
   };
-  createCard = () => {
+  createCard = async () => {
     const data = this.props.thread.threadData;
     const threadId = data.id;
     const { card } = this.props;
+
+    const { success, msg } = await this.props.thread.shareThread(threadId, this.props.index, this.props.search, this.props.topic);
+    if (!success) {
+      Toast.error({
+        content: msg,
+      });
+    }
+
     card.setThreadData(data);
     Router.push({ url: `/card?threadId=${threadId}` });
   };
@@ -732,6 +748,7 @@ class ThreadH5Page extends React.Component {
     });
   }
 
+
   render() {
     const { thread: threadStore } = this.props;
     const { isReady, isCommentReady, isNoMore, totalCount, isCommentListError } = threadStore;
@@ -739,6 +756,8 @@ class ThreadH5Page extends React.Component {
       moreClick: this.onMoreClick,
     };
 
+    console.log(333)
+    console.log(isReady);
     // const isDraft = threadStore?.threadData?.isDraft;
     // // 是否红包帖
     // const isRedPack = threadStore?.threadData?.displayTag?.isRedPack;
@@ -889,15 +908,17 @@ class ThreadH5Page extends React.Component {
                   <Icon size="20" name="MessageOutlined"></Icon>
                 </div>
                 <Icon
-                  color={this.props.thread?.threadData?.isLike ? styleVar['--color-primary'] : ''}
-                  className={footer.icon}
+                  className={classNames(footer.icon, {
+                    [footer.isliked]: this.props.thread?.threadData?.isLike,
+                  })}
                   onClick={debounce(() => this.onLikeClick(), 500)}
                   size="20"
                   name="LikeOutlined"
                 ></Icon>
                 <Icon
-                  color={this.props.thread?.isFavorite ? styleVar['--color-primary'] : ''}
-                  className={footer.icon}
+                  className={classNames(footer.icon, {
+                    [footer.isliked]: this.props.thread?.isFavorite,
+                  })}
                   onClick={debounce(() => this.onCollectionClick(), 500)}
                   size="20"
                   name="CollectOutlinedBig"
@@ -980,4 +1001,4 @@ class ThreadH5Page extends React.Component {
   }
 }
 
-export default HOCFetchSiteData(withRouter(ThreadH5Page));
+export default withRouter(ThreadH5Page);

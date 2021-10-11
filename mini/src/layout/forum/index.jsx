@@ -70,7 +70,7 @@ class ForumH5Page extends React.Component {
           <View className={layout.list}>
             <View className={layout.label}>站点介绍</View>
             <View className={`${layout.right} ${layout.textEllipsis}`} onClick={this.onIntroduceOpen}>
-              <Text className={layout.list_text_ellipsis}>{siteIntroduction}</Text>
+              <Text className={layout.list_text_ellipsis}>{siteIntroduction?.replace(/\s/g,"")}</Text>
               <Icon size={10} color='#8590A6' name='RightOutlined'/>
             </View>
           </View>

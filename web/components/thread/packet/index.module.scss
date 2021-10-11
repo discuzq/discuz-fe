@@ -2,7 +2,7 @@
 .container {
   display: flex;
   justify-content: center;
-  @include cursor-on-pc; 
+  @include cursor-on-pc;
 
   .wrapper {
     position: relative;
@@ -41,7 +41,7 @@
 
 
 .root{
-  @include cursor-on-pc; 
+  @include cursor-on-pc;
   margin:0 auto;
   width: 100%;
 
@@ -106,18 +106,18 @@
   }
 
   .xuanshang{
-  
+
     margin:0 auto;
     width:100%;
     max-width: rem(343);
     height:rem(74);
-    background-color: #F66B25;
+    background-color: $orange-color;
     display: flex;
     border-radius: 5px;
     position: relative;
     &::after , &::before{
       content: '';
-      background-color: #fff;
+      background-color: $white;
       width: 8px;
       height:rem(38);
       border-radius: 4px;
@@ -177,14 +177,14 @@
         font-family: "PingFang SC Bold";
         font-weight: bold;
         font-size: rem(16);
-        color: #4f5a70;
+        color: $text-color-regular;
         line-height: rem(42);
         text-align: center;
       }
       &::after ,&::before{
         width: 8px;
         height:8px;
-        background-color: #fff;
+        background-color: $white;
         position: absolute;
         left:-4px;
         content: '';

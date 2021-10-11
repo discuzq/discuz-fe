@@ -7,7 +7,7 @@
   flex-direction: column;
   box-sizing: border-box;
   overflow: hidden;
-  background-color: var(--color-white);
+  background-color: $white;
   .list {
     flex: 1;
   }

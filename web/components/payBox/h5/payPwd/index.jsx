@@ -200,7 +200,7 @@ class Index extends React.Component {
     const { list = [], isShow } = this.state;
 
     const payPwdElement = (
-      <div style={{ position: 'relative', zIndex: 1400 }}>
+      <div className={styles.numkeyboard}>
         {this.renderDialogPayment()}
         <div style={{ display: !isShow && 'none' }} className={styles.keyboard} onClick={this.keyboardClickHander}>
           <div className={styles.line}>

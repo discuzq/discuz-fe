@@ -22,6 +22,7 @@ import {
   h5Rebind,
   miniRebind,
   getSignInFields,
+  getPayGroups,
 } from '@server';
 import { get } from '../../utils/get';
 import locals from '@common/utils/local-bridge';
@@ -66,6 +67,17 @@ class UserAction extends SiteStore {
     }
   }
 
+  // 获取当前用户的付费用户组
+  @action
+  async getPayGroups() {
+    const res = await getPayGroups();
+    const { code, data } = res;
+    if (code === 0) {
+      this.payGroups = data;
+      return data;
+    }
+  }
+
   // 更新指定 userid 的 用户信息
   @action
   updateTargetUserInfo({ userId, userInfo }) {
@@ -89,16 +101,16 @@ class UserAction extends SiteStore {
 
     const opts = {
       params: {
-        page: page,
+        page,
         perPage: 20,
         filter: {
-          userId: userId,
+          userId,
         },
       },
     };
 
     if (searchValue) {
-      opts.params.filter['nickName'] = searchValue;
+      opts.params.filter.nickName = searchValue;
     }
 
     return await getUserFollow(opts);
@@ -150,10 +162,10 @@ class UserAction extends SiteStore {
   async getUserFanses({ userId, page }) {
     const opts = {
       params: {
-        page: page,
+        page,
         perPage: 20,
         filter: {
-          userId: userId,
+          userId,
         },
       },
     };
@@ -429,7 +441,7 @@ class UserAction extends SiteStore {
   // 登录后获取新的用户信息
   @action
   async updateUserInfo(id) {
-    const userInfo = await readUser({ params: { pid: id } });
+    const userInfo = await readUser({ params: { userId: id } });
     if (!userInfo || userInfo?.code !== 0) {
       return;
     }
@@ -549,7 +561,7 @@ class UserAction extends SiteStore {
   @action
   async getAssignUserInfo(userId) {
     try {
-      const userInfo = await readUser({ params: { pid: userId } });
+      const userInfo = await readUser({ params: { userId } });
       if (userInfo.code === 0 && userInfo.data) {
         return userInfo.data;
       }

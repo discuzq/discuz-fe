@@ -49,6 +49,10 @@ export const EXPAND_DETAIL_CONSTANTS = {
     text: '注册支出',
     code: 70,
   },
+  UPGRADE_EXPAND: {
+    text: '付费升级',
+    code: 51,
+  },
   LABOR_EXPAND: {
     text: '人工支出',
     code: 50,

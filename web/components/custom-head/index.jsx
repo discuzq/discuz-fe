@@ -22,10 +22,14 @@ class CustomHead extends React.Component {
 
   formatTitle() {
     const { site, title, showSiteName = true } = this.props;
-    const base = get(site, 'webConfig.setSite.siteName', '欢迎您');
+    const base = showSiteName ? get(site, 'webConfig.setSite.siteName', '欢迎您') : '';
     let renderTitle = base;
-    if (title && title !== '') {
-      renderTitle = `${title}${showSiteName ? ` - ${renderTitle}` : ''}`;
+    if ( title && title !== '' ) {
+      if ( renderTitle === '' ) {
+        renderTitle = `${title}`
+      } else {
+        renderTitle = `${title} - ${renderTitle}`
+      }
     }
     return renderTitle;
   }
@@ -53,7 +57,6 @@ class CustomHead extends React.Component {
 
   render() {
     const ico = this.props.site?.webConfig?.setSite?.siteFavicon || '';
-
     return (
       <Head>
         <meta name="keywords" content={this.formatKeywords()} />

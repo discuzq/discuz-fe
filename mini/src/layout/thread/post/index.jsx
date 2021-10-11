@@ -1,3 +1,4 @@
+/* eslint-disable spaced-comment */
 import React, { Component } from 'react';
 import Taro, { getCurrentInstance } from '@tarojs/taro';
 import { View, Text } from '@tarojs/components';
@@ -206,7 +207,7 @@ class Index extends Component {
 
   // 从本地缓存中获取数据
   getPostDataFromLocal = () => localData.getThreadPostDataLocal(
-    this.props.user.userInfo.id,
+    this.props.user.userInfo?.id,
     this.inst.router.params.id,
   );
 
@@ -718,7 +719,7 @@ class Index extends Component {
     if (audioRecordStatus === 'began') {
       this.postToast('您有录制中的录音未处理，请先上传或撤销录音', 'none', 3000);
       return false;
-    } else if (audioRecordStatus === 'completed') {
+    } if (audioRecordStatus === 'completed') {
       this.postToast('您有录制完成的录音未处理，请先上传或撤销录音', 'none', 3000);
       return false;
     }
@@ -850,16 +851,21 @@ class Index extends Component {
                     )}
                   </View>
                 </GeneralUpload>
-                {product.detailContent && <Units type='product' productSrc={product.imagePath} productDesc={product.title} productPrice={product.price} onDelete={() => setPostData({ product: {} })} />}
 
                 {/* 投票组件 */}
                 {(postData?.vote?.voteTitle) && (
-                  <VoteWidget onDelete={() => setPostData({ vote: {} })} />
+                  <VoteWidget onDelete={() => setPostData({ vote: {} })} onClick={() => {
+                    if (postData.vote.voteUsers > 0) {
+                      return this.postToast('投票已生效，不允许编辑');
+                    }
+                    Taro.navigateTo({ url: '/indexPages/thread/voteEditor/index' });
+                  }} />
                 )}
 
+                {product.detailContent && <Units type='product' productSrc={product.imagePath} productDesc={product.title} productPrice={product.price} onDelete={() => setPostData({ product: {} })} />}
+
                 {
-                  DZQPluginCenter.injection('plugin_post', 'post_extension_content_hook').map(({render, pluginInfo}) => {
-                    return (
+                  DZQPluginCenter.injection('plugin_post', 'post_extension_content_hook').map(({render, pluginInfo}) => (
                       <View key={pluginInfo.pluginName}>
                         {render({
                           site: this.props.site,
@@ -870,8 +876,7 @@ class Index extends Component {
                           closePluginDialogL: this.closePluginDialog
                         })}
                       </View>
-                    )
-                  })
+                    ))
                 }
 
               </View>
@@ -897,9 +902,7 @@ class Index extends Component {
                     positionChange={(position) => {
                       setPostData({ position });
                     }}
-                    canJumpToChoose={() => {
-                      return this.checkAudioRecordStatus();
-                    }}
+                    canJumpToChoose={() => this.checkAudioRecordStatus()}
                   />)}
                   {/* 自动保存提示 */}
                   {postData.autoSaveTime && (

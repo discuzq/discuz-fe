@@ -169,6 +169,8 @@ function AttachmentToolbar(props) {
     if (item.type === THREAD_TYPE.image && Object.values(postData?.images || []).length > 0) return activeCls;
     if (item.type === THREAD_TYPE.anonymity && postData?.anonymous) return activeCls;
     if (item.type === THREAD_TYPE.vote && postData?.vote?.voteTitle) return activeCls;
+    const plugin = (postData?.plugin && postData?.plugin[item.type]) || {};
+    if (plugin?.tomId) return activeCls;
     return cls;
   };
 
@@ -217,13 +219,13 @@ function AttachmentToolbar(props) {
       ) : null;
     });
 
-    // 插件注入 TODO: 暂时注释掉
-    defaultEntryList = defaultEntryList.concat(DZQPluginCenter.injection('plugin_post', 'post_extension_entry_hook').map(({render, pluginInfo}) => {
-      const clsName = getIconCls(null);
+    // 插件注入
+    defaultEntryList = defaultEntryList.concat(DZQPluginCenter.injection('plugin_post', 'post_extension_entry_hook').map(({ render, pluginInfo }) => {
+      const clsName = getIconCls({ type: pluginInfo.pluginName });
       return (
         <div key={pluginInfo.pluginName} className={clsName}>
           {render({
-            site: props.site,
+            site: { ...props.site },
             onConfirm: props.onPluginSetPostData,
             renderData: props.postData.plugin
           })}

@@ -90,11 +90,11 @@
                 line-height: rem(14);
                 padding: rem(1) rem(4);
                 text-align: left;
-                color: #fff;
+                color: $white;
               }
             }
             .groups {
-              color: var(--color-text-secondary);
+              color: $text-color-secondary;
               font-size: $font-size-label;
               max-width: rem(100);
               white-space: nowrap;

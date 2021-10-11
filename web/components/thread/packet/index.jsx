@@ -49,7 +49,7 @@ const Index = ({ money = 0, remainMoney = 0, number, remainNumber, type = 0, onC
                   </div>)
                 }
               </div>
-              <div className={styles.right}><div className={styles.pie}><img src='/dzq-img/redpacket-mini.png'></img></div></div>
+              <div className={styles.right}><div className={styles.pie}><img alt="图片" src='/dzq-img/redpacket-mini.png'></img></div></div>
             </div>
           </div>
         ) : (

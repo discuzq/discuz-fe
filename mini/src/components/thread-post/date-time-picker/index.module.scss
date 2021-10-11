@@ -38,7 +38,7 @@
           .pick-view-column-item {
             padding: 10px;
             font-size: 16px;
-            color: #0b0b37;
+            color: $text-color-primary;
           }
         }
       }
@@ -66,7 +66,7 @@
           height: 42px;
           padding: 10px 0;
           font-size: 16px;
-          color: #4f5a70;
+          color: $text-color-regular;
           line-height: 24px;
           border: none;
           border-radius: 5px;
@@ -76,8 +76,8 @@
       }
 
       .btn-confirm {
-        color: #fff;
-        background-color: var(--color-primary);
+        color: $white;
+        background-color: $primary-color;
       }
     }
   }

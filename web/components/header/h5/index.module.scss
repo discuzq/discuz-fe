@@ -6,13 +6,13 @@
     display: flex;
     padding: 0 rem($padding-4n);
     box-sizing: border-box;
-    background: var(--color-white);
+    background: $white;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: rem(40);
-    border-bottom: 1px solid var(--border-line-color);
+    border-bottom: 1px solid $border-color;
     z-index: $zindex-backtotop;
     align-items: center;
     .left{
@@ -39,7 +39,7 @@
       justify-content: flex-end;
       .icon{
         font-size: rem(18) !important;
-        color: var(--color-text-secondary);
+        color: $text-color-secondary;
       }
     }
   }

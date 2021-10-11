@@ -57,39 +57,11 @@ class Index extends React.Component {
 
   async componentDidMount() {
     this.props.router.events.on('routeChangeStart', this.beforeRouterChange);
-    const { index, threadList } = this.props;
-    const hasThreadsData = !!index.threads;
-    if (!hasThreadsData) {
-      const threadsResp = await threadList.fetchList({
-        namespace: 'collect',
-        perPage: 10,
-        page: this.state.page,
-        filter: {
-          complex: 3,
-        },
-      });
 
-      threadList.setList({
-        namespace: 'collect',
-        data: threadsResp,
-        page: this.state.page,
-      });
-
-      this.setState({
-        totalCount: threadsResp.data.totalCount,
-        totalPage: threadsResp.data.totalPage,
-      });
-
-      if (this.state.page <= threadsResp.data.totalPage) {
-        this.setState({
-          page: this.state.page + 1,
-        });
-      }
-
-      this.setState({
-        firstLoading: false,
-      });
-    }
+    const { index } = this.props;
+    if (index.hasThreadsData) return;
+    await this.dispatch();
+    this.setState({ firstLoading: false });
   }
 
   beforeRouterChange = (url) => {
@@ -123,6 +95,11 @@ class Index extends React.Component {
       namespace: 'collect',
       data: threadsResp,
       page: this.state.page,
+    });
+
+    this.setState({
+      totalCount: threadsResp.data.totalCount,
+      totalPage: threadsResp.data.totalPage,
     });
 
     if (this.state.page <= threadsResp.data.totalPage) {

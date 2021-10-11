@@ -5,7 +5,7 @@
   justify-content: space-between;
   align-items: center;
   padding: $padding-6n 0;
-  border-bottom: 1px solid var(--border-line-color);
+  border-bottom: 1px solid $border-color;
   box-sizing: border-box;
   background-color: $white;
   .title {
@@ -18,7 +18,7 @@
   justify-content: space-between;
   align-items: center;
   padding: $padding-4n 0;
-  border-bottom: 1px solid var(--border-line-color);
+  border-bottom: 1px solid $border-color;
   box-sizing: border-box;
   background-color: $white;
   height: rem(54);
@@ -29,7 +29,7 @@
 .title {
   font-weight: $font-weight-regular;
   line-height: $font-line-height-primary;
-  color: var(--color-text-primary);
+  color: $text-color-primary;
   margin-left: $padding-2n;
 }
 
@@ -45,7 +45,7 @@
   height: $font-line-height-primary;
   .rightIcon {
     margin-left: $margin-1n;
-    color: var(--color-text-secondary);
+    color: $text-color-secondary;
   }
 }
 .noMargin {
@@ -56,18 +56,18 @@
   align-items: center;
   @include cursor-on-pc;
   font-size: $font-size-primary;
-  color: var(--color-text-primary);
+  color: $text-color-primary;
   line-height: $font-line-height-primary;
   &:hover {
-    color: var(--color-primary);
+    color: $primary-color;
     .rightIcon {
-      color: var(--color-primary) !important;
+      color: $primary-color !important;
     }
   }
 }
 .num {
   font-size: $font-size-label;
-  color: var(--color-text-secondary);
+  color: $text-color-secondary;
   margin-left: $margin-3n;
   line-height: $font-line-height-primary;
 }
@@ -78,11 +78,11 @@
   line-height: $font-line-height-primary;
 }
 .icon1 {
-  color: var(--color-success);
+  color: $success-color;
 }
 .icon2 {
-  color: var(--color-warn);
+  color: $warn-color;
 }
 .icon3 {
-  color: var(--color-error);
+  color: $error-color;
 }

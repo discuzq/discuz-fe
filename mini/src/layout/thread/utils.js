@@ -10,6 +10,7 @@ const typeMap = {
   109: 'VOTE_THREAD',
   110: 'FILE',
   111: 'QA_IMAGE',
+  10002: 'IFRAME',
 };
 
 export function parseContentData(indexes) {
@@ -17,15 +18,16 @@ export function parseContentData(indexes) {
   if (indexes && Object.keys(indexes)) {
     Object.entries(indexes).forEach(([, value]) => {
       if (value) {
-        const { tomId, body } = value;
+        const { tomId, body, _plugin = {} } = value;
         if ( typeMap[tomId] ) {
           parseContent[typeMap[tomId]] = body;
         } else {
-          const { _plugin } = body;
+          // const { _plugin } = body;
           if ( _plugin ) {
-            parseContent.plugin[_plugin.name] = {
+            parseContent.plugin[_plugin?.name] = {
               tomId,
-              body
+              body,
+              _plugin,
             };
           }
         }

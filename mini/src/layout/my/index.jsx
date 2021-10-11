@@ -14,6 +14,7 @@ import ImagePreviewer from '@discuzq/design/dist/components/image-previewer/inde
 import classnames from 'classnames';
 import Toast from '@discuzq/design/dist/components/toast';
 import UserCenterThreads from '@components/user-center-threads';
+import checkImgExists from '@common/utils/check-image-exists';
 
 @inject('user')
 @inject('threadList')
@@ -25,6 +26,7 @@ export default class index extends Component {
       isLoading: true,
       isPreviewBgVisible: false, // 是否预览背景图片
       isNormalTitle: false, // 是否显示不透明 title
+      previewBackgroundUrl: null, // 预览背景图片链接
     };
   }
 
@@ -38,9 +40,19 @@ export default class index extends Component {
     eventCenter.on(onShowEventId, this.onShow);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.setNavigationBarStyle();
+    const { previewBackgroundUrl } = this.state;
+    const { user } = this.props;
+    if(previewBackgroundUrl === user.backgroundUrl) {
+      return;
+    }
+    const imgUrl = await checkImgExists(user.originalBackGroundUrl, user.backgroundUrl);
+    this.setState({
+      previewBackgroundUrl: imgUrl
+    })
   }
+
 
   setNavigationBarStyle = () => {
     Taro.setNavigationBarColor({
@@ -169,13 +181,14 @@ export default class index extends Component {
 
   // 获取背景图片
   getBackgroundUrl = () => {
+    const { previewBackgroundUrl } = this.state;
     let backgroundUrl = null;
     if (this.props.isOtherPerson) {
       if (this.props.user?.targetOriginalBackGroundUrl) {
         backgroundUrl = this.props.user.targetOriginalBackGroundUrl;
       }
     } else {
-      backgroundUrl = this.props.user?.originalBackGroundUrl;
+      backgroundUrl = previewBackgroundUrl;
     }
     if (!backgroundUrl) return false;
     return backgroundUrl;

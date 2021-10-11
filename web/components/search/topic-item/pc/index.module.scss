@@ -10,11 +10,11 @@
       width: rem(116);
       height: rem(116);
       flex: 0 0 rem(116);
-      background: var(--color-text-secondary);
+      background: $text-color-secondary;
       text-align: center;
       line-height: rem(116);
       font-size: rem($font-line-height-large);
-      color: var(--color-white);
+      color: $white;
       border-radius: rem($border-radius-small);
       overflow: hidden;
     }
@@ -33,7 +33,7 @@
     .title {
       font-size: rem($font-size-middle);
       line-height: rem($font-line-height-middle);
-      color: var(--color-text-primary);
+      color: $text-color-primary;
       font-weight: 700;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -44,7 +44,7 @@
       align-items: center;
       font-size: rem($font-size-label);
       line-height: rem(17);
-      color: var(--color-text-secondary);
+      color: $text-color-secondary;
       margin: rem($margin-2n) 0;
       .numItem {
         display: flex;
@@ -65,7 +65,7 @@
     .text {
       font-size: rem($font-size-primary);
       line-height: rem($font-line-height-primary);
-      color: var(--color-text-primary);
+      color: $text-color-primary;
       height: rem(44);
       display: box;
       box-orient: vertical;

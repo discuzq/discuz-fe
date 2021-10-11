@@ -17,18 +17,6 @@ export const ERROR_PAGE_TIPS = {
   apply: '出bug了 页面暂时无法展示'
 }
 
-// 用户名白名单（用户体验换绑）
-export const USERNAME_WHITE_LIST = [
-  'cody123', // 韩元杰
-  'jerryhan', // 韩元杰小号
-  '182796707977', // 郑剑熊
-  'LWL123', // 文溪
-  '黑哈哈', // 崔晋瑜
-  'LamHo', // 林浩
-]
-// 域名白名单（用户体验换绑）
-export const DOMAIN_WHITE_LIST = 'https://discuz.chat/';
-
 /**
  * 后端错误码
 **/

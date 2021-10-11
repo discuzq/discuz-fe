@@ -13,6 +13,7 @@ import { View } from '@tarojs/components'
 import styles from './index.module.scss';
 import { urlToLink } from '@common/utils/replace-url-to-a';
 import replaceStringInRegex from '@common/utils/replace-string-in-regex';
+import calcCosImageQuality from '@common/utils/calc-cos-image-quality';
 
 import config from '../../../app.config';
 
@@ -27,8 +28,7 @@ import config from '../../../app.config';
 
 const PostContent = ({
   content,
-  useShowMore = false,
-  needShowMore = true, // 是否需要"查看更多"
+  useShowMore = false,// 是否需要"查看更多"
   onRedirectToDetail = noop,
   customHoverBg = false,
   relativeToViewport = true,
@@ -46,6 +46,7 @@ const PostContent = ({
   const [showMore, setShowMore] = useState(false); // 根据文本长度显示"查看更多"
   const [imageVisible, setImageVisible] = useState(false);
   const [imageUrlList, setImageUrlList] = useState([]);
+  const [imageLgAndSmUrlList, setImageLgAndSmUrlList] = useState([]);
   const [curImageUrl, setCurImageUrl] = useState("");
   const [appPageLinks, setAppPageLinks] = useState([]);
   const ImagePreviewerRef = useRef(null); // 富文本中的图片也要支持预览
@@ -56,10 +57,49 @@ const PostContent = ({
     showMore: '查看更多',
     closeMore: '折叠',
   };
+
+  const [openedMore, setOpenedMore] = useState(useShowMore);
+
+  const replaceImgSrc = (src) => {
+    const [path] = src.split('?');
+    const type = path.substr(path.lastIndexOf('.') + 1);
+    return calcCosImageQuality(src, type, 7);
+  }
+  
+  // 将图片链接替换成 webp 及小图
+  const replaceImagesFromText = (contentText) => {
+    const images = contentText.match(/<img.*?\/>/g)?.filter(image => (!image.includes('emoji')));
+    if (images && images.length) {
+      const imageLgAndSmUrlList = [];
+      const imageUrlList = [];
+      for (let i = 0; i < images.length; i++) {
+        let imgSrc = images[i].match(/src=[\'\"]?([^\'\"]*)[\'\"]?/i)[0];
+        imgSrc = imgSrc ? imgSrc.substring(5, imgSrc.length-1) : '';
+        const smImgSrc = imgSrc ? replaceImgSrc(imgSrc) : '';
+        const newImg = images[i].replace(imgSrc, smImgSrc);
+        imageUrlList.push(imgSrc);
+        // 保存图片的缩略图和原图，用于预览时查找对应链接
+        imageLgAndSmUrlList.push({
+          smSrc: smImgSrc,
+          lgSrc: imgSrc
+        });
+        contentText = contentText.replace(images[i], newImg);
+      }
+      if (imageUrlList.length) {
+        setImageUrlList(imageUrlList);
+      }
+      if (imageLgAndSmUrlList.length) {
+        setImageLgAndSmUrlList(imageLgAndSmUrlList);
+      }
+    };
+    return contentText;
+  }
+
   // 过滤内容
   const filterContent = useMemo(() => {
     let newContent = content ? s9e.parse(content) : '';
     newContent = xss(newContent);
+    newContent = replaceImagesFromText(newContent);
     return newContent;
   }, [content]);
 
@@ -71,7 +111,8 @@ const PostContent = ({
       // 内容过长直接跳转到详情页面
       onRedirectToDetail && onRedirectToDetail();
     } else {
-      setUseShowMore()
+      setOpenedMore(false);
+      // setUseShowMore()
       // setShowMore(false);
     }
   }, [contentTooLong]);
@@ -79,12 +120,13 @@ const PostContent = ({
   // 点击收起更多
   const onCloseMore = useCallback(e => {
     e && e.stopPropagation();
-    setUseCloseMore();
+    setOpenedMore(true);
+    // setUseCloseMore();
   }, [contentTooLong])
 
 
   const handleClick = (e, node) => {
-    if(node.name === 'image') return
+    if(node && node.name === 'image') return
     e && e.stopPropagation();
     const { url, isExternaLink } = handleLink(node)
     if (isExternaLink) return
@@ -126,7 +168,9 @@ const PostContent = ({
     updateViewCount();
     if (node?.attribs?.src) {
       setImageVisible(true);
-      setCurImageUrl(node.attribs.src);
+      // 替换大图
+      const imgSrcObj = imageLgAndSmUrlList.find(item => item.smSrc === node.attribs.src);
+      setCurImageUrl(imgSrcObj?.lgSrc || node.attribs.src);
       clickedImageId.current = event?.target?.id;
     }
   }
@@ -143,15 +187,15 @@ const PostContent = ({
     setCutContentForDisplay(ctnSubstring);
   };
 
-  const getImagesFromText = (text) => {
-    const _text = replaceStringInRegex(text, "emoj", '');
-    const images = _text.match(/<img\s+[^<>]*src=[\"\'\\]+([^\"\']*)/gm) || [];
+  // const getImagesFromText = (text) => {
+  //   const _text = replaceStringInRegex(text, "emoj", '');
+  //   const images = _text.match(/<img\s+[^<>]*src=[\"\'\\]+([^\"\']*)/gm) || [];
 
-    for (let i = 0; i < images.length; i++) {
-      images[i] = images[i].replace(/<img\s+[^<>]*src=[\"\'\\]+/gm, "") || "";
-    }
-    return images;
-  }
+  //   for (let i = 0; i < images.length; i++) {
+  //     images[i] = images[i].replace(/<img\s+[^<>]*src=[\"\'\\]+/gm, "") || "";
+  //   }
+  //   return images;
+  // }
 
   const generateAppRelativePageLinks = () => {
     const pageLinks = [];
@@ -178,33 +222,31 @@ const PostContent = ({
       setShowMore(true);
     }
     if (length > 1200) { // 超过一页的超长文本
-      if (useShowMore) getCutContentForDisplay(1200);
+      if (openedMore) getCutContentForDisplay(1200);
       setContentTooLong(true);
     } else {
       setContentTooLong(false);
     }
 
-    const imageUrlList = getImagesFromText(filterContent);
-    if (imageUrlList.length) {
-      setImageUrlList(imageUrlList);
-    }
+    // const imageUrlList = getImagesFromText(filterContent);
+    // if (imageUrlList.length) {
+    //   setImageUrlList(imageUrlList);
+    // }
 
     generateAppRelativePageLinks();
 
   }, [filterContent]);
 
-
-  console.log(useShowMore);
   return (
     <View className={styles.container} {...props}>
       <View
         ref={contentWrapperRef}
-        className={`${styles.contentWrapper} ${useShowMore && showMore ? styles.hideCover : ''} ${customHoverBg ? styles.bg : ''}`}
+        className={`${styles.contentWrapper} ${openedMore && showMore ? styles.hideCover : ''} ${customHoverBg ? styles.bg : ''}`}
         onClick={!showMore ? onShowMore : handleClick}
       >
         <View className={styles.content}>
           <RichText
-            content={(useShowMore && cutContentForDisplay) ? cutContentForDisplay : urlToLink(filterContent)}
+            content={(openedMore && cutContentForDisplay) ? cutContentForDisplay : urlToLink(filterContent)}
             onClick={handleClick}
             onImgClick={handleImgClick}
             onLinkClick={handleLinkClick}
@@ -226,10 +268,10 @@ const PostContent = ({
           }
         </View>
       </View>
-      {needShowMore && showMore && (
-        <View className={styles.showMore} onClick={useShowMore ? onShowMore : onCloseMore}>
-          <View className={styles.hidePercent}>{texts[useShowMore ? 'showMore' : 'closeMore']}</View>
-          <Icon className={useShowMore ? styles.icon : styles.icon_d} name="RightOutlined" size={12} />
+      { useShowMore && showMore && (
+        <View className={styles.showMore} onClick={openedMore ? onShowMore : onCloseMore}>
+          <View className={styles.hidePercent}>{texts[openedMore ? 'showMore' : 'closeMore']}</View>
+          <Icon className={openedMore ? styles.icon : styles.icon_d} name="RightOutlined" size={12} />
         </View>
       )}
     </View>

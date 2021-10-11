@@ -43,6 +43,7 @@ class JoinBanner extends React.Component {
             className={styles.logo}
             mode="aspectFit"
             src={siteHeaderLogo || '/dzq-img/join-banner-bg.png'}
+            alt="图片"
         />
         {
           isShowData

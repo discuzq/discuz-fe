@@ -6,7 +6,7 @@
   .item {
     display: flex;
     padding: rem($padding-4n) 0;
-    border-bottom: 1px solid var(--border-line-color);
+    border-bottom: 1px solid $border-color;
     &:last-child {
       border-bottom: none;
     }
@@ -19,13 +19,13 @@
         white-space: nowrap;
         font-size: rem($font-size-primary);
         line-height: rem($padding-5n);
-        color: var(--color-text-primary);
+        color: $text-color-primary;
         font-weight: 700;
       }
       .groupName {
         font-size: rem($font-size-primary);
         line-height: rem($font-line-height-small);
-        color: var(--color-text-secondary);
+        color: $text-color-secondary;
       }
     }
     .avatar {

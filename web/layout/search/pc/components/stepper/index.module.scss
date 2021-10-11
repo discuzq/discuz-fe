@@ -4,7 +4,7 @@
   width: 100%;
   overflow: hidden;
   padding: rem($padding-6n);
-  background: var(--color-white);
+  background: $white;
   border-radius: rem($border-radius-small);
   box-sizing: border-box;
   .stepsItem {
@@ -16,7 +16,7 @@
     .line {
       width: rem(2);
       height: rem(45);
-      background: var(--border-line-color);
+      background: $border-color;
       position: absolute;
       top: rem($font-line-height-small);
       left: rem($padding-2n + 1px);
@@ -31,26 +31,26 @@
       font-weight: normal;
       font-size: rem($font-size-primary);
       line-height: rem($font-line-height-primary);
-      color: var(--color-text-primary);
+      color: $text-color-primary;
       margin-left: rem($margin-2n);
     }
     .itemActive {
       font-weight: 600;
-      color: var(--color-primary);
+      color: $primary-color;
     }
   }
   .circle {
     width: rem($padding-4n);
     height: rem($padding-4n);
     background: transparent;
-    border: 2px solid var(--border-line-color);
+    border: 2px solid $border-color;
     border-radius: 50%;
   }
   .circleBox {
     width: rem($padding-4n);
     height: rem($padding-4n);
     background: transparent;
-    border: 2px solid var(--color-primary);
+    border: 2px solid $primary-color;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -58,7 +58,7 @@
     .innerRing {
       width: rem($margin-1n);
       height: rem($margin-1n);
-      background: var(--color-primary);
+      background: $primary-color;
       border-radius: 50%;
     }
   }

@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import filterData from '../top-menu/data';
-
+import SiteMapLink from '@components/site-map-link';
 import styles from './index.module.scss';
 
 const TopNavItem = ({ data }) => {
@@ -21,11 +21,15 @@ const TopNavItem = ({ data }) => {
     }, [types])
 
     return (
-        <div className={`${styles.wrapper} ${sty}`} onClick={() => onClickItem(data.type)}>
-            <span>{data.label}</span>
-            <div className={styles.line}></div>
-            {data?.children && <TopNavChildrenItem subData={data?.children} />}
-        </div>
+        <>
+            <SiteMapLink href={`/thread/${data.threadId}`} text={data?.children}/>
+            <div className={`${styles.wrapper} ${sty}`} onClick={() => onClickItem(data.type)}>
+                <span>{data.label}</span>
+                <div className={styles.line}></div>
+                {data?.children && <TopNavChildrenItem subData={data?.children} />}
+            </div>
+        </>
+       
     );
 }
 

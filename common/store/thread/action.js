@@ -13,7 +13,9 @@ import {
   reward,
   deleteThread,
   createVote,
+  readLikedUsers,
 } from '@server';
+
 import { plus } from '@common/utils/calculate';
 import threadReducer from './reducer';
 import rewardPay from '@common/pay-bussiness/reward-pay';
@@ -29,6 +31,11 @@ class ThreadAction extends ThreadStore {
   }
 
   @action
+  setPageDataListType(data) {
+    this.pageDataListType = data;
+  }
+
+  @action
   updateViewCount(viewCount) {
     this.threadData && (this.threadData.viewCount = viewCount);
   }
@@ -40,7 +47,7 @@ class ThreadAction extends ThreadStore {
 
   @action
   async fetchAuthorInfo(userId) {
-    const userRes = await readUser({ params: { pid: userId } });
+    const userRes = await readUser({ params: { userId } });
     if (userRes.code === 0) {
       this.authorInfo = userRes.data;
       this.isAuthorInfoError = false;
@@ -50,6 +57,12 @@ class ThreadAction extends ThreadStore {
 
     return userRes;
   }
+
+  @action
+  setAuthorInfo(userData) {
+    this.authorInfo = userData;
+  }
+
 
   @action
   setCommentListPage(page) {
@@ -114,7 +127,7 @@ class ThreadAction extends ThreadStore {
     return ret;
   }
 
-  //设置当前可领取的红包状态 
+  //设置当前可领取的红包状态
   @action
   setRedPacket(num) {
     this.hasRedPacket = num;
@@ -155,6 +168,7 @@ class ThreadAction extends ThreadStore {
     this.isAuthorInfoError = false;
     this.scrollDistance = 0;
     // this.PreFetch = null; // 预加载相关
+    this.pageDataListType = null; // 是否使用了列表缓存数据
   }
 
   // 定位到评论位置
@@ -165,7 +179,8 @@ class ThreadAction extends ThreadStore {
 
   @action
   setThreadData(data) {
-    this.threadData = data;
+    // this.threadData = data;
+    this.threadData = {...this.threadData, ...data};
     this.threadData.id = data.threadId;
   }
 
@@ -300,6 +315,8 @@ class ThreadAction extends ThreadStore {
         const newLikeUsers = threadReducer.setThreadDetailLikedUsers(this.threadData?.likeReward, true, userData);
         this.updateLikeReward(newLikeUsers);
       }
+      // 全量查询打赏人员列表
+      this.queryTipList({threadId: params.threadId, type: 2, page: 1});
 
       // 更新列表store
       this.updateListStore();
@@ -721,7 +738,7 @@ class ThreadAction extends ThreadStore {
 
     const requestParams = {
       id,
-      pid,
+      postId:pid,
       data: {
         attributes: {
           isLiked: !!isLiked,
@@ -780,6 +797,25 @@ class ThreadAction extends ThreadStore {
     newIndexes[tomId] = tomValue;
     this.threadData = { ...this.threadData, content: { ...content, indexes: newIndexes } };
   }
+
+  // 查询打赏列表
+  @action 
+  async queryTipList(params){
+    const res = await readLikedUsers({ params:{...params,perPage:300} });
+    let resList  = res.data?.pageData?.list;
+    resList = resList.filter(i=>i.type===3);
+
+    const filterObj = {};
+    resList = resList.reduce((cur,next) => {
+      console.log(next);
+      filterObj[next.userId] ? "" : filterObj[next.userId] = true && cur.push(next);
+      return cur;
+    },[])
+
+
+    this.threadData={...this.threadData,tipList:resList.slice(0,32) || []}
+  }
+
 }
 
 export default ThreadAction;

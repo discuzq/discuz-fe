@@ -3,7 +3,7 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import isServer from '@common/utils/is-server';
 import getPlatform from '@common/utils/get-platform';
-import { readForum, readUser, readPermissions, readEmoji } from '@server';
+import { readForum, readUser, readPermissions, readEmoji, readPluginList } from '@server';
 import Router from '@discuzq/sdk/dist/router';
 import { withRouter } from 'next/router';
 import clearLoginStatus from '@common/utils/clear-login-status';
@@ -36,7 +36,9 @@ import { USER_STATUS } from '@common/constants/login';
 // 获取全站数据
 export default function HOCFetchSiteData(Component, _isPass) {
   @inject('site')
+  @inject('forum')
   @inject('user')
+  @inject('thread')
   @inject('emotion')
   @inject('commonLogin')
   @observer
@@ -44,6 +46,14 @@ export default function HOCFetchSiteData(Component, _isPass) {
     // 应用初始化
     static async getInitialProps(ctx) {
       try {
+
+        // 根据运行时配置获取参数
+        global.ssr_host = global.dzq_host || ctx.req.headers.host;
+
+        // 将ctx保存到global
+        global.ctx = ctx;
+
+        // console.log(global.dzq_host);
         let platform = 'static';
         let siteConfig = {};
         let userInfo;
@@ -70,13 +80,18 @@ export default function HOCFetchSiteData(Component, _isPass) {
           // 当站点信息获取成功，进行当前用户信息查询
           if (siteConfig && siteConfig.code === 0 && siteConfig?.data?.user?.userId) {
             userInfo = await readUser({
-              params: { pid: siteConfig.data.user.userId },
+              params: { userId: siteConfig.data.user.userId },
             }, ctx);
             userPermissions = await readPermissions({}, ctx);
 
             userData = (userInfo && userInfo.code === 0) ? userInfo.data : null;
             userPermissions = (userPermissions && userPermissions.code === 0) ? userPermissions.data : null;
           }
+
+          // 获取插件信息
+          const pluginConfig = await readPluginList({}, ctx);
+          if (pluginConfig.code === 0) serverSite.pluginConfig = pluginConfig.data;
+
           // 传入组件的私有数据
           if (siteConfig && siteConfig.code === 0 && Component.getInitialProps) {
             __props = await Component.getInitialProps(ctx, { user: userData, site: serverSite });
@@ -106,15 +121,15 @@ export default function HOCFetchSiteData(Component, _isPass) {
       super(props);
       this.handleWxShare = this.handleWxShare.bind(this);
       this.canPublish = this.canPublish.bind(this);
-
       let isNoSiteData;
-      const { serverUser, serverSite, serverEmotion, user, site, emotion } = props;
-
+      const { serverUser, serverSite, serverEmotion, user, site, emotion, forum } = props;
       serverSite && serverSite.platform && site.setPlatform(serverSite.platform);
       serverSite && serverSite.closeSite && site.setCloseSiteConfig(serverSite.closeSite);
       serverSite && serverSite.webConfig && site.setSiteConfig(serverSite.webConfig);
+      serverSite && serverSite.webConfig && forum.setOtherPermissions(serverSite.webConfig);
+      serverSite && serverSite.pluginConfig && site.setPluginConfig(serverSite.pluginConfig);
+
       serverUser && serverUser.userInfo && user.setUserInfo(serverUser.userInfo);
-      serverUser && serverUser.userPermissions && user.setUserPermissions(serverUser.userPermissions);
       serverUser && serverUser.userPermissions && user.setUserPermissions(serverUser.userPermissions);
       serverEmotion && serverEmotion.emojis && emotion.setEmoji(serverEmotion.emojis);
 
@@ -123,15 +138,16 @@ export default function HOCFetchSiteData(Component, _isPass) {
       } else {
         isNoSiteData = !serverSite;
       }
+
       this.state = {
         isNoSiteData,
-        isPass: false,
+        isPass: isServer() ? true : false, // SSR渲染，默认通过，由浏览器进行验证
       };
     }
 
     async componentDidMount() {
       const { isNoSiteData } = this.state;
-      const { serverUser, serverSite, user, site, emotion } = this.props;
+      const { serverUser, serverSite, user, site, emotion, forum } = this.props;
       let siteConfig;
       let loginStatus = false;
 
@@ -148,7 +164,11 @@ export default function HOCFetchSiteData(Component, _isPass) {
         if (!siteConfig) {
           const result = await readForum({});
           result.data && site.setSiteConfig(result.data);
+          result.data && forum.setOtherPermissions(result.data);
 
+          // 获取插件信息
+          const pluginConfig = await readPluginList();
+          if (pluginConfig.code === 0) site.setPluginConfig(pluginConfig.data);
           // 设置全局状态
           this.setAppCommonStatus(result);
           siteConfig = result.data || null;
@@ -162,7 +182,7 @@ export default function HOCFetchSiteData(Component, _isPass) {
       // 判断是否有token
       if (siteConfig && siteConfig.user) {
         if ((!user || !user.userInfo) && (!serverUser || !serverUser.userInfo)) {
-          const userInfo = await readUser({ params: { pid: siteConfig.user.userId } });
+          const userInfo = await readUser({ params: { userId: siteConfig.user.userId } });
           const userPermissions = await readPermissions({});
 
           // 添加用户发帖权限
@@ -178,7 +198,7 @@ export default function HOCFetchSiteData(Component, _isPass) {
       }
 
       user.updateLoginStatus(loginStatus);
-      let defaultPass = this.isPass();
+      let defaultPass = this.isPass(isNoSiteData);
       // 自定义pass逻辑
       if ( _isPass && defaultPass) {
         defaultPass = _isPass(defaultPass);
@@ -341,9 +361,8 @@ export default function HOCFetchSiteData(Component, _isPass) {
     }
 
     // 检查是否满足渲染条件
-    isPass() {
+    isPass(isNoSiteData) {
       const { site, router, user, commonLogin } = this.props;
-      const { isNoSiteData } = this.state;
       if (site && site.webConfig) {
         isNoSiteData && this.setState({
           isNoSiteData: false,
@@ -398,7 +417,7 @@ export default function HOCFetchSiteData(Component, _isPass) {
 
           const code = router.query.inviteCode;
           const query = code ? `?inviteCode=${code}` : '';
-          if (!user?.paid) {
+          if (!user?.paid && user?.group?.level === 0) {
             LoginHelper.saveAndRedirect(`/forum/partner-invite${query}`);
             return false;
           }
@@ -420,16 +439,22 @@ export default function HOCFetchSiteData(Component, _isPass) {
       return newProps;
     }
 
-    canPublish() {
-      const { user, site } = this.props;
-      return canPublish(user, site);
+    /**
+     * 是否可以进行发帖回复
+     * @param type 判断类型 comment 评论， reply 回复
+     */
+    canPublish(type = '') {
+      const { user, site, thread } = this.props;
+      return canPublish(user, site, type, thread?.threadData?.threadId);
     }
 
     render() {
+
       const { isNoSiteData, isPass } = this.state;
       const { site } = this.props;
       // CSR不渲染任何内容
       if (site.platform === 'static') return null;
+
       if (isNoSiteData || !isPass) {
         return (
           <div className={styles.loadingBox}>

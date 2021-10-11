@@ -16,7 +16,7 @@ export default function ErrorPage(props) {
       <Header></Header>
 
       <div className={styles.body}>
-        <img className={styles.icon} src="/dzq-img/error.png" />
+        <img alt="图片" className={styles.icon} src="/dzq-img/error.png" />
         <span className={styles.text}>{text}</span>
         <Button onClick={onReflush} className={styles.button} type="primary">
           点我刷新

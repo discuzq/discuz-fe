@@ -18,7 +18,10 @@ class TopicAction extends TopicStore {
   setTopicDetail(data) {
     this.topicDetail = data;
 
-    const threads = data?.pageData[0]?.threads;
+    const threads = [];
+    data?.pageData?.map(item => {
+      threads.push(...item?.threads);
+    })
     this.topicThreads = {
       pageData: threads,
     };
@@ -62,15 +65,21 @@ class TopicAction extends TopicStore {
  * @returns {object} 处理结果
  */
   @action
-  async getTopicsDetail({ topicId = '' } = {}) {
+  async getTopicsDetail({ topicId = '', perPage = 10, page = 1 } = {}) {
     const topicFilter = {
-      topicId,
-      hot: 0
+      topicId: Number(topicId),
+      hot: '0'
     };
-    const result = await readTopicsList({ params: { filter: topicFilter } });
-
+    const result = await readTopicsList({ params: { filter: topicFilter, perPage, page } });
     if (result.code === 0 && result.data) {
-      return this.setTopicDetail(result.data);
+      if (this.topicDetail && result.data.pageData && page !== 1) {
+        this.topicDetail.pageData.push(...result.data.pageData);
+        const newPageData = this.topicDetail.pageData.slice();
+        this.setTopicDetail({ ...result.data, pageData: newPageData });
+      } else {
+        this.setTopicDetail(result.data);
+      }
+      return result.data;
     }
     return null;
   };

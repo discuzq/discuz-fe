@@ -17,15 +17,17 @@ import UserInfo from '@components/thread/user-info';
 import styles from './index.module.scss';
 import { debounce } from '@common/utils/throttle-debounce';
 import IframeVideoDisplay from '@components/thread-post/iframe-video-display';
+import Avatar from '@components/avatar';
 import Packet from '@components/thread/packet';
 import PacketOpen from '@components/red-packet-animation/h5';
+import { withRouter } from 'next/router';
 
 
 // 插件引入
 /**DZQ->plugin->register<plugin_detail@thread_extension_display_hook>**/
 
 // 帖子内容
-const RenderThreadContent = inject('site', 'user')(observer((props) => {
+const RenderThreadContent = withRouter(inject('site', 'user')(observer((props) => {
   const { store: threadStore, site } = props;
   const { text, indexes } = threadStore?.threadData?.content || {};
   const { parentCategoryName, categoryName } = threadStore?.threadData;
@@ -47,6 +49,10 @@ const RenderThreadContent = inject('site', 'user')(observer((props) => {
   // 是否附件付费帖
   const isAttachmentPay = threadStore?.threadData?.payType === 2 && threadStore?.threadData?.paid === false;
   const attachmentPrice = threadStore?.threadData?.attachmentPrice || 0;
+
+   // 是否可以免费查看付费帖子
+   const canFreeViewPost = threadStore?.threadData?.ability.canFreeViewPost;
+
   // 是否需要附加付费
   const needAttachmentPay = !canFreeViewPost && isAttachmentPay && !isSelf && !isPayed;
   // 是否付费帖子
@@ -67,12 +73,9 @@ const RenderThreadContent = inject('site', 'user')(observer((props) => {
   // 是否打赏帖
   const isBeReward = isFree && threadStore?.threadData?.ability.canBeReward && !isRedPack && !isReward;
   // 是否显示打赏按钮： 免费帖 && 不是自己 && 不是红包 && 不是悬赏 && 允许被打赏
-  const canBeReward = isFree && threadStore?.threadData?.ability.canBeReward && !isRedPack && !isReward;
+  // const canBeReward = isFree && !isRedPack && !isReward;
   // 是否已打赏
   const isRewarded = threadStore?.threadData?.isReward;
-
-  // 是否可以免费查看付费帖子
-  const canFreeViewPost = threadStore?.threadData?.ability.canFreeViewPost;
 
   const parseContent = parseContentData(indexes);
 
@@ -121,6 +124,8 @@ const RenderThreadContent = inject('site', 'user')(observer((props) => {
     canViewVideo
   } = threadStore?.threadData?.ability || {};
 
+  const { tipList } = threadStore?.threadData || {};
+
   return (
     <div className={`${styles.container}`}>
       <div className={styles.header}>
@@ -152,7 +157,7 @@ const RenderThreadContent = inject('site', 'user')(observer((props) => {
         {threadStore?.threadData?.title && <div className={styles.title}>{threadStore?.threadData?.title}</div>}
 
         {/* 文字 */}
-        {text && <PostContent useShowMore={false} content={text || ''} />}
+        {text && <PostContent needShowMore={false} content={text || ''} />}
 
         {/* 视频 */}
         {parseContent.VIDEO && (
@@ -284,9 +289,9 @@ const RenderThreadContent = inject('site', 'user')(observer((props) => {
               return (
                 <div key={pluginInfo.name}>
                   {render({
-                    site: site,
+                    site: { ...site, isDetailPage: true  },
                     renderData: parseContent.plugin
-                  })} 
+                  })}
                 </div>
               )
             })
@@ -309,15 +314,33 @@ const RenderThreadContent = inject('site', 'user')(observer((props) => {
           </div>
         )}
 
-        {/* 打赏 */}
-        {canBeReward && isApproved && !isSelf && (
-          <div className={styles.rewardContianer}>
-            <Button onClick={onRewardClick} className={styles.rewardButton} type="primary">
-              <Icon className={styles.payIcon} name="HeartOutlined" size={20}></Icon>
-              <span className={styles.rewardext}>打赏</span>
-            </Button>
+        {/* 打赏 产品说web端全部放开，直接显示  */}
+        <div className={styles.rewardContianer}>
+          <Button onClick={onRewardClick} className={styles.rewardButton} type="primary">
+            <Icon className={styles.payIcon} name="HeartOutlined" size={20}></Icon>
+            <span className={styles.rewardext}>打赏</span>
+          </Button>
+        </div>
+
+        {/* 打赏人员列表 */}
+        {
+          tipList && tipList.length > 0 && (
+            <div className={styles.moneyList}>
+              <div className={styles.top}>{tipList.length}人打赏</div>
+              <div className={styles.itemList}>
+                {tipList.map(i=>(
+                  <div key={i.userId} onClick={()=>props.router.push(`/user/${i.userId}`)} className={styles.itemAvatar}>
+                      <Avatar
+                        image={i.avatar}
+                        name={i.nickname}
+                        size='small'
+                      />
+                  </div>
+                ))}
+              </div>
           </div>
-        )}
+          )
+        }
       </div>
 
       {isApproved && (
@@ -367,11 +390,10 @@ const RenderThreadContent = inject('site', 'user')(observer((props) => {
       )}
 
       {
-        hasRedPacket > 0
-        && <PacketOpen onClose={() => threadStore.setRedPacket(0)} money={hasRedPacket} />
+        hasRedPacket > 0 &&  <PacketOpen onClose={() => threadStore.setRedPacket(0)} money={hasRedPacket} />
       }
     </div>
   );
-}));
+})));
 
 export default RenderThreadContent;

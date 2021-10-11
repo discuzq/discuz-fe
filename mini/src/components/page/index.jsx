@@ -10,10 +10,12 @@ import { getCurrentInstance } from '@tarojs/taro';
 import PayBoxProvider from '@components/payBox/payBoxProvider';
 import { MINI_SITE_JOIN_WHITE_LIST, REVIEWING_USER_WHITE_LIST } from '@common/constants/site';
 import { ToastProvider } from '@discuzq/design/dist/components/toast/ToastProvider';
+import { DialogProvider } from '@discuzq/design/dist/components/dialog/dialogProvider';
 import Taro from '@tarojs/taro';
 import { REVIEWING } from '@common/store/login/util';
 import LoginHelper from '@common/utils/login-helper';
-import {readForum} from '@server';
+import {readForum, readPluginList} from '@server';
+import ShareError from '@components/share-error/index';
 
 const INDEX_URL = '/indexPages/home/index';
 const PARTNER_INVITE_URL = '/subPages/forum/partner-invite/index';
@@ -131,7 +133,11 @@ export default class Page extends React.Component {
 
   //
   async getSiteData() {
+    const { site } = this.props;
     const siteResult = await readForum({});
+    site.setSiteConfig(siteResult.data);
+    const pluginConfig = await readPluginList();
+    if (pluginConfig.code === 0) site.setPluginConfig(pluginConfig.data);
     // 一切异常建议进入小程序体验
     this.setState({
       _status: siteResult.code !== 0 ? 'error' : 'pass'
@@ -148,10 +154,7 @@ export default class Page extends React.Component {
         if ( this.state._status === 'pass' ) {
           return children;
         } else {
-          return (<View className={styles.loadingBox}>
-            <View style={{textAlign: 'center'}}>数据异常</View>
-            <View style={{textAlign: 'center'}}>进入小程序了解详情</View>
-          </View>)
+          return <ShareError/>;
         }
       } else {
         this.getSiteData();
@@ -197,6 +200,11 @@ export default class Page extends React.Component {
         </Popup>
       );
     }
+    const options = Taro.getLaunchOptionsSync();
+     // 分享朋友圈时，如果站点是付费站点，则直接提示用户需要付费
+    if (options && options.scene === 1154 && this?.props?.site?.siteMode === 'pay') {
+      return <ShareError type='pay'/>;
+    }
 
     // 如果被劫持到其它页面，则不展示当前页
     if (!this.isPass()) {
@@ -208,6 +216,7 @@ export default class Page extends React.Component {
       <View className={`${styles['dzq-page']} dzq-theme--${site.theme} ${className}`}>
         <PayBoxProvider>{this.createContent()}</PayBoxProvider>
         {!disabledToast && <ToastProvider></ToastProvider>}
+        <DialogProvider />
       </View>
     );
   }

@@ -45,7 +45,7 @@
       width: 1px;
       position: absolute;
       top: rem(3);
-      background-color: var(--border-line-color);
+      background-color: $border-color;
     }
     &:nth-child(2):after{
       left: 0;
@@ -63,7 +63,7 @@
   }
   .site_status_item{
     float: left;
-    color: var(--color-primary);
+    color: $primary-color;
     text-align: left;
     text-overflow: ellipsis;
     white-space: nowrap;

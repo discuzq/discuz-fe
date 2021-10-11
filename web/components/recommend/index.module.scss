@@ -2,7 +2,7 @@
 .recommend {
   width: 100%;
   box-sizing: border-box;
-  background: var(--color-white);
+  background: $white;
   padding: 0 rem($padding-4n);
   padding-bottom: 0;
   border-radius: rem($border-radius-small);
@@ -11,7 +11,7 @@
     font-weight: 600;
     font-size: rem(18);
     padding: rem(16) 0;
-    color: var(--color-text-primary);
+    color: $text-color-primary;
   }
 }
 
@@ -76,7 +76,7 @@
       flex: 1;
       font-size: rem($font-size-middle);
       line-height: rem($font-line-height-small);
-      color: var(--color-text-primary);
+      color: $text-color-primary;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -100,7 +100,7 @@
     .browseBox {
       font-size: rem($font-size-label);
       line-height: rem($font-line-height-small);
-      color: var(--color-text-secondary);
+      color: $text-color-secondary;
       flex-shrink: 0;
       .browseIcon {
         margin-right: rem($margin-1n);
@@ -111,9 +111,9 @@
       .browseSurplus {
         font-size: rem($font-size-label);
         line-height: rem($font-line-height-primary);
-        color: var(--color-text-primary);
+        color: $text-color-primary;
         .surNumber {
-          color: var(--color-error);
+          color: $error-color;
         }
       }
       .browseCategory {
@@ -176,45 +176,45 @@
     color: $text-color-regular;
     .switchIcon {
       margin-right: rem($margin-2n);
-      color: var(--color-text-secondary);
+      color: $text-color-secondary;
     }
   }
 }
 .itemIndex1 {
-  color: var(--color-error);
+  color: $error-color;
 }
 .itemIndex2 {
-  color: var(--color-error);
+  color: $error-color;
   opacity: 0.8;
 }
 .itemIndex3 {
-  color: var(--color-error);
+  color: $error-color;
   opacity: 0.6;
 }
 .itemIndex4 {
-  color: var(--color-error);
+  color: $error-color;
   opacity: 0.5;
 }
 .itemIndex5 {
-  color: var(--color-warn);
+  color: $warn-color;
 }
 .itemIndex6 {
-  color: var(--color-warn);
+  color: $warn-color;
   opacity: 0.8;
 }
 .itemIndex7 {
-  color: var(--color-warn);
+  color: $warn-color;
   opacity: 0.6;
 }
 .itemIndex8 {
-  color: var(--color-warn);
+  color: $warn-color;
   opacity: 0.5;
 }
 .itemIndex9 {
-  color: var(--color-warn);
+  color: $warn-color;
   opacity: 0.4;
 }
 .itemIndex10 {
-  color: var(--color-warn);
+  color: $warn-color;
   opacity: 0.3;
 }

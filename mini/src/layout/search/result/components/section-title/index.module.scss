@@ -7,7 +7,7 @@
   align-items: center;
   padding: rem($padding-4n) 0;
   box-sizing: border-box;
-  background-color: var(--color-white);
+  background-color: $white;
   .left {
     display: flex;
     flex-direction: row;
@@ -26,12 +26,12 @@
   font-size: rem($font-size-middle);
   line-height: rem($font-line-height-primary);
   text-align: left;
-  color: var(--color-text-primary);
+  color: $text-color-primary;
 }
 .more {
   font-size: rem($font-size-primary);
   line-height: rem($font-line-height-middle);
   text-align: left;
-  color: var(--color-text-primary);
+  color: $text-color-primary;
   margin-right: rem($padding-2n);
 }

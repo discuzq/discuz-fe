@@ -46,7 +46,7 @@ const Topic = ({ data, onClick = noop, index, footer }) => {
     <div className={styles.item} onClick={click}>
       <div className={styles.imgBox}>
         { imageData.length > 0 && imageData[0].url ? (
-            <img className={styles.img} src={data.img}/>
+            <img alt="图片" className={styles.img} src={data.img}/>
           ) : `${data.content[0]}`
         }
       </div>

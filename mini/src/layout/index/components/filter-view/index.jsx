@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { inject, observer } from 'mobx-react';
 import Button from '@discuzq/design/dist/components/button/index';
 import Icon from '@discuzq/design/dist/components/icon/index';
 import Popup from '@discuzq/design/dist/components/popup/index';
@@ -13,7 +14,8 @@ import { substr } from '@common/utils/substr';
 
 const { Col, Row } = Flex;
 
-const Index = ({ permissions = {}, visible, data: tmpData = [], current, onSubmit = noop, onCancel = noop, router }) => {
+const Index = ({ permissions = {}, visible, data: tmpData = [], current, onSubmit = noop, onCancel = noop, router, site }) => {
+  const { webConfig: { other: { threadOptimize } } } = site;
   const [first, setFirst] = useState('all');
   const [firstChildren, setFirstChildren] = useState();
   const [second, setSecond] = useState('');
@@ -38,6 +40,12 @@ const Index = ({ permissions = {}, visible, data: tmpData = [], current, onSubmi
       if ( !permissions['redpacket'] && defautlFilter.data[i].pid === '106' ) {
         continue;
       }
+
+      if (['104', '106', '107'].includes(defautlFilter.data[i].pid)) {
+        if (!threadOptimize) continue;
+      }
+
+
       newDefaultFiler.push(defautlFilter.data[i]);
     }
     newData[1].data = newDefaultFiler;
@@ -45,11 +53,12 @@ const Index = ({ permissions = {}, visible, data: tmpData = [], current, onSubmi
   }, [permissions, tmpData]);
 
   useEffect(() => {
-    const { categoryids = [], types, essence } = current || {};
+    const { categoryids = [], types = 'all', essence, attention } = current || {};
 
     handleCategoryIds(categoryids);
     setSecond(types || 'all');
-    setThird(essence || '0');
+    if (Number(essence) === 1) setThird('1');
+    if (Number(attention) === 1) setThird('attention');
 
   }, [current, visible]);
 
@@ -139,7 +148,12 @@ const Index = ({ permissions = {}, visible, data: tmpData = [], current, onSubmi
       }
     }
 
-    const params = { categoryids, types: second, essence: third, sequence };
+    let attention = '0'; // 是否已关注
+    let essence = '0'; // 是否是精华帖
+    if (third === 'attention') attention = '1';
+    else essence = third;
+
+    const params = { categoryids, types: second, essence, sequence, attention };
 
     onSubmit(params);
   };
@@ -230,4 +244,4 @@ const Index = ({ permissions = {}, visible, data: tmpData = [], current, onSubmi
   );
 };
 
-export default React.memo(Index);
+export default inject('site', )(observer(Index));

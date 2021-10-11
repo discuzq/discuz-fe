@@ -176,7 +176,7 @@ class IndexAction extends IndexStore {
     if (id) {
       this.deleteAssignThreadInLists({ threadId: id });
     }
-    
+
     if (id && this.threads) {
       //  删除列表
       const { pageData = [] } = this.threads;
@@ -212,10 +212,10 @@ class IndexAction extends IndexStore {
   @action
   async screenData({ filter = {}, sequence = 0, perPage = 10, page = 1, isMini = false } = {}) {
     // 如果是小程序请求，先不把数据置空，以免导致页面提前渲染
-    if (!isMini) {
-      this.threads = null;
-      this.sticks = null;
-    }
+    // if (!isMini) {
+    this.threads = null;
+    this.sticks = null;
+    // }
 
     this.resetErrorInfo()
 
@@ -230,11 +230,11 @@ class IndexAction extends IndexStore {
    * @returns
    */
   @action
-  async getReadThreadList({ filter = {}, sequence = 0, perPage = 10, page = 1, isDraft = false } = {}) {
+  async getReadThreadList({ filter = {}, sequence = 0, perPage = 10, page = 1, isDraft = false } = {}, ctx = null) {
     this.latestReq += 1;
     const currentReq = this.latestReq;
 
-    const result = await this.threadList.fetchList({ namespace: this.namespace, perPage, page, filter, sequence });
+    const result = await this.threadList.fetchList({ namespace: this.namespace, perPage, page, filter, sequence }, ctx);
     if (currentReq !== this.latestReq) {
       return;
     }
@@ -276,8 +276,9 @@ class IndexAction extends IndexStore {
    * @returns
    */
   @action.bound
-  async getReadCategories() {
-    const result = await readCategories();
+  async getReadCategories(opt = {}, ctx = null) {
+    console.log(opt);
+    const result = await readCategories(opt, ctx);
     if (result.code === 0) {
       if (result.data) {
         const data = [...result.data];
@@ -301,8 +302,8 @@ class IndexAction extends IndexStore {
    * @returns
    */
   @action
-  async getRreadStickList(categoryIds = []) {
-    const result = await readStickList({ params: { categoryIds } });
+  async getRreadStickList(categoryIds = [], ctx = null) {
+    const result = await readStickList({ params: { categoryIds } }, ctx);
     if (result.code === 0) {
       this.sticks = null;
       this.setSticks(result.data || []);
@@ -316,7 +317,7 @@ class IndexAction extends IndexStore {
     if (this.threads) {
       const { pageData = [] } = this.threads;
       for (let i = 0; i < pageData.length; i++) {
-        if (pageData[i].threadId === threadId) {
+        if (+pageData[i].threadId === +threadId) {
           return { index: i, data: pageData[i] };
         }
       }
@@ -402,6 +403,7 @@ class IndexAction extends IndexStore {
       // this.threads.pageData = [...this.threads.pageData];
     }
     this.updateAssignThreadAllData(threadId, threadData);
+    return threadData;
   }
 
   @action
@@ -471,25 +473,6 @@ class IndexAction extends IndexStore {
   }
 
   /**
-   * 更新帖子的展开更多
-   * @param {number} threadId 帖子id
-   * @param {object}  obj 更新数据
-   * @returns
-   */
-  @action
-  updateOpenMore(threadId, obj = {}) {
-    const targetThread = this._findAssignThread(threadId);
-
-    if (targetThread && targetThread.length !== 0) { 
-      const { index, data } = targetThread;
-      const { openedMore } = obj;
-      data.openedMore = openedMore;
-
-      this.threads.pageData[index] = data;
-    }
-  }
-
-  /**
    * 添加帖子
    * @param {obj} threadInfo
    */
@@ -515,7 +498,9 @@ class IndexAction extends IndexStore {
       const { pageData } = this.threads || {};
 
       if (pageData) {
-        pageData.unshift(threadInfo);
+        // TODO: 由于porxy不能正常监听unshift，先这样处理，目前只存在首页列表新增帖子
+        this.threadList.addThreadInTargetList({ namespace: 'home', threadInfo });
+        // pageData.unshift(threadInfo);
         // this.threads.pageData = this.threads.pageData.slice();
         const totalCount = Number(this.threads.totalCount)
         this.threads.totalCount = totalCount + 1
@@ -533,7 +518,7 @@ class IndexAction extends IndexStore {
    */
   @action
   async updateThreadInfo({ pid, id, data = {} } = {}) {
-    return await updatePosts({ data: { pid, id, data } });
+    return await updatePosts({ data: { postId:pid, id, data } });
   };
 
   /**

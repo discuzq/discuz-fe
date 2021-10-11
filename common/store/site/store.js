@@ -1,7 +1,6 @@
 import { observable, computed } from 'mobx';
 import { APP_THEME } from '@common/constants/site';
 import { get } from '../../utils/get';
-import { DOMAIN_WHITE_LIST } from '../../constants/site';
 
 const WECHAT_ENV_MAP = {
   MINI: 'miniProgram',
@@ -14,6 +13,7 @@ class SiteStore {
     this.envConfig = props.envConfig;
     this.webConfig = props.webConfig;
     this.platform = props.platform;
+    this.pluginConfig = props.pluginConfig;
   }
 
   envConfig = {};
@@ -23,17 +23,13 @@ class SiteStore {
   @observable theme = APP_THEME.light;
   @observable isUserLoginVisible = null;
   @observable errPageType = null;
+  @observable pluginConfig = null; // 插件配置
   @computed get isRegister() {
     return !this.isSmsOpen && this.wechatEnv === 'none' && this.registerClose;
   }
 
   @computed get isPC() {
     return this.platform === 'pc';
-  }
-
-  @computed get isDomainWhiteList() {
-    const COMMON_BASE_URL = get(this.envConfig, 'COMMON_BASE_URL', '');
-    return COMMON_BASE_URL === DOMAIN_WHITE_LIST ;
   }
 
   @computed get isSmsOpen() {

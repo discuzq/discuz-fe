@@ -8,6 +8,7 @@ import { inject, observer } from 'mobx-react';
 import Router from '@discuzq/sdk/dist/router';
 import UnreadRedDot from '@components/unread-red-dot';
 import { unreadUpdateInterval } from '@common/constants/message';
+import canPublish from '@common/utils/can-publish';
 
 /**
  * BottomNavBar组件
@@ -25,6 +26,7 @@ const routes = [
 
 @inject('index')
 @inject('user')
+@inject('site')
 @inject('message')
 @observer
 class BottomNavBar extends React.Component {
@@ -68,6 +70,7 @@ class BottomNavBar extends React.Component {
         Taro.showToast({ title: '您暂无发帖权限', icon: 'none' });
         return;
       }
+      if(!canPublish(this.props.user, this.props.site, 'comment')) return;
     }
 
     const { onClick = noop } = this.props

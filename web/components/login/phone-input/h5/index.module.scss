@@ -26,7 +26,7 @@
   right: 0;
   bottom: rem($margin-4n);
   border-radius: rem($border-radius-small);
-  color: var(--color-white);
+  color: $white;
   font-size: rem($font-size-base);
 }
 .sendCaptcha {
@@ -47,7 +47,7 @@
     line-height: rem($font-line-height-base);
     text-align: left;
     padding: rem(2) 0;
-    color: var(--color-text-secondary);
+    color: $text-color-secondary;
   }
   .captchaInput-input:last-child{
     margin-right: 0;

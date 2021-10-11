@@ -220,7 +220,7 @@ class RenderCommentList extends React.Component {
       goToLoginPage({ url: '/user/login' });
       return;
     }
-    if (!this.props.canPublish()) return ;
+    if (!this.props.canPublish('reply')) return ;
     this.commentData = comment;
     this.replyData = null;
     const userName = comment?.user?.nickname || comment?.user?.userName;
@@ -237,7 +237,7 @@ class RenderCommentList extends React.Component {
       goToLoginPage({ url: '/user/login' });
       return;
     }
-    if (!this.props.canPublish()) return ;
+    if (!this.props.canPublish('reply')) return ;
     this.commentData = null;
     this.replyData = reply;
     this.replyData.commentId = comment.id;
@@ -445,6 +445,7 @@ class RenderCommentList extends React.Component {
                   // 是帖子作者 && 是悬赏帖 && 评论人不是作者本人
                   isSelf && isReward && this.props.thread?.threadData?.userId !== val.userId
                 }
+                thread={this.props.thread}
                 threadId={this.props.thread?.threadData?.userId}
                 active={val.id === postId}
                 isAnonymous={isAnonymous}

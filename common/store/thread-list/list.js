@@ -28,7 +28,7 @@ export default class ListStore {
    */
   @action
   registerList = ({ namespace }) => {
-    window.lists = this.lists;
+    // window.lists = this.lists;
     if (this.lists[namespace]) return;
     extendObservable(this.lists, {
       [namespace]: {
@@ -96,12 +96,18 @@ export default class ListStore {
     };
   }
 
+  // 更新list
+  @action
+  updateList = (lists) => {
+    this.lists = { ...lists };
+  }
+
   /**
    * 请求获取指定列表的list
    * @param {*} param0
    */
   @action
-  fetchList = async ({ namespace, filter = {}, sequence = 0, perPage = 10, page }) => {
+  fetchList = async ({ namespace, filter = {}, sequence = 0, perPage = 10, page }, ctx) => {
     let requestPage = page;
     if (!page) {
       requestPage = this.getAttribute({ namespace, key: 'currentPage' }) + 1 || 1;
@@ -115,7 +121,7 @@ export default class ListStore {
     }
     const result = await readThreadList({
       params: { perPage, page: requestPage, filter: newFilter, sequence },
-    });
+    }, ctx);
     if (result.code === 0 && result.data) {
       return result;
     }
@@ -262,14 +268,27 @@ export default class ListStore {
    * @param {*} param0
    */
   @action
-  addThreadInTargetList = ({ namespace, threadInfo }) => {
+  addThreadInTargetList = ({ namespace, threadInfo, updater = null }) => {
     if (!this.lists[namespace]) {
       this.registerList({ namespace });
       this.lists[namespace].data[1] = [];
     }
 
+    // 个人中心数据需要考虑置顶时的情况
     if (this.lists[namespace].data[1]) {
-      this.lists[namespace].data[1].unshift(threadInfo);
+      if (updater) {
+        updater(this.lists[namespace].data[1]);
+      } else {
+        if (namespace === 'my') {
+          if (this.lists[namespace].data[1][0] && this.lists[namespace].data[1][0].userStickStatus === 1) {
+            this.lists.my.data[1].splice(1, 0, threadInfo);
+          } else {
+            this.lists.my.data[1].unshift(threadInfo);
+          }
+        } else {
+          this.lists[namespace].data[1].unshift(threadInfo);
+        }
+      }
     }
 
     const currentTotalCount = this.getAttribute({ namespace, key: 'totalCount' });
@@ -314,11 +333,13 @@ export default class ListStore {
     Object.keys(data).forEach((page) => {
       data[page].forEach((thread, index) => {
         if (thread.threadId === threadId) {
+          const { likeReward, commentList = [] } = thread;
           result = {
             listName: namespace,
             page,
             index,
-            data: thread,
+            // 避免同引用，list数据多次赋值问题
+            data: { ...thread, likeReward: { ...likeReward }, commentList },
           };
         }
       });

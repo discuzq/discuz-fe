@@ -191,7 +191,7 @@ export default Index;
 @import '@common/styles/index.scss';
 .text {
     font-size: rem($font-size-label);
-    color: var(--color-error);
+    color: $error-color;
 }
 ```
 

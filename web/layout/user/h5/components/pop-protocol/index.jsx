@@ -12,6 +12,12 @@ const PROTOCAL = {
 @inject('commonLogin')
 @inject('site')
 class PopProtocol extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      height: null,
+    };
+  }
   getProtocalData(type) {
     const { site } = this.props;
     const { webConfig: { agreement } } = site;
@@ -34,12 +40,17 @@ class PopProtocol extends React.Component {
     };
   }
 
+  componentDidMount() {
+    const cliengtHeight = getClientHeight();
+    this.setState({ height: cliengtHeight });
+  }
+
 
   render() {
     const { protocolVisible, protocolStatus } = this.props;
     const { commonLogin } = this.props;
+    const { height } = this.state;
     const protocolData = this.getProtocalData(protocolStatus);
-    const cliengtHeight = getClientHeight();
 
     return (
       <Popup
@@ -47,7 +58,7 @@ class PopProtocol extends React.Component {
         visible={protocolVisible}
         onClose={() => {commonLogin.setProtocolVisible(false)}}
       >
-        <div className={layout.content} style={cliengtHeight && {height: `${cliengtHeight - 48}px`}}>
+        <div className={layout.content} style={height && {height: `${height - 48}px`}}>
           <div className={layout.title}>
             {protocolData.title}
           </div>

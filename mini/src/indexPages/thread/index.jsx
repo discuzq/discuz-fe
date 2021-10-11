@@ -9,6 +9,7 @@ import withShare from '@common/utils/withShare/withShare';
 import { priceShare } from '@common/utils/priceShare';
 import { updateViewCountInStorage } from '@common/utils/viewcount-in-storage';
 import Toast from '@components/toast';
+import ShareError from '@components/share-error/index';
 import ErrorMiniPage from '../../layout/error/index';
 import { updateThreadAssignInfoInLists } from '@common/store/thread-list/list-business';
 
@@ -28,6 +29,7 @@ class Detail extends React.Component {
     super(props);
     this.state = {
       isServerError: false,
+      serverErrorType: 'error',
       serverErrorMsg: '',
     };
   }
@@ -138,10 +140,12 @@ class Detail extends React.Component {
     if (id) {
       let threadData;
 
+      let listType = '';
       const targetThreadList = this.props.threadList.findAssignThreadInLists({ threadId: Number(id) });
       if (targetThreadList?.length) {
         targetThreadList.forEach((targetThread) => {
           if (!threadData && targetThread.data) {
+            listType = targetThread.listName;
             threadData = targetThread.data;
           }
         });
@@ -149,6 +153,7 @@ class Detail extends React.Component {
 
       if (threadData?.threadId && !threadData?.displayTag?.isRedPack && !threadData?.displayTag?.isReward) {
         this.props.thread.setThreadData(threadData);
+        this.props.thread.setPageDataListType(listType); // 记录使用的是哪个列表数据
       }
     }
   }
@@ -172,6 +177,18 @@ class Detail extends React.Component {
         if (res.code > -5000 && res.code < -4000) {
           this.setState({
             serverErrorMsg: res.msg,
+          });
+        }
+
+        if (res.code === -3001) {
+          this.setState({
+            serverErrorType: 'permission',
+          });
+        }
+
+        if (res.code === -3006) {
+          this.setState({
+            serverErrorType: 'pay',
           });
         }
 
@@ -207,6 +224,9 @@ class Detail extends React.Component {
       };
       this.props.thread.loadCommentList(params);
     }
+
+    // 查询打赏人员列表
+    this.props.thread.queryTipList({ threadId: id, postId, type: 2, page: 1 });
   }
 
   // 判断缓存是否可用
@@ -246,6 +266,12 @@ class Detail extends React.Component {
   }
 
   render() {
+    const options = Taro.getLaunchOptionsSync();
+    const { serverErrorType } = this.state;
+    // 分享朋友圈时，如果页面错误则返回提示
+    if (options && options.scene === 1154 && this.state.isServerError) {
+      return <ShareError type={serverErrorType}/>;
+    }
     return this.state.isServerError ? (
       <ErrorMiniPage text={this.state.serverErrorMsg} />
     ) : (

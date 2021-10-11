@@ -8,7 +8,7 @@
   justify-content: space-between;
   padding: rem($padding-6n);
 }
-// var(--color-primary)
+// $primary-color
 .circle {
   width: rem(14);
   height: rem(14);
@@ -59,7 +59,7 @@
     justify-content: flex-start;
     align-items: center;
     .text {
-      
+
       font-weight: normal;
       font-size: rem($font-size-primary);
       line-height: 24px;

@@ -38,7 +38,7 @@
 // }
 
 .placeholderClass {
-  color: var(--border-color-hover);
+  color: $border-color-hover;
 }
 
 .inputWrapper {
@@ -88,4 +88,8 @@
 
 .pictureUpload {
   margin-left: $im-space-in-between-btns;
+}
+
+.icon {
+  color: $text-color-secondary;
 }

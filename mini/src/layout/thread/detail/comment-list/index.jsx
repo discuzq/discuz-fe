@@ -289,11 +289,11 @@ class RenderCommentList extends React.Component {
 
   // 跳转评论详情
   onCommentClick(data) {
-    if (!this.props.user.isLogin()) {
-      Toast.info({ content: '请先登录!' });
-      goToLoginPage({ url: '/userPages/user/wx-auth/index' });
-      return;
-    }
+    // if (!this.props.user.isLogin()) {
+    //   Toast.info({ content: '请先登录!' });
+    //   goToLoginPage({ url: '/userPages/user/wx-auth/index' });
+    //   return;
+    // }
     if (data.id && this.props.thread?.threadData?.id) {
       Taro.navigateTo({
         url: `/indexPages/thread/comment/index?id=${data.id}&threadId=${this.props.thread?.threadData?.id}`,

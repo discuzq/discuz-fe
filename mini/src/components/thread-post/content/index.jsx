@@ -81,14 +81,17 @@ const Index = forwardRef(({
             className={classNames(styles.textarea, !!value && styles['textarea-editing'], styles['textarea-min-height'])}
             style={(bottomHeight > 0 || showEmoji) ? `max-height:${defaultHeight}px` : ''}
             placeholderClass={styles['textarea-placeholder']}
+            // value={value}
             value={value}
             disabled={disabled}
+            focus
             placeholder={placeholder}
             maxlength={maxLength}
-            autoHeight={true}
+            autoHeight
             showConfirmBar={false}
             onFocus={onFocus}
             onBlur={onBlur}
+            autoFocus
             cursorSpacing={200}
             onInput={e => onChange(e.target.value, maxLength)}
             // 键盘弹起时，不自动上推页面。此属性解决键盘弹起页面上推导致工具栏以及header显示异常
@@ -106,9 +109,9 @@ const Index = forwardRef(({
           ref={ref}
           className={classNames(styles.textarea, !!value && styles['textarea-editing'])}
           placeholderClass={styles['textarea-placeholder']}
-          value={value}
           disabled={disabled}
           placeholder={placeholder}
+          value={value}
           maxlength={maxLength}
           style={(bottomHeight > 0 || showEmoji)
             ? `height:${defaultHeight}px;`
@@ -116,6 +119,8 @@ const Index = forwardRef(({
           }
           showConfirmBar={false}
           onFocus={onFocus}
+          autoFocus
+          focus
           onBlur={onBlur}
           cursorSpacing={200}
           onInput={e => onChange(e.target.value, maxLength)}

@@ -202,7 +202,7 @@ class CommentPCPage extends React.Component {
       goToLoginPage({ url: '/user/login' });
       return;
     }
-    if (!this.props.canPublish()) return;
+    if (!this.props.canPublish('reply')) return;
     this.commentData = comment;
     this.replyData = null;
     this.setState({
@@ -217,7 +217,7 @@ class CommentPCPage extends React.Component {
       goToLoginPage({ url: '/user/login' });
       return;
     }
-    if (!this.props.canPublish()) return;
+    if (!this.props.canPublish('reply')) return;
     this.commentData = null;
     this.replyData = reply;
     this.replyData.commentId = comment.id;
@@ -237,7 +237,7 @@ class CommentPCPage extends React.Component {
 
     const valuestr = val.replace(/\s/g, '');
     // 如果内部为空，且只包含空格或空行
-    if (!valuestr) {
+    if (!(valuestr || imageList.length)) {
       Toast.info({ content: '请输入内容' });
       return;
     }

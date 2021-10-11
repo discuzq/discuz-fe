@@ -76,6 +76,7 @@ const UNTOP_MENUS = (
 @inject('thread')
 @inject('threadList')
 @inject('site')
+@inject('threadList')
 @inject('user')
 @observer
 class UserCenterThreads extends React.Component {
@@ -96,13 +97,14 @@ class UserCenterThreads extends React.Component {
 
     const ret = await setThreadBeSticked({
       thread,
-      listStore: this.props.threadList,
+      indexStore: this.props.threadList,
     });
 
     if (ret.success) {
       Toast.success({
         content: '置顶成功',
       });
+      document.getElementById(`my-thread`).scrollIntoView();
     } else {
       Toast.error({
         content: ret.msg || '置顶失败',
@@ -116,7 +118,7 @@ class UserCenterThreads extends React.Component {
 
     const ret = await setThreadBeUnSticked({
       thread,
-      listStore: this.props.threadList,
+      indexStore: this.props.threadList,
     });
 
     if (ret.success) {

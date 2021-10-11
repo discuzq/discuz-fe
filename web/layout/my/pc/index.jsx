@@ -128,7 +128,7 @@ class PCMyPage extends React.Component {
   };
 
   // 是否显示续费卡片
-  whetherIsShowRenewalCard = () => this.props.site?.siteMode === 'pay' && !this.props.user?.isAdmini;
+  whetherIsShowRenewalCard = () => !this.props.user?.isAdmini;
 
   renderRight = () => {
     // 条件都满足时才显示微信
@@ -218,6 +218,7 @@ class PCMyPage extends React.Component {
           <UserCenterAction />
         </div>
 
+        <div id="my-thread"></div>
         <SidebarPanel
           title="主题"
           type="normal"

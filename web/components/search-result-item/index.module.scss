@@ -8,7 +8,7 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid var(--border-line-color);
+  border-bottom: 1px solid $border-color;
   margin: 0 rem($padding-4n);
   .left {
     width: 65%;
@@ -30,7 +30,7 @@
     margin-right: rem($padding-2n);
     border-radius: 50%;
     &.empty {
-      background-color: var(--mask-background-color);
+      background-color: $mask-bg-color;
     }
   }
   .name {
@@ -46,7 +46,7 @@
     flex: 1;
     font-size: rem($font-size-label);
     line-height: rem($font-line-height-primary);
-    color: var(--color-text-secondary);
+    color: $text-color-secondary;
     margin-right: rem($padding-2n);
     overflow: hidden;
     text-overflow: ellipsis;
@@ -86,17 +86,17 @@
     flex-direction: row;
     flex-wrap: wrap;
     padding-bottom: rem($padding-2n);
-    border-bottom: 1px solid var(--border-line-color);
+    border-bottom: 1px solid $border-color;
     .tag {
       font-size: rem($font-size-label);
       line-height: rem($font-line-height-small);
       margin-right: rem($padding-2n);
-      color: var(--color-text-secondary);
+      color: $text-color-secondary;
     }
   }
 }
 
 .hr {
   height: rem(10);
-  background-color: var(--background-color);
+  background-color: $body-bg-color;
 }

@@ -3,18 +3,18 @@
 
 .item {
   padding: 16px;
-  background: var(--color-white);
+  background: $white;
   margin-bottom: 10px;
   .title {
     font-weight: 700;
     font-size: 16px;
     line-height: 24px;
-    color: var(--color-text-primary);
+    color: $text-color-primary;
   }
   .content {
     font-size: 14px;
     line-height: 18px;
-    color: var(--color-text-primary);
+    color: $text-color-primary;
     margin: 8px 0;
   }
   .footer {
@@ -23,7 +23,7 @@
     .numBox {
       font-size: 12px;
       line-height: 16px;
-      color: var( --color-text-secondary);
+      color: $text-color-secondary;
       margin-right: 10px;
       .title {
         margin-right: 4px;

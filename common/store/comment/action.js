@@ -23,7 +23,7 @@ class CommentAction extends CommentStore {
    */
   @action
   async fetchCommentDetail(id) {
-    const res = await readCommentDetail({ params: { pid: Number(id) } });
+    const res = await readCommentDetail({ params: { postId: Number(id) } });
     if (res?.code === 0) {
       this.setCommentDetail(res.data);
     } else {
@@ -37,7 +37,7 @@ class CommentAction extends CommentStore {
 
   @action
   async fetchAuthorInfo(userId) {
-    const userRes = await readUser({ params: { pid: userId } });
+    const userRes = await readUser({ params: { userId } });
     if (userRes.code === 0) {
       this.authorInfo = userRes.data;
     } else {
@@ -154,7 +154,7 @@ class CommentAction extends CommentStore {
 
       return {
         redPacketAmount: res.data.redPacketAmount,
-        isApproved: isApproved,
+        isApproved,
         msg: isApproved ? '评论成功' : '您发布的内容正在审核中',
         success: true,
       };
@@ -177,8 +177,8 @@ class CommentAction extends CommentStore {
    */
   @action
   async updateComment(params, ThreadStore) {
-    const { id, pid, content, attachments } = params;
-    if (!id || !content || !pid) {
+    const { id, postId, content, attachments } = params;
+    if (!id || !content || !postId) {
       return {
         msg: '参数不完整',
         success: false,
@@ -187,7 +187,7 @@ class CommentAction extends CommentStore {
 
     const requestParams = {
       id,
-      pid,
+      postId,
       data: {
         attributes: {
           content: xss(content),
@@ -211,7 +211,7 @@ class CommentAction extends CommentStore {
       const isApproved = res.data.isApproved === 1;
 
       return {
-        isApproved: isApproved,
+        isApproved,
         msg: isApproved ? '修改成功' : '您修改的内容正在审核中',
         success: true,
       };
@@ -272,7 +272,7 @@ class CommentAction extends CommentStore {
       const isApproved = res.data.isApproved === 1;
 
       return {
-        isApproved: isApproved,
+        isApproved,
         msg: isApproved ? '回复成功' : '您回复的内容正在审核中',
         success: true,
       };
@@ -302,7 +302,7 @@ class CommentAction extends CommentStore {
     }
 
     const requestParams = {
-      pid: id,
+      postId: id,
       data: {
         attributes: {
           isLiked,
@@ -345,7 +345,7 @@ class CommentAction extends CommentStore {
       };
     }
     const requestParams = {
-      pid: commentId,
+      postId: commentId,
       data: {
         attributes: {
           isDeleted: 1,
@@ -357,7 +357,7 @@ class CommentAction extends CommentStore {
       // 更新评论列表
       const { commentList, totalCount } = ThreadStore;
       if (commentList?.length) {
-        const index = commentList.findIndex((comment) => commentId === comment.id);
+        const index = commentList.findIndex(comment => commentId === comment.id);
         commentList.splice(index, 1);
         const newTotalCount = totalCount - 1;
         ThreadStore.setTotalCount(newTotalCount);
@@ -391,7 +391,7 @@ class CommentAction extends CommentStore {
       };
     }
     const requestParams = {
-      pid: replyId,
+      postId: replyId,
       data: {
         attributes: {
           isDeleted: 1,
@@ -401,16 +401,16 @@ class CommentAction extends CommentStore {
     const res = await updateComment({ data: requestParams });
     if (res.code === 0 && ThreadStore) {
       const { commentList } = ThreadStore;
-      //在评论列表页
+      // 在评论列表页
       if (commentList?.length) {
         commentList.map((comment) => {
           if (commentId === comment.id) {
             comment.replyCount = comment.replyCount - 1;
-            comment.lastThreeComments?.splice(0, 1); //把要删除的评论回复从全局状态里删除
+            comment.lastThreeComments?.splice(0, 1); // 把要删除的评论回复从全局状态里删除
           }
         });
-        //更新评论列表
-        const res = await updateSingleReply({ params: { pid: Number(commentId) } });
+        // 更新评论列表
+        const res = await updateSingleReply({ params: { postId: Number(commentId) } });
         if (res.code === 0 && res.data) {
           commentList.map((comment) => {
             if (comment.id === commentId) {
@@ -446,7 +446,7 @@ class CommentAction extends CommentStore {
     }
 
     const requestParams = {
-      pid: id,
+      postId: id,
     };
 
     const res = await readCommentDetail({ params: requestParams });
@@ -521,7 +521,7 @@ class CommentAction extends CommentStore {
    */
   @action
   async reward({ id, type }) {
-    const res = await deleteFollow({ data: { id, type: type } });
+    const res = await deleteFollow({ data: { id, type } });
     if (res.code === 0 && res.data) {
       this.authorInfo.follow = 0;
       this.authorInfo.fansCount = this.authorInfo.fansCount - 1;

@@ -4,7 +4,7 @@
   display: flex;
   bottom: 0;
   width: 100%;
-  background: var(--color-white);
+  background: $white;
   border-top: $border-solid-1;
   align-items: flex-start;
   justify-content: space-between;
@@ -22,10 +22,10 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    color: var(--color-text-secondary);
+    color: $text-color-secondary;
   }
   .active {
-    color: var(--color-primary);
+    color: $primary-color;
   }
   .text {
     font-size: rem($font-size-label);
@@ -35,7 +35,7 @@
     height: rem(48);
     line-height: rem(48);
     width: rem(48);
-    background: var(--color-primary);
+    background: $primary-color;
     text-align: center;
     border-radius: 50%;
     display: inline-block;

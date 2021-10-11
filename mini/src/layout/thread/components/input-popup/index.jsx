@@ -255,7 +255,7 @@ const InputPop = (props) => {
 
   const onFail = (ret) => {
     const msg = ret?.Message;
-    const code = ret?.Code === -7075; // 错误码为-7075时为不允许上传敏感图
+    const code = ret?.Code === -7075 || ret?.code === -4002; // 错误码为-7075时为不允许上传敏感图
     Toast.error({
       content: code ? msg : '图片上传失败',
     });

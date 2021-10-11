@@ -1,8 +1,8 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
+import Head from 'next/head';
 import IndexH5Page from '@layout/thread/post/h5';
 import IndexPCPage from '@layout/thread/post/pc';
-
 import HOCTencentCaptcha from '@middleware/HOCTencentCaptcha';
 import HOCFetchSiteData from '@middleware/HOCFetchSiteData';
 import HOCWithLogin from '@middleware/HOCWithLogin';
@@ -102,7 +102,8 @@ class PostPage extends React.Component {
   handleRouteChange = (url) => {
     // 如果不是修改支付密码的页面则重置发帖信息
     if ((url || '').indexOf('/my/edit/paypwd') === -1
-    && (url || '').indexOf('/pay/middle') === -1) {
+    && (url || '').indexOf('/pay/middle') === -1
+    && (url || '').indexOf('/my/edit/find-paypwd') === -1) {
       if (this.vditor) this.vditor.setValue('');
       this.props.threadPost.resetPostData();
     }
@@ -726,11 +727,12 @@ class PostPage extends React.Component {
     const { qcloudCosBucketName, qcloudCosBucketArea, qcloudCosSignUrl, qcloudCos } = qcloud;
 
 
-    const errorTips = '帖子内容中，有部分图片转存失败，请先替换相关图片再重新发布';
+    const errorTips = '部分图片转存失败，请替换标注红框的图片';
     const vditorEl = document.getElementById('dzq-vditor');
     if (vditorEl) {
       const errorImg = vditorEl.querySelectorAll('.editor-upload-error');
       if (errorImg.length) {
+        this.jumpToErrorImgElement(errorImg[0]);
         Toast.error({
           content: errorTips,
           hasMask: true,
@@ -740,17 +742,17 @@ class PostPage extends React.Component {
       }
     }
 
-    let contentText = threadPost.postData.contentText;
+    let { contentText } = threadPost.postData;
     const images = contentText.match(/<img.*?\/>/g)?.filter(image => (!image.match('alt="attachmentId-') && !image.includes('emoji')));
     if (images && images.length) {
-      const fileurls = images.map(img => {
+      const fileurls = images.map((img) => {
         const src = img.match(/\"(.*?)\"/);
         if (src) return src[1];
         return false;
       });
 
       const toastInstance = Toast.loading({
-        content: `图片转存中...`,
+        content: '图片转存中...',
         hasMask: true,
         duration: 0,
       });
@@ -786,6 +788,11 @@ class PostPage extends React.Component {
       const uploadErrorImages = document.querySelectorAll('img[alt=uploadError]');
       for (let i = 0; i < uploadErrorImages.length; i++) {
         const element = uploadErrorImages[i];
+        // 如果是第一个，则滚动至此
+        if (i === 0) {
+          this.jumpToErrorImgElement(element);
+        }
+
         element.setAttribute('class', 'editor-upload-error');
       }
 
@@ -800,7 +807,7 @@ class PostPage extends React.Component {
 
       if (uploadError.length) {
         Toast.error({
-          content: '帖子内容中，有部分图片转存失败，请先处理相关图片再重新发布',
+          content: '部分图片转存失败，请替换标注红框的图片',
           hasMask: true,
           duration: 4000,
         });
@@ -813,7 +820,6 @@ class PostPage extends React.Component {
     if (!(isAutoSave || isPay)) this.toastInstance = Toast.loading({ content: isDraft ? '保存草稿中' : '发布中...', hasMask: true });
     if (threadPost.postData.threadId) ret = await threadPost.updateThread(threadPost.postData.threadId);
     else ret = await threadPost.createThread();
-    console.log(ret);
     const { code, data, msg } = ret;
     if (code === 0) {
       this.setState({ data });
@@ -848,6 +854,32 @@ class PostPage extends React.Component {
     }
     this.saveDataLocal();
     Toast.error({ content: msg });
+  }
+
+  /**
+   * 跳转到第一个上传错误图片
+   * @param {*} element
+   */
+  jumpToErrorImgElement = (element) => {
+    const { top }  = element.getBoundingClientRect();
+
+    const isPc = this.props.site?.platform === 'pc';
+    const editorbox = document.querySelector('#post-inner');
+    const currentScrollTop = editorbox.scrollTop;
+
+    const { height: boxHeight } = editorbox.getBoundingClientRect();
+
+    if (isPc) {
+      editorbox.scrollTo({
+        top: currentScrollTop + top,
+        behavior: 'smooth',
+      });
+    } else {
+      editorbox.scrollTo({
+        top: currentScrollTop + top - (0.5 * boxHeight),
+        behavior: 'smooth',
+      });
+    }
   }
 
   setIndexPageData = () => {
@@ -955,7 +987,13 @@ class PostPage extends React.Component {
     );
 
     return (
-      <ViewAdapter h5={h5} pc={pc} title="发布" />
+      <>
+        <Head>
+          {/* 编辑器markdown依赖 */}
+          <script key="lute" async src="https://dl.discuz.chat/discuzq-fe/static/lute/lute.min.js" />
+        </Head>
+        <ViewAdapter h5={h5} pc={pc} title="发布" />
+      </>
     );
   }
 }

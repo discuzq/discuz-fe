@@ -2,7 +2,7 @@
 
 // 外部容器
 .amountWrapper {
-  background: var(--color-white);
+  background: $white;
   // height: 240px;
   font-size: $font-size-large;
   padding: $padding-4n;
@@ -27,7 +27,7 @@
       display: block;
       // width: 100%;
       height: 1px;
-      background: var(--border-line-color);
+      background: $border-color;
       position: relative;
       top: -8px;
       margin: 0 rem(-$margin-4n);
@@ -80,7 +80,7 @@
   }
   // 交易类型label提示
   .acExplainLabel {
-    color: var(--color-text-regular);
+    color: $text-color-regular;
     margin-right: $margin-4n;
     flex-shrink: 0;
   }
@@ -97,7 +97,7 @@
     display: block;
   }
   .acExplainNum {
-    color: var(--color-error);
+    color: $error-color;
     font-size: $font-size-middle;
     font-weight: 600;
   }

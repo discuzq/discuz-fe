@@ -96,19 +96,19 @@
 }
 
 .activeItem {
-  color: var(--color-primary) !important;
+  color: $primary-color !important;
   font-weight: 600;
 }
 
 .span {
-  color: var(--color-text-secondary);
+  color: $text-color-secondary;
   float: right;
   font-weight: normal;
   font-size: rem($font-size-base);
 }
 
 .subSpan {
-  color: var(--border-color-hover);
+  color: $border-color-hover;
   float: right;
   font-weight: normal;
   font-size: rem($font-size-base);

@@ -13,6 +13,6 @@
 }
 .verifyCodeDisabled {
   .btn {
-    color: var(--color-disabled);
+    color: $disabled-color;
   }
 }

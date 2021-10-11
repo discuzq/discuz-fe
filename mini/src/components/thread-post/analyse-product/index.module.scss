@@ -5,14 +5,14 @@
 }
 
 .wrapper{
-  background: var(--color-white);
-  border-top: 1px solid var(--border-line-color);
+  background: $white;
+  border-top: 1px solid $border-color;
 }
 
 .title {
   padding: 16px 16px 0 16px;
   font-size: 14px;
-  color: var(--color-text-primary);
+  color: $text-color-primary;
 }
 
 .product {
@@ -68,9 +68,9 @@
   .button {
     height: 42px;
     border-radius: 5px;
-    background: var(--color-primary);
+    background: $primary-color;
     font-size: 16px;
     line-height: 42px;
-    color: var(--color-white);
+    color: $white;
   }
 }

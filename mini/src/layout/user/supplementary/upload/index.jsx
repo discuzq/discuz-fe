@@ -110,7 +110,7 @@ export default inject('site')(
         const tempFilePath = file.path || file.tempFilePath;
         const token = locals.get(constants.ACCESS_TOKEN_NAME);
         Taro.uploadFile({
-          url: `${envConfig.COMMON_BASE_URL}/apiv3/attachments`,
+          url: `${envConfig.COMMON_BASE_URL}/api/v3/attachments`,
           filePath: tempFilePath,
           name: 'file',
           header: {

@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { withRouter } from 'next/router';
 import { Icon, Toast } from '@discuzq/design';
 import { inject, observer } from 'mobx-react';
@@ -14,12 +14,9 @@ import { throttle } from '@common/utils/throttle-debounce';
 import { debounce } from './utils';
 import { noop } from '@components/thread/utils';
 import { updateViewCountInStorage } from '@common/utils/viewcount-in-storage';
-import RenderCommentList from './comment-list';
+import Comment from './comment';
 import HOCFetchSiteData from '@middleware/HOCFetchSiteData';
-import ViewMore from '@components/view-more';
-import LoadingTips from '@components/thread-detail-pc/loading-tips';
-import BottomView from '@components/list/BottomView';
-import { updateThreadAssignInfoInLists, updatePayThreadInfo } from '@common/store/thread-list/list-business';
+import { updateThreadAssignInfoInLists, updatePayThreadInfo, getThreadCommentList } from '@common/store/thread-list/list-business';
 
 @inject('site')
 @inject('index')
@@ -58,7 +55,7 @@ class Index extends React.Component {
           user: user.userInfo,
         });
       }
-    });
+    })
   }, 500)
 
   // 评论
@@ -74,19 +71,17 @@ class Index extends React.Component {
 
     if (threadId !== '') {
       // 请求评论数据
-      if (likeReward.postCount > 0) {
-        if (this.props.enableCommentList) {
-          this.setState({
-            showCommentList: !this.state.showCommentList,
-          });
-          if (!this.state.showCommentList) {
-            await this.props.index.getThreadCommentList(threadId);
-          }
-          return;
-        }
+      if (this.props?.site?.platform === 'h5' && (likeReward.postCount > 0 && !this.state.showCommentList)) {
+        this.props.thread.positionToComment();
+        this.props.router.push(`/thread/${threadId}`);
+        return;
       }
-      this.props.thread.positionToComment();
-      this.props.router.push(`/thread/${threadId}`);
+      this.setState({
+        showCommentList: !this.state.showCommentList,
+      });
+      if (!this.state.showCommentList) {
+        await getThreadCommentList(threadId);
+      }
     } else {
       console.log('帖子不存在');
     }
@@ -131,18 +126,8 @@ class Index extends React.Component {
     this.updateViewCount();
     this.handlePay();
   }
+
   handlePay = debounce(async () => {
-    // 对没有登录的先做
-    if (!this.props.user.isLogin()) {
-      Toast.info({ content: '请先登录!' });
-      goToLoginPage({ url: '/user/login' });
-      return;
-    }
-
-    if (this.props.payType === '0') {
-      return;
-    }
-
     const thread = this.props.data;
     const { success } = await threadPay(thread, this.props.user?.userInfo);
 
@@ -201,14 +186,14 @@ class Index extends React.Component {
   onOpen = () => {
     const { threadId = '' } = this.props.data || {};
 
-    this.props.index.updateOpenMore(threadId, { openedMore: true });
+    updateThreadAssignInfoInLists(threadId, { updateType: 'openedMore', openedMore: true });
 
     const { recomputeRowHeights = noop } = this.props;
     recomputeRowHeights();
   }
   onClose = () => {
     const { threadId = '' } = this.props.data || {};
-    this.props.index.updateOpenMore(threadId, { openedMore: false });
+    updateThreadAssignInfoInLists(threadId, { updateType: 'openedMore', openedMore: false });
     const { recomputeRowHeights = noop } = this.props;
     recomputeRowHeights();
   }
@@ -253,14 +238,27 @@ class Index extends React.Component {
     const postCount = this.props.data?.likeReward?.postCount;
 
     if (postCount > 0) {
-      this.props.data.likeReward.postCount = postCount - 1;
+      const { data } = this.props;
+      const { threadId = '' } = data || {};
+      updateThreadAssignInfoInLists(threadId, {
+        updateType: 'decrement-comment',
+      });
 
-      if (this.props.data.likeReward.postCount === 0) {
+      if (postCount - 1 === 0) {
         this.setState({
           showCommentList: false,
         });
       }
     }
+  };
+
+  // 新增评论
+  createComment = () => {
+    const { data } = this.props;
+    const { threadId = '' } = data || {};
+    updateThreadAssignInfoInLists(threadId, {
+      updateType: 'comment',
+    });
   };
 
   updateViewCount = async () => {
@@ -282,11 +280,11 @@ class Index extends React.Component {
   }
 
   render() {
-    const { data, card, className = '', site = {}, showBottomStyle = true, collect = '', unifyOnClick = null, isShowIcon = false, user: users, onTextItemClick = null, extraTag } = this.props;
+    const { data, card, className = '', site = {}, showBottomStyle = true, collect = '', unifyOnClick = null, isShowIcon = false, user: users, onTextItemClick = null, extraTag, extraInfo } = this.props;
     const { platform = 'pc' } = site;
+    const threadStore = this.props.thread;
 
     const { onContentHeightChange = noop, onImageReady = noop, onVideoReady = noop } = this.props;
-
     if (!data) {
       return <NoData />;
     }
@@ -305,7 +303,7 @@ class Index extends React.Component {
       payType,
       isAnonymous,
       diffTime,
-      commentList = [],
+      commentList,
     } = data || {};
     const { isEssence, isPrice, isRedPack, isReward } = displayTag || {};
 
@@ -330,6 +328,7 @@ class Index extends React.Component {
             onClick={unifyOnClick || this.onClickUser}
             unifyOnClick={unifyOnClick}
             extraTag={extraTag}
+            extraInfo={extraInfo}
           />
           {isShowIcon && <div className={styles.headerIcon} onClick={unifyOnClick || this.onClickHeaderIcon}><Icon name='CollectOutlinedBig' size={20}></Icon></div>}
         </div>
@@ -340,6 +339,7 @@ class Index extends React.Component {
           onImageReady={onImageReady}
           onVideoReady={onVideoReady}
           data={data}
+          threadId={data.threadId}
           onClick={unifyOnClick || this.onClick}
           onPay={unifyOnClick || this.onPay}
           unifyOnClick={unifyOnClick}
@@ -375,33 +375,28 @@ class Index extends React.Component {
           updateViewCount={this.updateViewCount}
         />
 
+
         {/* 评论列表 */}
         {this.props.enableCommentList && this.state.showCommentList && (
-          <Fragment>
-            {commentList?.length > 0 && (
-              <RenderCommentList
-                thread={{
-                  threadData: {
-                    id: data.threadId,
-                    ...data,
-                  },
-                }}
-                canPublish={this.props.canPublish}
-                commentList={commentList}
-                deleteComment={this.deleteComment}
-              ></RenderCommentList>
-            )}
-
-            {data.isLoading ? (
-              <LoadingTips type="init"></LoadingTips>
-            ) : (
-              data?.requestError?.isError && <BottomView err isError={data.requestError.isError}></BottomView>
-            )}
-
-            {data?.likeReward?.postCount > 10 && (
-              <ViewMore className={styles.viewMore} onClick={this.onViewMoreClick}></ViewMore>
-            )}
-          </Fragment>
+          <Comment
+            thread={{
+              threadData: {
+                id: data.threadId,
+                ...data,
+              },
+            }}
+            threadStore={threadStore}
+            userInfo={this.props.user.userInfo}
+            canPublish={this.props.canPublish}
+            commentList={commentList}
+            deleteComment={this.deleteComment}
+            createComment={this.createComment}
+            isLoading={data.isLoading}
+            requestError={data.requestError}
+            postCount={data?.likeReward?.postCount}
+            onViewMoreClick={this.onViewMoreClick}
+            platform={platform}
+          ></Comment>
         )}
       </div>
     );
@@ -409,7 +404,7 @@ class Index extends React.Component {
 }
 
 Index.defaultProps = {
-  enableCommentList: false, // 是否开启评论列表
+  enableCommentList: true, // 是否开启评论列表
 };
 
 // eslint-disable-next-line new-cap

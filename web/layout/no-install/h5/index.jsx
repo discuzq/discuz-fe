@@ -7,7 +7,7 @@ class H5NoInstallPage extends React.Component {
     return (
       <div className={styles.page}>
         <Header/>
-        <img className={styles.img} src='/dzq-img/error.png'/>
+        <img alt="图片" className={styles.img} src='/dzq-img/error.png'/>
         <p className={styles.text}>站点未安装！</p>
       </div>
     );

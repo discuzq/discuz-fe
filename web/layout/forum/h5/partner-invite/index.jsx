@@ -41,7 +41,7 @@ class PartnerInviteH5Page extends React.Component {
         invite.setInviteCode(inviteCode);
         const inviteResp = await readUser({
           params: {
-            pid: inviteCode.length === 32 ? 1 : inviteCode,
+            userId: inviteCode.length === 32 ? 1 : inviteCode,
           },
         });
 
@@ -221,6 +221,7 @@ class PartnerInviteH5Page extends React.Component {
             className={pclayout.logo}
             mode="aspectFit"
             src={siteHeaderLogo || '/dzq-img/join-banner-bg.png'}
+            alt="图片"
         />
         <ul className={pclayout.joinInfo}>
           <li className={pclayout.item}>

@@ -38,10 +38,10 @@
       box-sizing: border-box;
       flex: 1;
       font-size: $font-size-large;
-      color: var(--color-text-primary);
+      color: $text-color-primary;
       height: 50px;
       text-align: center;
-      border: 1px solid var(--border-line-color);
+      border: 1px solid $border-color;
       border-bottom: none;
       border-right: none;
       line-height: 50px;
@@ -50,10 +50,10 @@
       box-sizing: border-box;
       flex: 1;
       font-size: $font-size-middle;
-      color: var(--color-text-primary);
+      color: $text-color-primary;
       height: 50px;
       text-align: center;
-      border: 1px solid var(--border-line-color);
+      border: 1px solid $border-color;
       border-bottom: none;
       border-right: none;
       line-height: 50px;

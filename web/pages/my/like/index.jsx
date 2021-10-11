@@ -71,8 +71,9 @@ class Index extends React.Component {
 
   async componentDidMount() {
     this.props.router.events.on('routeChangeStart', this.beforeRouterChange);
-    const { index, search, threadList } = this.props;
-    const hasThreadsData = !!index.threads;
+    const { search, threadList } = this.props;
+    const hasThreadsData = !!threadList.getList({ namespace: 'like' })?.length;
+
     const hasTopics = !!search.topics;
     this.page = 1;
     if (!hasThreadsData) {
@@ -144,7 +145,7 @@ class Index extends React.Component {
   };
 
   render() {
-    const { site, index } = this.props;
+    const { site } = this.props;
     const { platform } = site;
     const { firstLoading } = this.state;
 

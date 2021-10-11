@@ -161,7 +161,7 @@ export default class index extends Component {
       const token = locals.get(constants.ACCESS_TOKEN_NAME);
       // const file = await this.getCanvasImg(fileList[0]);
       const uploadRes = await Taro.uploadFile({
-        url: `${this.config.COMMON_BASE_URL}/apiv3/users/avatar`,
+        url: `${this.config.COMMON_BASE_URL}/api/v3/users/avatar`,
         filePath: fileList[0].path,
         header: {
           'Content-Type': 'multipart/form-data',
@@ -223,7 +223,7 @@ export default class index extends Component {
       const token = locals.get(constants.ACCESS_TOKEN_NAME);
       // const file = await this.getCanvasImg(fileList[0]);
       const uploadRes = await Taro.uploadFile({
-        url: `${this.config.COMMON_BASE_URL}/apiv3/users/background`,
+        url: `${this.config.COMMON_BASE_URL}/api/v3/users/background`,
         filePath: fileList[0].path,
         header: {
           'Content-Type': 'multipart/form-data',
@@ -306,7 +306,7 @@ export default class index extends Component {
   };
 
   handleBlurSignature = (e) => {
-    this.props.user.editSignature = e.target.value;
+    this.props.user.editSignature = e.target.value.trim();
     this.setState({
       isClickSignature: false,
     });
@@ -383,7 +383,6 @@ export default class index extends Component {
               {this.state.isClickSignature ? (
                 <View style={{ width: inputWidth + 10, minWidth: !this.user.editSignature && '180px' }}>
                   <Input
-                    trim
                     className={styles.userSignatureInput}
                     maxLength={50}
                     focus={true}

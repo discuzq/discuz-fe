@@ -13,28 +13,19 @@ const miniConfig = require('./src/app.config');
 
 
   // 给没有index.wxss的子页面创建index.wxss文件
-  const subPages = miniConfig.subPackages[0].pages;
-  subPages.forEach((page) => {
-    const subPageWxss = `./dist/indexPages/${page.substring(0, page.length - 6)}/index.wxss`;
-    try {
-      fs.accessSync(subPageWxss);
-    } catch(e) {
-      fs.writeFile(subPageWxss, '', (error) => {});
-      console.log(`${subPageWxss} 成功创建！`)
-    }
+  miniConfig.subPackages.forEach((subPackage) => {
+    const { root, pages } = subPackage
+    pages.forEach((page) => {
+      const subPageWxss = `./dist/${root}/${page.substring(0, page.length - 6)}/index.wxss`;
+      try {
+        fs.accessSync(subPageWxss);
+      } catch(e) {
+        fs.writeFile(subPageWxss, '', (error) => {});
+        console.log(`${subPageWxss} 成功创建！`)
+      }
+    });
+    subPagesAddWxss(`./dist/${root}/`, `${root}`);
   });
-
-  const indexPages = miniConfig.subPackages[1].pages;
-  indexPages.forEach((page) => {
-    const subPageWxss = `./dist/subPages/${page.substring(0, page.length - 6)}/index.wxss`;
-    try {
-      fs.accessSync(subPageWxss);
-    } catch(e) {
-      fs.writeFile(subPageWxss, '', (error) => {});
-      console.log(`${subPageWxss} 成功创建！`)
-    }
-  });
-
 
   // 分包子页面中的wxss文件添加对分包中common.wxss的引用
   function subPagesAddWxss(url, package) {
@@ -65,10 +56,6 @@ const miniConfig = require('./src/app.config');
       });
     });
   }
-  subPagesAddWxss('./dist/subPages/', 'subPages');
-  subPagesAddWxss('./dist/indexPages/', 'indexPages');
-  subPagesAddWxss('./dist/userPages/', 'userPages');
-
 
   // 复制依赖文件
   function copy(file, target) {

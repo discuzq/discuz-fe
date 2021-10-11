@@ -17,13 +17,13 @@
   width: 100%;
   height: rem(36);
   border-radius: rem(5);
-  background-color: var(--background-color-text2);
+  background-color: $text-bg-color2;
   box-sizing: border-box;
   .inputWrapperIcon {
-    color: var(--color-text-secondary);
+    color: $text-color-secondary;
   }
   .deleteIcon {
-    color: var(--border-color-hover);
+    color: $border-color-hover;
   }
   .input {
     flex: 1;
@@ -42,7 +42,7 @@
   margin-left: rem($padding-4n);
   font-size: rem($font-size-primary);
   line-height: $font-line-height-primary;
-  color: var(--color-text-secondary);
+  color: $text-color-secondary;
   word-break: keep-all;
 }
 

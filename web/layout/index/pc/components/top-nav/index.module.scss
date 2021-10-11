@@ -10,7 +10,7 @@
     line-height: 24px;
     font-weight: normal;
     margin-right: rem(32);
-    color: var(--color-text-regular);
+    color: $text-color-regular;
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -38,10 +38,10 @@
     left: rem(-60);
     display: flex;
     flex-direction: column;
-    background-color: var(--color-var(--color-white));
+    background-color: $white;
     z-index: 1000;
     border-radius: rem(5);
-    border: 1px solid var(--border-line-color);
+    border: 1px solid $border-color;
     padding: 0 rem(16);
 
 
@@ -53,7 +53,7 @@
       line-height: rem(50);
       color: #808080;
       font-size: 14px;
-      border-bottom: 1px solid var(--border-line-color);
+      border-bottom: 1px solid $border-color;
     }
-  } 
+  }
 }

@@ -121,6 +121,7 @@ class DzqApp extends App {
             />
           </Head>
           <CustomHead />
+
           <PayBoxProvider>
             <Component {...pageProps} />
           </PayBoxProvider>

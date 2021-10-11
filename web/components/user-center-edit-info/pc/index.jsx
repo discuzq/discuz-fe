@@ -147,6 +147,7 @@ class index extends Component {
           onSave: async () => {
             try {
               this.saveInputEditor('个性签名');
+              this.props.user.editSignature = this.props.user.editSignature.trim()
               await this.props.user.updateEditedUserSignature();
               Toast.success({
                 content: '更新个性签名成功',

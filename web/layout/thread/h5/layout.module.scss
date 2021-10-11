@@ -74,7 +74,7 @@
     }
     .dzq-input__inner {
       &::placeholder {
-        color: #c5c6ca;
+        color: $text-color-placeholder;
       }
     }
   }
@@ -83,7 +83,7 @@
 .examine {
   width: 100%;
   height: 44px;
-  background: var(--color-warn9);
+  background: $warn-color9;
   display: flex;
   align-items: center;
   justify-content: center;

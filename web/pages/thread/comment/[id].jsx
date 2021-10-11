@@ -26,7 +26,7 @@ class CommentDetail extends React.Component {
       };
     }
     // 获取评论数据
-    const res = await readCommentDetail({ params: { pid: id } });
+    const res = await readCommentDetail({ params: { postId: id } });
     return {
       props: {
         serverData: res.data,
@@ -64,6 +64,8 @@ class CommentDetail extends React.Component {
     const oldThreadId = this.props?.thread?.threadData?.threadId;
     if (!(threadId && oldThreadId && Number(threadId) === oldThreadId)) {
       const res = await this.props.thread.fetchThreadDetail(threadId);
+      this.props.thread.loadCommentList({id: threadId, page: 1});
+
       if (res.code !== 0) {
         // 404
         if (res.code === -4004) {

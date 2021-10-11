@@ -18,6 +18,7 @@ import { updateThreadAssignInfoInLists } from '@common/store/thread-list/list-bu
 class Index extends React.Component {
   page = 1;
   perPage = 10;
+  loading = false;
 
   constructor(props) {
     super(props);
@@ -26,23 +27,7 @@ class Index extends React.Component {
 
   async componentDidMount() {
     Taro.hideShareMenu();
-    const { threadList } = this.props;
-    const threadsResp = await threadList.fetchList({
-      namespace: 'buy',
-      perPage: 10,
-      page: this.page,
-      filter: {
-        complex: 4,
-      },
-    });
-
-    threadList.setList({
-      namespace: 'buy',
-      data: threadsResp,
-      page: this.page,
-    });
-
-    this.page += 1;
+    this.dispatch();
   }
 
   componentWillUnmount() {
@@ -51,6 +36,8 @@ class Index extends React.Component {
   }
 
   dispatch = async () => {
+    if (this.loading) return;
+    this.loading = true;
     const { threadList } = this.props;
     const threadsResp = await threadList.fetchList({
       namespace: 'buy',
@@ -66,9 +53,12 @@ class Index extends React.Component {
       data: threadsResp,
       page: this.page,
     });
-    if (this.page <= threadsResp.totalPage) {
+
+    if (this.page <= threadsResp.data.totalPage) {
       this.page += 1;
     }
+
+    this.loading = false;
   };
 
   getShareData(data) {

@@ -2,7 +2,6 @@ import { observable, computed } from 'mobx';
 import { get } from '../../utils/get';
 import { defaultOperation } from '../../constants/const';
 import { THREAD_TYPE } from '../../constants/thread-post';
-import { USERNAME_WHITE_LIST } from '../../constants/site';
 
 const noop = () => {};
 
@@ -29,6 +28,9 @@ class UserStore {
   @observable userThreadsPage = 1;
   @observable userThreadsTotalCount = 0;
   @observable userThreadsTotalPage = 1;
+
+  // 付费用户组
+  @observable payGroups = [];
 
   @observable userLikes = {};
 
@@ -115,11 +117,6 @@ class UserStore {
   // 是否能使用钱包支付
   @computed get canWalletPay() {
     return get(this.userInfo, 'canWalletPay');
-  }
-
-  // 用户是否是白名单
-  @computed get isWhiteLsit() {
-    return USERNAME_WHITE_LIST.includes(this.username);
   }
 
   @computed get id() {

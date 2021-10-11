@@ -10,7 +10,7 @@
 .header {
   height: 20px;
   line-height: 20px;
-  
+
   font-weight: normal;
   font-size: $font-size-primary;
   text-align: left;
@@ -28,18 +28,18 @@
       height: 42px;
       line-height: 42px;
       border: none;
-      
+
       font-weight: 600;
       font-weight: bold;
       font-size: 30px;
       text-align: left;
-      color: #c5c6ca;
+      color: $text-color-placeholder;
       padding: 0 $padding-2n;
     }
   }
 
   .moneyIcon {
-    
+
     font-weight: 600;
     font-size: 30px;
     text-align: left;
@@ -47,7 +47,7 @@
   }
 
   .moneyIcon-Red {
-    
+
     font-weight: 600;
     font-size: 30px;
     text-align: left;

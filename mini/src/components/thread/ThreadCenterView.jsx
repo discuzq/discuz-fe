@@ -171,7 +171,7 @@ const Index = (props) => {
           DZQPluginCenter.injection('plugin_index', 'thread_extension_display_hook').map(({ render, pluginInfo }) => (
               <View key={pluginInfo.name}>
                 {render({
-                  site: props.site,
+                  site: { ...props.site, threadId },
                   renderData: plugin
                 })}
               </View>

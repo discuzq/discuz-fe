@@ -2,6 +2,7 @@ import React, {Fragment} from 'react';
 import { inject, observer } from 'mobx-react';
 import { View, ScrollView } from '@tarojs/components';
 import Router from '@discuzq/sdk/dist/router';
+import canPublish from '@common/utils/can-publish';
 import styles from './index.module.scss';
 import CommentList from '../components/comment-list/index';
 import MorePopup from '../components/more-popup';
@@ -10,13 +11,14 @@ import Header from '@components/header';
 import Toast from '@discuzq/design/dist/components/toast/index';
 import InputPopup from '../components/input-popup';
 import ReportPopup from '../components/report-popup';
+import OperationPopup from './components/operation-popup';
 import goToLoginPage from '@common/utils/go-to-login-page';
 import Taro from "@tarojs/taro";
 import Icon from '@discuzq/design/dist/components/icon/index';
 import Input from '@discuzq/design/dist/components/input/index';
 import footer from './footer.module.scss';
 import classNames from 'classnames';
-import { getCurrentInstance } from '@tarojs/taro';
+import { Current } from '@tarojs/taro';
 
 
 @inject('site')
@@ -34,6 +36,7 @@ class CommentH5Page extends React.Component {
       showCommentInput: false, // 是否弹出评论框
       showDeletePopup: false, // 是否弹出删除弹框
       showReplyDeletePopup: false, // 是否弹出回复删除弹框
+      showOperationPopup: false, // 是否弹出操作内容弹框
       inputText: '请输入内容', // 默认回复框placeholder内容
       showEmojis: false,
       showPicture: false,
@@ -42,6 +45,7 @@ class CommentH5Page extends React.Component {
 
     this.commentData = null;
     this.replyData = null;
+    this.operationData = null;
     this.recordCommentLike = {
       // 记录当前评论点赞状态
       id: null,
@@ -278,11 +282,13 @@ class CommentH5Page extends React.Component {
 
   // 点击评论的回复
   replyClick(comment) {
+    const {user, site, thread } = this.props;
     if (!this.props.user.isLogin()) {
       Toast.info({ content: '请先登录!' });
       goToLoginPage({ url: '/userPages/user/wx-auth/index' });
       return;
     }
+    if(!canPublish(user, site, 'reply', thread?.threadData?.threadId)) return;
 
     this.commentData = comment;
     this.replyData = null;
@@ -314,7 +320,7 @@ class CommentH5Page extends React.Component {
   async createReply(val, imageList) {
     const valuestr = val.replace(/\s/g, '');
     // 如果内部为空，且只包含空格或空行
-    if (!valuestr) {
+    if (!(valuestr || imageList.length)) {
       Toast.info({ content: '请输入内容' });
       return;
     }
@@ -419,13 +425,64 @@ class CommentH5Page extends React.Component {
 
   onGotoThread = () => {
     const { threadId } = this.props.comment;
-    Router.push({ url: `/indexPages/thread/index?id=${threadId}` });
+    Router.push({ url: `/indexPages/thread/index?id=${threadId}&fromMessage=true` });
+  }
+  
+  // 点击内容
+  onCommentClick = (data) => {
+    this.operationData = data || null;
+    this.setState({showOperationPopup: true});
+  }
+
+  // 点击内容操作框中的选项
+  onOperationClick = (val) => {
+    const commentDetail = this.props.comment.commentDetail;
+    if (!this.props.user.isLogin()) {
+      Toast.info({ content: '请先登录!' });
+      goToLoginPage({ url: '/subPages/user/wx-auth/index' });
+      return;
+    }
+    // 回复
+    if (val === 'reply') {
+      if (this.operationData) {
+        this.replyReplyClick(this.operationData, commentDetail);
+      } else {
+        this.replyClick(commentDetail);
+      }
+    };
+    // 复制
+    if (val === 'copy') {
+      if (this.operationData) {
+        this.onCopyClick(this.operationData);
+      } else {
+        this.onCopyClick(commentDetail);
+      }
+    };
+    // 举报
+    if (val === 'report') {
+      this.setState({ showReportPopup: true });
+    }
+    this.setState({showOperationPopup: false});
+  }
+
+  // 点击复制
+  onCopyClick = (data) => {
+    const { content } = data || {};
+
+    Taro.setClipboardData({
+      data: content,
+      success: function (res) {
+        Taro.getClipboardData({
+          success: function (res) {
+          }
+        })
+      }
+    })
   }
 
   render() {
     const { commentDetail: commentData, isReady } = this.props.comment;
-    console.log(getCurrentInstance().router, 1)
-    const query = getCurrentInstance().router.params;
+    const query = Current.router.params;
     // 更多弹窗权限
     const morePermissions = {
       canEdit: false,
@@ -483,6 +540,7 @@ class CommentH5Page extends React.Component {
                   replyReplyClick={(reploy) => this.replyReplyClick(reploy, commentData)}
                   replyDeleteClick={(reply) => this.replyDeleteClick(reply, commentData)}
                   replyAvatarClick={(reply, floor) => this.replyAvatarClick(reply, commentData, floor)}
+                  onCommentClick={reply => this.onCommentClick(reply)}
                   onMoreClick={() => this.onMoreClick()}
                   isHideEdit
                   postId={this.props.comment.postId}
@@ -527,55 +585,62 @@ class CommentH5Page extends React.Component {
               </View>
             </View>
           )}
-          <View className={styles.footer}>
-            {/* 评论弹层 */}
-            <InputPopup
-              showEmojis={this.state.showEmojis}
-              cancleEmojie={() => { this.setState({ showEmojis: false }); }}
-              showPicture={this.state.showPicture}
-              canclePicture={() => { this.setState({ showPicture: false }); }}
-              visible={this.state.showCommentInput}
-              inputText={this.state.inputText}
-              onClose={() => this.setState({ showCommentInput: false })}
-              onSubmit={(value, imageList) => this.createReply(value, imageList)}
-              site={this.props.site}
-              checkUser={this.props?.thread?.checkUser || []}
-              thread={this.props?.thread}
-            ></InputPopup>
+      <View className={styles.footer}>
+          {/* 评论弹层 */}
+          <InputPopup
+            showEmojis={this.state.showEmojis}
+            cancleEmojie={() => {this.setState({ showEmojis: false });}}
+            showPicture={this.state.showPicture}
+            canclePicture={() => {this.setState({ showPicture: false });}}
+            visible={this.state.showCommentInput}
+            inputText={this.state.inputText}
+            onClose={() => this.setState({ showCommentInput: false })}
+            onSubmit={(value, imageList) => this.createReply(value, imageList)}
+            site={this.props.site}
+            checkUser={this.props?.thread?.checkUser || []}
+            thread={this.props?.thread}
+          ></InputPopup>
 
-            {/* 更多弹层 */}
-            <MorePopup
-              permissions={morePermissions}
-              statuses={moreStatuses}
-              visible={this.state.showMorePopup}
-              onClose={() => this.setState({ showMorePopup: false })}
-              onSubmit={() => this.setState({ showMorePopup: false })}
-              onOperClick={(type) => this.onOperClick(type)}
-            />
+          {/* 更多弹层 */}
+          <MorePopup
+            permissions={morePermissions}
+            statuses={moreStatuses}
+            visible={this.state.showMorePopup}
+            onClose={() => this.setState({ showMorePopup: false })}
+            onSubmit={() => this.setState({ showMorePopup: false })}
+            onOperClick={(type) => this.onOperClick(type)}
+          />
 
-            {/* 删除弹层 */}
-            <DeletePopup
-              visible={this.state.showDeletePopup}
-              onClose={() => this.setState({ showDeletePopup: false })}
-              onBtnClick={(type) => this.onBtnClick(type)}
-            />
+          {/* 删除弹层 */}
+          <DeletePopup
+            visible={this.state.showDeletePopup}
+            onClose={() => this.setState({ showDeletePopup: false })}
+            onBtnClick={(type) => this.onBtnClick(type)}
+          />
 
-            {/* 删除回复弹层 */}
-            <DeletePopup
-              visible={this.state.showReplyDeletePopup}
-              onClose={() => this.setState({ showReplyDeletePopup: false })}
-              onBtnClick={() => this.replyDeleteComment()}
-            ></DeletePopup>
+          {/* 删除回复弹层 */}
+          <DeletePopup
+            visible={this.state.showReplyDeletePopup}
+            onClose={() => this.setState({ showReplyDeletePopup: false })}
+            onBtnClick={() => this.replyDeleteComment()}
+          ></DeletePopup>
 
-            {/* 举报弹层 */}
-            <ReportPopup
-              reportContent={this.reportContent}
-              inputText={this.inputText}
-              visible={this.state.showReportPopup}
-              onCancel={() => this.setState({ showReportPopup: false })}
-              onOkClick={(data) => this.onReportOk(data)}
-            ></ReportPopup>
-          </View>
+          {/* 举报弹层 */}
+          <ReportPopup
+            reportContent={this.reportContent}
+            inputText={this.inputText}
+            visible={this.state.showReportPopup}
+            onCancel={() => this.setState({ showReportPopup: false })}
+            onOkClick={(data) => this.onReportOk(data)}
+          ></ReportPopup>
+
+          {/* 操作内容弹层 */}
+          <OperationPopup
+            visible={this.state.showOperationPopup}
+            onCancel={() => this.setState({ showOperationPopup: false })}
+            onOperationClick={val => this.onOperationClick(val)}
+          ></OperationPopup>
+        </View>
         </View>
       </View>
     );

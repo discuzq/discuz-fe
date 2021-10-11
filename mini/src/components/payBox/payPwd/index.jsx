@@ -215,7 +215,7 @@ class PayPassword extends React.Component {
   render() {
     const { list = [] } = this.state;
     return (
-      <View style={{ position: 'relative', zIndex: 1400 }}>
+      <View className={styles.numkeyboard}>
         {this.renderDialogPayment()}
         <View className={styles.keyboard} onClick={this.keyboardClickHander}>
           <View className={styles.line}>

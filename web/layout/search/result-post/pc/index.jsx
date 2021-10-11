@@ -36,7 +36,7 @@ class SearchResultPostH5Page extends React.Component {
 
   onSearch = (value) => {
     // this.props.search.currentKeyword = value;
-    this.props.router.replace(`/search/result-post?keyword=${keyword}`);
+    this.props.router.replace(`/search/result-post?keyword=${value}`);
     this.setState({ keyword: value }, () => {
       this.searchData(value);
     });
@@ -72,7 +72,7 @@ class SearchResultPostH5Page extends React.Component {
           title="热门内容"
           type='large'
           isShowMore={false}
-          isLoading={!pageData}
+          isLoading={!currentPage}
           noData={!pageData?.length}
           icon={{ type: 3, name: 'HotOutlined' }}
           mold='plane'

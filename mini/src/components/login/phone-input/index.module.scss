@@ -29,7 +29,7 @@
   right: 0;
   bottom: $margin-4n;
   border-radius: $border-radius-small;
-  color: var(--color-white);
+  color: $white;
   font-size: $font-size-base;
   z-index: $zindex-backtotop;
 }
@@ -50,7 +50,7 @@
     line-height: $font-line-height-base;
     text-align: left;
     padding: 2 0;
-    color: var(--color-text-secondary);
+    color: $text-color-secondary;
   }
   .captchaInput-input:last-child{
     margin-right: 0;

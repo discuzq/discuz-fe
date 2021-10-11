@@ -332,13 +332,11 @@ class SearchAction extends SearchStore {
  */
  @action
   async getThreadList({ scope = 0, sort = '3', search = '', perPage = 10, page = 1, params = {} } = {}) {
-    const result = await readThreadList({ params: { filter: { search }, scope, perPage, page, ...params } });
+    const result = await readThreadList({ params: { filter: { search, sort }, scope, perPage, page, ...params } });
 
     if (result.code === 0 && result.data) {
       if (this.threads && result.data.pageData && page !== 1) {
-        this.threads.pageData.push(...result.data.pageData);
-        const newPageData = this.threads.pageData.slice();
-        this.setThreads({ ...result.data, pageData: newPageData });
+        this.setThreads(result.data);
       } else {
         // 首次加载，先置空，是为了列表回到顶部
         this.setThreads({ pageData: [] });

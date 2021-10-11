@@ -15,14 +15,14 @@
   }
   .main{
       margin-top: 24px;
-      color: var(--color-text-primary);
+      color: $text-color-primary;
       font-size: $font-size-large + px;
       line-height: $font-line-height-primary + px;
       padding: 0 40px;
   }
   .sub{
       margin-top: 8px;
-      color: var(--color-text-secondary);
+      color: $text-color-secondary;
       font-size: $font-size-label + px;
       line-height: $font-line-height-primary + px;
       padding: 0 40px;

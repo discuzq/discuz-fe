@@ -95,8 +95,7 @@ export default class UserCenterAdditionalInfo extends Component {
 
   render() {
     return (
-      <div className={styles.additionalWrapper}>
-        <Dialog visible={this.props.visible} position="center" maskClosable={true} onClose={this.props.onClose}>
+        <Dialog className={styles.additionalWrapper} visible={this.props.visible} position="center" maskClosable={true} onClose={this.props.onClose}>
           <div className={styles.additionalContainer}>
             {/* 头部区域 */}
             <div className={styles.title}>
@@ -133,7 +132,6 @@ export default class UserCenterAdditionalInfo extends Component {
             )}
           </div>
         </Dialog>
-      </div>
     );
   }
 }

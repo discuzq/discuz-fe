@@ -2,11 +2,11 @@
 
 .page{
 
-  background: var(--color-white);
+  background: $white;
 }
 .text {
   margin-top: 200px;
-  color: var(--color-text-primary);
+  color: $text-color-primary;
   text-align: center;
   font-size: $font-size-large + px;
 }

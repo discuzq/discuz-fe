@@ -16,7 +16,7 @@ class H5CloseSite extends React.Component {
     return (
       <div className={styles.page}>
         <Header/>
-        <img className={styles.img} src='/dzq-img/close.png'/>
+        <img alt="图片" className={styles.img} src='/dzq-img/close.png'/>
         <h1 className={styles.main}>站点已关闭</h1>
         {closeSiteConfig && <p className={styles.sub}>{closeSiteConfig.detail}</p>}
         {false && <div className={styles.fixedBox}>

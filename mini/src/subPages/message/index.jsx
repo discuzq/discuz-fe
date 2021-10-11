@@ -39,7 +39,7 @@ const Index = () => {
     const { page, nickname } = params;
     switch (page) {
       case 'index':
-        setTitle('我的私信');
+        setTitle('我的消息');
         break;
       case 'thread':
         setTitle('帖子通知');

@@ -2,11 +2,11 @@
 
 .container {
   width: 100%;
-  background-color: var(--color-white);
+  background-color: $white;
   box-sizing: border-box;
   .header {
     font-size: rem($font-size-middle);
-    color: var(--color-text-primary);
+    color: $text-color-primary;
     display: flex;
     align-items: center;
   }
@@ -19,7 +19,7 @@
   align-items: center;
   color: $text-color-placeholder;
   height: rem(60);
-  background-color: var(--color-white);
+  background-color: $white;
 }
 
 .containerPC {
@@ -31,7 +31,7 @@
   border-bottom-right-radius: 0;
   max-width: rem(750);
   padding: 0 rem($padding-6n);
-  background-color: var(--color-white);
+  background-color: $white;
 }
 
 .bottom {

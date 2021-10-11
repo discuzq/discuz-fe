@@ -20,10 +20,10 @@ class Index extends React.Component {
   static async getInitialProps(ctx) {
     const id = ctx?.query?.id;
     const topicFilter = {
-      topicId: id,
-      hot: 0,
+      topicId: Number(id),
+      hot: '0',
     };
-    const result = await readTopicsList({ params: { filter: topicFilter } });
+    const result = await readTopicsList({ params: { filter: topicFilter, perPage: 10, page: 1 } });
 
     return {
       serverTopic: {
@@ -40,11 +40,6 @@ class Index extends React.Component {
     threadList.registerList({ namespace: topic.namespace });
 
     serverTopic && serverTopic.topicDetail && topic.setTopicDetail(serverTopic.topicDetail);
-    this.state = {
-      fetchTopicInfoLoading: false,
-      isError: false,
-      errorText: '加载失败',
-    };
   }
 
   async componentDidMount() {
@@ -54,42 +49,30 @@ class Index extends React.Component {
     // 当服务器无法获取数据时，触发浏览器渲染
     const hasTopics = !!topic.topicDetail?.pageData?.length;
     if (!hasTopics || Number(id) !== topicId) {
-      this.setState({
-        fetchTopicInfoLoading: true,
-      });
       this.props.baselayout['topicDetail'] = -1;
       try {
-        await topic.getTopicsDetail({ topicId: id });
-        this.setState({
-          fetchTopicInfoLoading: false,
-        });
+        await topic.getTopicsDetail({ perPage: this.perPage, page: this.page, topicId: id });
       } catch (errMsg) {
-        this.setState({
-          isError: true,
-          errorText: errMsg,
-        });
+        consoe.log(errMsg);
       }
     }
   }
+
+  
+  dispatch = async () => {
+    const { topic, router } = this.props;
+    const { id = '' } = router.query;
+    this.page += 1;
+    await topic.getTopicsDetail({perPage: this.perPage, page: this.page, topicId: id});
+    return;
+  }
+
   render() {
     return <ViewAdapter
-            h5={
-              <IndexH5Page
-                dispatch={this.dispatch}
-                fetchTopicInfoLoading={this.state.fetchTopicInfoLoading}
-                isError={this.state.isError}
-                errorText={this.state.errorText}
-              />
-            }
-
-            pc={
-              <IndexPCPage
-                dispatch={this.dispatch}
-                fetchTopicInfoLoading={this.state.fetchTopicInfoLoading}
-                isError={this.state.isError}
-                errorText={this.state.errorText}/>}
-                title='话题详情'
-              />;
+            h5={<IndexH5Page dispatch={this.dispatch}/>}
+            pc={<IndexPCPage dispatch={this.dispatch}/>}
+            title='话题详情'
+          />;
   }
 }
 

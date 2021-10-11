@@ -16,6 +16,7 @@ import Placeholder from './components/dynamic-vlist/placeholder';
 import HOCFetchSiteData from '@middleware/HOCFetchSiteData';
 import { debounce, throttle } from '@common/utils/throttle-debounce.js';
 import Autoplay from '@common/utils/autoplay';
+import PacketOpen from '@components/red-packet-animation/web';
 
 
 const DynamicVListLoading = dynamic(() => import('./components/dynamic-vlist'), {
@@ -31,6 +32,7 @@ const DynamicVListLoading = dynamic(() => import('./components/dynamic-vlist'), 
 @inject('site')
 @inject('user')
 @inject('index')
+@inject('thread')
 @observer
 class IndexPCPage extends React.Component {
   constructor(props) {
@@ -171,7 +173,7 @@ class IndexPCPage extends React.Component {
 
   // 发帖
   onPostThread = () => {
-    if (this.props.canPublish()) {
+    if (this.props.canPublish('comment')) {
       this.props.router.push('/thread/post');
     }
   };
@@ -227,7 +229,8 @@ class IndexPCPage extends React.Component {
   };
 
   render() {
-    const { index, site } = this.props;
+    const { index, site, thread } = this.props;
+    const { hasRedPacket } = thread;
     const { countThreads = 0 } = site?.webConfig?.other || {};
     const { currentPage, totalPage } = index.threads || {};
     const { threadError } = index;
@@ -268,6 +271,9 @@ class IndexPCPage extends React.Component {
           renderLeft={this.renderLeft}
           enabledVList={this.enabledVList}
         />
+        {
+          hasRedPacket > 0 && <PacketOpen onClose={() => thread.setRedPacket(0)} money={hasRedPacket} />
+        }
       </BaseLayout>
     );
   }

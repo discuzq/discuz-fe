@@ -78,7 +78,7 @@
   font-size: 12px;
   line-height: 16.8px;
   text-align: left;
-  color: var(--border-color-hover);
+  color: $border-color-hover;
 }
 
 .persona {
@@ -113,7 +113,7 @@
   font-size: 16px;
   line-height: 26px;
   text-align: left;
-  color: #0b0b37;
+  color: $text-color-primary;
   :global {
     .qq-emotion {
       width: 30px;

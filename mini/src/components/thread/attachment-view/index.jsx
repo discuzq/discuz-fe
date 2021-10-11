@@ -13,8 +13,7 @@ import getAttachmentIconLink from '@common/utils/get-attachment-icon-link';
 import { throttle } from '@common/utils/throttle-debounce.js';
 import { ATTACHMENT_FOLD_COUNT } from '@common/constants';
 import Router from '@discuzq/sdk/dist/router';
-import { readDownloadAttachmentStatus } from '@server';
-import { downloadAttachmentMini } from '@common/utils/download-attachment-mini';
+import { readDownloadAttachment } from '@server';
 import goToLoginPage from '@common/utils/go-to-login-page';
 
 /**
@@ -38,8 +37,6 @@ const Index = ({
   canViewAttachment = false,
   canDownloadAttachment = false,
 }) => {
-  let downloadUrl = null; // 存放下载链接
-  let isDownload = false; // 状态是否允许下载
   // 处理文件大小的显示
   const handleFileSize = (fileSize) => {
     if (fileSize > 1000000) {
@@ -86,13 +83,6 @@ const Index = ({
   const onDownLoad = async (item, index) => {
     updateViewCount();
 
-    // 下载需要登录态，判断是否登录
-    if (!user.isLogin()) {
-      Toast.info({ content: '请先登录!' });
-      goToLoginPage({ url: '/userPages/user/wx-auth/index' });
-      return;
-    }
-
     if (!canDownloadAttachment) {
       Toast.warning({ content: '暂⽆权限下载附件' });
       return;
@@ -100,16 +90,9 @@ const Index = ({
 
     if (!isPay) {
       if(!item || !threadId) return;
-      const attachmentId = item.id;
-      // // 先获取下载链接,根据链接状态判断当前是否执行小程序下载
-      await fetchDownloadUrl(threadId, attachmentId, async (url, fileName) => {
-        downloadUrl = url;
-        const params = downloadAttachmentParams(url);
-        isDownload = await downloadAttachmentStatus(params);
-      });
+      const params = downloadAttachmentParams(item);
+      const isDownload = await downloadAttachment(params);
       if (!isDownload) return;
-
-
 
       // 下载中
       if(downloading?.length && downloading[index]) {
@@ -136,8 +119,6 @@ const Index = ({
             filePath: res.tempFilePath,
             success (res) {
               Toast.info({content: "下载成功"});
-              // 下载成功后向后端发送一个携带登录态的请求，记录下载次数
-              downloadAttachmentMini(downloadUrl);
             },
             fail (error) {
               Toast.info({ content: "小程序暂不支持下载此类文件，请点击“链接”复制下载链接" });
@@ -168,19 +149,16 @@ const Index = ({
     }
   };
 
-  const downloadAttachmentParams = (url) => {
-    if (!url) return;
-    const paramArr = url.split('?')[1].split('&');
+  const downloadAttachmentParams = (item) => {
     const params = {
-      sign: paramArr[0].split('=')[1],
-      attachmentsId: Number(paramArr[1].split('=')[1]),
-      isCode: 1,
+      threadId,
+      attachmentsId: item.id
     }
     return params;
   }
 
-  const downloadAttachmentStatus = async (params) => {
-    const res = await readDownloadAttachmentStatus(params);
+  const downloadAttachment = async (params) => {
+    const res = await readDownloadAttachment(params);
 
     if (res?.code === 0) {
       // 弹出下载弹框
@@ -196,6 +174,10 @@ const Index = ({
     }
 
     if (res?.code === -4004) {  // 资源不存在
+      Toast.info({ content: res?.msg });
+    }
+
+    if (res?.code === -5001) { // 操作太快，请稍后再试
       Toast.info({ content: res?.msg });
     }
     return false;
@@ -232,8 +214,8 @@ const Index = ({
   };
 
   const splicingLink = (url, fileName) => {
-    const domainName = url.split('/apiv3/')[0];
-    return `${domainName}/download?url=${url}&fileName=${fileName}&threadId=${threadId}`;
+    const domainName = url.split('/api/v3/')[0];
+    return `${domainName}/download?url=${url}&threadId=${threadId}`;
   }
 
     // 音频播放

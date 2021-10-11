@@ -45,11 +45,11 @@
               line-height: 14px;
               padding: 0 4px;
               text-align: left;
-              color: #fff;
+              color: $white;
             }
           }
           .groups {
-            color: var(--color-text-secondary);
+            color: $text-color-secondary;
             font-size: $font-size-label;
             max-width: 100px;
             white-space: nowrap;
@@ -102,8 +102,11 @@
           justify-content: flex-start;
           height: 28px;
           position: relative;
-          top: 3px;
-
+          // top: rem(5);
+          .iconAt{
+            color: $primary-color;
+            display: inline-block;
+          }
           .replyedUserName {
             max-width: 100px;
             font-weight: bold;
@@ -126,7 +129,7 @@
               line-height: 14px;
               padding: 0 4px;
               text-align: left;
-              color: #fff;
+              color: $white;
             }
           }
           .replyedAvatar {
@@ -134,10 +137,11 @@
             margin-right: $margin-1n;
 
             .avatar {
-              width: 18px;
-              height: 18px;
+              width: 24px;
+              height: 24px;
               font-size: $font-size-small;
-              line-height: 18px;
+              line-height: 24px;
+              transform: scale(0.75);
             }
           }
         }

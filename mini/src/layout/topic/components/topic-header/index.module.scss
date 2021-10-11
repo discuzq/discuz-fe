@@ -8,11 +8,11 @@
   .title {
     font-size: 16px;
     line-height: 24px;
-    color: var(--color-text-primary);
+    color: $text-color-primary;
   }
   :global(.dzq-dropdown__trigger) {
     font-size: 24px;
-    color: var(--color-primary);
+    color: $primary-color;
   }
   :global(.dzq-dropdown-menu__item) {
     padding: 10px 0;
