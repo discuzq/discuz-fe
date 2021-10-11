@@ -56,12 +56,12 @@
     }
   }
 
-  .foldexpend {
-    .foldbtn,
-    .expandbtn {
-      margin-bottom: 0 !important;
-    }
-  }
+  // .foldexpend {
+  //   .foldbtn,
+  //   .expandbtn {
+  //     margin-bottom: 0 !important;
+  //   }
+  // }
   .content {
     .foldbtn {
       border-radius: $border-radius-small;
@@ -137,7 +137,7 @@
 }
 
 .footer {
-  padding: 0 $padding-4n;
+  // padding: 0 $padding-4n;
   display: flex;
   justify-content: space-between;
   align-items: center;
