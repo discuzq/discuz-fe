@@ -8,8 +8,9 @@ import isWeiXin from '@common/utils/is-weixin';
 import { inject, observer } from 'mobx-react';
 import SiteCard from './siteCard';
 import ThreadCard from './threadCard';
+import CommentCard from './commentCard';
 
-const Index = ({ card, threadId }) => {
+const Index = ({ card, threadId, commentId}) => {
   const [url, setUrl] = useState('');
   const [ready, setReady] = useState(false);
   const post = useRef(null);
@@ -33,10 +34,19 @@ const Index = ({ card, threadId }) => {
 
   return (
     <div>
-      <Header />
+    <Header />
     <div className={styles.contain}>
       <div className={styles.poster} ref={post}>
-        {!threadId ? <SiteCard></SiteCard> : <ThreadCard threadId={threadId}></ThreadCard>}
+        {/* {!threadId ? <SiteCard></SiteCard> : <ThreadCard threadId={threadId}></ThreadCard>} */}
+        {
+          threadId &&  <ThreadCard threadId={threadId}></ThreadCard>
+        }
+        {
+          commentId && <CommentCard commentId={commentId}></CommentCard>
+        }
+        {
+          !threadId && !commentId && <SiteCard></SiteCard>
+        }
         <Footer setReady={setReady} threadId={threadId}></Footer>
       </div>
       {ready && imgReady ? (

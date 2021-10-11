@@ -19,6 +19,7 @@ const Index = ({
     if(thread) {
       getConfig({ site, thread, miniCode, siteName }).then(
         config => {
+          console.log(config)
           setConfig(config);
         }
       )
