@@ -173,7 +173,10 @@ const VoteDisplay = (props = {}) => {
               (subitems?.length > 5 && !isDetail) &&
               <Button full type="primary"
                 className={!isFold ? styles.foldbtn : styles.expandbtn}
-                onClick={() => setIsFold(!isFold)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsFold(!isFold);
+                }}
               >
                 <span className={styles['fold-expand']}>{!isFold ? '展开' : '收起'}</span>
                 <Icon name="RightOutlined" size="10"></Icon>
