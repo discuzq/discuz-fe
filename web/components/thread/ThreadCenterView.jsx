@@ -1,3 +1,4 @@
+/* eslint-disable spaced-comment */
 import React, { useMemo, useCallback } from 'react';
 import { Button, Icon } from '@discuzq/design';
 import AudioPlay from './audio-play';
@@ -43,13 +44,13 @@ const Index = (props) => {
     onClose,
     platform,
     updateViewCount,
-    onTextItemClick
-  } = props
+    onTextItemClick,
+  } = props;
 
   const {
     canDownloadAttachment,
     canViewAttachment,
-    canViewVideo
+    canViewVideo,
   } = props?.data?.ability || {};
 
   // 标题显示37个字符
@@ -74,7 +75,7 @@ const Index = (props) => {
       voteData,
       threadId,
       iframeData,
-      plugin
+      plugin,
     } = handleAttachmentData(data);
 
     return (
@@ -157,16 +158,14 @@ const Index = (props) => {
         {voteData && <VoteDisplay recomputeRowHeights={props.recomputeRowHeights} voteData={voteData} threadId={threadId} />}
 
         {
-          DZQPluginCenter.injection('plugin_index', 'thread_extension_display_hook').map(({ render, pluginInfo }) => {
-            return (
+          DZQPluginCenter.injection('plugin_index', 'thread_extension_display_hook').map(({ render, pluginInfo }) => (
               <div key={pluginInfo.name}>
                 {render({
                   site: { ...props.site, recomputeRowHeights: props.recomputeRowHeights, threadId },
-                  renderData: plugin
+                  renderData: plugin,
                 })}
               </div>
-            )
-          })
+          ))
         }
       </>
     );

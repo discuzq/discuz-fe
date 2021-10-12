@@ -21,7 +21,7 @@ export default function HOCWeixin(Component) {
         });
         this.state.isWeiXin = true;
         const redirectEncodeUrl = encodeURIComponent(`${window.location.origin}/user/wx-auth`);
-        window.location.href = `${window.location.origin}/apiv3/users/wechat/h5.oauth?redirect=${redirectEncodeUrl}`;
+        window.location.href = `${window.location.origin}/api/v3/users/wechat/h5.oauth?redirect=${redirectEncodeUrl}`;
       }
     }
     componentWillUnmount() {

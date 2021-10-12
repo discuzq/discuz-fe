@@ -20,14 +20,12 @@ const Index = ({ money = 0, remainMoney = 0, number, remainNumber, type = 0, onC
   const title = useMemo(() => {
     if (type === 0) {
       return condition === 0 ? '回复领红包' : '集赞领红包'
-    } else {
+    } 
       return '评论领赏金'
-    }
+    
   }, [type])
 
-  const url = useMemo(() => {
-    return type === 0 ? redPacketImg : rewardQuestion;
-  }, [type])
+  const url = useMemo(() => type === 0 ? redPacketImg : rewardQuestion, [type])
 
   // 格式化金额，保留两位小数，且去除小数点后面的0
   const formatMoney = useMemo(() => {

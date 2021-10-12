@@ -39,6 +39,7 @@ const UNTOP_ACTIONS = [
 ];
 
 @inject('index')
+@inject('threadList')
 @inject('search')
 @inject('thread')
 @inject('threadList')

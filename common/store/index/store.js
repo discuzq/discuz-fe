@@ -52,6 +52,7 @@ class IndexStore {
 
     return listProxy(newData, params);
   }
+
   set threads(data) {
     if (!data) {
       this.threadList.clearList({ namespace: this.namespace });
@@ -127,6 +128,7 @@ class IndexStore {
     const requestError = this.threadList.lists?.[this.namespace]?.requestError;
     return requestError;
   }
+
   set threadError(data) {
     this.threadList.lists[this.namespace].requestError = data;
   }
@@ -138,6 +140,7 @@ class IndexStore {
   };
 
   @observable recommends = null;
+
   @observable recommendsStatus = 'none'
 
   @observable topMenuIndex = '0'
