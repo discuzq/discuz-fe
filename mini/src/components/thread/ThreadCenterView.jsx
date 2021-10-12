@@ -1,3 +1,4 @@
+/* eslint-disable spaced-comment */
 import React, { useMemo, useRef, useEffect, useState } from 'react';
 import Button from '@discuzq/design/dist/components/button/index';
 import Icon from '@discuzq/design/dist/components/icon/index';

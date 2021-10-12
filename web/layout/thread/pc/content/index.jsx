@@ -1,3 +1,4 @@
+/* eslint-disable spaced-comment */
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import ImageDisplay from '@components/thread/image-display';
@@ -130,7 +131,7 @@ export default withRouter(inject('site', 'user')(observer((props) => {
   const {
     canDownloadAttachment,
     canViewAttachment,
-    canViewVideo
+    canViewVideo,
   } = threadStore?.threadData?.ability || {};
 
   const { tipList } = threadStore?.threadData || {};
@@ -337,16 +338,14 @@ export default withRouter(inject('site', 'user')(observer((props) => {
         )}
 
         {
-          DZQPluginCenter.injection('plugin_detail', 'thread_extension_display_hook').map(({ render, pluginInfo }) => {
-            return (
+          DZQPluginCenter.injection('plugin_detail', 'thread_extension_display_hook').map(({ render, pluginInfo }) => (
               <div key={pluginInfo.name}>
                 {render({
                   site: { ...site, isDetailPage: true },
-                  renderData: parseContent.plugin
+                  renderData: parseContent.plugin,
                 })}
               </div>
-            )
-          })
+          ))
         }
 
         {/* 标签 */}
@@ -382,8 +381,8 @@ export default withRouter(inject('site', 'user')(observer((props) => {
             <div className={topic.moneyList}>
               <div className={topic.top}>{tipList.length}人打赏</div>
               <div className={topic.itemList}>
-                  {tipList.map(i=>(
-                    <div key={i.userId} onClick={()=>props.router.push(`/user/${i.userId}`)} className={topic.itemAvatar}>
+                  {tipList.map(i => (
+                    <div key={i.userId} onClick={() => props.router.push(`/user/${i.userId}`)} className={topic.itemAvatar}>
                       <Avatar
                         image={i.avatar}
                         name={i.nickname}

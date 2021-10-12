@@ -1,3 +1,4 @@
+/* eslint-disable spaced-comment */
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { View, Text ,Image} from '@tarojs/components';
@@ -26,7 +27,7 @@ import { parseContentData } from '../../utils';
 import styles from './index.module.scss';
 
 // 插件引入
-/** DZQ->plugin->register<plugin_detail@thread_extension_display_hook>**/
+/**DZQ->plugin->register<plugin_detail@thread_extension_display_hook>**/
 
 // 帖子内容
 const RenderThreadContent = inject('site', 'user')(

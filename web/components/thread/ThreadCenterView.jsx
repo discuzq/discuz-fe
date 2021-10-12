@@ -1,3 +1,4 @@
+/* eslint-disable spaced-comment */
 import React, { useMemo, useCallback } from 'react';
 import { Button, Icon } from '@discuzq/design';
 import AudioPlay from './audio-play';
@@ -161,7 +162,7 @@ const Index = (props) => {
               <div key={pluginInfo.name}>
                 {render({
                   site: { ...props.site, recomputeRowHeights: props.recomputeRowHeights, threadId },
-                  renderData: plugin
+                  renderData: plugin,
                 })}
               </div>
           ))
