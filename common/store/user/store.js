@@ -285,7 +285,7 @@ class UserStore {
 
   // 判断当前用户是否管理员
   @computed get isAdmini() {
-    return get(this.userInfo, 'group.pid') === 1;
+    return get(this.userInfo, 'group.groupId') === 1;
   }
 
   // 用户角色分类
