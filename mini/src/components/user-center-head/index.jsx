@@ -259,7 +259,7 @@ class index extends Component {
     return {};
   }
   // 是否显示续费卡片
-  whetherIsShowRenewalCard = () => this.props.site?.siteMode === 'pay' && !this.props.user?.isAdmini && !this.props.isOtherPerson;
+  whetherIsShowRenewalCard = () => !this.props.user?.isAdmini && !this.props.isOtherPerson;
 
   @computed get targetUser() {
     if (this.targetUserId) {
