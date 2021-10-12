@@ -14,7 +14,7 @@ import styles from './index.module.scss';
 import SiteMapLink from '@components/site-map-link';
 
 // 插件引入
-/** DZQ->plugin->register<plugin_index@thread_extension_display_hook>**/
+/**DZQ->plugin->register<plugin_index@thread_extension_display_hook>**/
 
 /**
  * 帖子内容组件

@@ -16,7 +16,7 @@ import { View, Text } from '@tarojs/components';
 
 
 // 插件引入
-/** DZQ->plugin->register<plugin_index@thread_extension_display_hook>**/
+/**DZQ->plugin->register<plugin_index@thread_extension_display_hook>**/
 
 /**
  * 帖子内容组件
