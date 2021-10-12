@@ -114,7 +114,7 @@ export default class ListStore {
     }
     const newFilter = filter;
     if (filter.categoryids && filter.categoryids instanceof Array) {
-      const newCategoryIds = filter.categoryids?.filter((item) => item);
+      const newCategoryIds = filter.categoryids?.filter(item => item);
       if (!newCategoryIds.length) {
         delete newFilter.categoryids;
       }
@@ -164,7 +164,7 @@ export default class ListStore {
 
   /**
    * 删除所有列表中的item
-   * @param {*} param0 
+   * @param {*} param0
    */
   @action
   deleteListItem = ({ item }) => {
@@ -188,8 +188,8 @@ export default class ListStore {
     this.lists[namespace].data[listPage] = observable(get(data, 'data.pageData') || []);
 
     if (
-      !this.getAttribute({ namespace, key: 'currentPage' }) ||
-      Number(this.getAttribute({ namespace, key: 'currentPage' })) <= Number(get(data, 'data.currentPage'))
+      !this.getAttribute({ namespace, key: 'currentPage' })
+      || Number(this.getAttribute({ namespace, key: 'currentPage' })) <= Number(get(data, 'data.currentPage'))
     ) {
       this.setAttribute({ namespace, key: 'currentPage', value: get(data, 'data.currentPage') });
     }
@@ -281,9 +281,9 @@ export default class ListStore {
       } else {
         if (namespace === 'my') {
           if (this.lists[namespace].data[1][0] && this.lists[namespace].data[1][0].userStickStatus === 1) {
-            this.lists['my'].data[1].splice(1, 0, threadInfo);
+            this.lists.my.data[1].splice(1, 0, threadInfo);
           } else {
-            this.lists['my'].data[1].unshift(threadInfo);
+            this.lists.my.data[1].unshift(threadInfo);
           }
         } else {
           this.lists[namespace].data[1].unshift(threadInfo);
@@ -333,11 +333,13 @@ export default class ListStore {
     Object.keys(data).forEach((page) => {
       data[page].forEach((thread, index) => {
         if (thread.threadId === threadId) {
+          const { likeReward, commentList = [] } = thread;
           result = {
             listName: namespace,
             page,
             index,
-            data: thread,
+            // 避免同引用，list数据多次赋值问题
+            data: { ...thread, likeReward: { ...likeReward }, commentList },
           };
         }
       });

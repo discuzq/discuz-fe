@@ -21,7 +21,7 @@
     "@discuzq/discuz-plugin-loader": "1.0.9",
     "@discuzq/plugin": "1.0.60",
     "@discuzq/plugin-center": "1.0.6",
-    "@discuzq/sdk": "1.0.45",
+    "@discuzq/sdk": "1.0.46",
     "@discuzq/theme": "1.0.23",
     "@discuzq/vditor": "1.0.26",
     "@popperjs/core": "^2.10.1",

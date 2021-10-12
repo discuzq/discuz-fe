@@ -29,6 +29,9 @@ class UserStore {
   @observable userThreadsTotalCount = 0;
   @observable userThreadsTotalPage = 1;
 
+  // 付费用户组
+  @observable payGroups = [];
+
   @observable userLikes = {};
 
   // 编辑模式下的 username
@@ -49,11 +52,11 @@ class UserStore {
   // 换绑 QRCode
   @observable rebindQRCode = null;
 
-  // 换绑 QRCode是否有效
-  @observable isQrCodeValid = true;
-
   // 用户注册扩展信息
   @observable userSigninFields = [];
+
+  // 换绑 QRCode是否有效
+  @observable isQrCodeValid = true;
 
   // 检索的目标用户，非自己
   @observable targetUser = null;
@@ -282,27 +285,27 @@ class UserStore {
 
   // 判断当前用户是否管理员
   @computed get isAdmini() {
-    return get(this.userInfo, 'group.pid') === 1;
+    return get(this.userInfo, 'group.groupId') === 1;
   }
 
   // 用户角色分类
   @computed get groupName() {
-    return get(this.userInfo, 'group.groupName')
+    return get(this.userInfo, 'group.groupName');
   }
 
   // 站点到期天数
   @computed get expiredDays() {
-    return get(this.userInfo, 'expiredDays')
+    return get(this.userInfo, 'expiredDays');
   }
 
   // 站点剩余时间
   @computed get expiredAt() {
-    return get(this.userInfo, 'expiredAt')
+    return get(this.userInfo, 'expiredAt');
   }
 
   // 判断是否是无限期
   @computed get isIndefiniteDuration() {
-    return Number(get(this.userInfo, 'expiredDays')) >= 10000
+    return Number(get(this.userInfo, 'expiredDays')) >= 10000;
   }
 
   // 发帖扩展的权限

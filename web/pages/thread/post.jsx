@@ -727,11 +727,12 @@ class PostPage extends React.Component {
     const { qcloudCosBucketName, qcloudCosBucketArea, qcloudCosSignUrl, qcloudCos } = qcloud;
 
 
-    const errorTips = '帖子内容中，有部分图片转存失败，请先替换相关图片再重新发布';
+    const errorTips = '部分图片转存失败，请替换标注红框的图片';
     const vditorEl = document.getElementById('dzq-vditor');
     if (vditorEl) {
       const errorImg = vditorEl.querySelectorAll('.editor-upload-error');
       if (errorImg.length) {
+        this.jumpToErrorImgElement(errorImg[0]);
         Toast.error({
           content: errorTips,
           hasMask: true,
@@ -787,6 +788,11 @@ class PostPage extends React.Component {
       const uploadErrorImages = document.querySelectorAll('img[alt=uploadError]');
       for (let i = 0; i < uploadErrorImages.length; i++) {
         const element = uploadErrorImages[i];
+        // 如果是第一个，则滚动至此
+        if (i === 0) {
+          this.jumpToErrorImgElement(element);
+        }
+
         element.setAttribute('class', 'editor-upload-error');
       }
 
@@ -801,7 +807,7 @@ class PostPage extends React.Component {
 
       if (uploadError.length) {
         Toast.error({
-          content: '帖子内容中，有部分图片转存失败，请先处理相关图片再重新发布',
+          content: '部分图片转存失败，请替换标注红框的图片',
           hasMask: true,
           duration: 4000,
         });
@@ -814,7 +820,6 @@ class PostPage extends React.Component {
     if (!(isAutoSave || isPay)) this.toastInstance = Toast.loading({ content: isDraft ? '保存草稿中' : '发布中...', hasMask: true });
     if (threadPost.postData.threadId) ret = await threadPost.updateThread(threadPost.postData.threadId);
     else ret = await threadPost.createThread();
-
     const { code, data, msg } = ret;
     if (code === 0) {
       this.setState({ data });
@@ -849,6 +854,32 @@ class PostPage extends React.Component {
     }
     this.saveDataLocal();
     Toast.error({ content: msg });
+  }
+
+  /**
+   * 跳转到第一个上传错误图片
+   * @param {*} element
+   */
+  jumpToErrorImgElement = (element) => {
+    const { top }  = element.getBoundingClientRect();
+
+    const isPc = this.props.site?.platform === 'pc';
+    const editorbox = document.querySelector('#post-inner');
+    const currentScrollTop = editorbox.scrollTop;
+
+    const { height: boxHeight } = editorbox.getBoundingClientRect();
+
+    if (isPc) {
+      editorbox.scrollTo({
+        top: currentScrollTop + top,
+        behavior: 'smooth',
+      });
+    } else {
+      editorbox.scrollTo({
+        top: currentScrollTop + top - (0.5 * boxHeight),
+        behavior: 'smooth',
+      });
+    }
   }
 
   setIndexPageData = () => {

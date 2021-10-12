@@ -57,7 +57,8 @@ class SearchResultPostH5Page extends React.Component {
       this.page = 1;
       search.resetResultData();
       baselayout.resultPost = -1;
-      await search.getThreadList({ search: keyword, perPage: this.perPage });
+      // 建中：发现页即 scope为2是发现页，发现的排序是 先按热度，热度相同再更新时间，所以当在发现有传scope为2是得到的结果是没有错
+      await search.getThreadList({ search: keyword, perPage: this.perPage, scope: '2' });
     }
   }
 

@@ -113,12 +113,14 @@
         .dzq-input {
           margin-right: $margin-1n;
           margin-left: $margin-1n;
-          width: 30px;
+          width: 50px;
         }
 
         .dzq-input__inner {
           height: 30px;
+          line-height: 30px;
           border: 1px solid $text-color-placeholder;
+          text-align: center;
         }
       }
     }
@@ -215,10 +217,12 @@
     }
   }
 }
-.text-center {
+
+.dzqp-act__limit_input {
   :global {
     .dzq-input__inner {
       text-align: center;
+      padding: 0;
     }
   }
 }

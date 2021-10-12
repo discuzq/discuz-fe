@@ -7,13 +7,13 @@ export const getCategoryName = (categories, categoryIds) => {
       if (id !== 'all') {
         let name = ''
         categories.forEach(item => {
-          if (`${item.pid}` === `${id}`) {
+          if (`${item.categoryId}` === `${id}`) {
             name = item.name
           } else {
             if (item.children?.length) {
                 // 在一级分类中没有找到，再从二级分类中找
                 item.children.forEach(children => {
-                    if (`${children.pid}` === `${id}`) {
+                    if (`${children.categoryId}` === `${id}`) {
                         name = children.name
                     }
                 })
@@ -34,13 +34,13 @@ export const getCategories = (categories, needDefault) => {
 
     let newCategories = categories.slice()
 
-    const tmpDefault = categories.filter(item => item.pid === 'default')
+    const tmpDefault = categories.filter(item => item.categoryId === 'default')
     if (needDefault && !tmpDefault.length) {
         newCategories.unshift({ name: '推荐', pid: 'default', children: [] });
     }
 
     // 判断是否包含「全部」
-    const tmpAll = categories.filter(item => item.pid === 'all')
+    const tmpAll = categories.filter(item => item.categoryId === 'all')
     if (!tmpAll.length) {
         newCategories.unshift({ name: '全部', pid: 'all', children: [] });
     }
@@ -55,26 +55,26 @@ export const getActiveId = (categories, categoryIds) => {
       return ['all', cid]
   }
 
-  
+
   let id = categoryIds[0]
   const newId = resetCategoryIds(id);
   // 如果categoryIds中的元素有多个，那应该是一级分类被选中了
   if (categoryIds?.length > 1 || newId === '') {
       return [id, cid]
   }
-  
+
   // 确定id是否是二级分类，如果是二级分类，则返回一级分类的pid
   categories.forEach((item) => {
       if (item.children?.length) {
-        const tmp = item.children.filter(children => `${children.pid}` === `${newId}`);
+        const tmp = item.children.filter(children => `${children.categoryId}` === `${newId}`);
         if (tmp.length) {
-            id = item.pid;
+            id = item.categoryId;
             // 二级分类pid
-            cid = tmp[0].pid
+            cid = tmp[0].categoryId
         }
       }
   });
-    
+
   return [id, cid];
 }
 
@@ -86,10 +86,10 @@ export const getSelectedCategoryIds = (categories, id) => {
     }
 
     let newCategoryIds = [id];
-    const tmp = categories.filter(item => `${item.pid}` === `${id}`);
+    const tmp = categories.filter(item => `${item.categoryId}` === `${id}`);
     if (tmp?.length && tmp[0]?.children?.length) {
       tmp[0]?.children?.forEach((item) => {
-        newCategoryIds.push(item.pid);
+        newCategoryIds.push(item.categoryId);
       });
     }
 

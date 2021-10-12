@@ -157,7 +157,6 @@ function DVditor(props) {
 
   useEffect(() => {
     if (!isServer()) {
-      console.log('try to focus');
       window.vditorInstance.focus();
     }
   }, [value, vditor]);
@@ -280,6 +279,16 @@ function DVditor(props) {
   };
 
   const initVditor = () => {
+    const htmlEncode = (text) => {
+      const encodedStr = text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/ /g, '&nbsp;');
+
+      return encodedStr;
+    };
+
     // https://ld246.com/article/1549638745630#options
     const editor = new Vditor(vditorId, {
       _lutePath: 'https://dl.discuz.chat/discuzq-fe/static/lute/lute.min.js',
@@ -291,6 +300,23 @@ function DVditor(props) {
       // 编辑器异步渲染完成后的回调方法
       after: () => {
         onInit(editor);
+        editor.vditor.lute.SetJSRenderers({
+          renderers: {
+            Md2HTML: {
+              renderBackslashContent: (node, entering) => {
+                if (entering) {
+                  if (node.TokensStr() !== '#') {
+                    return [htmlEncode(node.TokensStr()), Lute.WalkContinue];
+                  }
+                  // 特殊处理 #
+                  return [`\\${node.TokensStr()}`, Lute.WalkContinue];
+                }
+
+                return ['', Lute.WalkContinue];
+              },
+            },
+          },
+        });
         editor.setValue('');
         setEditorInitValue();
         editor.focus();

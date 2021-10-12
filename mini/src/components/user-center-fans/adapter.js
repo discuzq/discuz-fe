@@ -4,7 +4,7 @@ export const followerAdapter = (data) => {
     const users = data[key];
     if (!users) return null;
     users.map(user => followers.push({
-      id: user.user.pid,
+      id: user.user.userId,
       groupName: user.group.groupName,
       avatar: user.user.avatar,
       userName: user.user.userName,

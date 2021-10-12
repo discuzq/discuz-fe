@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import { inject, observer } from 'mobx-react';
 import { View, ScrollView } from '@tarojs/components';
 import Router from '@discuzq/sdk/dist/router';

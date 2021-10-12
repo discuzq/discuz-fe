@@ -1,3 +1,4 @@
+/* eslint-disable spaced-comment */
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { View, Text ,Image} from '@tarojs/components';
@@ -299,16 +300,14 @@ const RenderThreadContent = inject('site', 'user')(
           )}
 
           {
-            DZQPluginCenter.injection('plugin_detail', 'thread_extension_display_hook').map(({ render, pluginInfo }) => {
-              return (
+            DZQPluginCenter.injection('plugin_detail', 'thread_extension_display_hook').map(({ render, pluginInfo }) => (
                 <View key={pluginInfo.name}>
                   {render({
                     site: { ...site, isDetailPage: true  },
                     renderData: parseContent.plugin
                   })}
                 </View>
-              )
-            })
+              ))
           }
 
           {/* 标签 */}
@@ -394,7 +393,7 @@ const RenderThreadContent = inject('site', 'user')(
                 <Tip
                   tipData={tipData}
                   imgs={threadStore?.threadData?.likeReward?.users || []}
-                  showMore={true}
+                  showMore
                   showCount={5}
                 ></Tip>
               </View>

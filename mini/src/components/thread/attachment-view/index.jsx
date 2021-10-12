@@ -114,21 +114,21 @@ const Index = ({
 
       Taro.downloadFile({
         url: item.url,
-        success: function (res) {
+        success (res) {
           Taro.openDocument({
             filePath: res.tempFilePath,
-            success: function (res) {
+            success (res) {
               Toast.info({content: "下载成功"});
             },
-            fail: function (error) {
+            fail (error) {
               Toast.info({ content: "小程序暂不支持下载此类文件，请点击“链接”复制下载链接" });
               console.error(error.errMsg)
             },
-            complete: function () {
+            complete () {
             }
           })
         },
-        fail: function (error) {
+        fail (error) {
           if(error?.errMsg.indexOf("domain list") !== -1) {
             Toast.info({ content: "下载链接不在域名列表中" });
           } else if(error?.errMsg.indexOf("invalid url") !== -1) {
@@ -138,7 +138,7 @@ const Index = ({
           }
           console.error(error.errMsg)
         },
-        complete: function () {
+        complete () {
           // downloading[index] = false;
           // setDownloading([...downloading]);
         }
@@ -151,7 +151,7 @@ const Index = ({
 
   const downloadAttachmentParams = (item) => {
     const params = {
-      threadId: threadId,
+      threadId,
       attachmentsId: item.id
     }
     return params;
@@ -199,9 +199,9 @@ const Index = ({
 
         Taro.setClipboardData({
           data: url,
-          success: function (res) {
+          success (res) {
             Taro.getClipboardData({
-              success: function (res) {
+              success (res) {
               }
             })
           }
@@ -214,14 +214,12 @@ const Index = ({
   };
 
   const splicingLink = (url, fileName) => {
-    const domainName = url.split('/apiv3/')[0];
+    const domainName = url.split('/api/v3/')[0];
     return `${domainName}/download?url=${url}&threadId=${threadId}`;
   }
 
     // 音频播放
-  const isAttachPlayable = (file) => {
-    return AUDIO_FORMAT.includes(file?.extension?.toUpperCase())
-  };
+  const isAttachPlayable = (file) => AUDIO_FORMAT.includes(file?.extension?.toUpperCase());
 
   const beforeAttachPlay = async (file) => {
     // 该文件已经通过校验，能直接播放
@@ -312,14 +310,12 @@ const Index = ({
     );
   };
 
-  const Pay = ({ item, index, type }) => {
-    return (
+  const Pay = ({ item, index, type }) => (
       <View className={`${styles.container} ${styles.containerPay}`} key={index} onClick={onPay}>
         <Image src={getAttachmentIconLink(type)} className={styles.containerIcon} mode="widthfix"/>
         <Text className={styles.content}>{item.fileName}</Text>
       </View>
     );
-  };
 
   // 是否展示 查看更多
   const [isShowMore, setIsShowMore] = useState(false);

@@ -5,6 +5,7 @@ import DatePickers from '@components/thread-post/date-time-picker';
 import classNames from 'classnames';
 import { formatDate } from '@common/utils/format-date';
 import { formatPostData } from '@common/plugin/custom-apply/client/common';
+import { debounce } from '@common/utils/throttle-debounce';
 import styles from '../index.module.scss';
 
 const TimeType = {
@@ -39,7 +40,11 @@ export default class CustomApplyEntryContent extends React.Component {
   }
 
   componentDidMount() {
-    if (!this.props.renderData) this.props.onChange(this.state.body);
+    if (this.props.renderData) {
+      const body = formatPostData(this.props?.renderData?.body);
+      this.setState({ body });
+      this.props.onChange(body);
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -59,9 +64,13 @@ export default class CustomApplyEntryContent extends React.Component {
         });
         break;
       case TimeType.actEnd:
-        this.setState({ body: { ...body, activityEndTime: time } }, () => {
-          this.props.onChange(this.state.body);
-        });
+        if (!this.checkActEndTime(time)) {
+          Toast.info({ content: '请选择正确的活动结束时间' });
+        } else {
+          this.setState({ body: { ...body, activityEndTime: time } }, () => {
+            this.props.onChange(this.state.body);
+          });
+        }
         break;
       case TimeType.applyStart:
         if (!this.checkApplyStartTime(time)) {
@@ -88,6 +97,15 @@ export default class CustomApplyEntryContent extends React.Component {
 
   getTimestamp = time => new Date(time).getTime();
 
+  checkActEndTime = (time) => {
+    const { activityStartTime } = this.state.body || {};
+    if (this.getTimestamp(activityStartTime) > this.getTimestamp(time)
+      || this.getTimestamp(time) < this.getTimestamp(new Date().getTime())) {
+      return false;
+    }
+    return true;
+  };
+
   checkApplyStartTime = (time) => {
     const { body } = this.state;
     const { activityEndTime, registerEndTime } = body || {};
@@ -109,26 +127,26 @@ export default class CustomApplyEntryContent extends React.Component {
     return true;
   };
 
-  handletitleChange = (e) => {
+  handletitleChange = debounce((e) => {
     const { body } = this.state;
     this.setState({ body: { ...body, title: e.target.value } }, () => {
       this.props.onChange(this.state.body);
     });
-  };
+  }, 200);
 
-  handlecontentChange = (e) => {
+  handlecontentChange = debounce((e) => {
     const { body } = this.state;
     this.setState({ body: { ...body, content: e.target.value } }, () => {
       this.props.onChange(this.state.body);
     });
-  }
+  }, 200);
 
-  handlePlaceChange = (e) => {
+  handlePlaceChange = debounce((e) => {
     const { body } = this.state;
     this.setState({ body: { ...body, actPlace: e.target.value } }, () => {
       this.props.onChange(this.state.body);
     });
-  }
+  }, 200)
 
   handleMoreClick = () => {
     this.setState({ showMore: !this.state.showMore });
@@ -259,6 +277,7 @@ export default class CustomApplyEntryContent extends React.Component {
                       disabled={body.actPeopleLimitType === 0}
                       value={body.totalNumber}
                       onChange={this.handleLimitPeopleChange}
+                      className={styles['dzqp-act__limit_input']}
                     />人报名
                   </Radio>
                 </Radio.Group>
