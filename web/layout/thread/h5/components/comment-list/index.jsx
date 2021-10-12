@@ -11,6 +11,7 @@ import ImageDisplay from '@components/thread/image-display';
 import classNames from 'classnames';
 import PostContent from '@components/thread/post-content';
 import { debounce } from '@common/utils/throttle-debounce';
+import SiteMapLink from '@components/site-map-link';
 
 @observer
 class CommentList extends React.Component {
@@ -94,6 +95,7 @@ class CommentList extends React.Component {
     const { canDelete, canEdit, canLike, canHide } = this.generatePermissions(this.props.data);
     const { groups } = this.props.data?.user || {};
     const isSelf = this.props.threadId === this.props?.data?.userId;
+    const { thread } = this.props;
     // 评论内容是否通过审核
     const isApproved = this.props?.data?.isApproved === 1;
     return (
@@ -134,6 +136,7 @@ class CommentList extends React.Component {
         </div>
         <div className={styles.content}>
           <div className={styles.commentListAvatar} onClick={() => this.avatarClick()}>
+            <SiteMapLink href={`/user/${this.props?.data?.userId}`} text={this.props.data?.user?.nickname || this.props.data?.user?.userName || '异'}/>
             {/* 头像和昵称*/}
             <Avatar
               image={
@@ -145,6 +148,7 @@ class CommentList extends React.Component {
           </div>
           {/* 评论内容*/}
           <div className={styles.commentListContent}>
+            <SiteMapLink href={`/thread/comment/${this.props?.data.id}?threadId=${thread?.threadData?.id}`} text={this.props?.data?.content}/>
             <div className={`${styles.commentListContentText} ${this.props.active && styles.active}`}>
               <div className={styles.commentHeader}>
                 <div className={styles.userInfo}>

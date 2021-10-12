@@ -8,8 +8,6 @@ import Taro from '@tarojs/taro';
 import { updateThreadAssignInfoInLists } from '@common/store/thread-list/list-business';
 
 @inject('site')
-@inject('search')
-@inject('topic')
 @inject('index')
 @inject('threadList')
 @inject('user')
@@ -26,31 +24,16 @@ class Index extends React.Component {
 
   async componentDidMount() {
     Taro.hideShareMenu();
-    const { threadList } = this.props;
-    const threadsResp = await threadList.fetchList({
-      namespace: 'like',
-      perPage: 10,
-      page: this.page,
-      filter: {
-        complex: 2,
-      },
-    });
-
-    threadList.setList({
-      namespace: 'like',
-      data: threadsResp,
-      page: this.page,
-    });
+    this.dispatch();
   }
 
   componentWillUnmount() {
-    this.props.threadList.setThreads(null);
+    this.props.threadList.clearList({ namespace: 'like' });
   }
 
   dispatch = async () => {
     const { threadList } = this.props;
 
-    this.page += 1;
     const threadsResp = await threadList.fetchList({
       namespace: 'like',
       perPage: this.perPage,
@@ -65,6 +48,8 @@ class Index extends React.Component {
       data: threadsResp,
       page: this.page,
     });
+
+    this.page += 1;
   };
 
   getShareData(data) {
@@ -97,6 +82,7 @@ class Index extends React.Component {
       }
     );
   }
+
   render() {
     return (
       <Page>

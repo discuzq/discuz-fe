@@ -31,9 +31,14 @@ import {
 import LoginHelper from '@common/utils/login-helper';
 import { setStatisticParams } from '@common/utils/api-statistic-params';
 
+let baseURL = ENV_CONFIG.COMMON_BASE_URL && ENV_CONFIG.COMMON_BASE_URL !== '' ? ENV_CONFIG.COMMON_BASE_URL : isServer() ? '' : window.location.origin;
+if ( process.env.NODE_ENV === 'development' ) {
+  baseURL = ENV_CONFIG.COMMON_BASE_URL && ENV_CONFIG.COMMON_BASE_URL !== '' ? ENV_CONFIG.COMMON_BASE_URL : window.location.origin;
+}
+
 let globalToast = null;
 const api = apiIns({
-  baseURL: ENV_CONFIG.COMMON_BASE_URL && ENV_CONFIG.COMMON_BASE_URL !== '' ? ENV_CONFIG.COMMON_BASE_URL : isServer() ? '' : window.location.origin,
+  baseURL: baseURL,
   timeout: isServer() ? 10000 : 0,
   // 200 到 504 状态码全都进入成功的回调中
   validateStatus(status) {
@@ -61,7 +66,7 @@ function reasetData(data) {
 http.interceptors.request.use(
   
   (config) => {
-    if (isServer()) {
+    if (process.env.NODE_ENV !== 'development' && isServer()) {
 
       const { url, baseURL, __context } = config;
       const reg = /^((ht|f)tps?):\/\/[\w\-]+(\.[\w\-]+)+([\w\-\.,@?^=%&:\/~\+#]*[\w\-\@?^=%&\/~\+#])?$/;

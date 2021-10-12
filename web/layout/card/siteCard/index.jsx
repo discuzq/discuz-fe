@@ -103,6 +103,7 @@ class SiteCard extends React.Component {
                   className={styles.logo}
                   mode="aspectFit"
                   src={this.getLogo()}
+                  alt="图片"
                 />
             </div>
             <ul className={styles.siteInfo}>
@@ -119,7 +120,7 @@ class SiteCard extends React.Component {
           <div className={styles.contentBox} ref={this.content}>
             <div className={styles.contentHeader}>
               <div className={styles.contentHeaderImgBox}>
-                <img src='/dzq-img/content-header.png' className={styles.contentHeaderImg}/>
+                <img alt="图片" src='/dzq-img/content-header.png' className={styles.contentHeaderImg}/>
               </div>
               <span className={styles.contentHeaderText}>站点介绍</span>
             </div>
@@ -130,10 +131,10 @@ class SiteCard extends React.Component {
             {this.state.overMaxHeight && (
             <div>
               <div className={styles.rectangleBox}>
-                <img src='dzq-img/rectangle.png' className={styles.rectangle}/>
+                <img alt="图片" src='dzq-img/rectangle.png' className={styles.rectangle}/>
               </div>
               <div className={styles.lookmoreBox}>
-                <img src='/dzq-img/look-more.jpg' className={styles.lookmoreImg}/>
+                <img alt="图片" src='/dzq-img/look-more.jpg' className={styles.lookmoreImg}/>
               </div>
             </div>
             )}

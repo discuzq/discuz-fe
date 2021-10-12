@@ -70,7 +70,7 @@ class StatusH5Page extends React.Component {
         }
         <div className={platform === 'h5' ? layout.content : layout.pc_content}>
           <div className={platform === 'h5' ? layout.icon : layout.pc_icon}>
-            <img className={layout.icon__img} src='/dzq-img/login-status.jpg' alt=""/>
+            <img alt="图片" className={layout.icon__img} src='/dzq-img/login-status.jpg'/>
           </div>
           <div className={platform === 'h5' ? layout.functionalRegion : layout.pc_functionalRegion}>
               <span>

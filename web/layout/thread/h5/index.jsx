@@ -756,8 +756,7 @@ class ThreadH5Page extends React.Component {
       moreClick: this.onMoreClick,
     };
 
-    console.log(333)
-    console.log(isReady);
+
     // const isDraft = threadStore?.threadData?.isDraft;
     // // 是否红包帖
     // const isRedPack = threadStore?.threadData?.displayTag?.isRedPack;

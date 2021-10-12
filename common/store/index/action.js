@@ -212,10 +212,10 @@ class IndexAction extends IndexStore {
   @action
   async screenData({ filter = {}, sequence = 0, perPage = 10, page = 1, isMini = false } = {}) {
     // 如果是小程序请求，先不把数据置空，以免导致页面提前渲染
-    if (!isMini) {
-      this.threads = null;
-      this.sticks = null;
-    }
+    // if (!isMini) {
+    this.threads = null;
+    this.sticks = null;
+    // }
 
     this.resetErrorInfo()
 

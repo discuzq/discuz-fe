@@ -104,7 +104,7 @@ const ThreadCard = inject('user', 'card')(observer((props) => {
           {/* 付费 */}
           {(!isFree || isEmpty) && (
             <div className={styles.imgBox}>
-              <img src={priceImg} className={styles.priceimg}/>
+              <img alt="图片" src={priceImg} className={styles.priceimg}/>
             </div>
           )}
 

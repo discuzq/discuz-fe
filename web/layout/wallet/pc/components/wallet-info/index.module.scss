@@ -19,6 +19,11 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  .avatarWrap {
+    max-width: none;
+  }
+
   .avatar {
     width: rem(120);
     height: rem(120);
@@ -148,6 +153,7 @@
   .button {
     width: rem(282);
     height: rem(36);
+    background: $white;
     border-radius: rem($border-radius-small);
   }
 }

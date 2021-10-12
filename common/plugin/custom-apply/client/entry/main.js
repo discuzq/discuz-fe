@@ -8,5 +8,7 @@ export default class CustomIfram {
   static hookName = config.hookName // 钩子名称
   static platform = config.platform;
   static component = <Component/> // 需要渲染的组件
-  static options = {} // 需要在注入时提供的额外数据
+  static options = {
+    tomId: '612f4217ae890',
+  } // 需要在注入时提供的额外数据
 }

@@ -24,8 +24,7 @@ class BindNicknameH5Page extends React.Component {
 
     const { type } = router.query;
 
-    const { webConfig: { agreement } } = site;
-    const { privacy, privacyContent, register, registerContent } = agreement;
+    const { privacy, privacyContent, register, registerContent } = site?.webConfig?.agreement || {};
 
     let title = '';
     let content = '';

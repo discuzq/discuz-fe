@@ -229,7 +229,7 @@ class SearchAction extends SearchStore {
     this.indexThreadsLoading = false;
     if ( !hasTopics ) {
       const res = result[0]
-       
+
       const { code, data, msg } = res;
       if (code !== 0) {
         if (type === 0) {
@@ -245,7 +245,7 @@ class SearchAction extends SearchStore {
 
     if ( !hasUsers ) {
       const res = result[1]
-       
+
       const { code, data, msg } = res;
       if (code !== 0) {
         if (type === 0) {
@@ -261,7 +261,7 @@ class SearchAction extends SearchStore {
 
     if ( !hasThreads ) {
       const res = result[2]
-        
+
       const { code, data, msg } = res;
       if (code !== 0) {
         if (type === 0) {
@@ -334,7 +334,7 @@ class SearchAction extends SearchStore {
  */
  @action
   async getThreadList({ scope = 0, sort = '3', search = '', perPage = 10, page = 1, params = {} } = {}) {
-    const result = await readThreadList({ params: { filter: { search }, scope, perPage, page, ...params } });
+    const result = await readThreadList({ params: { filter: { search, sort }, scope, perPage, page, ...params } });
 
     if (result.code === 0 && result.data) {
       if (this.threads && result.data.pageData && page !== 1) {

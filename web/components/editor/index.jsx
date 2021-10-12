@@ -282,7 +282,7 @@ function DVditor(props) {
   const initVditor = () => {
     // https://ld246.com/article/1549638745630#options
     const editor = new Vditor(vditorId, {
-      _lutePath: 'https://cdn.jsdelivr.net/npm/@discuzq/vditor@1.0.22/dist/js/lute/lute.min.js',
+      _lutePath: 'https://dl.discuz.chat/discuzq-fe/static/lute/lute.min.js',
       ...baseOptions,
       minHeight: pc && !isHaveContent() ? 450 : 44,
       // 编辑器初始化值

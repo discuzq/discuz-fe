@@ -70,10 +70,10 @@ const SearchInput = ({
       <View className={styles.inputWrapper}>
         <Icon className={styles.inputWrapperIcon} name="SearchOutlined" size={16} />
         <Input
-          value={debounce(() => value, 0)}
+          value={value}
           placeholder='请输入想要搜索的内容...'
-          onEnter={e => onEnter(e)}
-          onInput={e => inputChange(e)}
+          onEnter={debounce(e => onEnter(e), 400)}
+          onInput={debounce(e => inputChange(e), 400)}
           className={styles.input}
           confirmType='search'
           onConfirm={e => onEnter(e)}

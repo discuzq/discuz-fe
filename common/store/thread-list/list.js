@@ -164,7 +164,7 @@ export default class ListStore {
 
   /**
    * 删除所有列表中的item
-   * @param {*} param0 
+   * @param {*} param0
    */
   @action
   deleteListItem = ({ item }) => {
@@ -333,11 +333,13 @@ export default class ListStore {
     Object.keys(data).forEach((page) => {
       data[page].forEach((thread, index) => {
         if (thread.threadId === threadId) {
+          const { likeReward, commentList = [] } = thread;
           result = {
             listName: namespace,
             page,
             index,
-            data: thread,
+            // 避免同引用，list数据多次赋值问题
+            data: { ...thread, likeReward: { ...likeReward }, commentList },
           };
         }
       });

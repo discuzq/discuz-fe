@@ -20,7 +20,7 @@ class PCNoInstallPage extends React.Component {
       <div className={styles.body}>
         <Header/>
         <div className={styles.page} style={{height: height}}>
-          <img className={styles.img} src='/dzq-img/error.png'/>
+          <img alt="图片" className={styles.img} src='/dzq-img/error.png'/>
           <p className={styles.text}>站点未安装！</p>
         </div>
       </div>

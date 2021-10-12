@@ -38,15 +38,15 @@ class index extends Component {
   }
 
   async componentDidMount() {
-    const { previewAvatarUrl } = this.state;
-    const { user } = this.props;
-    if(previewAvatarUrl === user.avatarUrl) {
-      return;
-    }
-    const imgUrl = await checkImgExists(user.originalAvatarUrl, user.avatarUrl);
-    this.setState({
-      previewAvatarUrl: imgUrl
-    })
+    // const { previewAvatarUrl } = this.state;
+    // const { user } = this.props;
+    // if(previewAvatarUrl === user.avatarUrl) {
+    //   return;
+    // }
+    // const imgUrl = await checkImgExists(user.originalAvatarUrl, user.avatarUrl);
+    // this.setState({
+    //   previewAvatarUrl: imgUrl
+    // })
   }
 
   previewerRef = React.createRef(null);
@@ -262,11 +262,21 @@ class index extends Component {
     return {};
   }
 
+  setPreviewAvatarUrl = async () => {
+    const user = this.props.isOtherPerson ? this.targetUser || {} : this.props.user;
+    if (!user) return;
+    const imgUrl = await checkImgExists(user.originalAvatarUrl, user.avatarUrl);
+    imgUrl && this.setState({
+      previewAvatarUrl: imgUrl
+    })
+  }
+
   render() {
     const { targetUser } = this;
     const user = this.props.isOtherPerson ? targetUser || {} : this.props.user;
     const { webConfig: { other: { threadOptimize } } } = this.props.site;
     const { previewAvatarUrl } = this.state;
+    !previewAvatarUrl && this.setPreviewAvatarUrl();
 
     return (
       <View className={styles.h5box}>
@@ -313,9 +323,8 @@ class index extends Component {
                   this.handleChangeAttention(user.follow);
                 }}
                 type="primary"
-                className={`${styles.btn} ${user.follow === 2 && styles.userFriendsBtn} ${
-                  user.follow === 1 && styles.userFollowedBtn
-                }`}
+                className={`${styles.btn} ${user.follow === 2 && styles.userFriendsBtn} ${user.follow === 1 && styles.userFollowedBtn
+                  }`}
                 full
               >
                 <View className={styles.actionButtonContentWrapper}>

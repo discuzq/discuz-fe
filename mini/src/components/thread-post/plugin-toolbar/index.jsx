@@ -92,7 +92,7 @@ const Index = inject('site', 'user', 'threadPost')(observer((props) => {
       return (
         <View key={pluginInfo.pluginName} className={clsName}>
           {render({
-            site: { ...props.site, threadPost: props.threadPost },
+            site: { ...props.site},
             onConfirm: props.threadPost.setPluginPostData,
             renderData: props.threadPost.postData.plugin,
             showPluginDialog: props.showPluginDialog,

@@ -16,10 +16,10 @@ export function urlToLink(str) {
     str = str
       .replace(preReg, (p, p1, p2) => `${p1}${encodeURIComponent(p2)}</code></pre>`)
       .replace(codeReg, (p, p1, p2) => `${p1}${encodeURIComponent(p2)}</code>`)
-      .replace(imgReg, (p, p1) => `<img src="${encodeURIComponent(p1)}"`)
+      .replace(imgReg, (p, p1) => `<img alt="${encodeURIComponent(p1)}" src="${encodeURIComponent(p1)}"`)
       .replace(iframeReg, p => `${encodeURIComponent(p)}`)
       .replace(aReg, (p, p1) => `<a href="${encodeURIComponent(p1)}"`)
-      .replace(urlReg, website => `<a href="${encodeURIComponent(website)}" target="_blank">${website}</a>`)
+      .replace(urlReg, website => `<a href="${encodeURIComponent(website)}" rel="nofollow noopener noreferrer" target="_blank">${website}</a>`)
       .replace(preReg, (p, p1, p2) => `${p1}${decodeURIComponent(p2)}</code></pre>`)
       .replace(codeReg, (p, p1, p2) => `${p1}${decodeURIComponent(p2)}</code>`)
       .replace(/%3Ciframe[^>]*>[^<]*<\/iframe>/ig, p => `${decodeURIComponent(p)}`)

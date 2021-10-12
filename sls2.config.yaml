@@ -1,0 +1,22 @@
+secretId: 'AKID9LVcggcTI1gL6ujbdYJrBKGyVpwpbCg0'
+secretKey: 'B9wWt30oSvCF5kFYeWBmBOQL4asxoSt7'
+appid: '1258344699'
+cos:
+  bucket: discuzq-docs
+  region: ap-guangzhou
+  object: /serverless/ssr.zip
+serverless:
+  component: http
+  name: discuz-ssr
+  stage: releases
+  inputs:
+    description: 'Discuz !Q 3.0 SSR 服务'
+    region: ap-guangzhou
+    faas:
+      framework: nextjs
+      runtime: Nodejs12.16
+      name: discuz-ssr
+      timeout: 30
+      memorySize: 512
+      initTimeout: 10
+      publicAccess: true

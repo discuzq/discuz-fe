@@ -1,10 +1,11 @@
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Icon, Tag } from '@discuzq/design';
 import styles from './index.module.scss';
 import Avatar from '@components/avatar';
-import React from 'react';
 import { diffDate } from '@common/utils/diff-date';
 import classNames from 'classnames';
+import SiteMapLink from '@components/site-map-link';
 
 
 UserInfo.propTypes = {
@@ -40,54 +41,58 @@ export default function UserInfo(props) {
   props.isReward && (tagsNumber = tagsNumber + 1);
   props.isRed && (tagsNumber = tagsNumber + 1);
 
+
   const isPc = props.platform === 'pc';
   return (
-    <div className={styles.contianer}>
-      <Avatar
-        isShowUserInfo={!props.hideInfoPopip && props.platform === 'pc'}
-        userId={props.userId}
-        className={classNames(styles.avatar, styles.cursor)}
-        circle={true}
-        image={props.avatar}
-        name={props.name || ''}
-        onClick={e => props.onClick && props.onClick(e)}
-        unifyOnClick={props.unifyOnClick}
-        platform={props.platform}
-      ></Avatar>
+    <>
+      <SiteMapLink href={`/user/${props.userId}`} text={props.name || ''}/>
+      <div className={styles.contianer}>
+        <Avatar
+          isShowUserInfo={!props.hideInfoPopip && props.platform === 'pc'}
+          userId={props.userId}
+          className={classNames(styles.avatar, styles.cursor)}
+          circle={true}
+          image={props.avatar}
+          name={props.name || ''}
+          onClick={e => props.onClick && props.onClick(e)}
+          unifyOnClick={props.unifyOnClick}
+          platform={props.platform}
+        ></Avatar>
 
-      <div className={styles.right}>
-        <div className={styles.info}>
-          <div className={classNames(styles.name, props.platform === 'pc' && styles.pc, styles.cursor)} onClick={e => props.onClick(e)}>{props.name}</div>
-          {!props.isAnonymous && props.groupName && <div className={`${styles.groupName} ${tagsNumber > 3 ? styles.groupNameText : ''}`}>{props.groupName}</div>}
-          {props.extraInfo && props.extraInfo}
+        <div className={styles.right}>
+          <div className={styles.info}>
+            <div className={classNames(styles.name, props.platform === 'pc' && styles.pc, styles.cursor)} onClick={e => props.onClick(e)}>{props.name}</div>
+            {!props.isAnonymous && props.groupName && <div className={`${styles.groupName} ${tagsNumber > 3 ? styles.groupNameText : ''}`}>{props.groupName}</div>}
+            {props.extraInfo && props.extraInfo}
+          </div>
+
+          <div className={styles.meta}>
+            {props.time && <span className={styles.time}>{props.time.substr(0, 10)}</span>}
+            {props.location && (
+              <div className={styles.location}>
+                <Icon name="PositionOutlined" size={14}></Icon>
+                <span>{props.location}</span>
+              </div>
+            )}
+            {props.view && (
+              <div className={styles.view}>
+                <Icon name="EyeOutlined" className={styles.viewIcon} size={14}></Icon>
+                <span>{props.view}</span>
+              </div>
+            )}
+          </div>
         </div>
 
-        <div className={styles.meta}>
-          {props.time && <span className={styles.time}>{props.time.substr(0, 10)}</span>}
-          {props.location && (
-            <div className={styles.location}>
-              <Icon name="PositionOutlined" size={14}></Icon>
-              <span>{props.location}</span>
-            </div>
-          )}
-          {props.view && (
-            <div className={styles.view}>
-              <Icon name="EyeOutlined" className={styles.viewIcon} size={14}></Icon>
-              <span>{props.view}</span>
-            </div>
-          )}
+        <div className={styles.tags}>
+          {props.isEssence && <Tag type="orange">{tagsNumber > 2 && !isPc ? '精' : '精华'}</Tag>}
+          {/* {props.isEssence && <Tag type="primary">精华</Tag>} */}
+          {props.isReward && <Tag type="warning">{tagsNumber > 2 && !isPc ? '悬' : '悬赏'}</Tag>}
+          {props.isRed && <Tag type="danger">{tagsNumber > 2 && !isPc ? '红' : '红包'}</Tag>}
+          {props.isPay && <Tag type="success">{tagsNumber > 2 && !isPc ? '付' : '付费'}</Tag>}
+          {/* {props.collect === 'collect' || true &&  <Icon className={styles.listItemIcon} name='CollectOutlined' size={20} />} */}
+          {props.extraTag && props.extraTag}
         </div>
       </div>
-
-      <div className={styles.tags}>
-        {props.isEssence && <Tag type="orange">{tagsNumber > 2 && !isPc ? '精' : '精华'}</Tag>}
-        {/* {props.isEssence && <Tag type="primary">精华</Tag>} */}
-        {props.isReward && <Tag type="warning">{tagsNumber > 2 && !isPc ? '悬' : '悬赏'}</Tag>}
-        {props.isRed && <Tag type="danger">{tagsNumber > 2 && !isPc ? '红' : '红包'}</Tag>}
-        {props.isPay && <Tag type="success">{tagsNumber > 2 && !isPc ? '付' : '付费'}</Tag>}
-        {/* {props.collect === 'collect' || true &&  <Icon className={styles.listItemIcon} name='CollectOutlined' size={20} />} */}
-        {props.extraTag && props.extraTag}
-      </div>
-    </div>
+    </>
   );
 }

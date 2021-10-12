@@ -10,6 +10,7 @@ import xss from '@common/utils/xss';
 import { urlToLink } from '@common/utils/replace-url-to-a';
 import replaceStringInRegex from '@common/utils/replace-string-in-regex';
 import isServer from '@common/utils/is-server';
+import calcCosImageQuality from '@common/utils/calc-cos-image-quality';
 import styles from './index.module.scss';
 
 /**
@@ -42,6 +43,7 @@ const PostContent = ({
   const [showMore, setShowMore] = useState(false); // 根据文本长度显示"查看更多"
   const [imageVisible, setImageVisible] = useState(false);
   const [imageUrlList, setImageUrlList] = useState([]);
+  const [imageLgAndSmUrlList, setImageLgAndSmUrlList] = useState([]);
   const [curImageUrl, setCurImageUrl] = useState('');
   const ImagePreviewerRef = useRef(null); // 富文本中的图片也要支持预览
   const contentWrapperRef = useRef(null);
@@ -54,10 +56,46 @@ const PostContent = ({
 
   const [openedMore, setOpenedMore] = useState(useShowMore);
 
+  const replaceImgSrc = (src) => {
+    const [path] = src.split('?');
+    const type = path.substr(path.lastIndexOf('.') + 1);
+    return calcCosImageQuality(src, type, 7);
+  }
+  
+  // 将图片链接替换成 webp 及小图
+  const replaceImagesFromText = (contentText) => {
+    const images = contentText.match(/<img.*?\/>/g)?.filter(image => (!image.includes('emoji')));
+    if (images && images.length) {
+      const imageLgAndSmUrlList = [];
+      const imageUrlList = [];
+      for (let i = 0; i < images.length; i++) {
+        let imgSrc = images[i].match(/src=[\'\"]?([^\'\"]*)[\'\"]?/i)[0];
+        imgSrc = imgSrc ? imgSrc.substring(5, imgSrc.length-1) : '';
+        const smImgSrc = imgSrc ? replaceImgSrc(imgSrc) : '';
+        const newImg = images[i].replace(imgSrc, smImgSrc);
+        imageUrlList.push(imgSrc);
+        // 保存图片的缩略图和原图，用于预览时查找对应链接
+        imageLgAndSmUrlList.push({
+          smSrc: smImgSrc,
+          lgSrc: imgSrc
+        });
+        contentText = contentText.replace(images[i], newImg);
+      }
+      if (imageUrlList.length) {
+        setImageUrlList(imageUrlList);
+      }
+      if (imageLgAndSmUrlList.length) {
+        setImageLgAndSmUrlList(imageLgAndSmUrlList);
+      }
+    };
+    return contentText;
+  }
+
   // 过滤内容
   const filterContent = useMemo(() => {
     let newContent = content ? s9e.parse(content) : '';
     newContent = xss(newContent);
+    newContent = replaceImagesFromText(newContent);
     return newContent;
   }, [content]);
 
@@ -119,7 +157,9 @@ const PostContent = ({
     updateViewCount();
     if (e?.attribs?.src) {
       setImageVisible(true);
-      setCurImageUrl(e.attribs.src);
+      // 替换大图
+      const imgSrcObj = imageLgAndSmUrlList.find(item => item.smSrc === e.attribs.src);
+      setCurImageUrl(imgSrcObj?.lgSrc || e.attribs.src);
     }
   };
 
@@ -142,15 +182,15 @@ const PostContent = ({
     setCutContentForDisplay(ctnSubstring);
   };
 
-  const getImagesFromText = (text) => {
-    const _text = replaceStringInRegex(text, 'emoj', '');
-    const images = _text.match(/<img\s+[^<>]*src=[\"\'\\]+([^\"\']*)/gm) || [];
+  // const getImagesFromText = (text) => {
+  //   const _text = replaceStringInRegex(text, 'emoj', '');
+  //   const images = _text.match(/<img\s+[^<>]*src=[\"\'\\]+([^\"\']*)/gm) || [];
 
-    for (let i = 0; i < images.length; i++) {
-      images[i] = images[i].replace(/<img\s+[^<>]*src=[\"\'\\]+/gm, '') || '';
-    }
-    return images;
-  };
+  //   for (let i = 0; i < images.length; i++) {
+  //     images[i] = images[i].replace(/<img\s+[^<>]*src=[\"\'\\]+/gm, '') || '';
+  //   }
+  //   return images;
+  // };
 
   useEffect(() => {
     const lengthInLine = parseInt((contentWrapperRef.current.offsetWidth || 704) / 16);
@@ -171,10 +211,10 @@ const PostContent = ({
       setContentTooLong(false);
     }
 
-    const imageUrlList = getImagesFromText(filterContent);
-    if (imageUrlList.length) {
-      setImageUrlList(imageUrlList);
-    }
+    // const imageUrlList = getImagesFromText(filterContent);
+    // if (imageUrlList.length) {
+    //   setImageUrlList(imageUrlList);
+    // }
   }, [filterContent]);
   
   return (

@@ -1,9 +1,6 @@
 import React from 'react';
-import { withRouter } from 'next/router';
 import { inject, observer } from 'mobx-react';
 import { Button, Icon, Avatar, Toast } from '@discuzq/design';
-import { createRegister } from '@discuzq/sdk/dist/api/plugin/create-register';
-import { deleteRegister } from '@discuzq/sdk/dist/api/plugin/delete-register';
 import PopupList from '@components/thread/popup-list';
 import CountDown from '@common/utils/count-down';
 import LoginHelper from '@common/utils/login-helper';
@@ -11,14 +8,12 @@ import classNames from 'classnames';
 import styles from '../index.module.scss';
 
 let countDownIns = null;
-@inject('thread')
-@inject('index')
-@inject('user')
-@observer
+
 class CustomApplyDisplay extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      isDetailPage: props.dzqRouter.router.router.pathname === '/thread/[id]' ? true : false,
       popupShow: false,
       loading: false,
       days: 0,
@@ -28,11 +23,15 @@ class CustomApplyDisplay extends React.Component {
       isApplyEnd: false, // 报名时间是否已结束
       isApplyStart: false, // 报名时间是否已开始
     };
+    this.handleActOperate = this.handleActOperate.bind(this);
+    this.createRegister = this.createRegister.bind(this);
+    this.deleteRegister = this.deleteRegister.bind(this);
   }
 
   componentDidMount() {
     if (!countDownIns) countDownIns = new CountDown();
     const { renderData } = this.props;
+
     const { body } = renderData || {};
     if (body?.registerEndTime || body?.registerStartTime) {
       const start = body?.registerStartTime?.replace(/-/g, '/');
@@ -56,6 +55,41 @@ class CustomApplyDisplay extends React.Component {
 
   componentWillUnmount() {
     if (!countDownIns) countDownIns?.stop();
+  }
+
+  // 取消报名
+  async deleteRegister(opt) {
+    try {
+      const { params = {}, data = {}, ...others } = opt;
+      const options = {
+        url: '/plugin/activity/api/register/cancel', // 请求地址
+        method: 'POST',
+        params,
+        data,
+        ...others
+      };
+      const result = await this.props.dzqRequest.dispatcher(options);
+      return result;
+    } catch (error) {
+      return this.props.dzqRequestHandleError(error);
+    }
+  }
+  // 确认报名
+  async createRegister(opt) {
+    try {
+      const { params = {}, data = {}, ...others } = opt;
+      const options = {
+        url: '/plugin/activity/api/register/append', // 请求地址
+        method: 'POST',
+        params,
+        data,
+        ...others
+      };
+      const result = await this.props.dzqRequest.dispatcher(options);
+      return result;
+    } catch (error) {
+      return this.props.dzqRequestHandleError(error);
+    }
   }
 
   applyStartCountDown = (time) => {
@@ -85,19 +119,20 @@ class CustomApplyDisplay extends React.Component {
   };
 
   handleActOperate = async () => {
-    const { renderData, thread, index, siteData, user } = this.props;
-    if (!user.isLogin()) {
+    const { renderData, userInfo, isLogin, threadData, updateThread, updateListThreadIndexes, recomputeRowHeights } = this.props;
+    if (!isLogin()) {
       LoginHelper.saveAndLogin();
       return;
     }
     const { tomId, body, _plugin } = renderData || {};
     const { isRegistered, activityId, registerUsers, totalNumber } = body;
-    const action = isRegistered ? deleteRegister : createRegister;
+    const action = isRegistered ? this.deleteRegister : this.createRegister;
     this.setState({ loading: true });
     const res = await action({ data: { activityId } });
+
     this.setState({ loading: false });
     if (res.code === 0) {
-      const authorInfo = user.userInfo;
+      const authorInfo = userInfo;
       const uid = authorInfo.id;
       const users = registerUsers.filter(item => item.userId !== uid);
       let currentNumber = body?.currentNumber;
@@ -112,7 +147,7 @@ class CustomApplyDisplay extends React.Component {
       } else {
         currentNumber = body?.currentNumber - 1;
       }
-      const tid = siteData.isDetailPage ? thread?.threadData?.id : siteData?.threadId;
+      const tid = this.state.isDetailPage ? threadData?.id : threadData?.threadId;
       const tomValue = {
         body: {
           ...body,
@@ -125,18 +160,19 @@ class CustomApplyDisplay extends React.Component {
         threadId: tid,
         _plugin,
       };
-      thread.updateThread(tomId, tomValue);
-      const threadData = index.updateListThreadIndexes(tid, tomId, tomValue);
-      if (threadData && siteData.recomputeRowHeights) siteData.recomputeRowHeights(threadData);
+      updateThread(tomId, tomValue);
+      const newThreadData = updateListThreadIndexes(tid, tomId, tomValue);
+      if (newThreadData && recomputeRowHeights) recomputeRowHeights(newThreadData);
       Toast.info({ content: isRegistered ? '取消报名成功' : '报名成功' });
     } else Toast.error({ content: res.msg || '报名失败' });
     return res;
   };
 
   handleMoreClick = () => {
-    const { siteData } = this.props;
-    if (siteData?.threadId) {
-      this.props.router.push(`/thread/${siteData?.threadId}`);
+    const { dzqRouter, threadData } = this.props;
+    const tid = this.state.isDetailPage ? threadData?.id : threadData?.threadId;
+    if (tid) {
+      dzqRouter.push({url: `/thread/${tid}`});
     }
   };
 
@@ -180,16 +216,16 @@ class CustomApplyDisplay extends React.Component {
               <>
                 <div className={
                   classNames(styles['wrapper-content__detail'], {
-                    [styles['text-clamp']]: !siteData?.isDetailPage,
+                    [styles['text-clamp']]: !this.state.isDetailPage,
                   })
                 }>
                   {body?.content}
                 </div>
-                {!siteData?.isDetailPage && (
+                {!this.state.isDetailPage && (
                   <div
                     className={classNames(styles['text-primary'], styles.more)}
                     onClick={this.handleMoreClick}
-                  >查看详情 ></div>
+                  >查看详情></div>
                 )}
               </>
             )}
@@ -255,4 +291,4 @@ class CustomApplyDisplay extends React.Component {
   }
 };
 
-export default withRouter(CustomApplyDisplay);
+export default CustomApplyDisplay;
