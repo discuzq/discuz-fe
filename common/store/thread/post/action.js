@@ -477,17 +477,17 @@ class ThreadPostAction extends ThreadPostStore {
     let currentId = id;
     const categories = this.getCurrentCategories();
     // 如果没有传入id，则取默认第一个
-    if (!id && categories && categories.length) currentId = categories[0].pid;
+    if (!id && categories && categories.length) currentId = categories[0].categoryId;
     if (categories && categories.length && currentId) {
       categories.forEach((item) => {
         const { children } = item;
-        if (item.pid === currentId) {
+        if (item.categoryId === currentId) {
           parent = item;
           if (children && children.length > 0) [child] = children;
         } else {
           if (children && children.length > 0) {
             children.forEach((elem) => {
-              if (elem.pid === currentId) {
+              if (elem.categoryId === currentId) {
                 child = elem;
                 parent = item;
               }
@@ -497,8 +497,8 @@ class ThreadPostAction extends ThreadPostStore {
       });
     }
     // 如果有 id，但是没有设置选中的种类，说明可能是编辑没有发帖权限的分类帖子，这时也展示第一个帖子
-    if (id && !parent.pid && categories && categories.length) {
-      currentId = categories[0].pid;
+    if (id && !parent.categoryId && categories && categories.length) {
+      currentId = categories[0].categoryId;
       return this.getCategorySelectById(currentId);
     }
     return { parent, child };

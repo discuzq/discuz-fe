@@ -40,7 +40,7 @@ class WechatRebindDialog extends Component {
         </div>
         <div>
           <div>
-            <img src={this.props.user.rebindQRCode} />
+            <img src={this.props.user.rebindQRCode}  alt="二维码"/>
           </div>
         </div>
       </Dialog>

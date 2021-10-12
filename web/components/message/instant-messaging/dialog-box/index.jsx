@@ -35,6 +35,7 @@ const DialogBox = (props, ref) => {
         <img
           className={styles.msgImage}
           src={renderUrl || imageUrl}
+          alt={renderUrl || imageUrl}
           onClick={() => {
             setImagePreviewerUrls(dialogMsgList.list.filter(item => (!item.isImageLoading && item.imageUrl)).map(item => item.imageUrl).reverse())
             setTimeout(() => {

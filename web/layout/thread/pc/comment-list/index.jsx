@@ -515,6 +515,7 @@ class RenderCommentList extends React.Component {
                     isSelf && isReward && this.props.thread?.threadData?.userId !== val.userId
                   }
                   redPacketData = {RED_PACKET}
+                  thread={this.props.thread}
                   threadId={this.props.thread.threadData.userId}
                   active={val.id === postId}
                   isAnonymous={isAnonymous}

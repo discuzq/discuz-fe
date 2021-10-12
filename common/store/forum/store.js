@@ -38,11 +38,16 @@ class ForumStore {
     this.isLoading = is;
   }
 
-  @action.bound
-  async setOtherPermissions() {
+  @action
+  async setOtherPermissions(data) {
     try {
-      const resp = await getForum();
-      this.otherPermissions = get(resp, 'data.other', {});
+      if ( data ) {
+        this.otherPermissions = get(data, 'other', {});
+      } else {
+        const res = await getForum();
+        this.otherPermissions = get(res, 'data.other', {});
+      }
+     
     } catch (error) {
       console.log(error)
     }

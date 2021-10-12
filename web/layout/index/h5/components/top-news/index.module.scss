@@ -3,6 +3,7 @@
 .list {
   width: 100%;
   background: $white;
+  
   .item {
     display: flex;
     flex-direction: row;
@@ -18,11 +19,13 @@
       white-space: nowrap;
     }
   }
+
   .itemH5 {
     height: rem(36);
-    border-bottom: rem(1) solid $border-color;
+   
     // box-sizing: border-box;
     position: relative;
+    border-bottom: rem(1) solid $border-color;
 
     &:last-child{
       border-bottom: rem(1) solid transparent;

@@ -1,3 +1,4 @@
+/* eslint-disable spaced-comment */
 import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react';
 import { Icon, Button } from '@discuzq/design';
@@ -49,6 +50,10 @@ const RenderThreadContent = withRouter(inject('site', 'user')(observer((props) =
   // 是否附件付费帖
   const isAttachmentPay = threadStore?.threadData?.payType === 2 && threadStore?.threadData?.paid === false;
   const attachmentPrice = threadStore?.threadData?.attachmentPrice || 0;
+
+  // 是否可以免费查看付费帖子
+  const canFreeViewPost = threadStore?.threadData?.ability.canFreeViewPost;
+
   // 是否需要附加付费
   const needAttachmentPay = !canFreeViewPost && isAttachmentPay && !isSelf && !isPayed;
   // 是否付费帖子
@@ -72,9 +77,6 @@ const RenderThreadContent = withRouter(inject('site', 'user')(observer((props) =
   // const canBeReward = isFree && !isRedPack && !isReward;
   // 是否已打赏
   const isRewarded = threadStore?.threadData?.isReward;
-
-  // 是否可以免费查看付费帖子
-  const canFreeViewPost = threadStore?.threadData?.ability.canFreeViewPost;
 
   const parseContent = parseContentData(indexes);
 
@@ -120,7 +122,7 @@ const RenderThreadContent = withRouter(inject('site', 'user')(observer((props) =
   const {
     canDownloadAttachment,
     canViewAttachment,
-    canViewVideo
+    canViewVideo,
   } = threadStore?.threadData?.ability || {};
 
   const { tipList } = threadStore?.threadData || {};
@@ -284,24 +286,22 @@ const RenderThreadContent = withRouter(inject('site', 'user')(observer((props) =
         )}
 
           {
-            DZQPluginCenter.injection('plugin_detail', 'thread_extension_display_hook').map(({render, pluginInfo}) => {
-              return (
+            DZQPluginCenter.injection('plugin_detail', 'thread_extension_display_hook').map(({ render, pluginInfo }) => (
                 <div key={pluginInfo.name}>
                   {render({
                     site: { ...site, isDetailPage: true  },
-                    renderData: parseContent.plugin
+                    renderData: parseContent.plugin,
                   })}
                 </div>
-              )
-            })
+            ))
           }
 
-          {/* 标签 */}
-          {(parentCategoryName || categoryName) && (
-            <div className={styles.tag} onClick={onTagClick}>
-              {parentCategoryName ? `${parentCategoryName}/${categoryName}` : categoryName}
-            </div>
-          )}
+        {/* 标签 */}
+        {(parentCategoryName || categoryName) && (
+          <div className={styles.tag} onClick={onTagClick}>
+            {parentCategoryName ? `${parentCategoryName}/${categoryName}` : categoryName}
+          </div>
+        )}
 
         {/* 帖子付费 */}
         {!canFreeViewPost && isThreadPay && !isSelf && !isPayed && (
@@ -327,8 +327,8 @@ const RenderThreadContent = withRouter(inject('site', 'user')(observer((props) =
             <div className={styles.moneyList}>
               <div className={styles.top}>{tipList.length}人打赏</div>
               <div className={styles.itemList}>
-                {tipList.map(i=>(
-                  <div key={i.userId} onClick={()=>props.router.push(`/user/${i.userId}`)} className={styles.itemAvatar}>
+                {tipList.map(i => (
+                  <div key={i.userId} onClick={() => props.router.push(`/user/${i.userId}`)} className={styles.itemAvatar}>
                       <Avatar
                         image={i.avatar}
                         name={i.nickname}

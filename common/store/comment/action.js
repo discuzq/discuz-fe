@@ -170,7 +170,7 @@ class CommentAction extends CommentStore {
    * 修改评论
    * @param {object} params * 参数
    * @param {number} params.id * 帖子id
-   * @param {number} params.pid * 评论id
+   * @param {number} params.postId * 评论id
    * @param {string} params.content * 评论内容
    * @param {array} params.attachments 附件内容
    * @returns {object} 处理结果
@@ -203,7 +203,7 @@ class CommentAction extends CommentStore {
 
       // 更新列表中的评论
       (commentList || []).forEach((comment) => {
-        if (comment.id === pid) {
+        if (comment.id === postId) {
           comment.content = res.data.content;
         }
       });
@@ -314,7 +314,7 @@ class CommentAction extends CommentStore {
     if (res?.data && res.code === 0) {
       if (Number(res.data.redPacketAmount) > 0) {
         const threadId = ThreadStore?.threadData?.id;
-        ThreadStore.setCommentListDetailField(res.data.pid, 'redPacketAmount', res.data.redPacketAmount);
+        ThreadStore.setCommentListDetailField(res.data.postId, 'redPacketAmount', res.data.redPacketAmount);
         await ThreadStore.fetchThreadDetail(threadId);
         ThreadStore.updateListStore();
       }

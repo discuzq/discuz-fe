@@ -12,7 +12,7 @@ class H5404Page extends React.Component {
         <div className={styles.container}>
           <div>
             <Header/>
-            <img className={styles.img} src='/dzq-img/404.png'/>
+            <img alt="404" className={styles.img} src='/dzq-img/404.png'/>
             <p className={styles.text}>您要访问的页面可能已被删除、已更改名称或暂时不可用</p>
           </div>
           <Copyright />

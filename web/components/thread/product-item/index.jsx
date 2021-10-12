@@ -15,7 +15,7 @@ const Index = ({ image, title, amount = 0, loading, className: _className = '', 
 
   return (
     <div className={`${styles.container} ${_className}`} onClick={onClick}>
-      <img className={`${styles.image} ${!image ? styles.empty : ''}`} src={image} />
+      <img alt="图片" className={`${styles.image} ${!image ? styles.empty : ''}`} src={image} />
       <div className={styles.content}>
         <div className={styles.title}>{_title}</div>
         <div className={styles.amount}>¥{amount}</div>

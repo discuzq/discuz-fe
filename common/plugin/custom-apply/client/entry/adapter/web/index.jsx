@@ -55,7 +55,11 @@ export default class CustomApplyEntry extends React.Component {
         this.setState({ body: { ...body, activityStartTime: time } });
         break;
       case TimeType.actEnd:
-        this.setState({ body: { ...body, activityEndTime: time } });
+        if (!this.checkActEndTime(time)) {
+          Toast.info({ content: '请选择正确的活动结束时间' });
+        } else {
+          this.setState({ body: { ...body, activityEndTime: time } });
+        }
         break;
       case TimeType.applyStart:
         if (!this.checkApplyStartTime(time)) {
@@ -77,6 +81,15 @@ export default class CustomApplyEntry extends React.Component {
   };
 
   getTimestamp = time => new Date(time).getTime();
+
+  checkActEndTime = (time) => {
+    const { activityStartTime } = this.state.body || {};
+    if (this.getTimestamp(activityStartTime) > this.getTimestamp(time)
+      || this.getTimestamp(time) < this.getTimestamp(new Date().getTime())) {
+      return false;
+    }
+    return true;
+  };
 
   checkApplyStartTime = (time) => {
     const { body } = this.state;
@@ -130,6 +143,10 @@ export default class CustomApplyEntry extends React.Component {
     const { body } = this.state;
     if (!body.activityStartTime || !body.activityEndTime) {
       Toast.info({ content: '活动开始时间和结束时间必填' });
+      return false;
+    }
+    if (this.getTimestamp(body.activityEndTime) <= this.getTimestamp(new Date())) {
+      Toast.info({ content: '活动结束时间必须大于当前时间' });
       return false;
     }
     const { renderData } = this.props;
@@ -331,7 +348,7 @@ export default class CustomApplyEntry extends React.Component {
                         disabled={body.actPeopleLimitType === 0}
                         value={body.totalNumber}
                         onChange={this.handleLimitPeopleChange}
-                        className={styles['text-center']}
+                        className={styles['dzqp-act__limit_input']}
                       />人报名
                     </Radio>
                   </Radio.Group>

@@ -32,6 +32,8 @@ class index extends Component {
   componentDidMount() {
     const id = this.props.user?.id;
     this.props.user.updateUserInfo(id);
+
+
   }
 
   // 点击屏蔽
@@ -216,7 +218,7 @@ class index extends Component {
   };
 
   // 是否显示续费卡片
-  whetherIsShowRenewalCard = () => this.props.site?.siteMode === 'pay' && !this.props.user?.isAdmini && !this.props.isOtherPerson;
+  whetherIsShowRenewalCard = () => !this.props.user?.isAdmini && !this.props.isOtherPerson;
 
   @computed get targetUser() {
     const { query } = this.props.router;

@@ -17,7 +17,7 @@ class H5500Page extends React.Component {
         <div className={styles.container}>
           <div>
             <Header/>
-            <img className={styles.img} src='/dzq-img/error.png'/>
+            <img alt="错误图片" className={styles.img} src='/dzq-img/error.png'/>
             <p className={styles.text}>{ (errPageType && ERROR_PAGE_TIPS[errPageType]) || '未知错误'}</p>
           </div>
           <Copyright />

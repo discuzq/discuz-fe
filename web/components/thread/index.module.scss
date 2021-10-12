@@ -1,4 +1,10 @@
 @import '@common/styles/index.scss';
+
+.thread-link{
+  text-decoration: none;
+  display: block;
+}
+
 .container {
   box-sizing: border-box;
   padding: 0 rem($padding-4n);

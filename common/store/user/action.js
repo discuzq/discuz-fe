@@ -19,9 +19,10 @@ import {
   readUsersDeny,
   wechatRebindQrCodeGen,
   getWechatRebindStatus,
-  getSignInFields,
   h5Rebind,
   miniRebind,
+  getSignInFields,
+  getPayGroups,
 } from '@server';
 import { get } from '../../utils/get';
 import locals from '@common/utils/local-bridge';
@@ -66,6 +67,17 @@ class UserAction extends SiteStore {
     }
   }
 
+  // 获取当前用户的付费用户组
+  @action
+  async getPayGroups() {
+    const res = await getPayGroups();
+    const { code, data } = res;
+    if (code === 0) {
+      this.payGroups = data;
+      return data;
+    }
+  }
+
   // 更新指定 userid 的 用户信息
   @action
   updateTargetUserInfo({ userId, userInfo }) {
@@ -89,16 +101,16 @@ class UserAction extends SiteStore {
 
     const opts = {
       params: {
-        page: page,
+        page,
         perPage: 20,
         filter: {
-          userId: userId,
+          userId,
         },
       },
     };
 
     if (searchValue) {
-      opts.params.filter['nickName'] = searchValue;
+      opts.params.filter.nickName = searchValue;
     }
 
     return await getUserFollow(opts);
@@ -150,10 +162,10 @@ class UserAction extends SiteStore {
   async getUserFanses({ userId, page }) {
     const opts = {
       params: {
-        page: page,
+        page,
         perPage: 20,
         filter: {
-          userId: userId,
+          userId,
         },
       },
     };
@@ -202,7 +214,7 @@ class UserAction extends SiteStore {
       if (follows && follows.data) {
         Object.keys(follows.data).forEach((page) => {
           follows.data[page].forEach((userInfo) => {
-            if (get(userInfo, 'user.pid') !== userId) return;
+            if (get(userInfo, 'user.userId') !== userId) return;
 
             resultArray.push(userInfo);
           });
@@ -214,7 +226,7 @@ class UserAction extends SiteStore {
       if (fans && fans.data) {
         Object.keys(fans.data).forEach((page) => {
           fans.data[page].forEach((userInfo) => {
-            if (get(userInfo, 'user.pid') !== userId) return;
+            if (get(userInfo, 'user.userId') !== userId) return;
 
             resultArray.push(userInfo);
           });
@@ -236,7 +248,7 @@ class UserAction extends SiteStore {
   @action
   followUser({ userId, followRes }) {
     const followTransformer = (userInfo) => {
-      if (get(userInfo, 'user.pid') !== userId) return;
+      if (get(userInfo, 'user.userId') !== userId) return;
       userInfo.userFollow.isMutual = followRes.data.isMutual;
       userInfo.userFollow.isFollow = true;
     };
@@ -265,7 +277,7 @@ class UserAction extends SiteStore {
       let searchFlag = false;
       Object.keys(this.followStore[this.id].data).forEach((page) => {
         this.followStore[this.id].data[page].forEach((userInfo) => {
-          if (userInfo.user.pid === userId) {
+          if (userInfo.user.userId === userId) {
             searchFlag = true;
           }
         });
@@ -302,7 +314,7 @@ class UserAction extends SiteStore {
   @action
   unFollowUser({ userId }) {
     const unfollowTransformer = (userInfo) => {
-      if (get(userInfo, 'user.pid') !== userId) return;
+      if (get(userInfo, 'user.userId') !== userId) return;
       userInfo.userFollow.isFollow = false;
     };
 
@@ -549,7 +561,7 @@ class UserAction extends SiteStore {
   @action
   async getAssignUserInfo(userId) {
     try {
-      const userInfo = await readUser({ params: { userId: userId } });
+      const userInfo = await readUser({ params: { userId } });
       if (userInfo.code === 0 && userInfo.data) {
         return userInfo.data;
       }

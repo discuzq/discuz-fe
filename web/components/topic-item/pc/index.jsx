@@ -30,7 +30,7 @@ const TopicItem = ({ data, onClick = noop, index, footer }) => {
     <div className={styles.item} onClick={click}>
       <div className={styles.imgBox}>
         { imageData.length > 0 && imageData[0].thumbUrl ? (
-            <img className={styles.img} src={imageData[0].thumbUrl}/>
+            <img alt="图片" className={styles.img} src={imageData[0].thumbUrl}/>
           ) : `${data.content[0]}`
         }
       </div>

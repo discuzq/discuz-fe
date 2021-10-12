@@ -59,6 +59,12 @@ class ThreadAction extends ThreadStore {
   }
 
   @action
+  setAuthorInfo(userData) {
+    this.authorInfo = userData;
+  }
+
+
+  @action
   setCommentListPage(page) {
     this.page = page;
   }

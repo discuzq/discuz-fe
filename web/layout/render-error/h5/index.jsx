@@ -15,7 +15,7 @@ export default function ErrorPage() {
       <Header></Header>
 
       <div className={styles.body}>
-      <img className={styles.icon} src='/dzq-img/error.png'/>
+      <img alt="图片" className={styles.icon} src='/dzq-img/error.png'/>
       <span className={styles.text}>客户端错误 请报告官方团队</span>
       </div>
 

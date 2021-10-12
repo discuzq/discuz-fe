@@ -3,12 +3,12 @@ import { updateThreadStick } from '@server/index';
 /**
  * 更新所有 我的 帖子的头像，用于头像更新时使用
  * @param avatarUrl
- * @param indexStore
+ * @param listStore
  */
-export const updateMyThreadAvatar = ({ avatarUrl, indexStore }) => {
-  indexStore.registerList({ namespace: 'my' });
+export const updateMyThreadAvatar = ({ avatarUrl, listStore }) => {
+  listStore.registerList({ namespace: 'my' });
 
-  const { my } = indexStore.lists;
+  const { my } = listStore.lists;
 
   Object.values(my.data).forEach((pageData) => {
     pageData.forEach((threadItem) => {
@@ -19,16 +19,16 @@ export const updateMyThreadAvatar = ({ avatarUrl, indexStore }) => {
     });
   });
 
-  indexStore.forceUpdateList();
+  listStore.forceUpdateList();
 };
 
 /**
  * 找到当前的置顶帖
- * @param indexStore
+ * @param listStore
  * @returns {null|*}
  */
-export const findCurrentStickedThread = ({ indexStore }) => {
-  const myList = indexStore.getList({ namespace: 'my' });
+export const findCurrentStickedThread = ({ listStore }) => {
+  const myList = listStore.getList({ namespace: 'my' });
 
   if (myList[0] && myList[0].userStickStatus === 1) {
     return myList[0];
@@ -40,9 +40,9 @@ export const findCurrentStickedThread = ({ indexStore }) => {
 /**
  * 设置帖子被置顶
  * @param thread
- * @param indexStore
+ * @param listStore
  */
-export const setThreadBeSticked = async ({ thread, indexStore }) => {
+export const setThreadBeSticked = async ({ thread, listStore }) => {
   const { threadId } = thread;
   const opts = {
     data: {
@@ -60,9 +60,9 @@ export const setThreadBeSticked = async ({ thread, indexStore }) => {
     };
   }
 
-  indexStore.clearList({ namespace: 'my' });
+  listStore.clearList({ namespace: 'my' });
 
-  const fetchListRet = await indexStore.fetchList({
+  const fetchListRet = await listStore.fetchList({
     namespace: 'my',
     filter: {
       toUserId: 0,
@@ -70,7 +70,7 @@ export const setThreadBeSticked = async ({ thread, indexStore }) => {
     },
   });
 
-  indexStore.setList({ namespace: 'my', data: fetchListRet });
+  listStore.setList({ namespace: 'my', data: fetchListRet });
 
   return { success: true };
 };
@@ -78,9 +78,9 @@ export const setThreadBeSticked = async ({ thread, indexStore }) => {
 /**
  * 设置帖子取消置顶
  * @param thread
- * @param indexStore
+ * @param listStore
  */
-export const setThreadBeUnSticked = async ({ thread, indexStore }) => {
+export const setThreadBeUnSticked = async ({ thread, listStore }) => {
   const { threadId } = thread;
   const opts = {
     data: {
@@ -98,9 +98,9 @@ export const setThreadBeUnSticked = async ({ thread, indexStore }) => {
     };
   }
 
-  indexStore.clearList({ namespace: 'my' });
+  listStore.clearList({ namespace: 'my' });
 
-  const fetchListRet = await indexStore.fetchList({
+  const fetchListRet = await listStore.fetchList({
     namespace: 'my',
     filter: {
       toUserId: 0,
@@ -108,7 +108,7 @@ export const setThreadBeUnSticked = async ({ thread, indexStore }) => {
     },
   });
 
-  indexStore.setList({ namespace: 'my', data: fetchListRet });
+  listStore.setList({ namespace: 'my', data: fetchListRet });
 
   return { success: true };
 };

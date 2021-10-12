@@ -1,3 +1,4 @@
+/* eslint-disable spaced-comment */
 
 /**
  * 发帖页底部分类、图片等工具栏
@@ -69,8 +70,7 @@ const Index = inject('site', 'user', 'threadPost')(observer((props) => {
     setCanInsertplugsin(canInsert);
 
     // 根据筛选后的插件渲染图标
-    let plugs = canInsert.map((item, index) => {
-      return (
+    let plugs = canInsert.map((item, index) => (
         <Icon
           key={index}
           className={getIconCls(item)}
@@ -83,8 +83,7 @@ const Index = inject('site', 'user', 'threadPost')(observer((props) => {
           //   || (threadPost.postData.anonymous && item.type === THREAD_TYPE.anonymity)) && item.active}
           size='20'
         />
-      );
-    });
+      ));
 
     // 插件注入
     plugs = plugs.concat(DZQPluginCenter.injection('plugin_post', 'post_extension_entry_hook').map(({render, pluginInfo}) => {
@@ -108,7 +107,7 @@ const Index = inject('site', 'user', 'threadPost')(observer((props) => {
           {plugs}
         </View>
 
-        <View className={styles['switcher']} onClick={() => {
+        <View className={styles.switcher} onClick={() => {
           setplugShow(false);
           onSetplugShow();
         }}>
@@ -131,20 +130,20 @@ const Index = inject('site', 'user', 'threadPost')(observer((props) => {
 
   // 分类元素
   const category = (
-    <View className={styles['category']} onClick={onCategoryClick}>
+    <View className={styles.category} onClick={onCategoryClick}>
       <Icon
         name="MenuOutlined"
         size='14'
-        className={styles['icon']}
+        className={styles.icon}
       />
-      <Text className={styles['text']}>分类</Text>
+      <Text className={styles.text}>分类</Text>
       <Units type='tag' style={{margin: '0', maxWidth: '200px'}} tagContent={content() || '选择分类(必选)'} onTagClick={() => {}} />
     </View>
   );
 
   return (
-    <View className={`${styles['container']} ${plugShow ? styles['container-plugin-show'] : ''}`}>
-      <View className={styles['category']}>
+    <View className={`${styles.container} ${plugShow ? styles['container-plugin-show'] : ''}`}>
+      <View className={styles.category}>
         {plugShow ? plug : category}
       </View>
       <View onClick={() => {

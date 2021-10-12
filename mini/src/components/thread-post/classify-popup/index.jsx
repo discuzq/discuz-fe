@@ -24,7 +24,7 @@ const ClassifyPopup = (props) => {
   const [subCategory, setSubCategory] = useState([]); // 子类列表
 
   const handleParentClick = (item) => { // 父类点击
-    if (item.pid === parent.pid) return;
+    if (item.categoryId === parent.categoryId) return;
     setParent(item);
     setChild({});
     if (item?.children?.length > 0) {
@@ -32,14 +32,14 @@ const ClassifyPopup = (props) => {
       return;
     }
     setSubCategory([]);
-    setPostData({ categoryId: item.pid });
+    setPostData({ categoryId: item.categoryId });
     setCategorySelected({ parent: item, child: {} });
     onHide();
   };
 
   const handleChildClick = (item) => { // 子类点击
     setChild(item);
-    setPostData({ categoryId: item.pid });
+    setPostData({ categoryId: item.categoryId });
     setCategorySelected({ parent, child: item });
     onHide();
   };
@@ -48,7 +48,7 @@ const ClassifyPopup = (props) => {
     if (typeofFn.isArray(list) && list.length > 0) {
       setSubCategory(list);
       setChild(list[0]);
-      setPostData({ categoryId: list[0].pid });
+      setPostData({ categoryId: list[0].categoryId });
       setCategorySelected({ parent: item, child: list[0] });
     } else {
       setSubCategory([]);
@@ -59,14 +59,14 @@ const ClassifyPopup = (props) => {
   // hook
   useEffect(() => { // 回显分类,默认选中首项父类以及子类
     const { parent: storeParent, child: storeChild } = categorySelected;
-    if (storeParent.pid && storeParent.pid !== parent.pid) {
+    if (storeParent.categoryId && storeParent.categoryId !== parent.categoryId) {
       setParent(storeParent);
-      setPostData({ categoryId: storeParent.pid });
+      setPostData({ categoryId: storeParent.categoryId });
     }
-    if (storeChild.pid && storeChild.pid !== child.pid) {
+    if (storeChild.categoryId && storeChild.categoryId !== child.categoryId) {
       setChild(storeChild);
       setSubCategory(storeParent.children);
-      setPostData({ categoryId: storeChild.pid });
+      setPostData({ categoryId: storeChild.categoryId });
     }
   }, [categorySelected]);
 
@@ -82,8 +82,8 @@ const ClassifyPopup = (props) => {
       <View className={`${styles.content} ${styles['content-parent']}`}>
         {(category?.slice() || []).map(item => (
           <Button
-            key={item.pid}
-            className={`${parent.pid === item.pid ? styles.active : ''}`}
+            key={item.categoryId}
+            className={`${parent.categoryId === item.categoryId ? styles.active : ''}`}
             onClick={() => { handleParentClick(item) }}
           >
             {item.name}
@@ -95,8 +95,8 @@ const ClassifyPopup = (props) => {
         <View className={`${styles.content} ${styles['content-child']}`}>
           {(subCategory || []).map(item => (
             <Button
-              key={item.pid}
-              className={`${child.pid === item.pid ? styles.active : ''}`}
+              key={item.categoryId}
+              className={`${child.categoryId === item.categoryId ? styles.active : ''}`}
               onClick={() => { handleChildClick(item) }}
             >
               {item.name}

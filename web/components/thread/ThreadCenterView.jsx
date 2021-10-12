@@ -1,4 +1,5 @@
-import React, { useMemo } from 'react';
+/* eslint-disable spaced-comment */
+import React, { useMemo, useCallback } from 'react';
 import { Button, Icon } from '@discuzq/design';
 import AudioPlay from './audio-play';
 import PostContent from './post-content';
@@ -11,6 +12,7 @@ import VoteDisplay from './vote-display';
 import IframeVideoDisplay from '@components/thread-post/iframe-video-display';
 import Packet from './packet';
 import styles from './index.module.scss';
+import SiteMapLink from '@components/site-map-link';
 
 // 插件引入
 /**DZQ->plugin->register<plugin_index@thread_extension_display_hook>**/
@@ -34,6 +36,7 @@ const Index = (props) => {
   const needPay = useMemo(() => payType !== 0 && !paid, [paid, payType]);
 
   const {
+    threadId,
     onClick,
     unifyOnClick = null,
     onPay,
@@ -41,13 +44,13 @@ const Index = (props) => {
     onClose,
     platform,
     updateViewCount,
-    onTextItemClick
-  } = props
+    onTextItemClick,
+  } = props;
 
   const {
     canDownloadAttachment,
     canViewAttachment,
-    canViewVideo
+    canViewVideo,
   } = props?.data?.ability || {};
 
   // 标题显示37个字符
@@ -72,7 +75,7 @@ const Index = (props) => {
       voteData,
       threadId,
       iframeData,
-      plugin
+      plugin,
     } = handleAttachmentData(data);
 
     return (
@@ -155,16 +158,14 @@ const Index = (props) => {
         {voteData && <VoteDisplay recomputeRowHeights={props.recomputeRowHeights} voteData={voteData} threadId={threadId} />}
 
         {
-          DZQPluginCenter.injection('plugin_index', 'thread_extension_display_hook').map(({ render, pluginInfo }) => {
-            return (
+          DZQPluginCenter.injection('plugin_index', 'thread_extension_display_hook').map(({ render, pluginInfo }) => (
               <div key={pluginInfo.name}>
                 {render({
                   site: { ...props.site, recomputeRowHeights: props.recomputeRowHeights, threadId },
-                  renderData: plugin
+                  renderData: plugin,
                 })}
               </div>
-            )
-          })
+          ))
         }
       </>
     );
@@ -172,12 +173,11 @@ const Index = (props) => {
 
   return (
     <>
+      <SiteMapLink href={`/thread/${threadId}`}/>
       <div className={`${platform === 'h5' ? styles.wrapper : styles.wrapperPC}`}>
-        {title && <div className={styles.title} onClick={onClick}>{newTitle}</div>}
-
-        {renderThreadContent(props.data)}
+        {title && <h1 className={styles.title} onClick={onClick}>{newTitle}</h1>}
+          {renderThreadContent(props.data)}
       </div>
-
       {
         needPay && (
           <div className={styles.pay}>
