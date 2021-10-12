@@ -26,7 +26,7 @@ export default class index extends Component {
       isLoading: true,
       isPreviewBgVisible: false, // 是否预览背景图片
       isNormalTitle: false, // 是否显示不透明 title
-      previewAvatarUrl: null, // 预览背景图片链接
+      previewBackgroundUrl: null, // 预览背景图片链接
     };
   }
 
@@ -42,14 +42,14 @@ export default class index extends Component {
 
   async componentDidMount() {
     this.setNavigationBarStyle();
-    const { previewAvatarUrl } = this.state;
+    const { previewBackgroundUrl } = this.state;
     const { user } = this.props;
-    if(previewAvatarUrl === user.backgroundUrl) {
+    if(previewBackgroundUrl === user.backgroundUrl) {
       return;
     }
     const imgUrl = await checkImgExists(user.originalBackGroundUrl, user.backgroundUrl);
     this.setState({
-      previewAvatarUrl: imgUrl
+      previewBackgroundUrl: imgUrl
     })
   }
 
@@ -181,14 +181,14 @@ export default class index extends Component {
 
   // 获取背景图片
   getBackgroundUrl = () => {
-    const { previewAvatarUrl } = this.state;
+    const { previewBackgroundUrl } = this.state;
     let backgroundUrl = null;
     if (this.props.isOtherPerson) {
       if (this.props.user?.targetOriginalBackGroundUrl) {
         backgroundUrl = this.props.user.targetOriginalBackGroundUrl;
       }
     } else {
-      backgroundUrl = previewAvatarUrl;
+      backgroundUrl = previewBackgroundUrl;
     }
     if (!backgroundUrl) return false;
     return backgroundUrl;

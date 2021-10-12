@@ -30,7 +30,6 @@ const InputPop = (props) => {
   const [bottomHeight, setBottomHeight] = useState(0);
   const [isDisabled, setDisabled] = useState(true)
   const [focus, setFocus] = useState(true);
-
   // 输入框光标位置
   const [cursorPos, setCursorPos] = useState(0);
   const onChange = (e) => {

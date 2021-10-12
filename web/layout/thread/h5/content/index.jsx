@@ -297,12 +297,12 @@ const RenderThreadContent = withRouter(inject('site', 'user')(observer((props) =
             })
           }
 
-          {/* 标签 */}
-          {(parentCategoryName || categoryName) && (
-            <div className={styles.tag} onClick={onTagClick}>
-              {parentCategoryName ? `${parentCategoryName}/${categoryName}` : categoryName}
-            </div>
-          )}
+        {/* 标签 */}
+        {(parentCategoryName || categoryName) && (
+          <div className={styles.tag} onClick={onTagClick}>
+            {parentCategoryName ? `${parentCategoryName}/${categoryName}` : categoryName}
+          </div>
+        )}
 
         {/* 帖子付费 */}
         {!canFreeViewPost && isThreadPay && !isSelf && !isPayed && (

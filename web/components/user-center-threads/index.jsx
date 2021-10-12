@@ -74,6 +74,7 @@ const UNTOP_MENUS = (
 @inject('index')
 @inject('search')
 @inject('thread')
+@inject('threadList')
 @inject('site')
 @inject('threadList')
 @inject('user')

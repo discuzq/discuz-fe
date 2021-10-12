@@ -14,7 +14,7 @@ import styles from './index.module.scss';
 import SiteMapLink from '@components/site-map-link';
 
 // 插件引入
-/**DZQ->plugin->register<plugin_index@thread_extension_display_hook>**/
+/** DZQ->plugin->register<plugin_index@thread_extension_display_hook>**/
 
 /**
  * 帖子内容组件
@@ -43,13 +43,13 @@ const Index = (props) => {
     onClose,
     platform,
     updateViewCount,
-    onTextItemClick
-  } = props
+    onTextItemClick,
+  } = props;
 
   const {
     canDownloadAttachment,
     canViewAttachment,
-    canViewVideo
+    canViewVideo,
   } = props?.data?.ability || {};
 
   // 标题显示37个字符
@@ -74,7 +74,7 @@ const Index = (props) => {
       voteData,
       threadId,
       iframeData,
-      plugin
+      plugin,
     } = handleAttachmentData(data);
 
     return (
@@ -157,16 +157,14 @@ const Index = (props) => {
         {voteData && <VoteDisplay recomputeRowHeights={props.recomputeRowHeights} voteData={voteData} threadId={threadId} />}
 
         {
-          DZQPluginCenter.injection('plugin_index', 'thread_extension_display_hook').map(({ render, pluginInfo }) => {
-            return (
+          DZQPluginCenter.injection('plugin_index', 'thread_extension_display_hook').map(({ render, pluginInfo }) => (
               <div key={pluginInfo.name}>
                 {render({
                   site: { ...props.site, recomputeRowHeights: props.recomputeRowHeights, threadId },
                   renderData: plugin
                 })}
               </div>
-            )
-          })
+          ))
         }
       </>
     );

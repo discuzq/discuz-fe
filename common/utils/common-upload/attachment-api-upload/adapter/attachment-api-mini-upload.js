@@ -18,7 +18,7 @@ const attachmentApiUpload = (options) => {
     }
 
     Taro.uploadFile({
-      url: `${host}/apiv3/attachments`,
+      url: `${host}/api/v3/attachments`,
       filePath: tempFilePath,
       name: 'file',
       header: {

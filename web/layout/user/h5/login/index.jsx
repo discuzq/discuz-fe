@@ -27,7 +27,7 @@ class Login extends React.Component {
         let inviteCode = invite.getInviteCode(router);
         if (inviteCode) inviteCode = `?inviteCode=${inviteCode}`;
         const redirectEncodeUrl = encodeURIComponent(`${window.location.origin}/user/wx-auth${inviteCode}`);
-        window.location.href = `${window.location.origin}/apiv3/users/wechat/h5.oauth?redirect=${redirectEncodeUrl}`;
+        window.location.href = `${window.location.origin}/api/v3/users/wechat/h5.oauth?redirect=${redirectEncodeUrl}`;
         return;
       }
       router.replace('/user/wx-login');

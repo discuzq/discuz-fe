@@ -53,11 +53,12 @@ const Index = ({ permissions = {}, visible, data: tmpData = [], current, onSubmi
   }, [permissions, tmpData]);
 
   useEffect(() => {
-    const { categoryids = [], types, essence } = current || {};
+    const { categoryids = [], types = 'all', essence, attention } = current || {};
 
     handleCategoryIds(categoryids);
     setSecond(types || 'all');
-    setThird(essence || '0');
+    if (Number(essence) === 1) setThird('1');
+    if (Number(attention) === 1) setThird('attention');
 
   }, [current, visible]);
 
@@ -147,7 +148,12 @@ const Index = ({ permissions = {}, visible, data: tmpData = [], current, onSubmi
       }
     }
 
-    const params = { categoryids, types: second, essence: third, sequence };
+    let attention = '0'; // 是否已关注
+    let essence = '0'; // 是否是精华帖
+    if (third === 'attention') attention = '1';
+    else essence = third;
+
+    const params = { categoryids, types: second, essence, sequence, attention };
 
     onSubmit(params);
   };
@@ -238,4 +244,4 @@ const Index = ({ permissions = {}, visible, data: tmpData = [], current, onSubmi
   );
 };
 
-export default inject('site')(observer(Index));
+export default inject('site', )(observer(Index));

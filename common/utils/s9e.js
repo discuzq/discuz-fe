@@ -57,6 +57,17 @@ export const tags = {
       });
     });
   },
+  // 解析 '\# -> #'
+  parseSharp: text => {
+    if (!text) return '';
+    const regexp = /\\#/gimu;
+
+    return text.replace(regexp, match => {
+      return match.replace(regexp, (content, value, text) => {
+        return '#';
+      });
+    });
+  }
 };
 
 //fixby hechongwei 添加是否有代码块标识isCode，如果有，过滤掉html转移 http://bug.eims.com.cn/bug-view-3099.html

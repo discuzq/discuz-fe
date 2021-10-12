@@ -60,10 +60,12 @@ class ThreadPCPage extends React.Component {
     // 监听插件区域的高度变化调整编辑器的min-height style，使编辑器初始化时占满编辑框，更容易监测到图片拖拽上传
     const resizeObserver = new ResizeObserver(() => {
       const el = this.pluginContainer.current;
+      const vditorContent = document.querySelector('#dzq-vditor');
+      if (!vditorContent) return;
       if (el && el.offsetHeight) {
-        document.querySelector('#dzq-vditor').style.minHeight = '44px';
+        vditorContent.style.minHeight = '44px';
       } else {
-        document.querySelector('#dzq-vditor').style.minHeight = '450px';
+        vditorContent.style.minHeight = '450px';
       }
     });
     resizeObserver.observe(this.pluginContainer.current);

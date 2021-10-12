@@ -58,5 +58,9 @@ export default [
         name: '精华',
         pid: '1',
       },
+      {
+        name: '已关注',
+        pid: 'attention',
+      },
     ],
   }];

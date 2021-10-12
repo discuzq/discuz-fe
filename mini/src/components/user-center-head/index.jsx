@@ -252,6 +252,12 @@ class index extends Component {
     });
   };
 
+  @computed get targetUser() {
+    if (this.targetUserId) {
+      return this.props.user.targetUsers[this.targetUserId];
+    }
+    return {};
+  }
   // 是否显示续费卡片
   whetherIsShowRenewalCard = () => this.props.site?.siteMode === 'pay' && !this.props.user?.isAdmini && !this.props.isOtherPerson;
 
@@ -353,7 +359,9 @@ class index extends Component {
             </>
           )}
         </View>
-        {this.whetherIsShowRenewalCard() && <MemberShipCard onRenewalFeeClick={this.onRenewalFeeClick} />}
+        {this.whetherIsShowRenewalCard() && (
+          <MemberShipCard onRenewalFeeClick={this.onRenewalFeeClick} />
+        )}
         {/* 右上角屏蔽按钮 */}
         {this.props.isOtherPerson && (
           <View
