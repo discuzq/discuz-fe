@@ -498,7 +498,7 @@ class CommentH5Page extends React.Component {
     this.onShareClose();
 
     const { title = '' } = this.props.thread?.threadData || {};
-    h5Share({ title, path: `thread/comment/${this.props.comment?.commentDetail?.id}?threadId=${this.props.thread?.threadData?.threadId}` });
+    h5Share({ title, path: `thread/comment/${this.props.comment?.commentDetail?.id}?threadId=${this.props.thread?.threadData?.threadId}&fromMessage=true` });
     const id = this.props.thread?.threadData?.id;
 
     const { success, msg } = await this.props.thread.shareThread(id, this.props.index, this.props.search, this.props.topic);

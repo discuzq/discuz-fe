@@ -4,6 +4,7 @@ export const posterFrameWidth = 8;
 // 海报画布宽度
 export const posterWidth = 710 - posterFrameWidth * 2;
 
+
 // 帖子边距
 export const posterPadding = 16;
 
@@ -12,6 +13,13 @@ export const padding32 = 32;
 
 // 内容宽度
 export const contentWidth = posterWidth - posterPadding * 2 - posterFrameWidth * 2;
+
+
+export const commentX = 120;
+
+export const commentWidth = posterWidth -commentX -25;
+
+
 
 export const nameAndTagsY = 32;
 

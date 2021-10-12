@@ -8,6 +8,8 @@ import Taro from '@tarojs/taro';
 class Invite extends React.Component {
   // 配置邀请好友地址
   getShareData(data) {
+
+    console.log(data);
     return {
       path: data.path,
       title: data.title,

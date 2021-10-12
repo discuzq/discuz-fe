@@ -1,17 +1,23 @@
 import React from 'react';
-import styles from './index.module.scss';
 import Avatar from '@components/avatar';
 import { diffDate } from '@common/utils/diff-date';
-import { observer ,inject } from 'mobx-react';
+import { observer, inject } from 'mobx-react';
 import ImageDisplay from '@components/thread/image-display';
 import classNames from 'classnames';
 import PostContent from '@components/thread/post-content';
+import styles from './index.module.scss';
 
 @inject('comment')
+@inject('card')
+
 @observer
 class CommentCard extends React.Component {
   constructor(props) {
     super(props);
+  }
+
+  componentDidMount() {
+    this.props.card.setImgReady();
   }
 
   render() {
