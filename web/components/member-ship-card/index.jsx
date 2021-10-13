@@ -186,7 +186,7 @@ const MemberShipCard = ({ site, user, onRenewalFeeClick, shipCardClassName }) =>
                         <div className={styles.time}>有效期：{`${days}天`}</div>
                       </div>
 
-                      {level > group.level && <Button className={styles.upgradeBtn} style={{margin: isPC ? '' : 0}} onClick={() => doPay({amount, title: '付费用户组升级', groupId })}>立即升级</Button>}
+                      <Button className={styles.upgradeBtn} style={{margin: isPC ? '' : 0, visibility: level > group.level ? 'visible' : 'hidden'}} onClick={() => doPay({amount, title: '付费用户组升级', groupId })}>立即升级</Button>
                     </div>
                   </div>
 
