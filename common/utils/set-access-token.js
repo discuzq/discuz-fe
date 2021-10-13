@@ -1,7 +1,8 @@
 import locals from './local-bridge';
 import constants from '../constants/index';
-
+import isServer from './is-server';
 export const setCookie = (name, value, exdays) => {
+  if (isServer()) return;
   if (parseInt(exdays)) {
     const exp = new Date();
     exp.setTime(exp.getTime() + exdays * 24 * 60 * 60 * 1000);
@@ -12,6 +13,7 @@ export const setCookie = (name, value, exdays) => {
 };
 
 export const getCookie = (cname) => {
+  if (isServer()) return;
   let arr;
   const reg = new RegExp(`(^| )${cname}=([^;]*)(;|$)`);
   if (arr = document.cookie.match(reg)) return arr[2];

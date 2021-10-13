@@ -25,7 +25,7 @@ class PC500Page extends React.Component {
       <div className={styles.body}>
         <Header/>
         <div className={styles.page} style={{height: height}}>
-          <img className={styles.img} src='/dzq-img/error.png'/>
+          <img alt="错误图片" className={styles.img} src='/dzq-img/error.png'/>
           <p className={styles.text}>{ (errPageType && ERROR_PAGE_TIPS[errPageType]) || '未知错误'}</p>
           <Button onClick={this.goBackClickHandle} size='large' className={styles.btn} type='primary'>回到首页</Button>
         </div>

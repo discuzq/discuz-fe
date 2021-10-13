@@ -50,6 +50,7 @@ export default function Emoji(props) {
     <div ref={emojiRef} id="dzq-toolbar-emoji" className={`${styles['dzq-emoji']} ${cls} dzq-toolbar-emoji ${atTop ? '' : styles.atTop}`} style={{ ...style, display: visible ? 'block' : 'none' }} onClick={e => e.stopPropagation()}>
       <div className={styles['dzq-emoji__inner']}>
         {emojis.map(item => <img className={styles['dzq-emoji__icon']}
+          alt={item.code}
           key={item.code}
           src={item.url}
           onClick={(e) => { onClick(item) }}

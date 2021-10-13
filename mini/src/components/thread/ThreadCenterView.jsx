@@ -26,7 +26,8 @@ import { getElementRect, randomStr, noop, handleLink } from './utils'
  */
 
 const Index = (props) => {
-  const { title = '', payType, price, paid, attachmentPrice, site } = props.data || {};
+  const { title = '', payType, price, paid, attachmentPrice } = props.data || {};
+
   const needPay = useMemo(() => payType !== 0 && !paid, [paid, payType]);
   const {
     onClick,
@@ -172,8 +173,14 @@ const Index = (props) => {
             return (
               <View key={pluginInfo.name}>
                 {render({
-                  site: { ...props.site, threadId },
-                  renderData: plugin
+                  site: props.site,
+                  renderData: plugin,
+                  threadData: props.data,
+                  updateListThreadIndexes: props.updateListThreadIndexes,
+                  updateThread: props.updateThread,
+                  isLogin: props.user.isLogin.bind(props.user),
+                  userInfo: props.user.userInfo,
+                  recomputeRowHeights: props.recomputeRowHeights
                 })}
               </View>
             )

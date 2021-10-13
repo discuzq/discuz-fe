@@ -27,8 +27,18 @@ class Index extends React.Component {
 
   constructor(props) {
     super(props);
-    const { index, threadList } = this.props;
+    const { index, threadList, site } = this.props;
     threadList.registerList({ namespace: index.namespace });
+    const { webConfig } = site || {};
+    const { other } = webConfig || {};
+    const { threadTab } = other || {};
+    const { filter } = index;
+    // 所有:0,1 推荐:2 精华:3 已关注:4
+    const categoryids = threadTab === 2 ? ['default'] : filter.categoryids;
+    const sequence = threadTab === 2 ? '1' : filter.sequence;
+    const attention = threadTab === 4 ? 1 : filter.attention;
+    const essence = threadTab === 3 ? 1 : filter.essence;
+    index.setFilter({ ...filter, categoryids, attention, essence, sequence });
   }
 
   componentDidHide() {
@@ -101,7 +111,6 @@ class Index extends React.Component {
 
   componentDidShow() {
     const { threads } = this.props.index || {}
-    console.log(threads)
     if (!threads?.pageData?.length) {
       this.loadData()
     }

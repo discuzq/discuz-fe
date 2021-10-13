@@ -3,7 +3,6 @@ import { View, Text } from '@tarojs/components';
 import { Icon, Dialog, Toast } from '@discuzq/design';
 import CustomApplyEntryContent from './content';
 import { getPostData } from '@common/plugin/custom-apply/client/common';
-import { PLUGIN_TOMID_CONFIG } from '@common/plugin/plugin-tomid-config';
 import classNames from 'classnames';
 import styles from '../index.module.scss';
 
@@ -21,8 +20,8 @@ export default class CustomApplyEntry extends React.Component {
   };
 
   handleDialogOpen = () => {
-    const { siteData } = this.props;
-    const { navInfo = {} } = siteData.threadPost || {};
+    const { postData } = this.props;
+    const { navInfo = {} } = postData || {};
     const navStyle = {
       marginTop: `${navInfo.statusBarHeight}px`,
       height: `${navInfo.navHeight}px`,
@@ -37,24 +36,30 @@ export default class CustomApplyEntry extends React.Component {
     });
   };
 
+  getTimestamp = time => new Date(time).getTime();
+
   handleDialogConfirm = () => {
     const { body } = this.state;
     if (!body.activityStartTime || !body.activityEndTime) {
       Toast.info({ content: '活动开始时间和结束时间必填' });
       return false;
     }
-    const { renderData } = this.props;
-    const postData = getPostData(body) || {};
+    if (this.getTimestamp(body.activityEndTime) <= this.getTimestamp(new Date())) {
+      Toast.info({ content: '活动结束时间必须大于当前时间' });
+      return false;
+    }
+    const { renderData, _pluginInfo } = this.props;
+    const postData = getPostData(body, _pluginInfo.options.tomId) || {};
     if (renderData?.body?.activityId) postData.body.activityId = renderData?.body?.activityId;
     this.props.onConfirm({ postData });
     Dialog.hide();
   };
 
   isShowApplyIcon = () => {
-    const { siteData } = this.props;
+    const { siteData, _pluginInfo } = this.props;
     const { pluginConfig } = siteData;
     if (!pluginConfig) return false;
-    const [act] = (pluginConfig || []).filter(item => item.app_id === PLUGIN_TOMID_CONFIG.apply);
+    const [act] = (pluginConfig || []).filter(item => item.app_id === _pluginInfo.options.tomId);
     if (act?.authority?.canUsePlugin) return true;
     return false;
   };

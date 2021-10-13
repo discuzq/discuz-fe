@@ -753,6 +753,7 @@ class ThreadH5Page extends React.Component {
     });
   }
 
+
   render() {
     const { thread: threadStore } = this.props;
     const { isReady, isCommentReady, isNoMore, totalCount, isCommentListError } = threadStore;
@@ -763,6 +764,7 @@ class ThreadH5Page extends React.Component {
     const fun = {
       moreClick: this.onMoreClick,
     };
+
 
     // const isDraft = threadStore?.threadData?.isDraft;
     // // 是否红包帖
@@ -1011,4 +1013,4 @@ class ThreadH5Page extends React.Component {
   }
 }
 
-export default HOCFetchSiteData(withRouter(ThreadH5Page));
+export default withRouter(ThreadH5Page);

@@ -29,8 +29,8 @@ import { withRouter } from 'next/router';
 /**DZQ->plugin->register<plugin_detail@thread_extension_display_hook>**/
 
 // 帖子内容
-export default withRouter(inject('site', 'user')(observer((props) => {
-  const { store: threadStore, site } = props;
+export default withRouter(inject('index', 'site', 'user', 'thread')(observer((props) => {
+  const { store: threadStore, site, index, thread, user } = props;
   const { text, indexes } = threadStore?.threadData?.content || {};
   const { parentCategoryName, categoryName } = threadStore?.threadData;
   const { hasRedPacket } = threadStore; // 是否有红包领取的数据
@@ -134,7 +134,6 @@ export default withRouter(inject('site', 'user')(observer((props) => {
   } = threadStore?.threadData?.ability || {};
 
   const { tipList } = threadStore?.threadData || {};
-
   return (
     <div className={`${topic.container}`}>
       <div className={topic.header}>
@@ -341,8 +340,13 @@ export default withRouter(inject('site', 'user')(observer((props) => {
             return (
               <div key={pluginInfo.name}>
                 {render({
-                  site: { ...site, isDetailPage: true },
-                  renderData: parseContent.plugin
+                  site: site,
+                  threadData: threadStore?.threadData,
+                  renderData: parseContent.plugin,
+                  updateListThreadIndexes: index.updateListThreadIndexes.bind(index),
+                  updateThread: thread.updateThread.bind(thread),
+                  isLogin: user.isLogin.bind(user),
+                  userInfo: user.userInfo
                 })}
               </div>
             )

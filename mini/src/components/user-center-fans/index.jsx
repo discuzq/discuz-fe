@@ -94,7 +94,7 @@ class UserCenterFans extends React.Component {
     const targetFans = deepClone(this.props.dataSource || this.state.fans);
     Object.keys(targetFans).forEach((key) => {
       targetFans[key].forEach((user) => {
-        if (get(user, 'user.pid') !== id) return;
+        if (get(user, 'user.userId') !== id) return;
         user.userFollow.isMutual = isMutual;
         user.userFollow.isFollow = true;
       });
@@ -111,7 +111,7 @@ class UserCenterFans extends React.Component {
     const targetFans = deepClone(this.props.dataSource || this.state.fans);
     Object.keys(targetFans).forEach((key) => {
       targetFans[key].forEach((user) => {
-        if (get(user, 'user.pid') !== id) return;
+        if (get(user, 'user.userId') !== id) return;
         user.userFollow.isFollow = false;
       });
     });

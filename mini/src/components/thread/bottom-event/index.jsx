@@ -75,8 +75,19 @@ const Index = ({
     ];
   }, [wholeNum, comment, sharing, isLiked, isCommented]);
   const [show, setShow] = useState(false);
-  const handleClickShare = () => {
+  const handleClick = (item) => {
+    if (typeof unifyOnClick === 'function') {
+      unifyOnClick();
+      return;
+    }
+
     updateViewCount();
+
+    if (item.name === '赞') {
+      item.event();
+      return;
+    }
+
     // 对没有登录的先登录
     if (!user.isLogin()) {
       Toast.info({ content: '请先登录!' });
@@ -88,6 +99,12 @@ const Index = ({
       Toast.info({content: '内容正在审核中'});
       return ;
     }
+
+    if (item.name === '评论') {
+      item.event();
+      return;
+    }
+
     setShow(true)
     shareIconClick();
   }
@@ -123,14 +140,14 @@ const Index = ({
       <View className={needHeight ? styles.operation : styles.operations}>
         {postList.map((item, index) =>
           item.name === '分享' ? (
-            <View key={index} className={styles.fabulous} onClick={unifyOnClick || handleClickShare}>
+            <View key={index} className={styles.fabulous} onClick={() => handleClick(item)}>
               <View className={styles.fabulousIcon}>
                 <Icon className={`${styles.icon} ${item.type}`} name={item.icon} size={16}></Icon>
               </View>
               <Text className={styles.fabulousPost}>{item.num ? item.num : item.name}</Text>
             </View>
           ) : (
-            <View key={index} className={styles.fabulous} onClick={unifyOnClick || item.event}>
+            <View key={index} className={styles.fabulous} onClick={() => handleClick(item)}>
               <View className={styles.fabulousIcon}>
                 <Icon
                   className={`${styles.icon} ${item.type} ${

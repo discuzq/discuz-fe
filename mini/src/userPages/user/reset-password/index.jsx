@@ -22,7 +22,7 @@ class ResetPasswordH5Page extends React.Component {
     super();
     this.ticket = ''; // 腾讯云验证码返回票据
     this.randstr = ''; // 腾讯云验证码返回随机字符串
-    this.onFocus = () => {}
+    this.onFocus = () => { }
   }
 
 
@@ -65,13 +65,14 @@ class ResetPasswordH5Page extends React.Component {
 
   handleSendCodeButtonClick = async (onFocus) => {
     try {
+      const { site, user, resetPassword } = this.props;
       // 发送前校验
-      this.props.resetPassword.beforeSendVerify();
+      resetPassword.beforeSendVerify(user.originalMobile);
       if (onFocus) {
         this.onFocus = onFocus;
       }
       // 验证码
-      const { webConfig } = this.props.site;
+      const { webConfig } = site;
       const qcloudCaptcha = webConfig?.qcloud?.qcloudCaptcha;
       if (qcloudCaptcha) {
         if (!this.ticket || !this.randstr) {
@@ -80,7 +81,7 @@ class ResetPasswordH5Page extends React.Component {
           return false;
         }
       };
-      await this.props.resetPassword.sendCode({
+      await resetPassword.sendCode({
         captchaRandStr: this.randstr,
         captchaTicket: this.ticket
       });
@@ -99,7 +100,7 @@ class ResetPasswordH5Page extends React.Component {
 
   handleResetPasswordButtonClick = async () => {
     try {
-      const { commonLogin} = this.props;
+      const { commonLogin } = this.props;
       if (!commonLogin.loginLoading) {
         return;
       }

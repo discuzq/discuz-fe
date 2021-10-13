@@ -150,7 +150,7 @@ class AtSelect extends Component {
     const username = isFollow ? item?.user?.userName : item.username;
     const nickname = isFollow ? item?.user?.nickName : item.nickname;
     const groupName = isFollow ? item?.group?.groupName : item.groupName;
-    const userId = isFollow ? item.user?.pid : item.userId;
+    const userId = isFollow ? item.user?.userId : item.userId;
     return { avatar, username, groupName, userId, nickname };
   }
 

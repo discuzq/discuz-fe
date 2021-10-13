@@ -27,11 +27,12 @@ class WalletInfo extends React.Component {
                 this.props.webPageType === 'PC'
                   ? <div className={styles.header}>
                     <Avatar
+                      wrapClassName={styles.avatarWrap}
+                      className={styles.avatar}
                       image={this.props.user?.avatarUrl}
                       name={this.props.user?.nickname}
                       circle={true}
-                      size={'large'}
-                      className={styles.avatar}>
+                      size={'large'}>
                     </Avatar>
                     <div className={styles.name}><span title={this.props.user?.nickname}>{this.props.user?.nickname}</span></div>
                 </div> : ''

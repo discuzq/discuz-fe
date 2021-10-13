@@ -221,6 +221,7 @@ class PartnerInviteH5Page extends React.Component {
             className={pclayout.logo}
             mode="aspectFit"
             src={siteHeaderLogo || '/dzq-img/join-banner-bg.png'}
+            alt="图片"
         />
         <ul className={pclayout.joinInfo}>
           <li className={pclayout.item}>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter } from 'next/router';
 import { inject, observer } from 'mobx-react';
-import { readThreadDetail, readCommentList, getRedPacketInfo } from '@server';
+import { readThreadDetail, readUser} from '@server';
 import ThreadH5Page from '@layout/thread/h5';
 import ThreadPCPage from '@layout/thread/pc';
 import HOCFetchSiteData from '@middleware/HOCFetchSiteData';
@@ -25,11 +25,12 @@ import { updateThreadAssignInfoInLists } from '@common/store/thread-list/list-bu
 @inject('threadList')
 @observer
 class Detail extends React.Component {
-  static async getInitialProps(ctx) {
+  static async getInitialProps(ctx, options) {
 
     const id = ctx?.query?.id;
     const serverThread = {
       threadData: null,
+      threadUserData: null
     };
 
     if (id) {
@@ -37,6 +38,16 @@ class Detail extends React.Component {
       const res = await readThreadDetail({ params: { threadId: id } }, ctx);
       if (res.code === 0) {
         serverThread.threadData = res.data;
+        const { site } = options;
+        let platform = site ? site.platform : 'pc';
+
+        const userId = serverThread.threadData?.user?.userId;
+        if (platform === 'pc' && userId) {
+          const userRes = await readUser({ params: { userId } });
+          if ( userRes.code === 0 ) {
+            serverThread.threadUserData = userRes.data;
+          }
+        }
       }
     }
 
@@ -55,6 +66,7 @@ class Detail extends React.Component {
     const { thread, serverThread } = this.props;
     // 初始化数据到store中
     serverThread?.threadData && thread.setThreadData(serverThread.threadData);
+    serverThread?.threadUserData && thread.setAuthorInfo(serverThread.threadUserData);
   }
 
   componentDidUpdate(prevProps) {

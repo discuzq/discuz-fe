@@ -225,9 +225,12 @@ function AttachmentToolbar(props) {
       return (
         <div key={pluginInfo.pluginName} className={clsName}>
           {render({
-            site: { ...props.site },
+            site: props.site,
             onConfirm: props.onPluginSetPostData,
-            renderData: props.postData.plugin
+            renderData: props.postData.plugin,
+            postData: {
+              navInfo: props.threadPost.navInfo
+            }
           })}
         </div>
       )

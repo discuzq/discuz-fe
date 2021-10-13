@@ -1,8 +1,8 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
+import Head from 'next/head';
 import IndexH5Page from '@layout/thread/post/h5';
 import IndexPCPage from '@layout/thread/post/pc';
-
 import HOCTencentCaptcha from '@middleware/HOCTencentCaptcha';
 import HOCFetchSiteData from '@middleware/HOCFetchSiteData';
 import HOCWithLogin from '@middleware/HOCWithLogin';
@@ -814,7 +814,7 @@ class PostPage extends React.Component {
     if (!(isAutoSave || isPay)) this.toastInstance = Toast.loading({ content: isDraft ? '保存草稿中' : '发布中...', hasMask: true });
     if (threadPost.postData.threadId) ret = await threadPost.updateThread(threadPost.postData.threadId);
     else ret = await threadPost.createThread();
-    console.log(ret);
+
     const { code, data, msg } = ret;
     if (code === 0) {
       this.setState({ data });
@@ -956,7 +956,13 @@ class PostPage extends React.Component {
     );
 
     return (
-      <ViewAdapter h5={h5} pc={pc} title="发布" />
+      <>
+        <Head>
+          {/* 编辑器markdown依赖 */}
+          <script key="lute" async src="https://dl.discuz.chat/discuzq-fe/static/lute/lute.min.js" />
+        </Head>
+        <ViewAdapter h5={h5} pc={pc} title="发布" />
+      </>
     );
   }
 }

@@ -6,7 +6,6 @@ import DatePickers from '@components/thread/date-picker';
 import DatePicker from 'react-datepicker';
 import classNames from 'classnames';
 import { formatDate } from '@common/utils/format-date';
-import { PLUGIN_TOMID_CONFIG } from '@common/plugin/plugin-tomid-config';
 import { getPostData, formatPostData } from '@common/plugin/custom-apply/client/common';
 import styles from '../index.module.scss';
 
@@ -19,6 +18,7 @@ const TimeType = {
 export default class CustomApplyEntry extends React.Component {
   constructor(props) {
     super(props);
+    console.log(props);
     const oneHour = 3600 * 1000 * 24;
 
     this.state = {
@@ -55,7 +55,11 @@ export default class CustomApplyEntry extends React.Component {
         this.setState({ body: { ...body, activityStartTime: time } });
         break;
       case TimeType.actEnd:
-        this.setState({ body: { ...body, activityEndTime: time } });
+        if (!this.checkActEndTime(time)) {
+          Toast.info({ content: '请选择正确的活动结束时间' });
+        } else {
+          this.setState({ body: { ...body, activityEndTime: time } });
+        }
         break;
       case TimeType.applyStart:
         if (!this.checkApplyStartTime(time)) {
@@ -77,6 +81,15 @@ export default class CustomApplyEntry extends React.Component {
   };
 
   getTimestamp = time => new Date(time).getTime();
+
+  checkActEndTime = (time) => {
+    const { activityStartTime } = this.state.body || {};
+    if (this.getTimestamp(activityStartTime) > this.getTimestamp(time)
+      || this.getTimestamp(time) < this.getTimestamp(new Date().getTime())) {
+      return false;
+    }
+    return true;
+  };
 
   checkApplyStartTime = (time) => {
     const { body } = this.state;
@@ -132,8 +145,12 @@ export default class CustomApplyEntry extends React.Component {
       Toast.info({ content: '活动开始时间和结束时间必填' });
       return false;
     }
-    const { renderData } = this.props;
-    const postData = getPostData(body) || {};
+    if (this.getTimestamp(body.activityEndTime) <= this.getTimestamp(new Date())) {
+      Toast.info({ content: '活动结束时间必须大于当前时间' });
+      return false;
+    }
+    const { renderData, _pluginInfo } = this.props;
+    const postData = getPostData(body, _pluginInfo.options.tomId) || {};
     if (renderData?.body?.activityId) postData.body.activityId = renderData?.body?.activityId;
     this.props.onConfirm({ postData });
     this.handleDialogClose();
@@ -173,10 +190,10 @@ export default class CustomApplyEntry extends React.Component {
    * 插件入口是否显示判断
    */
   isShowApplyIcon = () => {
-    const { siteData } = this.props;
+    const { siteData, _pluginInfo } = this.props;
     const { pluginConfig } = siteData;
     if (!pluginConfig) return false;
-    const [act] = (pluginConfig || []).filter(item => item.app_id === PLUGIN_TOMID_CONFIG.apply);
+    const [act] = (pluginConfig || []).filter(item => item.app_id === _pluginInfo.options.tomId);
     if (act?.authority?.canUsePlugin) return true;
     return false;
   };
@@ -331,20 +348,20 @@ export default class CustomApplyEntry extends React.Component {
                         disabled={body.actPeopleLimitType === 0}
                         value={body.totalNumber}
                         onChange={this.handleLimitPeopleChange}
-                        className={styles['text-center']}
+                        className={styles['dzqp-act__limit_input']}
                       />人报名
                     </Radio>
                   </Radio.Group>
                 </div>
               </div>
-              <DatePickers
-                onSelects={this.handleMobileTimeChange}
-                time={this.getMobileCurClickTime()}
-                isOpen={showMobileDatePicker}
-                onCancels={() => this.setState({ showMobileDatePicker: false })}
-              />
             </>
           )}
+          <DatePickers
+            onSelects={this.handleMobileTimeChange}
+            time={this.getMobileCurClickTime()}
+            isOpen={showMobileDatePicker}
+            onCancels={() => this.setState({ showMobileDatePicker: false })}
+          />
         </Dialog>
       </>
     );

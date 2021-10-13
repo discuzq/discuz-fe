@@ -251,7 +251,7 @@ const Index = ({
       <div className={styles.container} key={index} onClick={onClick} >
         <div className={styles.wrapper}>
           <div className={styles.left}>
-            <img className={styles.containerIcon} src={getAttachmentIconLink(type)}/>
+            <img alt="图片" className={styles.containerIcon} src={getAttachmentIconLink(type)}/>
             <div className={styles.containerText}>
               <span className={styles.content}>{item.fileName}</span>
               <span className={styles.size}>{handleFileSize(parseFloat(item.fileSize || 0))}</span>

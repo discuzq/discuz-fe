@@ -88,7 +88,10 @@ function Home(props, ref) {
 
   // 监听更新条数
   useEffect(() => {
-    recomputeRowHeights(0);
+    // 有新内容更新虚拟列表数据
+    if (!props.visible && recomputeRowHeights) {
+      (props.list || []).map((data, index) => recomputeRowHeights(index + 1, data));
+    } else recomputeRowHeights(0);
   }, [props.visible]);
 
   // 重新计算指定的行高

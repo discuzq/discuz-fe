@@ -873,7 +873,7 @@ class Index extends Component {
                           deletePlugin: this.props.threadPost.deletePluginPostData,
                           updatePlugin: this.props.threadPost.setPluginPostData,
                           showPluginDialog: this.showPluginDialog,
-                          closePluginDialogL: this.closePluginDialog
+                          closePluginDialog: this.closePluginDialog
                         })}
                       </View>
                     ))

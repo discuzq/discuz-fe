@@ -7,7 +7,6 @@ import styles from './index.module.scss';
 class H5JoinSite extends React.Component {
   render() {
     const { site } = this.props;
-    console.log(site)
     return (
       <div className={styles.page}>
         <h1 className={styles.main}>加入站点</h1>

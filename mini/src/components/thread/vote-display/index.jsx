@@ -10,6 +10,7 @@ import { View, Text } from '@tarojs/components'
 import CountDown from '@common/utils/count-down';
 import { debounce } from '@common/utils/throttle-debounce';
 import LoginHelper from '@common/utils/login-helper';
+import Router from '@discuzq/sdk/dist/router';
 import styles from './index.module.scss';
 
 const CHOICE_TYPE = {
@@ -88,6 +89,12 @@ const VoteDisplay = (props = {}) => {
     }
   }, 1000);
 
+  const goToDetail = () => {
+    if (threadId && !isDetail) {
+      Router.push({ url: `/indexPages/thread/index?id=${threadId}` });
+    }
+  };
+
 
   if (!voteTitle) return null;
   const isVotedEnd = isExpired || isVoted; // 投票是否已结束
@@ -98,7 +105,7 @@ const VoteDisplay = (props = {}) => {
   return (
     <>
       <View className={styles.container}>
-        <View className={styles.header}>
+        <View className={styles.header} onClick={goToDetail}>
           <View className={styles['header-right']}>
             {voteTitle}
             { isVotedEnd && <Text className={styles['header-right__text']}>（{typeText}）</Text>}
@@ -109,8 +116,8 @@ const VoteDisplay = (props = {}) => {
             </View>
           )}
         </View>
-        {!isVotedEnd
-          && (
+        {!isVotedEnd && (
+          <>
             <CheckboxRadio.Group className={`${styles.content} ${styles.foldexpend}`} onChange={(val) => {
               if (isMutiple) setValue(val);
               else setValue([val]);
@@ -132,9 +139,19 @@ const VoteDisplay = (props = {}) => {
                 </Button>
               }
             </CheckboxRadio.Group>
-          )}
+            <View className={styles.footer}>
+              <View className={styles.left} onClick={goToDetail}>
+                <View className={styles['left-type']}>{typeText}</View>
+                <View className={styles['left-time']}>
+                距结束 ：<Text className={styles['time-primary']}>{day}</Text>天<Text className={styles['time-primary']}>{hour}</Text>小时<Text className={styles['time-primary']}>{minute}</Text>分
+                </View>
+              </View>
+              <Button type="primary" className={styles.vote} onClick={handleVote}>投票</Button>
+            </View>
+          </>
+        )}
         {isVotedEnd && (
-          <View className={styles.content}>
+          <View className={styles.content} onClick={goToDetail}>
             {subitems.map((item, index) => {
               if ((!isFold && index < 5) || isFold) {
                 const voteCount = parseInt(item.voteRate, 10) > 100 ? 100 : parseInt(item.voteRate, 10);
@@ -160,7 +177,10 @@ const VoteDisplay = (props = {}) => {
               (subitems?.length > 5 && !isDetail) &&
               <Button full type="primary"
                 className={!isFold ? styles.foldbtn : styles.expandbtn}
-                onClick={() => setIsFold(!isFold)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsFold(!isFold)
+                }}
               >
                 <Text className={styles['fold-expand']}>{!isFold ? '展开' : '收起'}</Text>
                 <Icon name="RightOutlined" size="10"></Icon>
@@ -172,17 +192,6 @@ const VoteDisplay = (props = {}) => {
           </View>
         )}
       </View>
-      {!isVotedEnd && (
-        <View className={styles.footer}>
-          <View className={styles.left}>
-            <View className={styles['left-type']}>{typeText}</View>
-            <View className={styles['left-time']}>
-            距结束 ：<Text className={styles['time-primary']}>{day}</Text>天<Text className={styles['time-primary']}>{hour}</Text>小时<Text className={styles['time-primary']}>{minute}</Text>分
-            </View>
-          </View>
-          <Button type="primary" className={styles.vote} onClick={handleVote}>投票</Button>
-        </View>
-      )}
     </>
   );
 };

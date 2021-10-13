@@ -104,7 +104,7 @@ class UserCenterFollows extends React.Component {
     const targetFollows = deepClone(this.props.dataSource || this.state.follows);
     Object.keys(targetFollows).forEach((key) => {
       targetFollows[key].forEach((user) => {
-        if (get(user, 'user.pid') !== id) return;
+        if (get(user, 'user.userId') !== id) return;
         user.userFollow.isFollow = false;
       });
     });

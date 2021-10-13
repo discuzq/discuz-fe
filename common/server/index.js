@@ -89,6 +89,7 @@ export { default as updateBackground } from './user/updateBackground';
 export { default as readUsersDeny } from './user/readUsersDeny';
 export { default as wechatRebindQrCodeGen } from './user/wechatRebindQrCodeGen';
 export { default as getWechatRebindStatus } from './user/getWechatRebindStatus';
+export { default as getPayGroups } from './common/getPayGroups';
 
 // 消息模块
 export { default as readDialogList } from './message/readDialogList';

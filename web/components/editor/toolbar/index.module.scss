@@ -59,6 +59,7 @@ $margin16: rem($margin-4n);
     margin-left: rem($margin16);
     display: flex;
     overflow-x: auto;
+    align-items: center;
   }
   &__right {
     flex: 0 0 auto;
@@ -111,6 +112,8 @@ $margin16: rem($margin-4n);
       .dzq-icon {
         color: $icon-color;
         cursor: pointer;
+        vertical-align: bottom;
+        line-height: 22px;
       }
     }
     &.active {

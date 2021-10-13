@@ -29,7 +29,7 @@ class RenewalFee extends Component {
         <Header />
         <div className={styles.renewalFeeContent}>
           <div className={styles.siteBg}>
-            <img className={styles.siteBgImage} src={this.props.site?.siteBackgroundImage} />
+            <img alt="图片" className={styles.siteBgImage} src={this.props.site?.siteBackgroundImage} />
           </div>
           <div className={styles.menuInfo}>
             <div className={styles.menuItem}>

@@ -25,21 +25,21 @@ const ClassifyPopup = (props) => {
     if (item.children && !item.children.length) handleClose();
   };
   const handleChildClick = (item) => {
-    if (item.pid !== selectedChild.pid) {
+    if (item.categoryId !== selectedChild.categoryId) {
       setSelectedChild(item);
-      props?.threadPost.setPostData({ categoryId: item.pid || selected.pid });
+      props?.threadPost.setPostData({ categoryId: item.categoryId || selected.categoryId });
     }
     handleClose();
   };
 
   const setChildren = (item, child = {}) => {
-    let categoryId = child.pid || item.pid;
+    let categoryId = child.categoryId || item.categoryId;
     if (item.children && typeofFn.isArray(item.children.slice()) && item.children.length > 0) {
       setCategoryChildren(item.children);
-      if (child.pid) setSelectedChild(child);
-      if (!(child.pid || selectedChild?.pid)) {
+      if (child.categoryId) setSelectedChild(child);
+      if (!(child.categoryId || selectedChild?.categoryId)) {
         setSelectedChild(item.children[0]);
-        categoryId = item.children[0]?.pid;
+        categoryId = item.children[0]?.categoryId;
       }
     } else {
       setCategoryChildren([]);
@@ -53,7 +53,7 @@ const ClassifyPopup = (props) => {
     const id = props?.threadPost?.postData?.categoryId || '';
     const categorySelected = props?.threadPost?.getCategorySelectById(id);
     const { parent, child } = categorySelected;
-    if (!parent?.pid) return;
+    if (!parent?.categoryId) return;
     props?.threadPost?.setCategorySelected(categorySelected);
     setSelected(parent);
     setChildren(parent, child);
@@ -91,10 +91,10 @@ const ClassifyPopup = (props) => {
       <div className={styles['popup-content']} key={1}>
         {(category || []).map(item => (
           <Button
-            key={item.pid}
+            key={item.categoryId}
             className={classNames({
               active:
-                selected.pid === item.pid,
+                selected.categoryId === item.categoryId,
               'is-pc': pc,
             })}
             onClick={() => {
@@ -109,9 +109,9 @@ const ClassifyPopup = (props) => {
         <div className={classNames(styles['popup-content'], styles['popup-content__children'])}>
           {(categoryChildren || []).map(item => (
             <Button
-              key={item.pid}
+              key={item.categoryId}
               className={classNames({
-                active: selectedChild.pid === item.pid,
+                active: selectedChild.categoryId === item.categoryId,
                 'is-pc': pc,
               })}
               onClick={() => {

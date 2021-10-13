@@ -34,18 +34,17 @@ class ResetPasswordH5Page extends React.Component {
 
   handleSendCodeButtonClick = async () => {
     try {
-      const { commonLogin } = this.props;
+      const { user, resetPassword, commonLogin } = this.props;
       // 发送前校验
-      this.props.resetPassword.beforeSendVerify();
+      resetPassword.beforeSendVerify(user.originalMobile);
       // 验证码
       const { captchaRandStr, captchaTicket } = await this.props.showCaptcha();
-      await this.props.resetPassword.sendCode({
+      await resetPassword.sendCode({
         captchaRandStr,
         captchaTicket,
       });
       commonLogin.setIsSend(true);
     } catch (e) {
-      console.log(e);
       Toast.error({
         content: e.Message,
         hasMask: false,
