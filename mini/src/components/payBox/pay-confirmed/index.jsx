@@ -16,6 +16,7 @@ import {
   mode,
 } from '../../../../../common/store/pay/weixin-miniprogram-backend.js';
 import throttle from '@common/utils/thottle.js';
+import Router from '@discuzq/sdk/dist/router';
 
 @inject('site')
 @inject('user')
@@ -88,6 +89,7 @@ export default class PayBox extends React.Component {
         duration: 1000,
       });
     }
+    this.isRecharge();
   }
 
   onShow = async () => {
@@ -95,6 +97,29 @@ export default class PayBox extends React.Component {
     await this.props.payBox.getWalletInfo(id);
     await this.props.user.updateUserInfo(id);
   };
+
+  // 跳转至充值页
+  toRechargePage = () => {
+    this.props.payBox.visible = false;
+    Router.push({ url: '/subPages/wallet/recharge/index' });
+    return;
+  }
+
+  // 判断是否是充值
+  isRecharge = () => {
+    const { isWechatPayOpen, webConfig } = this.props.site || {};
+    const { siteCharge } = webConfig.setSite || {};
+    const isShowRecharge = isWechatPayOpen && siteCharge === 1;
+    if (!isShowRecharge) return;
+    const { options = {} } = this.props.payBox;
+    const { type } = options;
+    // 去除钱包支付，保留微信支付
+    if (type === 30) {
+      this.props.payBox.payWay = PAYWAY_MAP.WX;
+      this.state.payConfig.pop();
+      this.setState({ payConfig: this.state.payConfig });
+    }
+  }
 
   walletPaySubText() {
     const canWalletPay = this.props.user?.canWalletPay;
@@ -141,6 +166,14 @@ export default class PayBox extends React.Component {
       const { options = {} } = this.props.payBox;
       const { amount = 0 } = options;
       if (Number(this.props.payBox?.walletAvaAmount) < Number(amount)) {
+        // 钱包余额不足 && 开启微信支付 && 开启充值功能 跳转到充值页
+        const { isWechatPayOpen, webConfig } = this.props.site || {};
+        const { siteCharge } = webConfig.setSite || {};
+        const isShowRecharge = isWechatPayOpen && siteCharge === 1;
+        if (isShowRecharge) {
+          this.toRechargePage();
+          return;
+        }
         Toast.error({
           content: '钱包余额不足',
           duration: 2000,
@@ -189,12 +222,32 @@ export default class PayBox extends React.Component {
       if (!canWalletPay) {
         disabled = true;
       }
-      if (Number(this.props.payBox?.walletAvaAmount) < Number(amount)) {
+      if (Number(this.props.payBox?.walletAvaAmount) < Number(amount) && !this.isToRecharge()) {
         disabled = true;
       }
     }
     return disabled;
   };
+
+  // 支付按钮文本显示
+  getPayText = () => {
+    const { options = {} } = this.props.payBox;
+    const { amount = 0 } = options;
+    if (this.isToRecharge()) {
+      return '去充值';
+    }
+    return '确定支付';
+  }
+
+  isToRecharge = () => {
+    const { options = {} } = this.props.payBox;
+    const { amount = 0 } = options;
+    const siteCharge = true;
+    const isWechatPayOpen = this.props.site.isWechatPayOpen;
+    // 去充值，需要开启微信支付 && 开启充值功能 && 支付方式为钱包支付 && 钱包余额不足
+    if (isWechatPayOpen && siteCharge && this.props.payBox.payWay === PAYWAY_MAP.WALLET && Number(this.props.payBox?.walletAvaAmount) < Number(amount)) return true;
+    return false;
+  }
 
   render() {
     const { options = {} } = this.props.payBox;
@@ -244,7 +297,7 @@ export default class PayBox extends React.Component {
             full
             onClick={this.handlePayConfirmed}
           >
-            {isSubmit ? <Spin type="spinner">拉起支付中...</Spin> : '确认支付'}
+            {isSubmit ? <Spin type="spinner">拉起支付中...</Spin> : this.getPayText()}
           </Button>
         </View>
         {/* 关闭按钮 */}

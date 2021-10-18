@@ -5,20 +5,19 @@ import Toast from '@discuzq/design/dist/components/toast/index';
 import Icon from '@discuzq/design/dist/components/icon/index';
 import { View } from '@tarojs/components';
 import classNames from 'classnames';
-import MoneyInput from './components/money-input';
+import MoneyInput from '../withdrawal/components/money-input';
 import styles from './index.module.scss';
 import Taro from '@tarojs/taro';
+import rechargePay from '@common/pay-bussiness/recharge-pay';
 
 @inject('wallet')
 @inject('site')
 @observer
-class Withdrawal extends React.Component {
+class Recharge extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       visible: true,
-      moneyOverThanAmount: false, // 是否超过当前可提现金额
-      withdrawalAmount: 0,
       inputValue: '', // 金额输入内容
     };
   }
@@ -39,41 +38,37 @@ class Withdrawal extends React.Component {
   initState = () => {
     this.setState({
       visible: true,
-      moneyOverThanAmount: false, // 是否超过当前可提现金额
-      withdrawalAmount: 0,
       inputValue: '',
     });
   };
 
-  // 提现到微信钱包
-  moneyToWeixin = async () => {
+  // 充值
+  onRechargeMoney = async () => {
     if (this.getDisabeledButton()) return;
-    this.props.wallet
-      .createWalletCash({
-        money: this.state.inputValue,
-      })
-      .then(async () => {
-        Toast.success({
-          content: '申请提现成功',
-          hasMask: false,
-          duration: 2000,
-        });
-        const { getUserWalletInfo } = this.props.wallet;
-        await getUserWalletInfo();
-        Taro.navigateBack();
-        this.initState();
-      })
-      .catch((err) => {
-        console.error(err);
-        if (err.Code) {
-          Toast.error({
-            content: err.Msg || '申请提现失败，请重试',
-            duration: 2000,
-          });
-        }
-        this.initState();
+    const inputValue = this.state.inputValue;
+    const { rechargeMoney } = this.props.wallet;
+    const { success, msg } = await rechargeMoney(inputValue);
+    
+    if (this.props.onCreateCash) {
+      this.props.onCreateCash();
+    }
+    if (success) {
+      Toast.success({
+        content: msg,
+        duration: 2000,
       });
-  };
+      const { getUserWalletInfo } = this.props.wallet;
+      await getUserWalletInfo();
+      this.initState();
+      Taro.navigateBack();
+    } else {
+      Toast.error({
+        content: msg,
+        duration: 2000,
+      });
+    }
+  }
+
   getStatusBarHeight() {
     return wx?.getSystemInfoSync()?.statusBarHeight || 44;
   }
@@ -109,7 +104,7 @@ class Withdrawal extends React.Component {
           <Icon size={18} name="LeftOutlined" />
         </View>
         <View style={this.getTopBarTitleStyle()} className={styles.fullScreenTitle}>
-          提现
+          充值
         </View>
       </View>
     );
@@ -119,9 +114,7 @@ class Withdrawal extends React.Component {
   getDisabeledButton = () => {
     const { inputValue } = this.state;
     const btnDisabled =
-      !inputValue ||
-      parseFloat(inputValue) > parseFloat(this.props.wallet?.walletAvaAmount) ||
-      parseFloat(inputValue) < parseFloat(this.props.site?.cashMinSum);
+      !inputValue || parseFloat(inputValue) < 0.1;
     return btnDisabled;
   };
 
@@ -133,8 +126,7 @@ class Withdrawal extends React.Component {
             {/* 自定义顶部返回 */}
             {this.renderTitleContent()}
             <View className={styles.totalAmount}>
-              <View className={styles.moneyTitle}>可提现金额</View>
-              <View className={styles.moneyNum}>{this.props.walletData?.availableAmount}</View>
+              <View className={styles.moneyTitle}>充值</View>
             </View>
             <View className={styles.moneyInput}>
               <MoneyInput
@@ -142,9 +134,7 @@ class Withdrawal extends React.Component {
                 onChange={this.onChange}
                 updateState={this.updateState}
                 visible={this.state.visible}
-                minmoney={this.props.site.cashMinSum}
-                maxmoney={this.props.walletData?.availableAmount}
-                type='withdrawal'
+                type='recharge'
               />
             </View>
           </View>
@@ -156,10 +146,10 @@ class Withdrawal extends React.Component {
             <Button
               type={'primary'}
               className={styles.button}
-              onClick={this.moneyToWeixin}
+              onClick={this.onRechargeMoney}
               disabled={this.getDisabeledButton()}
             >
-              <View className={styles.buttonContent}>提现到微信钱包</View>
+              <View className={styles.buttonContent}>立即充值</View>
             </Button>
           </View>
         </View>
@@ -168,4 +158,4 @@ class Withdrawal extends React.Component {
   }
 }
 
-export default Withdrawal;
+export default Recharge;

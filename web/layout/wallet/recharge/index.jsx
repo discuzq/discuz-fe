@@ -2,22 +2,21 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'next/router';
 import Header from '@components/header';
-import MoneyInput from './components/money-input';
+import MoneyInput from '../withdrawal/components/money-input';
 import styles from './index.module.scss';
 import { Icon, Button, Toast } from '@discuzq/design';
 import classNames from 'classnames';
 import Router from '@discuzq/sdk/dist/router';
+import isWeixin from '@common/utils/is-weixin';
 
 @inject('wallet')
 @inject('site')
 @observer
-class Withdrawal extends React.Component {
+class Recharge extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       visible: true,
-      moneyOverThanAmount: false, // 是否超过当前可提现金额
-      withdrawalAmount: 0,
       inputValue: '', // 金额输入内容
     };
   }
@@ -38,51 +37,41 @@ class Withdrawal extends React.Component {
   initState = () => {
     this.setState({
       visible: true,
-      moneyOverThanAmount: false, // 是否超过当前可提现金额
-      withdrawalAmount: 0,
       inputValue: '',
     });
   };
-
-  // 提现到微信钱包
-  moneyToWeixin = async () => {
+  
+  // 充值
+  onRechargeMoney = async () => {
     if (this.getDisabeledButton()) return;
+    const inputValue = this.state.inputValue;
+    const { rechargeMoney } = this.props.wallet;
+    const { success, msg } = await rechargeMoney(inputValue);
 
-    this.props.wallet
-      .createWalletCash({
-        money: this.state.inputValue,
-      })
-      .then(async (res) => {
-        Toast.success({
-          content: '申请提现成功',
-          hasMask: false,
-          duration: 2000,
-        });
-        const { getUserWalletInfo } = this.props.wallet;
-        await getUserWalletInfo();
-        this.initState();
-        Router.back();
-      })
-      .catch((err) => {
-        console.error(err);
-        if (err.Code) {
-          Toast.error({
-            content: err.Msg || '申请提现失败，请重试',
-            duration: 2000,
-          });
-        }
-        this.initState();
+    if (this.props.onCreateCash) {
+      this.props.onCreateCash();
+    }
+    if (success) {
+      Toast.success({
+        content: msg,
+        duration: 2000,
       });
-    // this.setState({ visible: !this.state.visible });
-  };
+      const { getUserWalletInfo } = this.props.wallet;
+      await getUserWalletInfo();
+      this.initState();
+      Router.back();
+    } else {
+      Toast.error({
+        content: msg,
+        duration: 2000,
+      });
+    }
+  }
 
   // 获取禁用逻辑
   getDisabeledButton = () => {
     const { inputValue } = this.state;
-    const btnDisabled =
-      !inputValue ||
-      parseFloat(inputValue) > parseFloat(this.props.wallet?.walletAvaAmount) ||
-      parseFloat(inputValue) < parseFloat(this.props.site?.cashMinSum);
+    const btnDisabled = !inputValue || parseFloat(inputValue) < 0.1;
     return btnDisabled;
   };
 
@@ -93,8 +82,7 @@ class Withdrawal extends React.Component {
         <div className={styles.container}>
           <div className={styles.main}>
             <div className={styles.totalAmount}>
-              <div className={styles.moneyTitle}>可提现金额</div>
-              <div className={styles.moneyNum}>{this.props.walletData?.availableAmount}</div>
+              <div className={styles.moneyTitle}>充值</div>
             </div>
             <div className={styles.moneyInput}>
               <MoneyInput
@@ -102,9 +90,7 @@ class Withdrawal extends React.Component {
                 onChange={this.onChange}
                 updateState={this.updateState}
                 visible={this.state.visible}
-                minmoney={this.props.site.cashMinSum}
-                maxmoney={this.props.walletData?.availableAmount}
-                type='withdrawal'
+                type='recharge'
               />
             </div>
           </div>
@@ -116,10 +102,10 @@ class Withdrawal extends React.Component {
             <Button
               type={'primary'}
               className={styles.button}
-              onClick={this.moneyToWeixin}
+              onClick={this.onRechargeMoney}
               disabled={this.getDisabeledButton()}
             >
-              提现到微信钱包
+              立即充值
             </Button>
           </div>
         </div>
@@ -128,4 +114,4 @@ class Withdrawal extends React.Component {
   }
 }
 
-export default withRouter(Withdrawal);
+export default withRouter(Recharge);

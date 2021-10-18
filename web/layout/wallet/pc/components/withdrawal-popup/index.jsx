@@ -5,6 +5,7 @@ import { Icon, Button } from '@discuzq/design';
 import styles from './index.module.scss';
 import MoneyInput from '../money-input';
 import classNames from 'classnames';
+import Router from '@discuzq/sdk/dist/router';
 @inject('wallet')
 @inject('site')
 class WithdrawalPop extends Component {
@@ -81,26 +82,75 @@ class WithdrawalPop extends Component {
         this.initState();
       });
   };
+  
+  operateWallet = (type) => {
+    // 提现操作
+    if (type === 'withdrawal') {
+      this.moneyToWeixin();
+      return;
+    }
+    // 充值操作
+    if (type === 'recharge') {
+      this.onRechargeMoney(this.state.inputValue);
+      return;
+    }
+  };
+
+  // 充值
+  onRechargeMoney = async () => {
+    const inputValue = this.state.inputValue;
+    this.props.onClose && this.props.onClose();
+    const { rechargeMoney } = this.props.wallet;
+    const { success, msg } = await rechargeMoney(inputValue);
+    if (success) {
+      Toast.success({
+        content: msg,
+        duration: 2000,
+      });
+      const { getUserWalletInfo } = this.props.wallet;
+      await getUserWalletInfo();
+      if (this.props.onCreateCash) {
+        this.props.onCreateCash();
+      }
+      this.initState();
+      Router.back();
+    } else {
+      Toast.error({
+        content: msg,
+        duration: 2000,
+      });
+    }
+  }
 
   render() {
-    const { visible: popupVisible, onClose, moneyToWixin } = this.props;
+    const { visible: popupVisible, onClose, moneyToWixin, operateWalletType = 'withdrawal' } = this.props;
     const walletAvaAmount = this.props.wallet.walletAvaAmount;
     const cashMinSum = this.props.site?.cashMinSum;
 
     return (
       <Popup position="center" visible={popupVisible} onClose={onClose}>
-        <div className={styles.container}>
-          <div className={styles.header}>
+        <div className={classNames(styles.container, {
+          [styles.rechargeContainer]: operateWalletType === 'recharge'
+        })}>
+          <div className={classNames(styles.header, {
+            [styles.rechargeHeader]: operateWalletType === 'recharge'
+          })}>
             <div></div>
-            <div className={styles.title}>提现</div>
+            <div className={styles.title}>
+              {operateWalletType === 'withdrawal' ? '提现' : '充值'}
+            </div>
             <div onClick={onClose}>
               <Icon name="CloseOutlined" size="12" color="#8590a6"></Icon>
             </div>
           </div>
-          <div className={styles.availableAmount}>
-            <div className={styles.text}>可提现金额</div>
-            <div className={styles.moneyNum}>{walletAvaAmount}</div>
-          </div>
+          {
+            operateWalletType === 'withdrawal' ? (
+            <div className={styles.availableAmount}>
+              <div className={styles.text}>可提现金额</div>
+              <div className={styles.moneyNum}>{walletAvaAmount}</div>
+            </div>
+            ) : ''
+          }
           <div className={styles.moneyInput}>
             <MoneyInput
               inputValue={this.state.inputValue}
@@ -109,15 +159,17 @@ class WithdrawalPop extends Component {
               visible={this.state.visible}
               minAmount={cashMinSum}
               maxAmount={walletAvaAmount}
+              moneyInputType={operateWalletType}
             ></MoneyInput>
           </div>
           <div
             className={classNames(styles.button, {
               [styles.bgBtnColor]: !this.getDisabeledButton(),
+              [styles.rechargeButton]: operateWalletType === 'recharge',
             })}
           >
-            <Button type={'primary'} onClick={this.moneyToWeixin} disabled={this.getDisabeledButton()}>
-              提现到微信钱包
+            <Button type={'primary'} onClick={() => this.operateWallet(operateWalletType)} disabled={this.getDisabeledButton()}>
+              {operateWalletType === 'withdrawal' ? '提现到微信钱包' : '立即充值'}
             </Button>
           </div>
         </div>

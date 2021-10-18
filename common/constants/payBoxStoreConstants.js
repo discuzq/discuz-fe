@@ -52,6 +52,7 @@ export const ORDER_TRADE_TYPE = {
   ORDER_TYPE_QUESTION_REWARD: 10, // 悬赏
   ORDER_TYPE_MERGE: 11, // 合并支付（红包+悬赏） 
   ORDER_TYPE_TEXT: 20, // 文字帖红包
+  ORDER_TYPE_RECHARGE: 30, // 充值
 }
 // export const ORDER_TRADE_TYPE = {
 //   REGEISTER_SITE: 1, // 表示注册(站点付费加入)

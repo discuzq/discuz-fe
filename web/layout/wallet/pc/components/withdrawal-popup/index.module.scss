@@ -9,6 +9,9 @@
   background: $white;
   padding: rem($padding-6n);
 }
+.rechargeContainer {
+  height: rem(234);
+}
 
 .header {
   display: flex;
@@ -23,6 +26,9 @@
     color: $text-color-primary;
     padding-left: rem($padding-4n);
   }
+}
+.rechargeHeader {
+  padding-bottom: $padding-6n;
 }
 
 .availableAmount {
@@ -59,6 +65,9 @@
       height: rem(36);
     }
   }
+}
+.rechargeButton {
+  margin-top: $margin-2n;
 }
 
 .bgBtnColor {
