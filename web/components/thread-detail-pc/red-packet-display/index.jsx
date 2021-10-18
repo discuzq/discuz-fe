@@ -10,7 +10,7 @@ function RedPacketDisplay(props) {
     <div className={styles.contianer}>
       <img className={styles.image} src="/dzq-img/redpacket-mini.png" alt="红包图标" />
       <div className={styles.text}>
-        获得<span className={styles.number}>{numberStr}</span>元红包
+        获得<span className={styles.number}>&nbsp;{numberStr}&nbsp;</span>元红包
       </div>
     </div>
   );

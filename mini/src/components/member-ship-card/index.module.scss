@@ -1,18 +1,51 @@
 @import '@common/styles/index.scss';
 
+
+.tips {
+  font-size: 14px;
+  line-height: 21px;
+  text-align: left;
+  color: #393b42;
+  white-space: pre-line;
+
+  .title {
+    padding: 23px 0 8px 0;
+    font-weight: bold;
+  }
+
+  .text {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 21px;
+    text-align: left;
+    color: #393b42;
+  }
+}
+
+.symbol {
+  font-size: 16px;
+}
+
+
 .memberShipCardWrapper {
   background-color: $white;
   width: 100%;
-  height: 140px;
-  border-radius: 5px;
+  height: rem(170);
+  border-radius: rem(5);
   // border: rem(1) solid $white;
   box-shadow: $border-shadow-color-8;
-  margin-top:$margin-4n;
-  padding: $padding-4n;
+  margin-top: rem($margin-4n);
+  padding: rem($padding-4n);
   box-sizing: border-box;
-  background-image: url('https://imgcache.qq.com/operation/dianshi/other/ship-card.e7c12e08843409af87f3898e25ef67d1d4334339.png');
-  background-size: 100% 169px;
+  // background-image: url('/dzq-img/ship-card-pc.png');
+  // background-size: 100% rem(169);
   background-repeat: no-repeat;
+  background-size:cover;
+}
+
+.memberShipNoMargin {
+  margin: 0 !important;
+  max-width: rem(340);
 }
 
 .MemberShipCardContent {
@@ -22,42 +55,46 @@
   justify-content: space-between;
   .roleType {
     font-weight: bold;
-    font-size: $font-size-middle-extra;
-    line-height: 25px;
+    font-size: rem($font-size-middle-extra);
+    line-height: rem(25);
     text-align: left;
     color: $text-color-primary;
-    height: 25px;
+    height: rem(25);
   }
   .tagline {
-    font-size: $font-size-primary;
-    height: 20px;
-    line-height: 20px;
+    font-size: rem($font-size-primary);
+    height: rem(20);
+    line-height: rem(20);
     color: $text-color-primary;
-    margin: $margin-10 0 18px;
+    margin: rem($margin-10) 0 rem(18);
   }
   .RenewalFee {
     display: flex;
     align-items: center;
     justify-content: space-between;
     .btn {
-      width: 80px;
-      height: 36px;
+      width: rem(66) !important;
+      height: rem(36);
+
+      @media only screen and (max-width: 1200px) {
+        width: rem(80);
+      }
+
       padding: 0;
-      line-height: 36px;
+      line-height: rem(36);
       border-radius: rem(5);
+      flex-shrink: 0;
     }
     .feeTimer {
       color: $text-color-regular;
-      font-size: $font-size-primary;
-      letter-spacing: 1px;
-      height: 20px;
-      line-height: 20px;
+      font-size: rem($font-size-primary);
+      height: rem(20);
+      line-height: rem(20);
       width: 100%;
       text-align: right;
       .feeDay {
-        font-size: $font-size-h1;
+        font-size: rem($font-size-h1);
         color: $primary-color;
-        font-weight: $font-weight-regular;
       }
       .noTimeDate {
         text-align: right;
@@ -66,3 +103,7 @@
     }
   }
 }
+
+
+
+

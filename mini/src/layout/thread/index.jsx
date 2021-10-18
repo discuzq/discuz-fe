@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
-import { View, Text, ScrollView } from '@tarojs/components';
+import { View, Text, ScrollView, Image } from '@tarojs/components';
 
 import Taro, { eventCenter, getCurrentInstance } from '@tarojs/taro';
 
@@ -24,6 +24,7 @@ import MorePopup from './components/more-popup';
 import InputPopup from './components/input-popup';
 import BottomView from '@components/list/BottomView';
 import throttle from '@common/utils/thottle';
+import PacketOpen from '@components/red-packet-animation';
 
 import threadPay from '@common/pay-bussiness/thread-pay';
 import RewardPopup from './components/reward-popup';
@@ -35,6 +36,7 @@ import styles from './post/index.module.scss';
 import Router from '@discuzq/sdk/dist/router';
 import canPublish from '@common/utils/can-publish';
 import { parseContentData } from './utils';
+const hongbaoMini = 'https://imgcache.qq.com/operation/dianshi/other/redpacket-mini.10b46eefd630a5d5d322d6bbc07690ac4536ee2d.png';
 
 @inject('site')
 @inject('user')
@@ -954,12 +956,15 @@ class ThreadH5Page extends React.Component {
   render() {
     const { thread: threadStore } = this.props;
     const { isReady, isCommentReady, isNoMore, totalCount, isCommentListError } = threadStore;
+    const { hasRedPacket } = threadStore; // 是否有红包领取的数据
+
     const fun = {
       moreClick: this.onMoreClick,
     };
 
     const { indexes } = this.props.thread?.threadData?.content || {};
     const parseContent = parseContentData(indexes);
+    const hasHongbao = parseContent?.RED_PACKET?.condition===0 && parseContent?.RED_PACKET?.remainNumber>0; // 是否还有剩余未领完红包
 
     // const isDraft = threadStore?.threadData?.isDraft;
     // // 是否红包帖
@@ -1097,7 +1102,11 @@ class ThreadH5Page extends React.Component {
           <View className={classNames(layout.footerContainer, this.state.showCommentInput && layout.zindex)}>
             <View className={classNames(layout.footer, this.state.showCommentInput && layout.zindex)}>
               {/* 评论区触发 */}
-              <View className={footer.inputClick} onClick={() => this.onInputClick()}>
+              <View 
+                className={classNames(footer.inputClick, hasHongbao && footer.hasHongbao)}
+                onClick={() => this.onInputClick()}
+              >
+                {hasHongbao && <Image className={footer.hongbaoMini} src={hongbaoMini}></Image>}
                 <Input
                   className={footer.input}
                   placeholder="写评论"
@@ -1211,6 +1220,11 @@ class ThreadH5Page extends React.Component {
                 onOkClick={(data) => this.onAboptOk(data)}
               ></AboptPopup>
             )}
+
+            {
+              hasRedPacket > 0
+              && <PacketOpen onClose={() => threadStore.setRedPacket(0)} money={hasRedPacket} />
+            }
           </Fragment>
         )}
       </View>

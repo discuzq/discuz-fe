@@ -114,7 +114,7 @@ const CommentInput = inject('site')(inject('user')((props) => {
           className={`${styles.input}`}
           maxLength={5000}
           showLimit={false}
-          value={debounce(() => value, 0)}
+          value={value}
           onChange={(e) => setValue(e.target.value)}
           placeholder={placeholderState}
           disabled={loading}

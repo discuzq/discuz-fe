@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-
+import SiteMapLink from '@components/site-map-link';
 import styles from './index.module.scss';
 
 /**
@@ -15,20 +15,28 @@ const TrendingTopics = ({ data, onItemClick }) => {
 
   return (
       <div className={styles.list}>
-        {data?.map((item, index, arr) => (
-            arr.length % 2 === 0 ?
-                (<div key={index} className={`${styles.item} ${arr.length - index < 3 ? styles.footerItem : ''}`}
-                      onClick={() => click(item)}>
-                  <span className={`${styles.index} ${styles[`itemIndex${index + 1}`]}`}>{index + 1}</span>
-                  <span className={styles.text}>{`#${item.content}#`}</span>
-                </div>) :
-                (<div key={index} className={`${styles.item} ${arr.length - index < 2 ? styles.footerItem : ''}`}
-                      onClick={() => click(item)}>
-                  <span className={`${styles.index} ${styles[`itemIndex${index + 1}`]}`}>{index + 1}</span>
-                  <span className={styles.text}>{`#${item.content}#`}</span>
-                </div>)
-
-        ))}
+        {
+          data?.map((item, index, arr) => {
+            console.log(item);
+            return (
+              arr.length % 2 === 0 ?
+                  (<div key={index} className={`${styles.item} ${arr.length - index < 3 ? styles.footerItem : ''}`}
+                        onClick={() => click(item)}>
+                    <SiteMapLink href={`/topic/topic-detail/${item.topicId}`} text={`#${item.content}#`}/>
+                    <span className={`${styles.index} ${styles[`itemIndex${index + 1}`]}`}>{index + 1}</span>
+                    <span className={styles.text}>{`#${item.content}#`}</span>
+                  </div>) :
+                  (<div key={index} className={`${styles.item} ${arr.length - index < 2 ? styles.footerItem : ''}`}
+                        onClick={() => click(item)}>
+                      
+                    <SiteMapLink href={`/topic/topic-detail/${item.topicId}`} text={`#${item.content}#`}/>
+                    <span className={`${styles.index} ${styles[`itemIndex${index + 1}`]}`}>{index + 1}</span>
+                    <span className={styles.text}>{`#${item.content}#`}</span>
+                  </div>)
+  
+            )
+          })
+        }
       </div>
   );};
 

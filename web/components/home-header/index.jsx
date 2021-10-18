@@ -156,6 +156,7 @@ class HomeHeader extends React.Component {
                     className={styles.logo}
                     mode="aspectFit"
                     src='/dzq-img/join-banner-bg.png'
+                    alt="图片"
                 />
               </div>
             : <div className={styles.logoBox}>
@@ -163,6 +164,7 @@ class HomeHeader extends React.Component {
                     className={styles.logo}
                     mode="aspectFit"
                     src={this.getLogo()}
+                    alt="图片"
                 />
               </div>
         }

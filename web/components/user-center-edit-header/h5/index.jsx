@@ -132,7 +132,7 @@ export default class index extends Component {
   };
 
   handleBlurSignature = (e) => {
-    this.props.user.editSignature = e.target.value;
+    this.props.user.editSignature = e.target.value.trim();
     this.setState({
       isClickSignature: false,
     });
@@ -190,7 +190,6 @@ export default class index extends Component {
                 // true ? (
                 <div style={{ width: inputWidth + 10, minWidth: !this.user.editSignature && '180px' }}>
                   <Input
-                    trim
                     className={styles.userSignatureInput}
                     maxLength={50}
                     focus={true}

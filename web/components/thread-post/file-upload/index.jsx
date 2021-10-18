@@ -11,7 +11,7 @@ export default function FileUpload(props) {
     btnText="添加附件"
     data={data}
     limit={limit}
-    accept={ACCEPT_FILE_TYPES.join(',')}
+    // accept={ACCEPT_FILE_TYPES.join(',')}
     onChange={onChange}
     onComplete={onComplete}
     fileList={fileList}

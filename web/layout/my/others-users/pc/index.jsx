@@ -31,6 +31,11 @@ class PCMyPage extends React.Component {
     if (this.props.user.targetUsers[query.id]) {
       this.state.fetchUserInfoLoading = false;
     }
+    if (query.id && query.id !== String(this.props.user?.id)) {
+      this.props.threadList.clearList({
+        namespace: `user/${query.id}`,
+      });
+    }
   }
 
   fansPopupInstance = null;

@@ -1,31 +1,37 @@
 @import '@common/styles/index.scss';
-.contaner {
+
+.dialogHeader {
+  height: rem(28);
+  line-height: rem(28);
+  font-size: rem($font-size-large);
+  color: $text-color-primary;
+  padding-bottom: 0;
+  margin-bottom: rem(24);
+
+  :global(.dzq-header__closeicon){
+    top: 50%;
+    margin-top: rem(-6);
+  }
+}
+
+.dialogBody {
+  padding: 0;
+}
+
+.dialogFooter {
+  padding-top: 0;
+}
+
+.container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-}
-.popupWrapper {
-  width: rem(572);
-  height: rem(680);
-  overflow: hidden;
+  width: 100%;
+  height: rem(540);
+  overflow-y: hidden;
   background: $white;
-  border-radius: rem($border-radius-small);
-  .title {
-    text-align: center;
-    font-weight: 600;
-    font-size: rem($font-size-large);
-    height: rem(76);
-    line-height: rem(76);
-    color: $text-color-primary;
-    position: relative;
-  }
 
-  .closeIcon {
-    position: absolute;
-    right: rem(24);
-    top: 50%;
-    transform: translate(-50%, -50%);
-  }
   .titleHr {
     height: rem(1);
     width: 100%;
@@ -33,7 +39,7 @@
   }
 }
 
-.splitEmelent {
+.splitElement {
   padding: 0 rem($padding-4n);
   :global {
     .dzq-divider {

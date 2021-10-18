@@ -103,6 +103,7 @@ class UserCenterThreads extends React.Component {
       Toast.success({
         content: '置顶成功',
       });
+      document.getElementById(`my-thread`).scrollIntoView();
     } else {
       Toast.error({
         content: ret.msg || '置顶失败',

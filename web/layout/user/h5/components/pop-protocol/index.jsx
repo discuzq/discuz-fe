@@ -20,8 +20,7 @@ class PopProtocol extends React.Component {
   }
   getProtocalData(type) {
     const { site } = this.props;
-    const { webConfig: { agreement } } = site;
-    const { privacy, privacyContent, register, registerContent } = agreement;
+    const { privacy, privacyContent, register, registerContent } = site?.webConfig?.agreement || {};;
 
     let title = '';
     let content = '';
@@ -56,9 +55,9 @@ class PopProtocol extends React.Component {
       <Popup
         position="bottom"
         visible={protocolVisible}
-        onClose={() => {commonLogin.setProtocolVisible(false)}}
+        onClose={() => { commonLogin.setProtocolVisible(false) }}
       >
-        <div className={layout.content} style={height && {height: `${height - 48}px`}}>
+        <div className={layout.content} style={height && { height: `${height - 48}px` }}>
           <div className={layout.title}>
             {protocolData.title}
           </div>

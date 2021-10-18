@@ -1,14 +1,14 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import Icon from '@discuzq/design/dist/components/icon/index';
 import Popup from '@discuzq/design/dist/components/popup/index';
-import Button from '@discuzq/design/dist/components/button/index';
+// import Button from '@discuzq/design/dist/components/button/index';
+
 import className from 'classnames';
-import { View } from '@tarojs/components';
+import { View ,Button} from '@tarojs/components';
 import styles from './index.module.scss';
 
 const InputPop = (props) => {
   const { visible, onSubmit, onClose, onOperClick, permissions = {}, statuses = {}, shareData, isShowShare } = props;
-
   const { canEdit, canDelete, canEssence, canStick, canShare, canCollect, isAdmini } = permissions;
   const { isEssence, isStick, isCollect } = statuses;
 

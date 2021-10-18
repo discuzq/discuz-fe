@@ -54,7 +54,7 @@ class ForumPCPage extends React.Component {
   // 右侧 - 潮流话题 粉丝 版权信息
   renderRight = () => (
       <>
-        <UserCenterUsersPc/>
+        <UserCenterUsersPc itemStyle={{padding: '8px 0'}}/>
         <Copyright/>
       </>
   );
@@ -180,7 +180,7 @@ class ForumPCPage extends React.Component {
                   <tr className={layout.plate_th}>
                     <td className={layout.plate_td}>版权模块</td>
                     {
-                      categoriesNames?.map(item => <td className={layout.plate_td} key={item.pid}>{item.name}</td>)
+                      categoriesNames?.map(item => <td className={layout.plate_td} key={item.categoryId}>{item.name}</td>)
                     }
                   </tr>
                 </thead>
@@ -191,8 +191,8 @@ class ForumPCPage extends React.Component {
                           <td className={layout.plate_td}>{item.value}</td>
                           {
                             categoriesNames?.map(per => (
-                              <td className={layout.plate_td} key={per.pid}>
-                                <Icon size={16} color='#2469F6' name={myPermissons && myPermissons[item.type][per.pid] ? 'CheckOutlined' : 'CloseOutlined'}/>
+                              <td className={layout.plate_td} key={per.categoryId}>
+                                <Icon size={16} color='#2469F6' name={myPermissons && myPermissons[item.type][per.categoryId] ? 'CheckOutlined' : 'CloseOutlined'}/>
                               </td>
                             ))
                           }

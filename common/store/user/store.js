@@ -29,6 +29,9 @@ class UserStore {
   @observable userThreadsTotalCount = 0;
   @observable userThreadsTotalPage = 1;
 
+  // 付费用户组
+  @observable payGroups = [];
+
   @observable userLikes = {};
 
   // 编辑模式下的 username
@@ -282,7 +285,7 @@ class UserStore {
 
   // 判断当前用户是否管理员
   @computed get isAdmini() {
-    return get(this.userInfo, 'group.pid') === 1;
+    return get(this.userInfo, 'group.groupId') === 1;
   }
 
   // 用户角色分类

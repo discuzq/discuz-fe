@@ -115,7 +115,7 @@ const Index = ({ message, user, site: { webConfig, envConfig }, dialogId: _dialo
 
     const token = locals.get(constants.ACCESS_TOKEN_NAME);
     Taro.uploadFile({
-      url: `${envConfig.COMMON_BASE_URL}/apiv3/attachments`,
+      url: `${envConfig.COMMON_BASE_URL}/api/v3/attachments`,
       filePath: file.path,
       name: 'file',
       header: {

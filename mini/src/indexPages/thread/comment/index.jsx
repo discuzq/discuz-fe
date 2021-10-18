@@ -5,12 +5,14 @@ import Page from '@components/page';
 import Router from '@discuzq/sdk/dist/router';
 import { readCommentDetail } from '@server';
 import { getCurrentInstance } from '@tarojs/taro';
+import withShare from '@common/utils/withShare/withShare';
 import CommentMiniPage from '../../../layout/thread/comment/index';
 import ErrorMiniPage from '../../../layout/error/index';
 
 @inject('site')
 @inject('comment')
 @inject('thread')
+@withShare({})
 class CommentDetail extends React.Component {
   constructor(props) {
     super(props);
@@ -20,8 +22,20 @@ class CommentDetail extends React.Component {
     };
   }
 
+ 
+
   async componentWillUnmount() {
     this.props.comment.reset();
+  }
+
+   // 页面分享
+  getShareData(data) {
+    return (
+      {
+        title: data.title,
+        path:data.path,
+      }
+    );
   }
 
   async componentDidShow() {

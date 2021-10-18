@@ -44,6 +44,7 @@ const BaseLayout = forwardRef((props, ref) => {
     rightClassName = '',
     disabledList = false,
     onRefreshPlaceholder = null,
+    bottomViewStyle={},
   } = props;
 
   // List组件相关，参考List组件props注释
@@ -120,7 +121,7 @@ const BaseLayout = forwardRef((props, ref) => {
 
       <div className={styles.center}>
         {typeof children === 'function' ? children({ ...props }) : children}
-        {isShowLayoutRefresh && onRefresh && <BottomView onRefreshPlaceholder={onRefreshPlaceholder} isError={isError} errorText={isErrorText} noMore={noMore} loadingText={loadingText} />}
+        {isShowLayoutRefresh && onRefresh && <BottomView onRefreshPlaceholder={onRefreshPlaceholder} isError={isError} errorText={isErrorText} noMore={noMore} loadingText={loadingText} bottomViewStyle={bottomViewStyle}/>}
       </div>
 
       {(pageName === 'home' || right) && (

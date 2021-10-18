@@ -77,12 +77,12 @@ export const handleAttachmentData = (data) => {
     } else if (tomId === '10002') { // iframe外插视频
       newData.iframeData = item.body;
     } else {
-      const { tomId, body } = item;
-      const { _plugin } = body || {};
+      const { tomId, body, _plugin = {} } = item;
       if ( _plugin ) {
-        newData.plugin[_plugin.name] = {
+        newData.plugin[_plugin?.name] = {
           tomId,
-          body
+          body,
+          _plugin,
         };
       }
     }

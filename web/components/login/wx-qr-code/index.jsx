@@ -16,7 +16,7 @@ class WeixinQrCode extends React.Component {
         <div className={platform === 'h5' ? `${layout.orCode__img} ${wechatEnv === 'miniProgram' ? layout.orCode_mini : ''}` : `${layout.pc_orCode__img} ${wechatEnv === 'miniProgram' ? layout.pc_orCode_mini : ''}`}>
           {
             orCodeImg
-              ? <img src={orCodeImg} alt=''/>
+              ? <img src={orCodeImg} alt={orCodeImg}/>
               : <></>
           }
         </div>

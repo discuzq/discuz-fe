@@ -11,7 +11,7 @@ import goToLoginPage from '@common/utils/go-to-login-page';
 import threadPay from '@common/pay-bussiness/thread-pay';
 import ThreadCenterView from './ThreadCenterView';
 import { throttle } from '@common/utils/throttle-debounce';
-import { debounce } from './utils';
+import { debounce, handleAttachmentData } from './utils';
 import { noop } from '@components/thread/utils';
 import { updateViewCountInStorage } from '@common/utils/viewcount-in-storage';
 import Comment from './comment';
@@ -80,7 +80,7 @@ class Index extends React.Component {
         showCommentList: !this.state.showCommentList,
       });
       if (!this.state.showCommentList) {
-        await getThreadCommentList(threadId);
+        await getThreadCommentList(threadId, this.props.recomputeRowHeights);
       }
     } else {
       console.log('帖子不存在');
@@ -102,7 +102,7 @@ class Index extends React.Component {
       goToLoginPage({ url: '/user/login' });
       return;
     }
-    const { data = {}, user } = this.props;
+    const { data = {}, user, recomputeRowHeights } = this.props;
     const { threadId = '', isLike, postId } = data;
     this.setState({ isSendingLike: true });
     this.props.index.updateThreadInfo({ pid: postId, id: threadId, data: { attributes: { isLiked: !isLike } } }).then((result) => {
@@ -111,10 +111,11 @@ class Index extends React.Component {
           updateType: 'like',
           updatedInfo: result.data,
           user: user.userInfo,
+          recomputeRowHeights,
         });
 
-        const { recomputeRowHeights = noop } = this.props;
-        recomputeRowHeights();
+        // const { recomputeRowHeights = noop } = this.props;
+        // recomputeRowHeights();
       }
       this.setState({ isSendingLike: false });
     });
@@ -186,16 +187,16 @@ class Index extends React.Component {
   onOpen = () => {
     const { threadId = '' } = this.props.data || {};
 
-    updateThreadAssignInfoInLists(threadId, { updateType: 'openedMore', openedMore: true });
+    updateThreadAssignInfoInLists(threadId, { updateType: 'openedMore', openedMore: true, recomputeRowHeights: this.props.recomputeRowHeights });
 
-    const { recomputeRowHeights = noop } = this.props;
-    recomputeRowHeights();
+    // const { recomputeRowHeights = noop } = this.props;
+    // recomputeRowHeights();
   }
   onClose = () => {
     const { threadId = '' } = this.props.data || {};
-    updateThreadAssignInfoInLists(threadId, { updateType: 'openedMore', openedMore: false });
-    const { recomputeRowHeights = noop } = this.props;
-    recomputeRowHeights();
+    updateThreadAssignInfoInLists(threadId, { updateType: 'openedMore', openedMore: false, recomputeRowHeights: this.props.recomputeRowHeights });
+    // const { recomputeRowHeights = noop } = this.props;
+    // recomputeRowHeights();
   }
 
   // 判断能否进入详情逻辑
@@ -280,14 +281,14 @@ class Index extends React.Component {
   }
 
   render() {
-    const { data, card, className = '', site = {}, showBottomStyle = true, collect = '', unifyOnClick = null, isShowIcon = false, user: users, onTextItemClick = null, extraTag, extraInfo } = this.props;
+    const { index, thread, data, card, className = '', site = {}, showBottomStyle = true, collect = '', unifyOnClick = null, isShowIcon = false, user: users, onTextItemClick = null, extraTag, extraInfo } = this.props;
     const { platform = 'pc' } = site;
     const threadStore = this.props.thread;
-
     const { onContentHeightChange = noop, onImageReady = noop, onVideoReady = noop } = this.props;
     if (!data) {
       return <NoData />;
     }
+
 
     const {
       user = {},
@@ -307,6 +308,9 @@ class Index extends React.Component {
     } = data || {};
     const { isEssence, isPrice, isRedPack, isReward } = displayTag || {};
 
+    const {redPacketData} = handleAttachmentData(data.content);
+
+    const hasCommentHongbao = redPacketData && redPacketData.condition === 0 && redPacketData.remainNumber > 0;
     return (
       <div className={`${styles.container} ${className} ${showBottomStyle && styles.containerBottom} ${platform === 'pc' && styles.containerPC}`}>
         <div className={styles.header} onClick={unifyOnClick || this.onClick}>
@@ -335,10 +339,14 @@ class Index extends React.Component {
 
         <ThreadCenterView
           site={site}
+          user={users}
+          updateThread={thread.updateThread.bind(thread)}
+          updateListThreadIndexes={index.updateListThreadIndexes.bind(index)}
           onContentHeightChange={onContentHeightChange}
           onImageReady={onImageReady}
           onVideoReady={onVideoReady}
           data={data}
+          threadId={data.threadId}
           onClick={unifyOnClick || this.onClick}
           onPay={unifyOnClick || this.onPay}
           unifyOnClick={unifyOnClick}
@@ -372,6 +380,7 @@ class Index extends React.Component {
           tipData={{ postId, threadId, platform, payType }}
           platform={platform}
           updateViewCount={this.updateViewCount}
+          hasCommentHongbao={hasCommentHongbao}
         />
 
 
@@ -407,4 +416,4 @@ Index.defaultProps = {
 };
 
 // eslint-disable-next-line new-cap
-export default HOCFetchSiteData(withRouter(Index));
+export default withRouter(Index);

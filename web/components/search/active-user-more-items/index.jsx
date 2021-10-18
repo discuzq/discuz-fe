@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import Avatar from '@components/avatar';
 import { Button, Icon } from '@discuzq/design';
-
+import SiteMapLink from '@components/site-map-link';
 import styles from './index.module.scss';
 
 /**
@@ -60,6 +60,7 @@ const User = ({ data, onClick, onFollow, userId, noOperation }) => {
 
   return (
     <div className={styles.item} onClick={click}>
+      <SiteMapLink href={`/user/${data.userId}`} text={data.nickname}/>
       <div>
         <Avatar image={data.avatar} name={data.nickname} isShowUserInfo userId={data.userId} />
       </div>

@@ -50,7 +50,7 @@ const Index = ({ isPay = false, url, onPay = noop, baselayout, updateViewCount =
       {
         isPay ? (
           <div className={styles.wrapper}>
-            <img src='/dzq-img/pay-audio.png' className={styles.payBox} onClick={onPay}></img>
+            <img alt="音频播放" src='/dzq-img/pay-audio.png' className={styles.payBox} onClick={onPay}></img>
           </div>
         ) : <div ref={audioWrapperRef}><Audio src={url} onPlay={onPlay} disabled={!url} ref={audioRef}/></div>
       }

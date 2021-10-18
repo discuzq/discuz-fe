@@ -17,7 +17,7 @@ import DynamicLoading from '@components/dynamic-loading';
 import { debounce, throttle } from '@common/utils/throttle-debounce.js';
 import Autoplay from '@common/utils/autoplay';
 import PacketOpen from '@components/red-packet-animation/web';
-
+import ThreadContent from '@components/thread/SSRAdapter';
 
 @inject('site')
 @inject('user')
@@ -220,6 +220,38 @@ class IndexH5Page extends React.Component {
     );
   };
 
+  renderSSRContent(thread, sticks) {
+    if (  process.env.DISCUZ_RUN === 'ssr' && ThreadContent ) {
+      const { pageData } = thread
+      
+      return (
+        <div className='ssr-box' style={{display: 'none'}}>
+          <HomeHeader />
+          {this.renderTabs()}
+          {this.renderHeaderContent()}
+          <div>
+            {
+              pageData && pageData.length != 0 && pageData.map((item, index) => {
+                return (
+                  <ThreadContent
+                    onContentHeightChange={() => {}}
+                    onImageReady={() => {}}
+                    onVideoReady={() => {}}
+                    key={`${item.threadId}-${item.updatedAt}`}
+                    data={item}
+                    recomputeRowHeights={() => {}}
+                  />
+                );
+              })
+            }
+          </div>
+          
+        </div>
+      );
+    }
+    return null;
+  }
+
   render() {
     const { index, thread} = this.props;
     const { hasRedPacket } = thread;
@@ -248,7 +280,7 @@ class IndexH5Page extends React.Component {
           <div className={classnames(styles.vTabs, 'text', this.state.fixedTab && styles.vFixed)}>
             {this.renderTabs()}
           </div>
-
+          {this.renderSSRContent(index.threads, index.sticks)}
           <this.DynamicVListLoading
             pageData={pageData}
             sticks={sticks}

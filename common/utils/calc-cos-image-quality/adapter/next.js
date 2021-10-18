@@ -10,6 +10,7 @@ export default function next(src, type, level) {
     if (param && param !== '') {
         paramArr = param?.split('&');
     }
+    paramArr.push(newParam);
     const newSrc = `${path}?${paramArr.join('&')}`;
 
     return newSrc;

@@ -5,6 +5,7 @@ import Avatar from '@components/avatar';
 import styles from './index.module.scss';
 import throttle from '@common/utils/thottle.js';
 
+@inject('site')
 @inject('user')
 @observer
 class UserCenterFriends extends React.Component {
@@ -129,6 +130,8 @@ class UserCenterFriends extends React.Component {
 
   render() {
     const myid = this.props.user.id;
+    const { isPC } = this.props.site;
+
     return (
       <div
         style={{
@@ -144,7 +147,7 @@ class UserCenterFriends extends React.Component {
           style={{
             ...this.props.itemStyle,
           }}
-          className={styles.friendItem}
+          className={`${styles.friendItem} ${!isPC && styles.friendItemH5}`}
         >
           <div className={styles.friendInfo}>
             <div className={styles.friendAvatar}>

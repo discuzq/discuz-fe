@@ -178,6 +178,8 @@ class H5MyPage extends React.Component {
           <div className={styles.unit}>
             <UserCenterPost />
           </div>
+
+          <div id="my-thread"></div>
           <div className={styles.unit}>
             <div className={styles.threadUnit}>
               <div className={styles.threadTitle}>主题</div>

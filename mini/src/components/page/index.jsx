@@ -76,7 +76,7 @@ export default class Page extends React.Component {
       // 付费模式处理
       if (siteMode === 'pay') {
         // 已付费用户，恢复页面
-        if (path === PARTNER_INVITE_URL && user.paid) {
+        if (path === PARTNER_INVITE_URL && user.isLogin() && (user.paid || user?.group?.level !== 0) ) {
           LoginHelper.restore(false);
           return false;
         }
@@ -89,7 +89,7 @@ export default class Page extends React.Component {
               this.isPass(true);
             }, 1000);
             return false;
-          } else if (!user.paid) {
+          } else if (!user.paid && user?.group?.level === 0) {
             Router.replace({ url: PARTNER_INVITE_URL });
             return false;
           }

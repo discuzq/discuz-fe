@@ -11,8 +11,11 @@ import AtSelect from '@components/thread-post/at-select';
 import classnames from 'classnames';
 import { inject } from 'mobx-react';
 
+const hongbaoMini = 'https://imgcache.qq.com/operation/dianshi/other/redpacket-mini.10b46eefd630a5d5d322d6bbc07690ac4536ee2d.png';
+
+
 const CommentInput = inject('site')((props) => {
-  const { onSubmit, onClose, height, initValue = '', placeholder = '写下我的评论...', site } = props;
+  const { onSubmit, onClose, height, initValue = '', placeholder = '写下我的评论...', site, hasHongbao} = props;
 
   const textareaRef = createRef();
 
@@ -218,7 +221,8 @@ const CommentInput = inject('site')((props) => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.main}>
+      <div className={`${styles.main} ${hasHongbao ? styles.hasHongbao : ''}`}>
+        {hasHongbao && <img className={styles.hongbaoMini} src={hongbaoMini}></img>}
         <Textarea
           className={`${styles.input} ${height === 'label' ? styles.heightLabel : styles.heightMiddle}`}
           rows={5}

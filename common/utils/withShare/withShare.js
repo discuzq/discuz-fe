@@ -47,8 +47,8 @@ function withShare(options = {}) {
       }
 
       onShareAppMessage = (res) => {
-
         const data = res.target?.dataset?.shareData || '';
+        console.log('res',res)
         let shareData = '';
         if (this.getShareData && typeof this.getShareData === 'function') {
           shareData = this.getShareData({ ...data, from: res.from });

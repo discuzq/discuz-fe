@@ -2,12 +2,14 @@ import React, { useMemo, useState, useEffect } from 'react';
 import styles from './index.module.scss';
 import Tip from '../tip';
 import Icon from '@discuzq/design/dist/components/icon/index';
-import { View, Text } from '@tarojs/components';
+import { View, Text , Image} from '@tarojs/components';
 import ShareButton from '../share-button';
 import goToLoginPage from '@common/utils/go-to-login-page';
 import Taro from '@tarojs/taro';
 import Toast from '@discuzq/design/dist/components/toast';
 import { noop } from '../utils';
+const hongbaoMini = 'https://imgcache.qq.com/operation/dianshi/other/redpacket-mini.10b46eefd630a5d5d322d6bbc07690ac4536ee2d.png';
+
 /**
  * 帖子底部内容
  * @prop {array}    userImgs 点赞分享用户信息
@@ -39,7 +41,9 @@ const Index = ({
   onPraise = () => {},
   updateViewCount = noop,
   shareIconClick = () => {},
-  isCommented = false
+  isCommented = false,
+  hasCommentHongbao = false,
+
 }) => {
   const postList = useMemo(() => {
     const praise = {
@@ -59,6 +63,7 @@ const Index = ({
         type: 'commonet',
         num: comment,
         actived: isCommented,
+        hasHongbao: hasCommentHongbao,
       },
       {
         icon: 'ShareAltOutlined',
@@ -70,8 +75,19 @@ const Index = ({
     ];
   }, [wholeNum, comment, sharing, isLiked, isCommented]);
   const [show, setShow] = useState(false);
-  const handleClickShare = () => {
+  const handleClick = (item) => {
+    if (typeof unifyOnClick === 'function') {
+      unifyOnClick();
+      return;
+    }
+
     updateViewCount();
+
+    if (item.name === '赞') {
+      item.event();
+      return;
+    }
+
     // 对没有登录的先登录
     if (!user.isLogin()) {
       Toast.info({ content: '请先登录!' });
@@ -83,6 +99,12 @@ const Index = ({
       Toast.info({content: '内容正在审核中'});
       return ;
     }
+
+    if (item.name === '评论') {
+      item.event();
+      return;
+    }
+
     setShow(true)
     shareIconClick();
   }
@@ -118,14 +140,14 @@ const Index = ({
       <View className={needHeight ? styles.operation : styles.operations}>
         {postList.map((item, index) =>
           item.name === '分享' ? (
-            <View key={index} className={styles.fabulous} onClick={unifyOnClick || handleClickShare}>
+            <View key={index} className={styles.fabulous} onClick={() => handleClick(item)}>
               <View className={styles.fabulousIcon}>
                 <Icon className={`${styles.icon} ${item.type}`} name={item.icon} size={16}></Icon>
               </View>
               <Text className={styles.fabulousPost}>{item.num ? item.num : item.name}</Text>
             </View>
           ) : (
-            <View key={index} className={styles.fabulous} onClick={unifyOnClick || item.event}>
+            <View key={index} className={styles.fabulous} onClick={() => handleClick(item)}>
               <View className={styles.fabulousIcon}>
                 <Icon
                   className={`${styles.icon} ${item.type} ${
@@ -138,6 +160,8 @@ const Index = ({
               <Text className={(isLiked && item.name === '赞') || item.actived ? styles.fabulousCancel : styles.fabulousPost}>
                 {item.num ? item.num : item.name}
               </Text>
+              {item.hasHongbao &&  <Image className={styles.hongbaoMini} src={hongbaoMini}></Image>}
+
             </View>
           ),
         )}

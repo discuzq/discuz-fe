@@ -115,13 +115,7 @@ class UserCenterFollowsPc extends React.Component {
                     },
                   });
                 }}
-                style={this.props.messageMode ? { padding: '0 16px' } : {}}
-                itemStyle={{
-                  paddingLeft: 0,
-                  paddingRight: 0,
-                  paddingTop: 8,
-                  paddingBottom: 8,
-                }}
+                itemStyle={{ padding: this.props.messageMode ? '8px 16px' : '8px 0' }}
                 className={this.props.messageMode ? styles.friendsWrapperScroll : styles.friendsWrapper}
                 limit={this.props.withLimit}
               />

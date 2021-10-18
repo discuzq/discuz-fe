@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './index.module.scss';
-import { Icon, Dialog } from '@discuzq/design';
+import { Dialog, Divider } from '@discuzq/design';
 import UserCenterUsers from '@components/user-center-users';
 import { noop } from '@components/thread/utils';
 import Router from '@discuzq/sdk/dist/router';
@@ -18,34 +18,40 @@ const Index = (props) => {
     title = '成员',
     id,
   } = props;
+
   const onContainerClick = ({ id }) => {
-    Router.push({ url: `/user/${id}` });
+    id && Router.push({ url: `/user/${id}` });
   };
 
-  const dialogElement =  (
+  const splitElement = React.useMemo(() => (
+    <div className={styles.splitElement}>
+      <Divider />
+    </div>
+  ), []);
+
+  const otherProps = id ? { userId: id } : {};
+
+  const dialogElement = (
     <Dialog
-      position="center"
       visible={visible}
+      position="center"
+      isNew={true}
+      title={title}
+      width={572}
+      headerClassName={styles.dialogHeader}
+      bodyClassName={styles.dialogBody}
+      footerClassName={styles.dialogFooter}
+      footer={<div></div>}
       onClose={onClose}
     >
-      <div className={styles.contaner}>
-        <div className={styles.popupWrapper}>
-          <div className={styles.title}>
-            <span>{title}</span>
-            <Icon
-              name="CloseOutlined"
-              className={styles.closeIcon}
-              size={12}
-              onClick={onClose}
-            />
-          </div>
-          <div className={styles.titleHr}></div>
-          {!id ? (
-            <UserCenterUsers style={{ height: 'calc(100% - 60px)' }} onContainerClick={onContainerClick} />
-          ) : (
-            <UserCenterUsers style={{ height: 'calc(100% - 60px)' }} userId={id} onContainerClick={onContainerClick} />
-          )}
-        </div>
+      <div className={styles.container}>
+        <div className={styles.titleHr}></div>
+        <UserCenterUsers
+          style={{ height: '100%' }}
+          splitElement={splitElement}
+          onContainerClick={onContainerClick}
+          {...otherProps}
+        />
       </div>
     </Dialog>);
 

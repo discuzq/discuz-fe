@@ -3,7 +3,7 @@ import Avatar from '@components/avatar';
 import Icon from '@discuzq/design/dist/components/icon/index';
 import { View, Text, Image } from '@tarojs/components';
 import { diffDate } from '@common/utils/diff-date';
-import { observer } from 'mobx-react';
+import { observer, inject } from 'mobx-react';
 import s9e from '@common/utils/s9e';
 import xss from '@common/utils/xss';
 import classNames from 'classnames';
@@ -20,6 +20,7 @@ import ReplyList from '../reply-list/index';
 const coin = 'https://imgcache.qq.com/operation/dianshi/other/coin.e66d1d9205f2d6a18b38fe29b733eb109e168504.png';
 const redPacketMini = 'https://imgcache.qq.com/operation/dianshi/other/redpacket-mini.10b46eefd630a5d5d322d6bbc07690ac4536ee2d.png';
 
+@inject('user')
 @observer
 class CommentList extends React.Component {
   constructor(props) {
@@ -117,18 +118,32 @@ class CommentList extends React.Component {
     const { groups } = this.props.data?.user || {};
     // 评论内容是否通过审核
     const isApproved = this.props?.data?.isApproved === 1;
-    const isSelf = this.props.threadId === this.props?.data?.userId
+    const isSelf = this.props.threadId === this.props?.data?.userId;
+    const { redPacketData } = this.props;
+    const remainHongbaoLike = redPacketData?.condition === 1 && redPacketData?.remainNumber; // 是否还有剩余的点赞红包
+    const needLikeNum = redPacketData?.likenum;
+    const curLikeNum = this.props?.data?.likeCount;
+    const isCommenter = this.props?.data?.userId === this.props?.user?.userInfo?.id;
+
     return (
       <View className={styles.commentList}>
         <View className={styles.header}>
           <View className={styles.showGet}>
             <View></View>
             <View className={styles.headerRigth}>
+              {
+                isCommenter && remainHongbaoLike && curLikeNum < needLikeNum && !this.props.data?.redPacketAmount &&(
+                  <View className={styles.hongbaoLikeNum}>
+                    <Icon className={styles.iconzan} size={12} name="PraiseOutlined"></Icon>
+                    再集 <View className={styles.redfont}>&nbsp;{needLikeNum - curLikeNum}&nbsp;</View> 赞可领红包
+                  </View>
+                )
+              }
               {this.props.data?.rewards ? (
                 <View className={styles.imageNumber}>
                   <Image className={styles.rewardImage} src={coin} alt="悬赏图标" />
                   <View className={styles.showMoneyNum}>
-                    获得<Text className={styles.moneyNumber}>{this.props.data.rewards}</Text>元悬赏金
+                    获得<Text className={styles.moneyNumber}>&nbsp;{this.props.data.rewards}&nbsp;</Text>元悬赏金
                   </View>
                 </View>
               ) : (
@@ -138,7 +153,7 @@ class CommentList extends React.Component {
                 <View className={`${styles.redpacket} ${styles.imageNumber}`}>
                   <Image className={styles.image} src={redPacketMini} alt="红包图标" />
                   <View className={styles.showMoneyNum}>
-                    获得<Text className={styles.moneyNumber}>{this.props.data.redPacketAmount}</Text>元红包
+                    获得<Text className={styles.moneyNumber}>&nbsp;{this.props.data.redPacketAmount}&nbsp;</Text>元红包
                   </View>
                 </View>
               ) : (

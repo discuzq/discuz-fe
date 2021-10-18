@@ -118,7 +118,15 @@
   color: $error-color;
 }
 
-.footer {
+.footer{
+  height: rem(69);
+}
+
+.footerInner {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
   width: 100%;
   height: rem(69);
   box-sizing: border-box;

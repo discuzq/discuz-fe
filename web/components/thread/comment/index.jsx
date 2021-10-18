@@ -17,9 +17,9 @@ import typeofFn from '@utils/typeof';
 class Comment extends React.Component {
   constructor(props) {
     super(props);
-
     this.operate = new Operate({
       list: this.props.commentList,
+      threadData: this.props.thread?.threadData,
     });
   }
 

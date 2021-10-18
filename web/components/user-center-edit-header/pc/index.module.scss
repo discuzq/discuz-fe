@@ -34,6 +34,17 @@
     left: 50%;
     top: rem(193);
     transform: translateX(-50%) translateY(-100%);
+
+    .avatarWrap {
+      max-width: none;
+    }
+
+    :global {
+      .dzq-avatar {
+        border: rem(3) solid;
+        box-sizing: border-box;
+      }
+    }
   }
   .userCenterupload {
     position: absolute;

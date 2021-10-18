@@ -100,7 +100,6 @@ export const REVIEWING_USER_WHITE_LIST = [
 // web端站点，用户账号审核中可以访问的路由白名单
 export const REVIEWING_USER_WHITE_LIST_WEB = [
   '/', // 首页
-  '/thread/[id]', // 帖子详情页
   '/user/status', // 用户状态提示页
   '/forum/partner-invite', // 站点加入
   '/user/bind-nickname', // 绑定昵称

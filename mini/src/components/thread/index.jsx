@@ -10,7 +10,7 @@ import styles from './index.module.scss';
 import goToLoginPage from '@common/utils/go-to-login-page';
 import threadPay from '@common/pay-bussiness/thread-pay';
 import ThreadCenterView from './ThreadCenterView';
-import { debounce, noop, getElementRect, randomStr } from './utils'
+import { debounce, noop, getElementRect, randomStr, handleAttachmentData} from './utils'
 import { View, Text } from '@tarojs/components'
 import { getImmutableTypeHeight } from './getHeight'
 import { updateThreadAssignInfoInLists, updatePayThreadInfo, getThreadCommentList } from '@common/store/thread-list/list-business';
@@ -268,7 +268,7 @@ class Index extends React.Component {
   canPublish = () => canPublish(this.props.user, this.props.site)
 
   render() {
-    const { data, thread:threadStore, className = '', site = {}, showBottomStyle = true, isShowIcon = false, unifyOnClick = null, relativeToViewport = true, onTextItemClick = null,extraTag} = this.props;
+    const { index, data, thread:threadStore, className = '', site = {}, showBottomStyle = true, isShowIcon = false, unifyOnClick = null, relativeToViewport = true, onTextItemClick = null,extraTag} = this.props;
     const { platform = 'pc' } = site;
     if (!data) {
       return <NoData />;
@@ -295,6 +295,10 @@ class Index extends React.Component {
     const { getShareData, getShareContent } = this.props.user
     const { shareNickname, shareAvatar, shareThreadid, shareContent } = this.props.user
     const { minHeight, useShowMore, videoH, shareClickRandom } = this.state
+
+    const {redPacketData} = handleAttachmentData(data.content);
+
+    const hasCommentHongbao = redPacketData && redPacketData.condition === 0 && redPacketData.remainNumber > 0;
 
     return (
       <View className={`${styles.container} ${className} ${showBottomStyle && styles.containerBottom} ${platform === 'pc' && styles.containerPC}`} style={{ minHeight: `${minHeight}px` }} id={this.threadStyleId}>
@@ -324,6 +328,9 @@ class Index extends React.Component {
 
               <ThreadCenterView
                 site={site}
+                user={this.props.user}
+                updateThread={threadStore.updateThread.bind(threadStore)}
+                updateListThreadIndexes={index.updateListThreadIndexes.bind(index)}
                 text={text}
                 data={data}
                 onClick={unifyOnClick || this.onClick}
@@ -365,6 +372,7 @@ class Index extends React.Component {
                 user={this.props.user}
                 updateViewCount={this.updateViewCount}
                 shareIconClick={() => this.setState({ shareClickRandom: Math.random() })}
+                hasCommentHongbao={hasCommentHongbao}
               />
             </>
           ) : <Skeleton style={{ minHeight: `${minHeight}px` }} />

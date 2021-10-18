@@ -663,9 +663,9 @@ class Index extends Component {
       this.props.index.updateAssignThreadAllData(threadId, data);
       // 添加帖子到首页数据
     } else {
-      const { categoryId = '' } = data;
+      const { pid = '' } = data;
       // 首页如果是全部或者是当前分类，则执行数据添加操作
-      if (this.props.index.isNeedAddThread(categoryId) && data?.isApproved) {
+      if (this.props.index.isNeedAddThread(pid) && data?.isApproved) {
         this.props.index.addThread(data);
       }
     }
@@ -873,7 +873,7 @@ class Index extends Component {
                           deletePlugin: this.props.threadPost.deletePluginPostData,
                           updatePlugin: this.props.threadPost.setPluginPostData,
                           showPluginDialog: this.showPluginDialog,
-                          closePluginDialogL: this.closePluginDialog
+                          closePluginDialog: this.closePluginDialog
                         })}
                       </View>
                     ))

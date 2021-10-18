@@ -37,6 +37,18 @@
     position: relative;
     width: rem(120);
     height: rem(120);
+    
+    .avatarWrap {
+      max-width: none;
+    }
+
+    :global {
+      .dzq-avatar {
+        border: rem(3) solid;
+        box-sizing: border-box;
+      }
+    }
+
     .userCenterEditCameraIcon {
       position: absolute;
       width: rem(34);

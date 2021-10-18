@@ -2,6 +2,7 @@ import React from 'react';
 import layout from './index.module.scss';
 import { Input } from '@discuzq/design';
 import CaptchaInput from './captcha-input';
+import { throttle } from '@common/utils/throttle-debounce';
 
 class PhoneInputH5 extends React.Component {
   setCaptcha = (code) => {
@@ -31,7 +32,7 @@ class PhoneInputH5 extends React.Component {
           {codeTimeout ? (
             <div className={layout.countDown}>{codeTimeout}秒后再发送</div>
           ) : (
-            <div className={layout.sendCaptcha} onClick={sendCodeCallback}>
+            <div className={layout.sendCaptcha} onClick={throttle(() => sendCodeCallback(), 500)}>
               发送验证码
             </div>
           )}

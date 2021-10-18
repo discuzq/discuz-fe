@@ -3,7 +3,7 @@
 */
 import React, { Component } from 'react';
 import Taro from '@tarojs/taro';
-import { View } from '@tarojs/components';
+import { View, Navigator } from '@tarojs/components';
 import RichText from '@discuzq/design/dist/components/rich-text/index';
 import Avatar from '@components/avatar';
 import UnreadRedDot from '@components/unread-red-dot';
@@ -207,7 +207,11 @@ class Index extends Component {
               }
               {/* 帖子、账户 */}
               {['thread', 'account'].includes(type) &&
-                <RichText content={this.parseHTML()} onClick={this.handleContentClick} />
+                <>
+                  <RichText content={this.parseHTML()} onClick={this.handleContentClick} />
+                  {/* 付费站点和付费用户组的续费链接 */}
+                  {(item.raw?.refeeType) && <Navigator className={styles.url} url="/userPages/my/index">点击续费</Navigator>}
+                </>
               }
             </View>
 

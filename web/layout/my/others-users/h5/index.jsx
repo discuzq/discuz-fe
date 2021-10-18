@@ -165,22 +165,24 @@ class H5OthersPage extends React.Component {
 
     const { query = {} } = this.props.router;
 
+    const id = query?.id;
+
     const userThreadsList = threadList.getList({
-      namespace: `user/${query.id}`,
+      namespace: `user/${id}`,
     });
 
     const totalPage = threadList.getAttribute({
-      namespace: `user/${query.id}`,
+      namespace: `user/${id}`,
       key: 'totalPage',
     });
 
     const totalCount = threadList.getAttribute({
-      namespace: `user/${query.id}`,
+      namespace: `user/${id}`,
       key: 'totalCount',
     });
 
     const currentPage = threadList.getAttribute({
-      namespace: `user/${query.id}`,
+      namespace: `user/${id}`,
       key: 'currentPage',
     });
 
@@ -231,6 +233,7 @@ class H5OthersPage extends React.Component {
             onClose={this.handlePreviewBgImage}
             imgUrls={[this.getBackgroundUrl()]}
             currentUrl={this.getBackgroundUrl()}
+            onError={() => (id && this.props.user?.targetUsers[id] && this.props.user.targetUsers[id].backgroundUrl) || ''}
           />
         )}
       </BaseLayout>

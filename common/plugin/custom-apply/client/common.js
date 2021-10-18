@@ -1,14 +1,13 @@
 import { formatDate } from '@common/utils/format-date';
-import { PLUGIN_TOMID_CONFIG } from '@common/plugin/plugin-tomid-config';
 
 const getTime = time => formatDate(time, 'yyyy-MM-dd hh:mm:ss');
 const getDateTime = (time) => {
-  if (time) return new Date(time?.replace('-', '/'));
+  if (time) return new Date(time?.replace(/-/g, '/'));
   return time;
 };
 
 // 获取提交数据
-export const getPostData = (body) => {
+export const getPostData = (body, tomId) => {
   const {
     activityStartTime,
     activityEndTime,
@@ -36,7 +35,7 @@ export const getPostData = (body) => {
     latitude: 0,
   } };
   return {
-    tomId: PLUGIN_TOMID_CONFIG.apply,
+    tomId,
     body: result,
   };
 };

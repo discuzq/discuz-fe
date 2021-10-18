@@ -13,7 +13,7 @@ export default function HOCWithNoPaid(Component) {
   class CheckNoPaid extends React.Component {
     // 应用初始化
     static async getInitialProps(ctx, preProps) {
-      if (!preProps) { 
+      if (!preProps) {
         throw Error('CheckNoPaid必须前置使用HOCFetchSiteData');
       }
 
@@ -45,7 +45,7 @@ export default function HOCWithNoPaid(Component) {
     // 已付费用户滞留付费页处理
     handlePaidUserRedirect() {
       const { router, user } = this.props;
-      if (user?.paid && router.pathname === '/forum/partner-invite') {
+      if ((user?.paid || user?.group?.level > 0) && router.pathname === '/forum/partner-invite') {
         LoginHelper.restore();
       }
     }
@@ -60,7 +60,7 @@ export default function HOCWithNoPaid(Component) {
 
     render() {
       const { user } = this.props;
-      if (user?.paid) return null;
+      if (user?.paid || user?.group?.level > 0) return null;
       return <Component {...this.props}/>;
     }
   }

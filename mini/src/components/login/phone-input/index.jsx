@@ -4,6 +4,7 @@ import Input from '@discuzq/design/dist/components/input/index';
 import { View } from '@tarojs/components';
 import layout from './index.module.scss';
 import CaptchaInput from './captcha-input';
+import { throttle } from '@common/utils/throttle-debounce';
 
 class PhoneInput extends React.Component {
   constructor(props) {
@@ -56,7 +57,7 @@ class PhoneInput extends React.Component {
           {codeTimeout ? (
             <View className={layout.countDown}>{codeTimeout}秒后再发送</View>
           ) : (
-            <View className={layout.sendCaptcha} onClick={this.handleSendCode}>
+            <View className={layout.sendCaptcha} onClick={throttle(() => this.handleSendCode(), 500)}>
               发送验证码
             </View>
           )}

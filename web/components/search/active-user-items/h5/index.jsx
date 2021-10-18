@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import Avatar from '@components/avatar';
-
+import SiteMapLink from '@components/site-map-link';
 import styles from './index.module.scss';
 
 /**
@@ -31,6 +31,7 @@ const ActiveUsers = ({ data, onItemClick }) => {
                 if (!user) return null;
                 return (
                   <div key={index} className={styles.item} onClick={() => click(user)}>
+                    <SiteMapLink href={`/user/${user.userId}`} text={user.nickname}/>
                     <Avatar className={styles.avatarImg} image={user.avatar} name={user.nickname} />
                     <div className={styles.name}>{user.nickname || ''}</div>
                   </div>

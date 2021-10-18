@@ -89,6 +89,7 @@ export { default as updateBackground } from './user/updateBackground';
 export { default as readUsersDeny } from './user/readUsersDeny';
 export { default as wechatRebindQrCodeGen } from './user/wechatRebindQrCodeGen';
 export { default as getWechatRebindStatus } from './user/getWechatRebindStatus';
+export { default as getPayGroups } from './common/getPayGroups';
 
 // 消息模块
 export { default as readDialogList } from './message/readDialogList';
@@ -121,7 +122,7 @@ export { default as createWalletCash } from './wallet/createWalletCash';
 export { default as getCosTmpKey } from './common/getCosTmpKey';
 export { default as updateAttachment } from './common/updateAttachment';
 // 查看附件链接状态
-export { default as readDownloadAttachmentStatus } from './common/readDownloadAttachmentStatus';
+export { default as readDownloadAttachment } from './common/readDownloadAttachment';
 
 // 投票
 export { default as createVote } from './thread/create-vote';

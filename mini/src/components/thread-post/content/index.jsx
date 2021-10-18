@@ -82,7 +82,7 @@ const Index = forwardRef(({
             style={(bottomHeight > 0 || showEmoji) ? `max-height:${defaultHeight}px` : ''}
             placeholderClass={styles['textarea-placeholder']}
             // value={value}
-            value={debounce(() => value, 0)}
+            value={value}
             disabled={disabled}
             focus
             placeholder={placeholder}
@@ -111,7 +111,7 @@ const Index = forwardRef(({
           placeholderClass={styles['textarea-placeholder']}
           disabled={disabled}
           placeholder={placeholder}
-          value={debounce(() => value, 0)}
+          value={value}
           maxlength={maxLength}
           style={(bottomHeight > 0 || showEmoji)
             ? `height:${defaultHeight}px;`

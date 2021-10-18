@@ -6,17 +6,27 @@ import { saveToAlbum } from './utils'
 import getConfig from './config/thread-card';
 import { throttle } from '@common/utils/throttle-debounce.js';
 import { inject, observer } from 'mobx-react';
-import getSiteConfig from './config/site-card'
+import getSiteConfig from './config/site-card';
+import getCommentConfig from './config/comment-card/index.js'
 
 const Index = ({
   thread,
   miniCode,
   site,
   user,
-  data
+  data,
+  comment,
 }) => {
   useEffect(() => {
-    if(thread) {
+    if(comment){
+      console.log(getCommentConfig({ site, comment, miniCode, siteName }))
+      getCommentConfig({ site, comment, miniCode, siteName }).then(
+        config => {
+          console.log(config,'config')
+          setConfig(config);
+        }
+      )
+    }else if(thread) {
       getConfig({ site, thread, miniCode, siteName }).then(
         config => {
           setConfig(config);

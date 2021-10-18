@@ -1,3 +1,4 @@
 export default {
-  disableScroll: true
+  disableScroll: true,
+  enableShareAppMessage:true,
 };

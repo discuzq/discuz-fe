@@ -269,11 +269,29 @@ const handleContent = (thread) => {
   content = content.join('');
 
   // 统计有几个换行
-  const n = content.length - content.replace(/[\n]/g, '').length - 1;
+  // const n = content.length - content.replace(/[\n]/g, '').length - 1;
   // 计算文本高度,计算有多少文字乘以文字宽度最后除以一行的宽度,再乘以一行的高度52
-  const contentHeight = (Math.ceil((getByteLen(content) * 14) / contentWidth) + (n >= 0 ? n : 0)) * baseLineHeight;
+  // const contentHeight = (Math.ceil((getByteLen(content) * 14) / contentWidth) + (n >= 0 ? n : 0)) * baseLineHeight;
+  const { textLineNumber, n } = handleHeightAccuracy(content);
+  const contentHeight = (textLineNumber + (n >= 0 ? n : 0)) * baseLineHeight;
   return { content, contentHeight };
 };
+
+const handleHeightAccuracy = (content) => {
+  const date = new Date();
+  const replaceTextSign = date.getTime() + '';
+  const contentArr = content.replace(/[\n]/g, replaceTextSign).split(replaceTextSign);
+  let textLineNumber = 0;
+  // 换行符个数
+  const n = contentArr.length;
+  // 将文本分段判断文本行数，每段文本末尾会有一个换行符被统计视为一行，所以每段文本最后一行不记录统计行数
+  for (let i = 0; i < contentArr.length; i++) {
+    if(contentArr[i]) {
+      textLineNumber += Math.floor((getByteLen(contentArr[i]) * 16) / contentWidth);
+    }
+  }
+  return { textLineNumber, n };
+}
 
 // 处理图片，返回一组图片url和高度的集合
 const handleImage = (thread, contentHeight, userInfoHeight) => {

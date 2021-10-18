@@ -109,7 +109,7 @@ class CommentAction {
       const isApproved = res.data.isApproved === 1;
       newData.lastThreeComments = [];
 
-      this.list.push(newData);
+      if ((this.list || []).slice().filter(item => item.id === newData.id).length === 0) this.list.push(newData);
 
       return {
         redPacketAmount: res.data.redPacketAmount,
@@ -129,7 +129,7 @@ class CommentAction {
    * 修改评论
    * @param {object} params * 参数
    * @param {number} params.id * 帖子id
-   * @param {number} params.pid * 评论id
+   * @param {number} params.postId * 评论id
    * @param {string} params.content * 评论内容
    * @param {array} params.attachments 附件内容
    * @returns {object} 处理结果

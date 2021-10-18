@@ -222,8 +222,9 @@ class UserCenterFans extends React.Component {
         className={`${this.props.className} user-center-friends`}
         ref={this.containerRef}
         style={{
+          width: '100%',
           height: '100%',
-          overflow: 'scroll',
+          overflowY: 'scroll',
           ...this.props.styles,
         }}
       >
@@ -236,7 +237,7 @@ class UserCenterFans extends React.Component {
                 type={this.judgeFollowsStatus(user)}
                 imgUrl={user.avatar}
                 withHeaderUserInfo={this.props.isPc}
-                onContainerClick={this.props.onContainerClick}
+                onContainerClick={() => this.props.onContainerClick({id: user.id})}
                 nickName={user.nickName}
                 userGroup={user.groupName}
                 followHandler={this.followUser}

@@ -14,8 +14,15 @@ import ReportPopup from '../../h5/components/report-popup';
 import goToLoginPage from '@common/utils/go-to-login-page';
 import footer from './footer.module.scss';
 import OperationPopup from '../components/operation-popup';
+import { debounce as immediateDebounce } from '@components/thread/utils';
+import MorePopop from '@components/more-popop';
+import h5Share from '@discuzq/sdk/dist/common_modules/share/h5';
+import SharePopup from '@components/thread/share-popup';
+import isWeiXin from '@common/utils/is-weixin';
+
 
 @inject('site')
+@inject('card')
 @inject('user')
 @inject('comment')
 @inject('thread')
@@ -25,6 +32,8 @@ class CommentH5Page extends React.Component {
     super(props);
 
     this.state = {
+      shareShow: false, // 分享弹窗
+      isShowWeiXinShare: false,
       showReportPopup: false, // 举报弹框
       showMorePopup: false, // 是否弹出更多弹框
       showCommentInput: false, // 是否弹出评论框
@@ -415,12 +424,12 @@ class CommentH5Page extends React.Component {
   // 点击内容
   onCommentClick = (data) => {
     this.operationData = data || null;
-    this.setState({showOperationPopup: true});
+    this.setState({ showOperationPopup: true });
   }
 
   // 点击内容操作框中的选项
   onOperationClick = (val) => {
-    const commentDetail = this.props.comment.commentDetail;
+    const { commentDetail } = this.props.comment;
     if (!this.props.user.isLogin()) {
       Toast.info({ content: '请先登录!' });
       goToLoginPage({ url: '/user/login' });
@@ -433,7 +442,7 @@ class CommentH5Page extends React.Component {
       } else {
         this.replyClick(commentDetail);
       }
-    };
+    }
     // 复制
     if (val === 'copy') {
       if (this.operationData) {
@@ -441,12 +450,12 @@ class CommentH5Page extends React.Component {
       } else {
         this.onCopyClick(commentDetail);
       }
-    };
+    }
     // 举报
     if (val === 'report') {
       this.setState({ showReportPopup: true });
     }
-    this.setState({showOperationPopup: false});
+    this.setState({ showOperationPopup: false });
   }
 
   // 点击复制
@@ -458,20 +467,85 @@ class CommentH5Page extends React.Component {
 
   // 复制方法
   copy = (content) => {
-    let oInput = document.createElement('input');
+    const oInput = document.createElement('input');
     oInput.value = content;
     document.body.appendChild(oInput);
     oInput.select();
-  
     oInput.readOnly = true;
     oInput.id = 'copyInp';
-  
     document.execCommand('Copy');
     oInput.setAttribute('onfocus', undefined);
     oInput.blur();
     oInput.className = 'oInput';
     oInput.style.display = 'none';
   }
+
+  handleShareClick = ()=>{
+    const { user } = this.props;
+    if (!user.isLogin()) {
+      goToLoginPage({ url: '/user/login' });
+      return;
+    }
+    this.setState({ shareShow: true });
+  }
+  onShareClose = () => {
+    this.setState({ shareShow: false });
+  };
+
+  handleH5Share = async () => {
+    Toast.info({ content: '复制链接成功' });
+
+    this.onShareClose();
+
+    const { title = '' } = this.props.thread?.threadData || {};
+    h5Share({ title, path: `thread/comment/${this.props.comment?.commentDetail?.id}?threadId=${this.props.thread?.threadData?.threadId}&fromMessage=true` });
+    const id = this.props.thread?.threadData?.id;
+
+    const { success, msg } = await this.props.thread.shareThread(id, this.props.index, this.props.search, this.props.topic);
+
+    if (!success) {
+      Toast.error({
+        content: msg,
+      });
+    }
+  };
+  handleWxShare = () => {
+    this.setState({ isShowWeiXinShare: true });
+    this.onShareClose();
+    this.onShareClick();
+  };
+  // 分享
+  async onShareClick() {
+    // 判断是否在微信浏览器
+    if (!isWeiXin()) return;
+
+    this.setState({ isShowWeiXinShare: true });
+    const data = this.props.thread.threadData;
+    const threadId = data.id;
+    const { success, msg } = await this.props.thread.shareThread(threadId, this.props.index, this.props.search, this.props.topic);
+    if (!success) {
+      Toast.error({
+        content: msg,
+      });
+    }
+  }
+
+
+  createCard = async () => {
+    const data = this.props.thread.threadData;
+    const threadId = data.id;
+    const { card } = this.props;
+    const commentId = this.props.comment?.commentDetail?.id
+    const { success, msg } = await this.props.thread.shareThread(threadId, this.props.index, this.props.search, this.props.topic);
+    if (!success) {
+      Toast.error({
+        content: msg,
+      });
+    }
+
+    card.setThreadData(data);
+    Router.push({ url: `/card?commentId=${commentId}` });
+  };
 
   render() {
     const { commentDetail: commentData, isReady } = this.props.comment;
@@ -543,6 +617,13 @@ class CommentH5Page extends React.Component {
             ></CommentList>
           )}
         </div>
+        <MorePopop
+          show={this.state.shareShow}
+          onClose={this.onShareClose}
+          handleH5Share={this.handleH5Share}
+          handleWxShare={this.handleWxShare}
+          createCard={this.createCard}
+        ></MorePopop>
         {isReady && (
           <div className={styles.inputFooterContainer}>
             <div className={styles.inputFooter}>
@@ -564,6 +645,12 @@ class CommentH5Page extends React.Component {
                   onClick={this.onPcitureIconClick}
                   size="20"
                   name="PictureOutlinedBig"
+                ></Icon>
+                <Icon
+                  onClick={immediateDebounce(() => this.handleShareClick(), 1000)}
+                  className={footer.icon}
+                  size="20"
+                  name="ShareAltOutlined"
                 ></Icon>
               </div>
             </div>
@@ -626,6 +713,13 @@ class CommentH5Page extends React.Component {
             onCancel={() => this.setState({ showOperationPopup: false })}
             onOperationClick={val => this.onOperationClick(val)}
           ></OperationPopup>
+
+          {/* 微信浏览器内分享弹窗 */}
+          <SharePopup
+            visible={this.state.isShowWeiXinShare}
+            onClose={() => this.setState({ isShowWeiXinShare: false })}
+            type="thread"
+          />
         </div>
       </div>
     );

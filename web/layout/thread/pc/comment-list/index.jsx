@@ -10,6 +10,9 @@ import classnames from 'classnames';
 import goToLoginPage from '@common/utils/go-to-login-page';
 import Router from '@discuzq/sdk/dist/router';
 
+import { parseContentData } from '../../utils';
+
+
 const typeMap = {
   101: 'IMAGE',
   102: 'VOICE',
@@ -413,6 +416,7 @@ class RenderCommentList extends React.Component {
   render() {
     let { totalCount, commentList } = this.props.thread;
 
+  
     const { commentList: commentPositionList, postId } = this.props.commentPosition;
     if (this.props.isPositionComment) {
       commentList = commentPositionList || [];
@@ -434,6 +438,10 @@ class RenderCommentList extends React.Component {
         }
       });
     }
+
+
+    const { RED_PACKET } = parseContentData(indexes);
+    const hasHongbao = RED_PACKET?.condition === 0 && RED_PACKET?.remainNumber > 0; // 是否为回复红包且还有剩余未领完红包
 
     return (
       <div className={classnames(comment.container, !totalCount && comment.isEmpty)}>
@@ -463,6 +471,7 @@ class RenderCommentList extends React.Component {
               onEmojiIconClick={() => this.onFocus()}
               onAtIconClick={() => this.onFocus()}
               onPcitureIconClick={() => this.onFocus()}
+              hasHongbao={hasHongbao}
             ></CommentInput>
           </div>
         )}
@@ -505,6 +514,8 @@ class RenderCommentList extends React.Component {
                     // 是帖子作者 && 是悬赏帖 && 评论人不是作者本人
                     isSelf && isReward && this.props.thread?.threadData?.userId !== val.userId
                   }
+                  redPacketData = {RED_PACKET}
+                  thread={this.props.thread}
                   threadId={this.props.thread.threadData.userId}
                   active={val.id === postId}
                   isAnonymous={isAnonymous}

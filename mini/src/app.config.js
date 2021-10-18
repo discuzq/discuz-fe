@@ -70,6 +70,7 @@ const config = {
         'my/like/index',
         'my/edit/index',
         'my/draft/index',
+        'my/upgrade/index',
         'my/edit/mobile/index',
         'my/edit/pwd/index',
         'my/edit/paypwd/index',

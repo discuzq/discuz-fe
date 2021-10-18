@@ -4,7 +4,7 @@
 .container {
   width: 100%;
   position: relative;
-  overflow: hidden;
+  // overflow: hidden;
   .contentWrapper{
     .content {
       //@include cursor-on-pc;
@@ -33,7 +33,7 @@
     }
 
     :global(.dzq-richText) {
-      overflow: hidden;
+      overflow: visible;
     }
     :global(.dzq-richText .dzq-p) {
       text-align: justify;

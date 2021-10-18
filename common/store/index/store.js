@@ -82,12 +82,12 @@ class IndexStore {
     const nameArr = [];
     categoriesNoAll.forEach((item) => {
       nameArr.push({
-        pid: item.pid,
+        categoryId: item.categoryId,
         name: item.name,
       });
       item.children.forEach((child) => {
         nameArr.push({
-          pid: child.pid,
+          categoryId: child.categoryId,
           name: `${item.name}/${child.name}`,
         });
       });

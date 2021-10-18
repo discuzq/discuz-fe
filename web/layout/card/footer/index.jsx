@@ -34,7 +34,7 @@ const Index = ({ site, setReady, threadId = '' }) => {
         <div className={styles.footerBox}>
             {!miniConfig
               ? <QRCode value={href.join('/')} size={96}></QRCode>
-              : <img src={miniCode} className={styles.footerImg}/>}
+              : <img alt="图片" src={miniCode} className={styles.footerImg}/>}
             <span className={styles.desc}>
                 {`长按识别${miniConfig ? '小程序' : '二维码'}查看详情`}
             </span>

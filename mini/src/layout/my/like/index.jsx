@@ -3,7 +3,6 @@ import { inject, observer } from 'mobx-react';
 import ThreadContent from '@components/thread';
 import BaseLayout from '@components/base-layout';
 
-@inject('site')
 @inject('threadList')
 @observer
 class Index extends React.Component {

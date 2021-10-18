@@ -273,7 +273,13 @@ class ThreadPostAction extends ThreadPostStore {
     if (plugin) {
       for (let key in plugin) {
         contentIndexes[plugin[key].tomId] = {
-          ...plugin[key]
+          ...plugin[key],
+        };
+        const { body = {} } = contentIndexes[plugin[key].tomId];
+        let {  _plugin } = contentIndexes[plugin[key].tomId];
+        if (!_plugin) _plugin = { name: key };
+        if (body) {
+          contentIndexes[plugin[key].tomId].body._plugin = _plugin;
         }
       }
     }
@@ -406,13 +412,14 @@ class ThreadPostAction extends ThreadPostStore {
         iframe = contentindexes[index].body || { };
       }
       else {
-        const { body } = contentindexes[index];
-        const { _plugin } = body;
+        const { body = {}, _plugin } = contentindexes[index];
+        // const { _plugin } = body;
         if (!_plugin) return;
-        const { name } = _plugin;
+        const { name } = _plugin || {};
         plugin[name] = {
           tomId,
-          body
+          body,
+          _plugin,
         }
       }
     });
@@ -470,17 +477,17 @@ class ThreadPostAction extends ThreadPostStore {
     let currentId = id;
     const categories = this.getCurrentCategories();
     // 如果没有传入id，则取默认第一个
-    if (!id && categories && categories.length) currentId = categories[0].pid;
+    if (!id && categories && categories.length) currentId = categories[0].categoryId;
     if (categories && categories.length && currentId) {
       categories.forEach((item) => {
         const { children } = item;
-        if (item.pid === currentId) {
+        if (item.categoryId === currentId) {
           parent = item;
           if (children && children.length > 0) [child] = children;
         } else {
           if (children && children.length > 0) {
             children.forEach((elem) => {
-              if (elem.pid === currentId) {
+              if (elem.categoryId === currentId) {
                 child = elem;
                 parent = item;
               }
@@ -490,14 +497,14 @@ class ThreadPostAction extends ThreadPostStore {
       });
     }
     // 如果有 id，但是没有设置选中的种类，说明可能是编辑没有发帖权限的分类帖子，这时也展示第一个帖子
-    if (id && !parent.pid && categories && categories.length) {
-      currentId = categories[0].pid;
+    if (id && !parent.categoryId && categories && categories.length) {
+      currentId = categories[0].categoryId;
       return this.getCategorySelectById(currentId);
     }
     return { parent, child };
   }
 
-  @action
+  @action.bound
   getCategoriesCanCreate() {
     const len = this.categories.length;
     if (!len) return;

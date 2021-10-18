@@ -10,7 +10,7 @@ function RewardDisplay(props) {
     <div className={styles.contianer}>
       <img className={styles.image} src="/dzq-img/coin.png" alt="悬赏图标" />
       <div className={styles.text}>
-        获得<span className={styles.number}>{numberStr}</span>元悬赏金
+        获得<span className={styles.number}>&nbsp;{numberStr}&nbsp;</span>元悬赏金
       </div>
     </div>
   );

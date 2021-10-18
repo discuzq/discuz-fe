@@ -30,7 +30,7 @@
         border-radius: $border-radius-small;
         color: $text-color-regular;
         border: none;
-
+        padding:0!important;
         > View {
           font-size: 26px !important;
         }
@@ -69,7 +69,7 @@
 }
 
 .button {
-  padding: 12px 0;
+  padding: 8px 0;
   width: 100%;
   background: $white;
 
@@ -79,6 +79,10 @@
     width: 100%;
     font-size: $font-size-base;
     color: $text-color-regular;
+    background-color: #fff;
+    &::after{
+      border:none!important;
+    }
   }
 }
 

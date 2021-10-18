@@ -25,10 +25,11 @@ const Index = ({
     isBox = false,
     className='',
     onRefreshPlaceholder = null,
-    copyright = false
+    copyright = false,
+    bottomViewStyle= {},
 }) => {
     return (
-        <div class={styles.bottomViewContainer }>
+        <div class={styles.bottomViewContainer} style={bottomViewStyle}>
             <div className={`${styles.bottomView} ${className} ${isBox ? styles.bottomViewBox : ''}`}>
                 {!isError ? (
                     loadingView || <RefreshView onRefreshPlaceholder={onRefreshPlaceholder} noMore={noMore} loadText={loadingText} noMoreText={noMoreText} noMoreType={noMoreType} />

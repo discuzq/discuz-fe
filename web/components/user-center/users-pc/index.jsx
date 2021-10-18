@@ -13,6 +13,7 @@ class UserCenterUsersPc extends React.Component {
   static defaultProps = {
     limit: 10,
     className: '',
+    itemStyle: {}
   };
   constructor(props) {
     super(props);
@@ -41,6 +42,7 @@ class UserCenterUsersPc extends React.Component {
           {Number(usersCount) !== 0 && (
             <UserCenterUsers
               style={{
+                width: 'auto',
                 overflow: 'hidden',
               }}
               userId={this.props.userId}
@@ -53,6 +55,7 @@ class UserCenterUsersPc extends React.Component {
                 });
               }}
               className={styles.friendsWrapper}
+              itemStyle={this.props.itemStyle}
               limit={this.props.limit}
             />
           )}

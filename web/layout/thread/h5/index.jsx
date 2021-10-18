@@ -37,6 +37,11 @@ import BottomView from '@components/list/BottomView';
 import Copyright from '@components/copyright';
 
 import MorePopop from '@components/more-popop';
+
+
+import { parseContentData } from '../utils';
+const hongbaoMini = 'https://imgcache.qq.com/operation/dianshi/other/redpacket-mini.10b46eefd630a5d5d322d6bbc07690ac4536ee2d.png';
+
 @inject('site')
 @inject('user')
 @inject('thread')
@@ -748,12 +753,18 @@ class ThreadH5Page extends React.Component {
     });
   }
 
+
   render() {
     const { thread: threadStore } = this.props;
     const { isReady, isCommentReady, isNoMore, totalCount, isCommentListError } = threadStore;
+    const { indexes } = threadStore?.threadData?.content || {};
+    const {RED_PACKET} = parseContentData(indexes);
+    const hasHongbao = RED_PACKET?.condition === 0 && RED_PACKET?.remainNumber > 0; // 是否s是回复红包且还有剩余未领完红包
+
     const fun = {
       moreClick: this.onMoreClick,
     };
+
 
     // const isDraft = threadStore?.threadData?.isDraft;
     // // 是否红包帖
@@ -883,7 +894,11 @@ class ThreadH5Page extends React.Component {
           <div className={layout.footerContainer}>
             <div className={layout.footer}>
               {/* 评论区触发 */}
-              <div className={footer.inputClick} onClick={() => this.onInputClick()}>
+              <div
+                className={classNames(footer.inputClick, hasHongbao && footer.hasHongbao)}
+                onClick={() => this.onInputClick()}
+              >
+                {hasHongbao && <img className={footer.hongbaoMini} src={hongbaoMini}></img>}
                 <Input className={footer.input} placeholder="写评论" disabled={true} prefixIcon="EditOutlined"></Input>
               </div>
 
@@ -998,4 +1013,4 @@ class ThreadH5Page extends React.Component {
   }
 }
 
-export default HOCFetchSiteData(withRouter(ThreadH5Page));
+export default withRouter(ThreadH5Page);

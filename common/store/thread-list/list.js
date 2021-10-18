@@ -164,7 +164,7 @@ export default class ListStore {
 
   /**
    * 删除所有列表中的item
-   * @param {*} param0 
+   * @param {*} param0
    */
   @action
   deleteListItem = ({ item }) => {
@@ -329,7 +329,6 @@ export default class ListStore {
     let result = null;
 
     const { data } = this.lists[namespace];
-
     Object.keys(data).forEach((page) => {
       data[page].forEach((thread, index) => {
         if (thread.threadId === threadId) {
@@ -376,6 +375,7 @@ export default class ListStore {
 
     targetThreads.forEach(({ listName, page, index }) => {
       this.lists[listName].data[page].splice(index, 1);
+      this.lists[listName].attribs.totalCount -= 1;
     });
 
     this.lists = { ...this.lists };

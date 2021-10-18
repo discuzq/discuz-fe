@@ -149,7 +149,7 @@ class ForumH5Page extends React.Component {
           onClose={() => forum.setIsPopup(false)}
           containerClassName={layout.forum_users_popup}
         >
-          <UserCenterUsers onContainerClick={this.onUserClick}/>
+          <UserCenterUsers onContainerClick={this.onUserClick} itemStyle={{padding: '8px 16px'}}/>
         </Popup>
         {
           platform === 'h5' && (

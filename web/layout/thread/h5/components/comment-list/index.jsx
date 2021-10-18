@@ -4,14 +4,16 @@ import Avatar from '@components/avatar';
 import { Icon } from '@discuzq/design';
 import ReplyList from '../reply-list/index';
 import { diffDate } from '@common/utils/diff-date';
-import { observer } from 'mobx-react';
+import { observer, inject} from 'mobx-react';
 import s9e from '@common/utils/s9e';
 import xss from '@common/utils/xss';
 import ImageDisplay from '@components/thread/image-display';
 import classNames from 'classnames';
 import PostContent from '@components/thread/post-content';
 import { debounce } from '@common/utils/throttle-debounce';
+import SiteMapLink from '@components/site-map-link';
 
+@inject('user')
 @observer
 class CommentList extends React.Component {
   constructor(props) {
@@ -94,19 +96,34 @@ class CommentList extends React.Component {
     const { canDelete, canEdit, canLike, canHide } = this.generatePermissions(this.props.data);
     const { groups } = this.props.data?.user || {};
     const isSelf = this.props.threadId === this.props?.data?.userId;
+    const { thread } = this.props;
     // 评论内容是否通过审核
     const isApproved = this.props?.data?.isApproved === 1;
+    const { redPacketData } = this.props;
+    const remainHongbaoLike = redPacketData?.condition === 1 && redPacketData?.remainNumber; // 是否还有剩余的点赞红包
+    const needLikeNum = redPacketData?.likenum;
+    const curLikeNum = this.props?.data?.likeCount;
+    const isCommenter = this.props?.data?.userId === this.props?.user?.userInfo?.id;
+
     return (
       <div className={`${styles.commentList} dzq-comment`}>
         <div className={styles.header}>
           <div className={styles.showGet}>
             <div></div>
             <div className={styles.headerRigth}>
+              {
+                isCommenter && remainHongbaoLike && curLikeNum < needLikeNum && !this.props.data?.redPacketAmount && (
+                  <div className={styles.hongbaoLikeNum}>
+                    <Icon className={styles.iconzan} size={12} name="PraiseOutlined"></Icon>
+                    再集 <span> &nbsp;{needLikeNum - curLikeNum} &nbsp;</span> 赞可领红包
+                  </div>
+                )
+              }
               {this.props.data?.rewards ? (
                 <div className={styles.imageNumber}>
                   <img className={styles.rewardImage} src="/dzq-img/coin.png" alt="悬赏图标" />
                   <div className={styles.showMoneyNum}>
-                    获得<span className={styles.moneyNumber}>{this.props.data.rewards}</span>元悬赏金
+                    获得<span className={styles.moneyNumber}>&nbsp;{this.props.data.rewards}&nbsp;</span>元悬赏金
                   </div>
                 </div>
               ) : (
@@ -116,7 +133,7 @@ class CommentList extends React.Component {
                 <div className={`${styles.redpacket} ${styles.imageNumber}`}>
                   <img className={styles.image} src="/dzq-img/redpacket-mini.png" alt="红包图标" />
                   <div className={styles.showMoneyNum}>
-                    获得<span className={styles.moneyNumber}>{this.props.data.redPacketAmount}</span>元红包
+                    获得<span className={styles.moneyNumber}>&nbsp;{this.props.data.redPacketAmount}&nbsp;</span>元红包
                   </div>
                 </div>
               ) : (
@@ -134,6 +151,7 @@ class CommentList extends React.Component {
         </div>
         <div className={styles.content}>
           <div className={styles.commentListAvatar} onClick={() => this.avatarClick()}>
+            <SiteMapLink href={`/user/${this.props?.data?.userId}`} text={this.props.data?.user?.nickname || this.props.data?.user?.userName || '异'}/>
             {/* 头像和昵称*/}
             <Avatar
               image={
@@ -145,6 +163,7 @@ class CommentList extends React.Component {
           </div>
           {/* 评论内容*/}
           <div className={styles.commentListContent}>
+            <SiteMapLink href={`/thread/comment/${this.props?.data.id}?threadId=${thread?.threadData?.id}`} text={this.props?.data?.content}/>
             <div className={`${styles.commentListContentText} ${this.props.active && styles.active}`}>
               <div className={styles.commentHeader}>
                 <div className={styles.userInfo}>

@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './index.module.scss';
-import { Icon, Popup, Divider, Dialog } from '@discuzq/design';
+import { Dialog, Divider } from '@discuzq/design';
 import UserCenterFans from '@components/user-center-fans';
 import { noop } from '@components/thread/utils';
 import Router from '@discuzq/sdk/dist/router';
@@ -15,7 +15,6 @@ const Index = (props) => {
   const {
     visible = false,
     onClose = noop,
-    isOtherFans = false,
     id,
     dataSource,
     setDataSource,
@@ -26,58 +25,47 @@ const Index = (props) => {
   } = props;
 
   const onContainerClick = ({ id }) => {
-    Router.push({ url: `/user/${id}` });
+    id && Router.push({ url: `/user/${id}` });
   };
 
   const splitElement = React.useMemo(
     () => (
-      <div className={styles.splitEmelent}>
+      <div className={styles.splitElement}>
         <Divider />
       </div>
     ),
     [],
   );
 
+  const otherProps = id ? { userId: id } : {};
+
   const dialogElement = (
-    <Dialog position="center" visible={visible} onClose={onClose}>
-      <div className={styles.contaner}>
-        <div className={styles.popupWrapper}>
-          <div className={styles.title}>
-            粉丝
-            <Icon name="CloseOutlined" className={styles.closeIcon} size={12} onClick={onClose} />
-          </div>
-          <div className={styles.titleHr}></div>
-          {!id ? (
-            <UserCenterFans
-              styles={{
-                height: 'calc(100% - 80px)',
-              }}
-              dataSource={dataSource}
-              setDataSource={setDataSource}
-              sourcePage={sourcePage}
-              updateSourcePage={updateSourcePage}
-              sourceTotalPage={sourceTotalPage}
-              updateSourceTotalPage={updateSourceTotalPage}
-              onContainerClick={onContainerClick}
-              splitElement={splitElement}
-            />
-          ) : (
-            <UserCenterFans
-              styles={{
-                height: 'calc(100% - 80px)',
-              }}
-              userId={id}
-              dataSource={dataSource}
-              setDataSource={setDataSource}
-              sourcePage={sourcePage}
-              updateSourcePage={updateSourcePage}
-              sourceTotalPage={sourceTotalPage}
-              updateSourceTotalPage={updateSourceTotalPage}
-              onContainerClick={onContainerClick}
-              splitElement={splitElement}
-            />
-          )}
-        </div>
+    <Dialog
+      visible={visible}
+      position="center"
+      isNew={true}
+      title="粉丝"
+      width={572}
+      headerClassName={styles.dialogHeader}
+      bodyClassName={styles.dialogBody}
+      footerClassName={styles.dialogFooter}
+      footer={<div></div>}
+      onClose={onClose}
+    >
+      <div className={styles.container}>
+        <div className={styles.titleHr}></div>
+        <UserCenterFans
+          styles={{ height: '100%' }}
+          dataSource={dataSource}
+          setDataSource={setDataSource}
+          sourcePage={sourcePage}
+          updateSourcePage={updateSourcePage}
+          sourceTotalPage={sourceTotalPage}
+          updateSourceTotalPage={updateSourceTotalPage}
+          onContainerClick={onContainerClick}
+          splitElement={splitElement}
+          {...otherProps}
+        />
       </div>
     </Dialog>
   );

@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-
+import SiteMapLink from '@components/site-map-link';
 import styles from './index.module.scss';
 
 /**
@@ -17,6 +17,7 @@ const TrendingTopics = ({ data, onItemClick }) => {
     <div className={styles.list}>
     {data?.map((item, index, arr) => (
       <div key={index} className={`${styles.item} ${arr.length - index < 3 ? styles.footerItem : ''}`} onClick={() => click(item)}>
+        <SiteMapLink href={`/topic/topic-detail/${item.topicId}`} text={`#${item.content}#`}/>
         <span className={`${styles.index} ${styles[`itemIndex${index + 1}`]}`}>{index + 1}</span>
         <span className={styles.text}>{item.content}</span>
       </div>

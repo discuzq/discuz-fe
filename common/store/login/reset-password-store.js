@@ -6,6 +6,10 @@ export const RESET_PASSWORD_STORE_ERRORS = {
     Code: 'rps_9999',
     Message: '网络错误',
   },
+  BIND_MOBILE_VERIFY_ERROR: {
+    Code: 'rps_0007',
+    Message: '请填写绑定的手机号',
+  },
   MOBILE_VERIFY_ERROR: {
     Code: 'rps_0002',
     Message: '请填写正确的手机号',
@@ -82,7 +86,7 @@ export default class resetPasswordStore {
       return MOBILE_REGEXP.test(this.mobile);
     }
 
-    beforeSendVerify = () => {
+    beforeSendVerify = (bindMobile) => {
       // 倒计时未结束前，不能再次发送
       if (this.codeTimeout) {
         throw RESET_PASSWORD_STORE_ERRORS.VERIFY_TIME_ERROR;
@@ -96,6 +100,11 @@ export default class resetPasswordStore {
       // 检验手机号是否合法
       if (!this.verifyMobile()) {
         throw RESET_PASSWORD_STORE_ERRORS.MOBILE_VERIFY_ERROR;
+      }
+
+      // 检验手机号是否是当前用户的绑定手机号
+      if (bindMobile && bindMobile !== this.mobile) {
+        throw RESET_PASSWORD_STORE_ERRORS.BIND_MOBILE_VERIFY_ERROR;
       }
     }
 

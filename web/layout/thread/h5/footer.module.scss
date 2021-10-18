@@ -7,6 +7,7 @@
       color: $text-color-regular;
       width: rem(48);
     }
+
     .dzq-input__inner {
       border-radius: rem(18);
       background-color: $text-bg-color !important;
@@ -27,6 +28,26 @@
   .input {
     width: 100%;
   }
+
+  &.hasHongbao{
+    display: flex;
+    align-items: center;
+    border-radius: 18px;
+    background-color: $text-bg-color;
+    overflow: hidden;
+    padding-left: rem(20);
+    :global {
+      .dzq-input{
+        background-color: $text-bg-color!important;
+      }
+    }
+    .hongbaoMini{
+        display: inline-block;
+        width: rem(14);
+        height: rem(18);
+    }
+  }
+
 }
 
 .icon {

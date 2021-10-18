@@ -8,6 +8,21 @@
 }
 
 .main {
+  &.hasHongbao{
+    background-color: $body-bg-color;
+    padding-left: 30px;
+    .hongbaoMini{
+      width: 16px;
+      height: 22px;
+      display: inline-block;
+      position: absolute;
+      top:12px;
+      left:18px;
+      z-index: 9;
+    }
+  }
+
+
   :global {
     .dzq-textarea {
       border: none;

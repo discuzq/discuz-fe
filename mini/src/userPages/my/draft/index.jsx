@@ -13,6 +13,7 @@ import SliderScroll from '@components/slider-scroll';
 import ThreadCenterView from '@components/thread/ThreadCenterView';
 
 @inject('index')
+@inject('user')
 @inject('thread')
 @observer
 class Index extends Component {
@@ -67,7 +68,13 @@ class Index extends Component {
   // 渲染草稿单项
   renderItem = ({ item, isLast }) => (
       <View className={classNames(styles.item, { [styles['border-none']]: isLast })}>
-        <ThreadCenterView data={item} onClick={() => this.handleEdit(item)} />
+        <ThreadCenterView
+          data={item}
+          user={this.props.user}
+          onClick={() => this.handleEdit(item)}
+          updateThread={this.props.thread.updateThread.bind(this.props.thread)}
+          updateListThreadIndexes={this.props.index.updateListThreadIndexes.bind(this.props.index)}
+        />
         <View className={styles['item-time']} onClick={() => this.handleEdit(item)}>
           编辑于&nbsp;{item.updatedAt}
         </View>

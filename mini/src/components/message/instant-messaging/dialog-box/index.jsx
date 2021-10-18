@@ -96,7 +96,7 @@ const DialogBox = (props) => {
         }
       })
 
-    }, 1000);
+    }, 500);
   }
 
   const copyOver = () => {
@@ -157,7 +157,7 @@ const DialogBox = (props) => {
                 ) : (
                   <View className={`${styles.msgContent} ${selectId === id ? styles.msgSelect : ''}`} dangerouslySetInnerHTML={{
                     __html: xss(s9e.parseEmoji(text)),
-                  }} onTouchStart={() => {copy(xss(s9e.parseEmoji(text)), id)}} onTouchMove={copyOver} onTouchEnd={copyOver}></View>
+                  }} onTouchStart={() => {copy(xss(text), id)}} onTouchMove={copyOver} onTouchEnd={copyOver}></View>
                 )}
               </View>
             </React.Fragment>

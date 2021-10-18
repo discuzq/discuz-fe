@@ -7,6 +7,7 @@ import { THREAD_TYPE } from '@common/constants/thread-post';
 import Router from '@discuzq/sdk/dist/router';
 import Avatar from '@components/avatar';
 import throttle from '@common/utils/thottle.js';
+import xss from '@common/utils/xss';
 
 // 用户中心发帖模块
 @inject('user')
@@ -29,14 +30,16 @@ class UserCenterPost extends React.Component {
 
   // 获取发帖相关数据
   handleThreadPostData = async () => {
-    const { readPostCategory, setCategorySelected, setPostData } = this.props.threadPost;
-    const { code, data = [], msg } = await readPostCategory();
+    const { readPostCategory, getCategoriesCanCreate, setCategorySelected, setPostData } = this.props.threadPost;
+    const { code, msg } = await readPostCategory();
     if (code !== 0) {
       Toast.error({
         content: msg || '获取发帖分类失败',
       });
       return { success: false, msg };
     }
+    // 获取可新建发帖的分类
+    const data = getCategoriesCanCreate();
     const parent = data[0];
     const child = !!parent.children.length ? parent.children[0] : {};
     setCategorySelected({ parent, child });
@@ -64,6 +67,8 @@ class UserCenterPost extends React.Component {
     this.setState({
       isPostDisabled: true,
     });
+    // 对用户中心的postData.contentText做xss处理
+    setPostData({ contentText: xss(postData.contentText) });
     const result = await createThread();
     if (result.code === 0) {
       Toast.success({
@@ -85,9 +90,9 @@ class UserCenterPost extends React.Component {
     return (
       <div
         className={styles.userCenterPost}
-        // onClick={(event) => {
-        //   Router.push({ url: '/thread/post' });
-        // }}
+      // onClick={(event) => {
+      //   Router.push({ url: '/thread/post' });
+      // }}
       >
         <div className={styles.userCenterPostTitle}>发帖</div>
         <div className={styles.userCenterPostContent}>

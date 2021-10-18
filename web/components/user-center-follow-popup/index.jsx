@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './index.module.scss';
-import { Icon, Dialog, Divider } from '@discuzq/design';
-import UserCenterFllows from '@components/user-center-follow';
+import { Dialog, Divider } from '@discuzq/design';
+import UserCenterFollows from '@components/user-center-follow';
 import { noop } from '@components/thread/utils';
 import Router from '@discuzq/sdk/dist/router';
 import ReactDOM from 'react-dom';
@@ -15,7 +15,6 @@ const Index = (props) => {
   const {
     visible = false,
     onClose = noop,
-    isOtherFans = false,
     id,
     title = '关注',
     dataSource,
@@ -25,59 +24,49 @@ const Index = (props) => {
     sourceTotalPage,
     updateSourceTotalPage,
   } = props;
+
   const onContainerClick = ({ id }) => {
-    Router.push({ url: `/user/${id}` });
+    id && Router.push({ url: `/user/${id}` });
   };
 
   const splitElement = React.useMemo(
     () => (
-      <div className={styles.splitEmelent}>
+      <div className={styles.splitElement}>
         <Divider />
       </div>
     ),
     [],
   );
 
+  const otherProps = id ? { userId: id } : {};
+
   const dialogElement = (
-    <Dialog position="center" visible={visible} onClose={onClose}>
-      <div className={styles.contaner}>
-        <div className={styles.popupWrapper}>
-          <div className={styles.title}>
-            <span>{title}</span>
-            <Icon name="CloseOutlined" className={styles.closeIcon} size={12} onClick={onClose} />
-          </div>
-          <div className={styles.titleHr}></div>
-          {!id ? (
-            <UserCenterFllows
-              style={{
-                height: 'calc(100% - 80px)',
-              }}
-              dataSource={dataSource}
-              setDataSource={setDataSource}
-              sourcePage={sourcePage}
-              updateSourcePage={updateSourcePage}
-              sourceTotalPage={sourceTotalPage}
-              updateSourceTotalPage={updateSourceTotalPage}
-              onContainerClick={onContainerClick}
-              splitElement={splitElement}
-            />
-          ) : (
-            <UserCenterFllows
-              style={{
-                height: 'calc(100% - 80px)',
-              }}
-              userId={id}
-              dataSource={dataSource}
-              setDataSource={setDataSource}
-              sourcePage={sourcePage}
-              updateSourcePage={updateSourcePage}
-              sourceTotalPage={sourceTotalPage}
-              updateSourceTotalPage={updateSourceTotalPage}
-              onContainerClick={onContainerClick}
-              splitElement={splitElement}
-            />
-          )}
-        </div>
+    <Dialog
+      visible={visible}
+      position="center"
+      isNew={true}
+      title={title}
+      width={572}
+      headerClassName={styles.dialogHeader}
+      bodyClassName={styles.dialogBody}
+      footerClassName={styles.dialogFooter}
+      footer={<div></div>}
+      onClose={onClose}
+    >
+      <div className={styles.container}>
+        <div className={styles.titleHr}></div>
+        <UserCenterFollows
+          style={{ height: '100%' }}
+          dataSource={dataSource}
+          setDataSource={setDataSource}
+          sourcePage={sourcePage}
+          updateSourcePage={updateSourcePage}
+          sourceTotalPage={sourceTotalPage}
+          updateSourceTotalPage={updateSourceTotalPage}
+          onContainerClick={onContainerClick}
+          splitElement={splitElement}
+          {...otherProps}
+        />
       </div>
     </Dialog>
   );

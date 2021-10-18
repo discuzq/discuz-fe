@@ -7,6 +7,8 @@ import MorePopop from '@components/more-popop';
 import Router from '@discuzq/sdk/dist/router';
 import goToLoginPage from '@common/utils/go-to-login-page';
 import Toast from '@discuzq/design/dist/components/toast';
+const hongbaoMini = 'https://imgcache.qq.com/operation/dianshi/other/redpacket-mini.10b46eefd630a5d5d322d6bbc07690ac4536ee2d.png';
+
 
 /**
  * 帖子底部内容
@@ -31,11 +33,12 @@ const Index = ({
   card,
   data,
   user,
-  onShare = () => {},
-  onComment = () => {},
-  onPraise = () => {},
+  onShare = () => { },
+  onComment = () => { },
+  onPraise = () => { },
   updateViewCount = noop,
   handleShare = noop,
+  hasCommentHongbao = false,
 }) => {
   const postList = useMemo(() => {
     const praise = {
@@ -56,11 +59,12 @@ const Index = ({
         type: 'commonet',
         num: comment,
         actived: isCommented,
+        hasHongbao: hasCommentHongbao,
       },
       {
         icon: 'ShareAltOutlined',
         name: '分享',
-        event: null,
+        event: onShare,
         type: 'share',
         num: sharing,
       },
@@ -68,15 +72,27 @@ const Index = ({
   }, [isLiked, isCommented, wholeNum, comment, sharing]);
 
   // TODO：此处逻辑需要移植到thread/index中，方便逻辑复用
-  const handleClick = () => {
+  const handleClick = (item) => {
     updateViewCount();
+
+    if (item.name === '赞') {
+      item.event();
+      return;
+    }
+
     const isApproved = data?.isApproved === 1;
     if (!isApproved) {
       Toast.info({ content: '内容正在审核中' });
-      return ;
+      return;
     }
+
+    if (item.name === '评论') {
+      item.event();
+      return;
+    }
+
     if (platform === 'pc') {
-      onShare();
+      item.event();
     } else {
       if (!user.isLogin()) {
         goToLoginPage({ url: '/user/login' });
@@ -101,6 +117,7 @@ const Index = ({
     Router.push({ url: `/card?threadId=${threadId}` });
   };
   const needHeight = useMemo(() => userImgs.length !== 0, [userImgs]);
+
   return (
     <div>
       <div className={needHeight ? styles.user : styles.users}>
@@ -131,7 +148,7 @@ const Index = ({
       <div className={needHeight ? styles.operation : styles.operations}>
         {postList.map((item, index) => (
           <div key={index} className={styles.fabulousContainer}>
-            <div className={styles.fabulous} onClick={item.name === '分享' ? handleClick : item.event}>
+            <div className={styles.fabulous} onClick={() => handleClick(item)}>
               <Icon
                 className={`${styles.icon} ${item.type} ${item.actived ? styles.likedColor : styles.dislikedColor}`}
                 name={item.icon}
@@ -140,6 +157,7 @@ const Index = ({
               <span className={item.actived ? styles.fabulousCancel : styles.fabulousPost}>
                 {item.num ? item.num : item.name}
               </span>
+              {item.hasHongbao &&  <img className={styles.hongbaoMini} src={hongbaoMini}></img>}
             </div>
           </div>
         ))}

@@ -3,7 +3,7 @@ import styles from './index.module.scss';
 import Avatar from '@components/avatar';
 import ReplyList from '../reply-list/index';
 import { diffDate } from '@common/utils/diff-date';
-import { observer } from 'mobx-react';
+import { observer, inject } from 'mobx-react';
 import { Icon, Divider } from '@discuzq/design';
 import classnames from 'classnames';
 import CommentInput from '../comment-input/index';
@@ -15,7 +15,9 @@ import ImageDisplay from '@components/thread/image-display';
 import PostContent from '@components/thread/post-content';
 import { debounce } from '@common/utils/throttle-debounce';
 import { urlToLink } from '@common/utils/replace-url-to-a';
+import SiteMapLink from '@components/site-map-link';
 
+@inject('user')
 @observer
 class CommentList extends React.Component {
   constructor(props) {
@@ -133,16 +135,31 @@ class CommentList extends React.Component {
     };
   }
 
+
   render() {
     const { canDelete, canEdit, canLike, canHide } = this.generatePermissions(this.props.data);
     const { groups } = this.props.data?.user || {};
+    const { thread } = this.props;
+
     // 评论内容是否通过审核
     const isApproved = this.props?.data?.isApproved === 1;
     const isSelf = this.props.threadId === this.props?.data?.userId;
+    const { redPacketData } = this.props;
+    const remainHongbaoLike = redPacketData?.condition === 1 && redPacketData?.remainNumber ; // 是否还有剩余的点赞红包
+    const needLikeNum = redPacketData?.likenum;
+    const curLikeNum = this.props?.data?.likeCount;
+    const isCommenter = this.props?.data?.userId === this.props?.user?.userInfo?.id;
     return (
       <div className={`${styles.commentList} dzq-comment`}>
-        {this.props.data?.rewards || this.props.data?.redPacketAmount ? (
           <div className={styles.header}>
+            {
+               isCommenter && remainHongbaoLike && curLikeNum < needLikeNum && !this.props.data?.redPacketAmount && (
+                 <div className={styles.hongbaoLikeNum}>
+                   <Icon className={styles.iconzan} size={12} name="PraiseOutlined"></Icon>
+                   再集 <span>&nbsp; {needLikeNum - curLikeNum} &nbsp;</span> 赞可领红包
+                 </div>
+               )
+            }
             {this.props.data?.rewards ? <RewardDisplay number={this.props.data.rewards}></RewardDisplay> : ''}
 
             {this.props.data?.redPacketAmount ? (
@@ -153,11 +170,9 @@ class CommentList extends React.Component {
               ''
             )}
           </div>
-        ) : (
-          ''
-        )}
         <div className={styles.content}>
           <div className={styles.commentListAvatar}>
+            <SiteMapLink href={`/user/${this.props?.data?.userId}`} text={this.props.data?.user?.nickname || this.props.data?.user?.userName || '异'}/>
             <Avatar
               image={
                 (this.props.data?.user?.nickname || this.props.data?.user?.userName) && this.props.data?.user?.avatar
@@ -171,6 +186,7 @@ class CommentList extends React.Component {
             ></Avatar>
           </div>
           <div className={styles.commentListContent}>
+            <SiteMapLink href={`/thread/comment/${this.props?.data.id}?threadId=${thread?.threadData?.id}`} text={this.props?.data?.content}/>
             {/* 评论内容 */}
             <div
               className={classnames(

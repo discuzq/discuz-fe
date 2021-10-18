@@ -526,7 +526,7 @@ class PayBoxStore {
 
     throw {
       Code: smsResp.code,
-      Message: smsResp.message,
+      Message: smsResp.msg,
     };
   }
 

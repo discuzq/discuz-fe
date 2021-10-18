@@ -209,7 +209,7 @@
 
 .moneyList{
   text-align: center;
-  width: 243px;
+  width: 249px;
   margin: 30px auto 0;
   .top{
     display: flex;
@@ -218,7 +218,7 @@
     font-size: 14px;
     color:$text-color-primary;
     &::after{
-      width: 80px;
+      width: 76px;
       height: 1px;
       background-color: #EEEEEE;
       content: '';
@@ -226,7 +226,7 @@
     }
     &::before{
       content: '';
-      width: 80px;
+      width: 76px;
       height: 1px;
       background-color: #EEEEEE;
       margin-right: 15px;

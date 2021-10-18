@@ -17,6 +17,8 @@ import HOCFetchSiteData from '@middleware/HOCFetchSiteData';
 import { debounce, throttle } from '@common/utils/throttle-debounce.js';
 import Autoplay from '@common/utils/autoplay';
 import PacketOpen from '@components/red-packet-animation/web';
+import ThreadContent from '@components/thread/SSRAdapter';
+import TopNews from '../h5/components/top-news/SSRAdapter';
 
 
 const DynamicVListLoading = dynamic(() => import('./components/dynamic-vlist'), {
@@ -44,6 +46,7 @@ class IndexPCPage extends React.Component {
       isShowDefault: this.checkIsOpenDefaultTab(),
     };
 
+    // ssr情况下，不适用虚拟滚动，使用会默认滚动
     this.enabledVList = true; // 开启虚拟列表
 
     // 轮询定时器
@@ -228,6 +231,36 @@ class IndexPCPage extends React.Component {
     this.checkVideoPlay(startNum, stopNum);
   };
 
+  renderSSRContent(thread, sticks) {
+    if (  process.env.DISCUZ_RUN === 'ssr' && ThreadContent ) {
+      const { pageData } = thread
+      
+      return (
+        <div className='ssr-box' style={{display: 'none'}}>
+          {sticks && sticks.length > 0 && <TopNews data={sticks} platform="pc" isShowBorder={false} />}
+          <div>
+            {
+              pageData && pageData.length != 0 && pageData.map((item, index) => {
+                return (
+                  <ThreadContent
+                    onContentHeightChange={() => {}}
+                    onImageReady={() => {}}
+                    onVideoReady={() => {}}
+                    key={`${item.threadId}-${item.updatedAt}`}
+                    data={item}
+                    recomputeRowHeights={() => {}}
+                  />
+                );
+              })
+            }
+          </div>
+          
+        </div>
+      );
+    }
+    return null;
+  }
+
   render() {
     const { index, site, thread } = this.props;
     const { hasRedPacket } = thread;
@@ -253,6 +286,7 @@ class IndexPCPage extends React.Component {
         disabledList={this.enabledVList}
         onRefreshPlaceholder={this.onRefreshPlaceholder}
       >
+        {this.renderSSRContent(index.threads, index.sticks, countThreads)}
         <DynamicVListLoading
           indexStore={index}
           siteStore={site}
@@ -279,4 +313,4 @@ class IndexPCPage extends React.Component {
   }
 }
 // eslint-disable-next-line new-cap
-export default HOCFetchSiteData(withRouter(IndexPCPage));
+export default withRouter(IndexPCPage);

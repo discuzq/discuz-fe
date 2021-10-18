@@ -194,11 +194,12 @@ class UserCenterUsers extends React.Component {
     const isNoData = this.state?.users?.length === 0 && !this.state.loading;
     return (
       <div
-        className={this.props.className}
+        className={this.props.className + ' user-center-users-list'}
         ref={this.containerRef}
         style={{
+          width: '100%',
           height: '100%',
-          overflow: 'scroll',
+          overflowY: 'scroll',
           ...this.props.style,
         }}
       >

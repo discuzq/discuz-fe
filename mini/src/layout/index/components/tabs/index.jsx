@@ -64,7 +64,7 @@ const Index = forwardRef((props, ref) => {
         const { index, onClickTab, searchClick } = props;
 
         const { categories = [], activeCategoryId, currentCategories } = index;
-    
+
         return (
           <>
             {categories?.length > 0 && (
@@ -95,7 +95,7 @@ const Index = forwardRef((props, ref) => {
           </>
         );
       };
-    
+
       const renderFixedTabs = () => {
         const { index, site, searchClick } = props;
         const { categories = [], activeCategoryId, currentCategories } = index;
@@ -120,7 +120,7 @@ const Index = forwardRef((props, ref) => {
                   }
                 >
                   {currentCategories?.map((item, index) => (
-                    <Tabs.TabPanel key={index} id={item.pid} label={item.name} />
+                    <Tabs.TabPanel key={index} id={item.categoryId} label={item.name} />
                   ))}
                 </Tabs>
               </View>

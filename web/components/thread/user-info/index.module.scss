@@ -1,5 +1,8 @@
 @import '@common/styles/index.scss';
-
+.user-link{
+  text-decoration: none;
+  display: block;
+}
 .contianer {
   position: relative;
   display: flex;
@@ -29,6 +32,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  width: 65%;
 }
 
 .name {
@@ -50,11 +54,12 @@
   color: $text-color-secondary;
   font-size: rem($font-size-label);
   margin-left: rem($margin-2n);
-  max-width: rem(100);
+  max-width: 50%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   line-height: rem(20);
+  text-overflow: ellipsis;
 }
 .groupNameText {
   max-width: rem(62.5);

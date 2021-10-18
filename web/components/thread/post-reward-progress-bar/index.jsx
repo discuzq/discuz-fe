@@ -54,9 +54,9 @@ const Index = ({ type = POST_TYPE.RED_PACK, remaining = 0, received = 0, conditi
       >
         <div className={styles.content}>
           {type === POST_TYPE.RED_PACK ? (
-            <img className={styles.icon} src="/dzq-img/redpacket-mini.png" />
+            <img alt="图片" className={styles.icon} src="/dzq-img/redpacket-mini.png" />
           ) : (
-            <img className={styles.icon} src="/dzq-img/coin.png" />
+            <img alt="图片" className={styles.icon} src="/dzq-img/coin.png" />
           )}
           <div className={styles.remaining}>{texts.remaining}</div>
           <div className={styles.received}>{texts.received}</div>

@@ -18,8 +18,8 @@ const SharePopup = ({ visible = false, onClose = noop, type='' }) => {
       onClose={onClose}
     >
       <div className={`${type === 'thread' ? styles.threadDetail : styles.container}`}>
-        <img src={sharePoint} className={styles.sharePoint} />
-        <img src={shareKnow} className={styles.shareKnow} onClick={onClose} />
+        <img alt="图片" src={sharePoint} className={styles.sharePoint} />
+        <img alt="图片" src={shareKnow} className={styles.shareKnow} onClick={onClose} />
       </div>
     </Popup>);
 };

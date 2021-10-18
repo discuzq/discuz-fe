@@ -12,6 +12,7 @@ import { withRouter } from 'next/router';
 
 @inject('index')
 @inject('user')
+@inject('thread')
 @observer
 class PC extends React.Component {
   // 加载更多
@@ -48,7 +49,13 @@ class PC extends React.Component {
           {list.map((item, index) => (
             <div className={styles.item} key={index}>
               <div className={styles['item-left']}>
-                <ThreadCenterView data={item} onClick={() => this.props.onEdit(item)}/>
+                <ThreadCenterView 
+                  data={item} 
+                  user={this.props.user} 
+                  onClick={() => this.props.onEdit(item)}
+                  updateThread={this.props.thread.updateThread.bind(this.props.thread)}
+                  updateListThreadIndexes={this.props.index.updateListThreadIndexes.bind(this.props.index)}
+                />
                 <div className={styles['item-time']}>编辑于&nbsp;{item.updatedAt}</div>
               </div>
               <div className={styles['item-right']}>

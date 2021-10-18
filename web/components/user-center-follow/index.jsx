@@ -104,7 +104,7 @@ class UserCenterFollows extends React.Component {
     const targetFollows = deepClone(this.props.dataSource || this.state.follows);
     Object.keys(targetFollows).forEach((key) => {
       targetFollows[key].forEach((user) => {
-        if (get(user, 'user.pid') !== id) return;
+        if (get(user, 'user.userId') !== id) return;
         user.userFollow.isFollow = false;
       });
     });
@@ -308,6 +308,7 @@ class UserCenterFollows extends React.Component {
           className={this.props.className + ' user-center-follow-list'}
           ref={this.containerRef}
           style={{
+            width: '100%',
             height: '100%',
             overflowY: 'scroll',
             ...this.props.style,
@@ -323,7 +324,7 @@ class UserCenterFollows extends React.Component {
                   type={this.judgeFollowsStatus(user)}
                   imgUrl={user.avatar}
                   withHeaderUserInfo={this.props.isPc}
-                  onContainerClick={this.props.onContainerClick}
+                  onContainerClick={() => this.props.onContainerClick({id: user.id})}
                   nickName={user.nickName}
                   userGroup={user.groupName}
                   followHandler={this.followUser}

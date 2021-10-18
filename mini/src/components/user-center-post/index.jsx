@@ -7,6 +7,7 @@ import Toast from '@discuzq/design/dist/components/toast/index';
 import Avatar from '@components/avatar';
 import throttle from '@common/utils/thottle.js';
 import debounce from '@common/utils/debounce.js';
+import xss from '@common/utils/xss';
 import styles from './index.module.scss';
 
 // 用户中心发帖模块
@@ -36,14 +37,16 @@ class UserCenterPost extends React.Component {
 
   // 获取发帖相关数据
   handleThreadPostData = async () => {
-    const { readPostCategory, setCategorySelected, setPostData } = this.props.threadPost;
-    const { code, data = [], msg } = await readPostCategory();
+    const { readPostCategory, getCategoriesCanCreate, setCategorySelected, setPostData } = this.props.threadPost;
+    const { code, msg } = await readPostCategory();
     if (code !== 0) {
       Toast.error({
         content: msg || '获取发帖分类失败',
       });
       return { success: false, msg };
     }
+    // 获取可新建发帖的分类
+    const data = getCategoriesCanCreate();
     const parent = data[0] || {};
     const child = !!parent.children.length ? parent.children[0] : {};
     setCategorySelected({ parent, child });
@@ -58,7 +61,6 @@ class UserCenterPost extends React.Component {
       content: '发布中...',
     });
     const { createThread, setPostData, postData } = this.props.threadPost;
-    setPostData({ contentText: this.state.value });
 
     // 如果开始没有获取到发帖分类的数据--尝试重新获取
     if (!postData.categoryId) {
@@ -68,6 +70,7 @@ class UserCenterPost extends React.Component {
     this.setState({
       isPostDisabled: true,
     });
+    setPostData({ contentText: xss(this.state.value) });
     const result = await createThread();
     if (result.code === 0) {
       Toast.success({

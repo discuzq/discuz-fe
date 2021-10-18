@@ -45,8 +45,9 @@
               -webkit-text-size-adjust:none;
               -webkit-transform : scale(0.83,0.83);
               line-height: rem(14);
-              padding: rem(1) rem(4);
-              text-align: left;
+              padding: rem(0) rem(4);
+              text-align: center;
+              width: rem(25);
               color: $white;
             }
           }
@@ -58,6 +59,7 @@
             overflow: hidden;
             padding-top: rem($padding-2n);
             line-height: rem(20);
+            text-overflow: ellipsis;
           }
         }
         .isApproved {
@@ -68,7 +70,7 @@
       }
 
       .replyListText {
-        padding-bottom: rem($padding-2n);
+        padding-bottom: rem($padding-3n);
         padding-left: rem($padding-3n);
         padding-right: rem($padding-3n);
         font-size: rem($font-size-middle);
@@ -111,7 +113,7 @@
           justify-content: flex-start;
           height: rem(20);
           position: relative;
-          top: rem(3);
+          top: rem(1);
           .iconAt{
             color: $primary-color;
           }
@@ -152,8 +154,9 @@
               -webkit-text-size-adjust:none;
               -webkit-transform : scale(0.83,0.83);
               line-height: rem(14);
-              padding: rem(1) rem(4);
-              text-align: left;
+              padding: rem(0) rem(4);
+              text-align: center;
+              width: rem(25);
               color: $white;
             }
           }

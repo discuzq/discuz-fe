@@ -1,6 +1,5 @@
 import React from 'react';
 import { Icon } from '@discuzq/design';
-import { PLUGIN_TOMID_CONFIG } from '@common/plugin/plugin-tomid-config';
 import styles from '../index.module.scss';
 
 export default class CustomApplyPost extends React.Component {
@@ -9,9 +8,9 @@ export default class CustomApplyPost extends React.Component {
   }
 
   render() {
-    const { renderData, deletePlugin } = this.props;
+    const { renderData, deletePlugin, _pluginInfo } = this.props;
     if (!renderData) return null;
-    if (renderData && renderData?.tomId === PLUGIN_TOMID_CONFIG.apply) {
+    if (renderData && renderData?.tomId === _pluginInfo.options.tomId) {
       const { body } = renderData || {};
       const { activityStartTime } = body || {};
       if (!activityStartTime) return null;

@@ -117,7 +117,7 @@ export default class index extends Component {
   };
 
   handleBlurSignature = (e) => {
-    this.props.user.editSignature = e.target.value;
+    this.props.user.editSignature = e.target.value.trim();
     this.setState({
       isClickSignature: false,
     });
@@ -147,7 +147,7 @@ export default class index extends Component {
             )}
           </div>
           <div className={styles.headImgBox}>
-            <Avatar image={this.user.avatarUrl} size="big" name={this.user.nickname} />
+            <Avatar wrapClassName={styles.avatarWrap} image={this.user.avatarUrl} size="big" name={this.user.nickname} />
             {/* 相机图标 */}
             <div className={styles.userCenterEditCameraIcon} onClick={this.handleAvatarUpload}>
               <Icon name="CameraOutlined" />

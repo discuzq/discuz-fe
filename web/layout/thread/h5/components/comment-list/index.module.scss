@@ -88,8 +88,9 @@
                 -webkit-text-size-adjust:none;
                 -webkit-transform : scale(0.83,0.83);
                 line-height: rem(14);
-                padding: rem(1) rem(4);
-                text-align: left;
+                padding: rem(0) rem(4);
+                text-align: center;
+                width: rem(25);
                 color: $white;
               }
             }
@@ -101,6 +102,7 @@
               overflow: hidden;
               padding-left: $padding-2n;
               line-height: rem(20);
+              text-overflow: ellipsis;
             }
           }
           .isApproved {
@@ -220,4 +222,18 @@
 .rewardImage {
   width: rem(18);
   height: rem(18);
+}
+
+.hongbaoLikeNum{
+  display: flex;
+  align-items: center;
+  margin:0 5px;
+  font-size: 12px;
+  .iconzan{
+    color: $orange-color;
+    margin-right: 5px;
+  }
+  >span{
+    color: $error-color;
+  }
 }

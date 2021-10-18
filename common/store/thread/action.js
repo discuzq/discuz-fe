@@ -59,6 +59,12 @@ class ThreadAction extends ThreadStore {
   }
 
   @action
+  setAuthorInfo(userData) {
+    this.authorInfo = userData;
+  }
+
+
+  @action
   setCommentListPage(page) {
     this.page = page;
   }
@@ -173,7 +179,8 @@ class ThreadAction extends ThreadStore {
 
   @action
   setThreadData(data) {
-    this.threadData = data;
+    // this.threadData = data;
+    this.threadData = {...this.threadData, ...data};
     this.threadData.id = data.threadId;
   }
 
@@ -794,8 +801,19 @@ class ThreadAction extends ThreadStore {
   // 查询打赏列表
   @action 
   async queryTipList(params){
-    const res = await readLikedUsers({ params });
-    this.threadData={...this.threadData,tipList:res.data?.pageData?.list || []}
+    const res = await readLikedUsers({ params:{...params,perPage:300} });
+    let resList  = res.data?.pageData?.list;
+    resList = resList.filter(i=>i.type===3);
+
+    const filterObj = {};
+    resList = resList.reduce((cur,next) => {
+      console.log(next);
+      filterObj[next.userId] ? "" : filterObj[next.userId] = true && cur.push(next);
+      return cur;
+    },[])
+
+
+    this.threadData={...this.threadData,tipList:resList.slice(0,32) || []}
   }
 
 }

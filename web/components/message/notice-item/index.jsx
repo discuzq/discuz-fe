@@ -107,6 +107,7 @@ class Index extends Component {
   // parse content 对于需要显示title作为内容的消息，在对应组件内做预处理后统一传入content属性
   parseHTML = () => {
     const { type, item } = this.props;
+
     let _content = (typeof item.content === 'string' && item.content !== 'undefined') ? item.content : '';
 
     if (type === 'thread') {
@@ -116,6 +117,11 @@ class Index extends Component {
 
     let t = xss(s9e.parseEmoji(this.filterTag(_content)));
     t = (typeof t === 'string') ? t : '';
+
+    // 付费站点和付费用户组的续费链接
+    if (item.raw?.refeeType) {
+      t = t + '<a href="/my">点击续费</a>';
+    }
 
     return t;
   };

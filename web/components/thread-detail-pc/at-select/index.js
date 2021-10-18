@@ -111,7 +111,7 @@ class AtSelect extends Component {
 
   formatData = (item) => {
     const userName = this.state.keywords ? item.username : item.user?.userName || '';
-    const userId = this.state.keywords ? item.userId : item.user?.pid || '';
+    const userId = this.state.keywords ? item.userId : item.user?.userId || '';
     const groupName = this.state.keywords ? item.groupName : item.group?.groupName;
     const avatar = this.state.keywords ? item.avatar : item.user?.avatar;
     return { userName, userId, groupName, avatar };

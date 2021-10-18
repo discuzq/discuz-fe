@@ -77,6 +77,14 @@ class CommentH5Page extends React.Component {
         });
       }, 1000);
     }
+
+    const{ id } =  this.props?.thread?.threadData;
+    if (id) {
+      // 分享相关数据
+      this.shareData = {
+        path: `/indexPages/thread/comment/index?id=${this.props.comment?.commentDetail?.id}&threadId=${id}&fromMessage=true`,
+      };
+    } 
   }
 
   componentWillUnmount() {
@@ -114,7 +122,47 @@ class CommentH5Page extends React.Component {
     if (type === 'report') {
       this.setState({ showReportPopup: true });
     }
+
+    // 生成海报
+    if (type === 'posterShare') {
+      this.onPosterShare();
+    }
+
+    // wx分享
+    if (type === 'wxShare') {
+      // this.onWxShare();
+    }
   };
+
+  
+  // 生成海报
+  async onPosterShare() {
+    const commentData = this.props.comment?.commentDetail;
+    const threadData = this.props.thread?.threadData;
+
+    const { commentId } =  commentData;
+    Taro.eventCenter.once('page:init', () => {
+      Taro.eventCenter.trigger('message:comment', commentData);
+      Taro.eventCenter.trigger('message:detail', threadData);
+
+    });
+    Taro.navigateTo({
+      url: `/subPages/create-card/index?commentId=${commentId}`,
+    });
+  }
+
+  // wx分享
+  onWxShare() {
+    const { thread, user } = this.props
+    const { nickname } = thread.threadData?.user || ''
+    const { avatar } = thread.threadData?.user || ''
+    const threadId = thread?.threadData?.id
+    if (thread.threadData?.isAnonymous) {
+      user.getShareData({ nickname, avatar, threadId })
+      thread.threadData.user.nickname = '匿名用户'
+      thread.threadData.user.avatar = ''
+    }
+  }
 
   // 删除评论
   async deleteComment() {
@@ -480,6 +528,20 @@ class CommentH5Page extends React.Component {
     })
   }
 
+  // 点击分享
+  onShareClick = () => {
+    if (!this.props.user.isLogin()) {
+      Toast.info({ content: '请先登录!' });
+      goToLoginPage({ url: '/userPages/user/wx-auth/index' });
+      return;
+    }
+  
+    this.setState({
+      isShowShare: true,
+      showMorePopup: true,
+    });
+  };
+
   render() {
     const { commentDetail: commentData, isReady } = this.props.comment;
     const query = Current.router.params;
@@ -489,6 +551,7 @@ class CommentH5Page extends React.Component {
       canDelete: commentData?.canDelete,
       canEssence: false,
       canStick: false,
+      canShare:true,
       isAdmini: this.props?.user?.isAdmini,
     };
     const { isAnonymous } = this.props.thread?.threadData || '';
@@ -581,6 +644,10 @@ class CommentH5Page extends React.Component {
                     size="20"
                     name="PictureOutlinedBig"
                   ></Icon>
+                  {/* 分享button */}
+                  <View className={classNames(footer.share, footer.icon)} onClick={() => this.onShareClick()}>
+                    <Icon className={footer.icon} size="20" name="ShareAltOutlined"></Icon>
+                  </View>
                 </View>
               </View>
             </View>
@@ -603,13 +670,16 @@ class CommentH5Page extends React.Component {
 
           {/* 更多弹层 */}
           <MorePopup
+            shareData= {this.shareData}
             permissions={morePermissions}
             statuses={moreStatuses}
             visible={this.state.showMorePopup}
             onClose={() => this.setState({ showMorePopup: false })}
             onSubmit={() => this.setState({ showMorePopup: false })}
             onOperClick={(type) => this.onOperClick(type)}
+            isShowShare={this.state.isShowShare}
           />
+          
 
           {/* 删除弹层 */}
           <DeletePopup

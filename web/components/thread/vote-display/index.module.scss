@@ -10,6 +10,7 @@
     justify-content: space-between;
     line-height: $font-line-height-middle;
     word-break: break-all;
+    cursor: pointer;
     &-right {
       font-size: $font-size-middle;
       color: $text-color-primary;
@@ -49,14 +50,15 @@
       }
     }
   }
-  .foldexpend {
+  // .foldexpend {
 
-    .foldbtn,
-    .expandbtn {
-      margin-bottom: 0 !important;
-    }
-  }
+  //   .foldbtn,
+  //   .expandbtn {
+  //     margin-bottom: 0 !important;
+  //   }
+  // }
   .content {
+    cursor: pointer;
     .foldbtn {
       border-radius: $border-radius-small;
       margin-bottom: $margin-4n;
@@ -119,12 +121,13 @@
   }
 }
 .footer {
-  padding: 0 $padding-4n;
+  // padding: 0 $padding-4n;
   display: flex;
   justify-content: space-between;
   align-items: center;
 
   .left {
+    cursor: pointer;
 
     &-type,
     &-time {

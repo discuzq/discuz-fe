@@ -288,9 +288,11 @@ class WalletH5Page extends React.Component {
   renderFooter = () => {
     return (
       <div className={layout.footer}>
-        <Button className={layout.button} onClick={this.toWithrawal} >
-          提现
-        </Button>
+        <div className={layout.footerInner}>
+          <Button className={layout.button} onClick={this.toWithrawal} >
+            提现
+          </Button>
+        </div>
       </div>
     )
   }
@@ -371,7 +373,7 @@ class WalletH5Page extends React.Component {
             onFrozenAmountClick={() => this.onFrozenAmountClick()}
           ></WalletInfo>
         </div>
-      
+
         <div className={layout.choiceTime}>
           <div className={layout.status} onClick={this.handleTypeSelectorClick}>
             <span className={layout.text}>
@@ -394,15 +396,15 @@ class WalletH5Page extends React.Component {
             ))}
           </Tabs>
 
-          {this.state.tabsType === 'income' && 
+          {this.state.tabsType === 'income' &&
             incomeData.map((value, index) => (
               <IncomeList key={value.id} incomeVal={value} itemKey={index} dataLength={incomeData.length} />
             ))
           }
 
-          {this.state.tabsType === 'pay' && 
+          {this.state.tabsType === 'pay' &&
             expandData.map((value, index) => (
-              <PayList key={value.id} payVal={value} itemKey={index} dataLength={expandData.length}  />
+              <PayList key={value.id} payVal={value} itemKey={index} dataLength={expandData.length} />
             ))
           }
 
@@ -412,7 +414,7 @@ class WalletH5Page extends React.Component {
             ))
           }
         </div>
-  
+
         <FilterView
           value={this.state.selectType}
           data={this.renderSelectContent()}

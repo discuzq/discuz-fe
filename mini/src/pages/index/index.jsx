@@ -224,7 +224,7 @@ class Index extends React.Component {
       if (siteMode === 'pay') {
         // 未付费用户访问非白名单页面，强制跳转付费页
         if (!MINI_SITE_JOIN_WHITE_LIST.includes(path)) {
-          if (!user.isLogin() || !user.paid) {
+          if (!user.isLogin() || (!user.paid && user?.group?.level === 0) ) {
             Router.redirect({ url: PARTNER_INVITE_URL });
             return false;
           }

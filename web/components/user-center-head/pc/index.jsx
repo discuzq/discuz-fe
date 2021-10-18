@@ -269,7 +269,7 @@ class index extends Component {
       <div className={styles.box}>
         <div className={styles.boxTop}>
           <div className={styles.headImgBox}>
-            <Avatar image={user.avatarUrl} size="big" name={user.nickname} level={2} />
+            <Avatar wrapClassName={styles.avatarWrap} image={user.avatarUrl} size="big" name={user.nickname} level={2} />
             {/* 相机图标 */}
             {!this.props.router.query?.id && (
               <div className={styles.userCenterEditCameraIcon} onClick={this.handleAvatarUpload}>
