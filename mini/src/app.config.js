@@ -41,6 +41,7 @@ const config = {
         'wallet/index',
         'wallet/frozen/index',
         'wallet/withdrawal/index',
+        'wallet/recharge/index',
         'forum/index',
         'forum/partner-invite/index',
         'invite/index',

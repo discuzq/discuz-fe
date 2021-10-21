@@ -5,11 +5,19 @@
     // background-color: palevioletred;
     height: rem(120);
     width: 100%;
-    border-radius: rem(5) rem(5) 0 0;
     .siteBgImage {
       height: rem(120);
       width: 100%;
       display: block;
+      object-fit: cover;
+    }
+
+    &.defaultSiteBg{
+      background-color: rgb(36, 105, 246);
+
+      .siteBgImage {
+        object-fit: scale-down;
+      }
     }
   }
   .menuInfo {

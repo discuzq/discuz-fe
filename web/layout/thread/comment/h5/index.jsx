@@ -292,7 +292,7 @@ class CommentH5Page extends React.Component {
   async createReply(val, imageList) {
     const valuestr = val.replace(/\s/g, '');
     // 如果内部为空，且只包含空格或空行
-    if (!valuestr || imageList.length) {
+    if (!valuestr && !imageList.length) {
       Toast.info({ content: '请输入内容' });
       return;
     }
@@ -544,7 +544,7 @@ class CommentH5Page extends React.Component {
     }
 
     card.setThreadData(data);
-    Router.push({ url: `/card?commentId=${commentId}` });
+    Router.push({ url: `/card?commentId=${commentId}&threadId=${threadId}` });
   };
 
   render() {

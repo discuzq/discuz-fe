@@ -682,7 +682,6 @@ class Index extends Component {
       setTimeout(() => {
         Taro.hideLoading();
         Taro.redirectTo({ url: `/userPages/my/draft/index` });
-        // this.handlePageJump(true);
       }, 1000);
     } else {
       this.postToast('保存失败');
@@ -729,16 +728,13 @@ class Index extends Component {
 
   // 处理左上角按钮点击跳路由
   handlePageJump = async (canJump = false, url) => {
-    const { postType, threadId } = this.state;
-    // 已发布主题再编辑，不可保存草稿
-    if (postType === "isEdit") {
-      return Taro.redirectTo({ url: `/indexPages/thread/index?id=${threadId}` });
-    }
+    const { postType } = this.state;
 
     if (!this.checkAudioRecordStatus()) return;
 
+    // 判断是否可以保存草稿
     const { postData: { contentText, images, video, files, audio } } = this.props.threadPost;
-    if (!canJump && (contentText || video.id || audio.id || Object.values(images).length || Object.values(files).length)) {
+    if (!canJump && postType !== 'isEdit' && (contentText || video.id || audio.id || Object.values(images).length || Object.values(files).length)) {
       this.setState({ showDraftOption: true });
       return;
     }

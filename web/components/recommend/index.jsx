@@ -8,6 +8,7 @@ import FilterRichText from '@components/filter-rich-text'
 import isServer from '@common/utils/is-server';
 import { debounce } from '@common/utils/throttle-debounce';
 import classNames from 'classnames';
+import SiteMapLink from '@components/site-map-link';
 
 @inject('index')
 @observer
@@ -36,7 +37,7 @@ class Index extends React.Component {
   }, 50);
 
   componentDidMount() {
-    this.loadData();
+    !this.props.index.recommends && this.loadData();
     if (!isServer()) {
       // window.addEventListener("load", this.handleResize);
       window.addEventListener("resize", this.handleResize);
@@ -90,6 +91,7 @@ class Index extends React.Component {
             let titleString = item?.title || '';
             return (
               <div key={index} className={`${style.recommendBox} right-recommend-item`} onClick={(e) => {this.handleClick(e, item)}}>
+                <SiteMapLink href={`/thread/${item.threadId}`} text={titleString && titleString != '' ? titleString : `推介内容`}/>
                 <div className={style.recommendTitle}>
                   <p className={`${style.recommendSort} ${style[`itemIndex${index+1}`]}`}>{index + 1}</p>
                   <FilterRichText

@@ -187,16 +187,16 @@ class Index extends React.Component {
   onOpen = () => {
     const { threadId = '' } = this.props.data || {};
 
-    updateThreadAssignInfoInLists(threadId, { updateType: 'openedMore', openedMore: true });
+    updateThreadAssignInfoInLists(threadId, { updateType: 'openedMore', openedMore: true, recomputeRowHeights: this.props.recomputeRowHeights });
 
-    const { recomputeRowHeights = noop } = this.props;
-    recomputeRowHeights();
+    // const { recomputeRowHeights = noop } = this.props;
+    // recomputeRowHeights();
   }
   onClose = () => {
     const { threadId = '' } = this.props.data || {};
-    updateThreadAssignInfoInLists(threadId, { updateType: 'openedMore', openedMore: false });
-    const { recomputeRowHeights = noop } = this.props;
-    recomputeRowHeights();
+    updateThreadAssignInfoInLists(threadId, { updateType: 'openedMore', openedMore: false, recomputeRowHeights: this.props.recomputeRowHeights });
+    // const { recomputeRowHeights = noop } = this.props;
+    // recomputeRowHeights();
   }
 
   // 判断能否进入详情逻辑
@@ -257,6 +257,11 @@ class Index extends React.Component {
   createComment = () => {
     const { data } = this.props;
     const { threadId = '' } = data || {};
+
+    // 新增评论以后进入详情页需要刷新帖子数据
+    if (this.props.thread?.threadData) {
+      this.props.thread.threadData.needupdate = true;
+    }
     updateThreadAssignInfoInLists(threadId, {
       updateType: 'comment',
     });

@@ -70,7 +70,6 @@ export const tags = {
   }
 };
 
-//fixby hechongwei 添加是否有代码块标识isCode，如果有，过滤掉html转移 http://bug.eims.com.cn/bug-view-3099.html
 function parse(text) {
   const isCode = text.indexOf('<code>') >= 0;
 

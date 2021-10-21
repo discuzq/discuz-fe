@@ -74,7 +74,7 @@ class Index extends React.Component {
     const { search, threadList } = this.props;
     const hasThreadsData = !!threadList.getList({ namespace: 'like' })?.length;
 
-    const hasTopics = !!search.topics;
+    // const hasTopics = !!search.topics;
     this.page = 1;
     if (!hasThreadsData) {
       const threadsResp = await threadList.fetchList({
@@ -104,9 +104,9 @@ class Index extends React.Component {
         firstLoading: false,
       });
     }
-    if (!hasTopics) {
-      search.getTopicsList();
-    }
+    // if (!hasTopics) {
+    //   await search.getTopicsList();
+    // }
   }
 
   beforeRouterChange = (url) => {

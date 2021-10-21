@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import styles from './index.module.scss';
 import Button from '@discuzq/design/dist/components/button/index';
-import { View, Text } from '@tarojs/components';
+import { View, Text, Image } from '@tarojs/components';
 import { numberFormat } from '@common/utils/number-format';
 import renewPay from '@common/pay-bussiness/renew-pay';
+import defaultBgImage from '../../../public/dzq-img/admin-logo-x2.png';
 
 @inject('site')
 @inject('user')
@@ -23,16 +24,18 @@ class RenewalFee extends Component {
   };
 
   render() {
-    const siteBackgroundImage = this.props.site?.siteBackgroundImage;
+    const { siteBackgroundImage: bgImage } = this.props.site;
+
     return (
       <View className={styles.renewalFeeWrapper}>
         <View className={styles.renewalFeeContent}>
-          <View
-            className={styles.siteBg}
-            style={{
-              backgroundImage: `url(${siteBackgroundImage})`,
-            }}
-          ></View>
+          <View className={`${styles.siteBg} ${!bgImage && styles.defaultSiteBg}`}>
+            <Image
+              src={bgImage || defaultBgImage}
+              className={styles.siteBgImage}
+              mode={bgImage ? 'aspectFill' : 'aspectFit'}
+            />
+          </View>
           <View className={styles.menuInfo}>
             <View className={styles.menuItem}>
               <View className={styles.menuTitle}>站点名称</View>

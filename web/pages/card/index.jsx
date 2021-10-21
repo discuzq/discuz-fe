@@ -1,7 +1,5 @@
 import React from 'react';
 import HOCFetchSiteData from '@middleware/HOCFetchSiteData';
-import SiteCard from '../../layout/card/siteCard';
-import ThreadCard from '../../layout/card/threadCard';
 import ErrorH5Page from '@layout/error/h5';
 import { inject, observer } from 'mobx-react';
 import { Toast } from '@discuzq/design';

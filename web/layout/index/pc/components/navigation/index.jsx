@@ -5,6 +5,7 @@ import styles from './index.module.scss';
 import isServer from '../../../../../../common/utils/is-server';
 // import LoadingBox from '@components/loading-box';
 import BottomView from '@components/list/BottomView';
+import SiteMapLink from '@components/site-map-link';
 
 const Index = ({ categories = [], totalThreads = 0, onNavigationClick = noop, defaultFisrtIndex = 'all', defaultSecondIndex = 'all', isError = false, errorText }) => {
   const [fistIndex, setFistIndex] = useState(defaultFisrtIndex);
@@ -37,7 +38,7 @@ const Index = ({ categories = [], totalThreads = 0, onNavigationClick = noop, de
   const debounce = (fn, wait) => {
     let timer = null;
     return () => {
-      if(timer !== null){
+      if (timer !== null) {
         clearTimeout(timer);
       }
       timer = setTimeout(fn, wait);
@@ -65,15 +66,17 @@ const Index = ({ categories = [], totalThreads = 0, onNavigationClick = noop, de
     };
   });
 
-  const renderMenuTitle = ({ name, threadCount }) => (
+  const renderMenuTitle = ({ pid, name, threadCount }) => (
     <div className={styles.subMenuBox}>
+      <SiteMapLink href={pid ? `/cate=${pid}/seq/0` : '/'} text={`分类_${name}`} />
       <span className={styles.ellipsis}>{name}</span>
       <span className={styles.span}>{name === '全部' ? totalThreads : threadCount}</span>
     </div>
   );
 
-  const renderSubMenuTitle = ({ name, threadCount }) => (
+  const renderSubMenuTitle = ({ pid, name, threadCount }) => (
     <div>
+      <SiteMapLink href={pid ? `/cate=${pid}/seq/0` : '/'} text={`分类_${name}`} />
       <span className={styles.ellipsis}>{name}</span>
       <span className={styles.subSpan}>{threadCount}</span>
     </div>
@@ -105,7 +108,7 @@ const Index = ({ categories = [], totalThreads = 0, onNavigationClick = noop, de
         categories?.length ?
           <CategoriesContent />
           :
-          <BottomView isBox isError={isError} errorText={errorText} noMore={categories?.length === 0} loadingText='正在加载' noMoreText='暂无数据' />
+          <BottomView isBox isError={isError} errorText={errorText} noMore={false} loadingText='正在加载' noMoreText='暂无数据' />
       }
     </Card>
   );

@@ -4,6 +4,7 @@ import { readWalletUser, readWalletLog, readWalletCash, createWalletCash } from 
 import time from '@discuzq/sdk/dist/time';
 import { get } from '@common/utils/get';
 import { INCOME_DETAIL_CONSTANTS, EXPAND_DETAIL_CONSTANTS, FREEZE_TYPE } from '@common/constants/wallet';
+import rechargePay from '@common/pay-bussiness/recharge-pay';
 
 const setWalletInfoPageData = (data, obj, {
   type,
@@ -239,6 +240,31 @@ class WalletAction extends WalletStore {
         Code: res.code,
         Msg: res.msg,
       };
+    }
+
+    // 充值
+    @action
+    rechargeMoney = async (amount) => {
+      if (!isNaN(Number(amount))) {
+        const params = {
+          amount: Number(amount),
+          title: '自动充值',
+        };
+        const { success, msg } = await rechargePay(params);
+        console.log('充值result', success, msg);
+
+        if (success) {
+          return {
+            success: true,
+            msg: '充值成功',
+          };
+        }
+  
+        return {
+          success: false,
+          msg: msg || '充值失败',
+        };
+      }
     }
 }
 

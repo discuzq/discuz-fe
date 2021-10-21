@@ -142,7 +142,7 @@ class IndexPCPage extends React.Component {
   };
 
   onNavigationClick = ({ categoryIds }) => {
-    const categories = this.props.index.categories || [];
+    const categories = this.props.index.currentCategories || [];
     // 获取处理之后的分类id
     const id = categoryIds[0];
     const newCategoryIds = getSelectedCategoryIds(categories, id);
@@ -232,11 +232,11 @@ class IndexPCPage extends React.Component {
   };
 
   renderSSRContent(thread, sticks) {
-    if (  process.env.DISCUZ_RUN === 'ssr' && ThreadContent ) {
+    if (process.env.DISCUZ_RUN === 'ssr' && ThreadContent) {
       const { pageData } = thread
-      
+
       return (
-        <div className='ssr-box' style={{display: 'none'}}>
+        <div className='ssr-box' style={{ display: 'none' }}>
           {sticks && sticks.length > 0 && <TopNews data={sticks} platform="pc" isShowBorder={false} />}
           <div>
             {
@@ -254,7 +254,7 @@ class IndexPCPage extends React.Component {
               })
             }
           </div>
-          
+
         </div>
       );
     }
@@ -262,7 +262,7 @@ class IndexPCPage extends React.Component {
   }
 
   render() {
-    const { index, site, thread } = this.props;
+    const { index, site, thread, canPublish } = this.props;
     const { hasRedPacket } = thread;
     const { countThreads = 0 } = site?.webConfig?.other || {};
     const { currentPage, totalPage } = index.threads || {};
@@ -304,6 +304,7 @@ class IndexPCPage extends React.Component {
           renderRight={this.renderRight}
           renderLeft={this.renderLeft}
           enabledVList={this.enabledVList}
+          canPublish={canPublish}
         />
         {
           hasRedPacket > 0 && <PacketOpen onClose={() => thread.setRedPacket(0)} money={hasRedPacket} />

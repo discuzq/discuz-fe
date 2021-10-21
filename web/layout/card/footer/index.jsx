@@ -4,18 +4,35 @@ import { getMiniCode } from '@server';
 import styles from './index.module.scss';
 import QRCode from 'qrcode.react';
 
-const Index = ({ site, setReady, threadId = '' }) => {
+const Index = ({ site, setReady, threadId = '', commentId = '' }) => {
   const [miniCode, setMiniCode] = useState('');
   const [miniConfig, setMiniConfig] = useState(true);
   const defaultLogo = '/dzq-img/default-logo.png';
   const { siteName } = site.webConfig?.setSite || '';
   const href = window.location.href.split('/');
-  href[href.length - 1] = threadId ? `thread/${threadId}` : '';
+  // href[href.length - 1] = threadId ? `thread/${threadId}` : '';
+  if (commentId) {
+    href[href.length - 1] =  `thread/comment/${commentId}?threadId=${threadId}`;
+  } else if (threadId) {
+    href[href.length - 1] =  `thread/${threadId}`;
+  } else {
+    href[href.length - 1] =  '';
+  }
+
+  console.log(href.join('/'))
   useEffect(async () => {
     try {
-      const threadPath = `/indexPages/thread/index?id=${threadId}`;
-      const sitePath = '/indexPages/index/index';
-      const path = threadId ? threadPath : sitePath;
+      // const threadPath = `/indexPages/thread/index?id=${threadId}`;
+      // const commentPath = '';
+      // const sitePath = '/indexPages/index/index';
+      let path = '';
+      if (commentId) {
+        path = `/indexPages/thread/comment/index?id=${commentId}&threadId=${threadId}&fromMessage=true`;
+      } else if (threadId) {
+        path = `/indexPages/thread/index?id=${threadId}`;
+      } else {
+        path = '/indexPages/index/index';
+      }
       const paramPath = `/pages/index/index?path=${encodeURIComponent(path)}`;
       const res = await getMiniCode({ params: { path: paramPath } });
       if (res?.code === 0) {

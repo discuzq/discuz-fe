@@ -15,6 +15,9 @@ import { getMessageTimestamp } from '@common/utils/get-message-timestamp';
 import calcCosImageQuality from '@common/utils/calc-cos-image-quality';
 import styles from './index.module.scss';
 
+// 用户已被屏蔽
+const USER_SHIELDING = -4001;
+
 const Index = (props) => {
   const { site: { isPC, webConfig }, dialogId, username, nickname, message, threadPost, user } = props;
   const { supportImgExt, supportMaxSize } = webConfig?.setAttach;
@@ -183,6 +186,11 @@ const Index = (props) => {
     )));
 
     Promise.all(fileList.map(() => submitEmptyImage(dialogId || localDialogId))).then((results) => {
+      if (results[0]?.code === USER_SHIELDING) {
+        clearToast();
+        Toast.error({ content: results[0].msg });
+        return;
+      }
       // 把消息id从小到大排序
       results.sort((a, b) => a.data.dialogMessageId - b.data.dialogMessageId);
 

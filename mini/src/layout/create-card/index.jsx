@@ -46,8 +46,8 @@ class Index extends React.Component {
         const thread = this.data.threadId ? this.data : ''
         return (
             <Card thread={thread} miniCode={this.state.miniCode} comment={this.commentData} data={this.data}>
-
             </Card>
+            
         )
     }
 }

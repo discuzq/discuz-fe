@@ -176,10 +176,10 @@ const Index = (props) => {
       </>
     );
   };
-
+ 
   return (
     <>
-      <SiteMapLink href={`/thread/${threadId}`}/>
+      <SiteMapLink href={`/thread/${threadId}`} text={newTitle && newTitle !== '' ? newTitle : props.data?.content?.text}/>
       <div className={`${platform === 'h5' ? styles.wrapper : styles.wrapperPC}`}>
         {title && <h1 className={styles.title} onClick={onClick}>{newTitle}</h1>}
           {renderThreadContent(props.data)}

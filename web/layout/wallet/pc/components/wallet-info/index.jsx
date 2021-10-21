@@ -20,7 +20,13 @@ class WalletInfo extends React.Component {
     return (parseFloat(freezeAmount) + parseFloat(availableAmount)).toFixed(2);
   }
 
+  operateWallet = (type) => {
+    this.props.operateWallet(type);
+  }
+
   render() {
+    const isShowRecharge = this.props.isShowRecharge;
+
     return (
         <div className={`${this.props.webPageType === 'h5' ? styles.containerH5 : styles.containerPC}`}>
             {
@@ -66,7 +72,10 @@ class WalletInfo extends React.Component {
             {
                 this.props.webPageType === 'PC'
                   ? <div className={styles.footer}>
-                        <Button type={'text'} className={styles.button} onClick={this.props.showWithrawal}>提现</Button>
+                      <div className={styles.buttonBox}>
+                          <Button type={'text'} className={styles.button} onClick={() => this.operateWallet('withdrawal')}>提现</Button>
+                          {isShowRecharge && <Button type={'text'} className={styles.button} onClick={() => this.operateWallet('recharge')}>充值</Button>}
+                      </div>
                     </div> : ''
             }
         </div>

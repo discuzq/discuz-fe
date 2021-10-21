@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { View } from '@tarojs/components';
 import { inject, observer } from 'mobx-react';
 import Taro from '@tarojs/taro';
+import Toast from '@discuzq/design/dist/components/toast/index';
 import DialogBox from './dialog-box';
 import InteractionBox from './interaction-box';
 import styles from './index.module.scss';
@@ -10,6 +11,9 @@ import locals from '@common/utils/local-bridge';
 import { getMessageImageSize } from '@common/utils/get-message-image-size';
 import { getMessageTimestamp } from '@common/utils/get-message-timestamp';
 import calcCosImageQuality from '@common/utils/calc-cos-image-quality';
+
+// 用户已被屏蔽
+const USER_SHIELDING = -4001;
 
 const Index = ({ message, user, site: { webConfig, envConfig }, dialogId: _dialogId, username, nickname, threadPost }) => {
 
@@ -187,6 +191,10 @@ const Index = ({ message, user, site: { webConfig, envConfig }, dialogId: _dialo
     }));
 
     Promise.all(files.map(() => submitEmptyImage(dialogId || localDialogId))).then((results) => {
+      if (results[0]?.code === USER_SHIELDING) {
+        Toast.error({ content: results[0].msg });
+        return;
+      }
       // 把消息id从小到大排序
       results.sort((a, b) => a.data.dialogMessageId - b.data.dialogMessageId);
 
@@ -218,7 +226,6 @@ const Index = ({ message, user, site: { webConfig, envConfig }, dialogId: _dialo
 
   const messagesHistory = useMemo(() => {
     setTimeout(() => {
-      scrollEnd();
       // 把消息状态更新为已读
       updateDialog(dialogId);
     }, 100);

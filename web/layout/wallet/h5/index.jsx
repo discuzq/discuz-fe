@@ -32,6 +32,7 @@ const DATE_PICKER_CONFIG = {
 };
 
 @inject('wallet')
+@inject('site')
 @observer
 class WalletH5Page extends React.Component {
   constructor(props) {
@@ -101,6 +102,11 @@ class WalletH5Page extends React.Component {
   // 点击提现
   toWithrawal = () => {
     this.props.router.push('/wallet/withdrawal');
+  };
+
+  // 点击提现
+  toRecharge = () => {
+    this.props.router.push('/wallet/recharge');
   };
 
   handleTimeSelectorClick = () => {
@@ -286,12 +292,25 @@ class WalletH5Page extends React.Component {
   }
 
   renderFooter = () => {
+    // 判断是否显示充值按钮，微信支付打开 && 充值权限打开
+    const { isWechatPayOpen, webConfig } = this.props.site || {};
+    const { siteCharge } = webConfig.setSite || {};
+    const isShowRecharge = isWechatPayOpen && siteCharge === 1;
+
     return (
-      <div className={layout.footer}>
+      <div className={classNames(layout.footer, {
+        [layout['footer-recharge']]: isShowRecharge
+      })}>
         <div className={layout.footerInner}>
           <Button className={layout.button} onClick={this.toWithrawal} >
             提现
           </Button>
+          {
+            isShowRecharge && (
+              <Button className={layout.button} onClick={this.toRecharge} >
+              充值
+            </Button>)
+          }
         </div>
       </div>
     )

@@ -30,6 +30,7 @@ class ThreadPCPage extends React.Component {
     this.state = {
       activeType: 'income', // 当前激活的状态类型
       showWithdrawalPopup: false, // 提现弹框是否显示
+      operateWalletType: '', // 提现or充值
       page: 1,
       totalPage: 1,
       totalCount: null,
@@ -173,9 +174,12 @@ class ThreadPCPage extends React.Component {
     );
   };
 
-  // 点击提现
-  showWithrawal = () => {
-    this.setState({ showWithdrawalPopup: true });
+  // 点击提现or充值
+  operateWallet = (operateType) => {
+    this.setState({
+      operateWalletType: operateType,
+      showWithdrawalPopup: true
+    });
   };
 
   // 提现到微信钱包
@@ -325,14 +329,21 @@ class ThreadPCPage extends React.Component {
 
   renderRight = () => {
     const { walletInfo } = this.props.wallet;
+    // 判断是否显示充值按钮，微信支付打开 && 充值权限打开
+    const { isWechatPayOpen, webConfig } = this.props.site || {};
+    const { siteCharge } = webConfig.setSite || {};
+    const isShowRecharge = isWechatPayOpen && siteCharge === 1;
     return (
       <div className={layout.bodyRigth}>
-        <div className={layout.walletInfo}>
+        <div className={classnames(layout.walletInfo, {
+          [layout['walletInfo-recharge']]: isShowRecharge
+        })}>
           <WalletInfo
             walletData={walletInfo}
             webPageType="PC"
-            showWithrawal={this.showWithrawal}
+            operateWallet={this.operateWallet}
             onFrozenAmountClick={this.onFrozenAmountClick}
+            isShowRecharge={isShowRecharge}
           ></WalletInfo>
         </div>
         <div className={layout.tabs}>
@@ -453,6 +464,7 @@ class ThreadPCPage extends React.Component {
           }}
           visible={this.state.showWithdrawalPopup}
           onClose={this.onClose}
+          operateWalletType={this.state.operateWalletType}
         />
       </BaseLayout>
     );

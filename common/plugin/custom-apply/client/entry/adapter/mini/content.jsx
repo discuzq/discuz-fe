@@ -44,7 +44,7 @@ export default class CustomApplyEntryContent extends React.Component {
       const body = formatPostData(this.props?.renderData?.body);
       this.setState({ body });
       this.props.onChange(body);
-    }
+    } else  this.props.onChange(this.state.body);
   }
 
   componentDidUpdate(prevProps) {

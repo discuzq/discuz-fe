@@ -18,6 +18,8 @@ import { debounce, throttle } from '@common/utils/throttle-debounce.js';
 import Autoplay from '@common/utils/autoplay';
 import PacketOpen from '@components/red-packet-animation/web';
 import ThreadContent from '@components/thread/SSRAdapter';
+import SiteMapLink from '@components/site-map-link';
+
 
 @inject('site')
 @inject('user')
@@ -182,6 +184,9 @@ class IndexH5Page extends React.Component {
               ref={this.listRef}
               className={`${styles.homeContent} ${!this.enableVlist && fixedTab && styles.fixed}`}
             >
+              {currentCategories?.map((item, index) => (
+                <SiteMapLink href={`/?categoryId=${item.pid === 'all' ? '' : item.pid}&sequence=0`} text={`分类_${item.name}`}/>
+              ))}
               <Tabs
                 className={styles.tabsBox}
                 scrollable

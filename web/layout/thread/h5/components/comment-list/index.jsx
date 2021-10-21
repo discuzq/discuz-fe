@@ -112,7 +112,7 @@ class CommentList extends React.Component {
             <div></div>
             <div className={styles.headerRigth}>
               {
-                isCommenter && remainHongbaoLike && curLikeNum < needLikeNum && !this.props.data?.redPacketAmount && (
+                isCommenter && remainHongbaoLike*1>0 && curLikeNum < needLikeNum && !this.props.data?.redPacketAmount && (
                   <div className={styles.hongbaoLikeNum}>
                     <Icon className={styles.iconzan} size={12} name="PraiseOutlined"></Icon>
                     再集 <span> &nbsp;{needLikeNum - curLikeNum} &nbsp;</span> 赞可领红包

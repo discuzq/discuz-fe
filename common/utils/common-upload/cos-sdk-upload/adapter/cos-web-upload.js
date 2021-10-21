@@ -1,3 +1,4 @@
+// cos 上传wiki：https://cloud.tencent.com/document/product/436/11459
 import { getCosTmpKey, updateAttachment } from '@common/server';
 import time from '@discuzq/sdk/dist/time';
 import sha1 from 'js-sha1';
@@ -19,19 +20,21 @@ export default (options) => {
     }
 
     const COS = (await import('cos-js-sdk-v5')).default;
-    const fileName = file.name || 'dzq-cos图片上传.jpg';
-    const fileSize = file.size;
+    const fileName = file.name || 'dzq-cos.jpg'; // 图片上传
+    // const fileSize = file.size;
     const path = `public/attachments/${time.formatDate(new Date(), 'YYYY/MM/DD')}/`;
-    const attachmentId = sha1(new Date().getTime() + fileName) + fileName;
-    const key = path + attachmentId;
+    const extArr = fileName?.split('.');
+    const extName = extArr[extArr?.length - 1];
+    const attachmentId = `${sha1(new Date().getTime() + fileName)}.${extName}`; //  + fileName
+    const key = `${path}${attachmentId}`;
 
     // 初始化cos实例
     const cos = new COS({
       getAuthorization: async (_options, callback) => {
         const res = await getCosTmpKey({
           type,
-          fileSize,
-          fileName: attachmentId,
+          attachment: attachmentId,
+          fileName,
         });
         const { code, data } = res;
         if (code === 0) {

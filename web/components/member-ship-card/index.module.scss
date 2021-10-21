@@ -226,6 +226,12 @@
       line-height: rem(20);
       width: 100%;
       text-align: right;
+      position: relative;
+      .feeDayContainer {
+        position: absolute;
+        top: rem(-30);
+        right: 0;
+      }
       .feeDay {
         font-size: rem($font-size-h1);
         color: $primary-color;

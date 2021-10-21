@@ -40,7 +40,7 @@ export default class VerificationCode extends React.Component {
       const { initTime } = this.state;
       this.setState({
         initTime: initTime - 1,
-        initTimeText: initTime - 1,
+        initTimeText: `${initTime - 1}秒后再发送`,
         buttonDisabled: true,
       });
       if (initTime <= 0) {

@@ -3,7 +3,7 @@ import ThreadContent from '@components/thread';
 import { observer } from 'mobx-react';
 
 export default observer((props) => {
-  const { data, isLast } = props;
+  const { data, isLast, canPublish = () => { } } = props;
 
   const ref = useRef(null);
 
@@ -56,6 +56,7 @@ export default observer((props) => {
         // className={styles.listItem}
         recomputeRowHeights={(data) => recomputeRowHeights(data)}
         enableCommentList={props.enableCommentList}
+        canPublish={canPublish}
       />
     </div>
   );

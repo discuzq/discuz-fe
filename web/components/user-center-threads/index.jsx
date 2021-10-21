@@ -133,6 +133,11 @@ class UserCenterThreads extends React.Component {
 
   // 编辑帖子处理函数
   editThreadHandler = () => {
+    const isApproved = this.activeThread.isApproved === 1; // 审核中
+    if (!isApproved) {
+      Toast.info({content: '内容正在审核中'});
+      return;
+    }
     this.props.router.push(`/thread/post?id=${this.activeThread.threadId}`);
   };
 

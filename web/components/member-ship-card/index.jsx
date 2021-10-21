@@ -47,8 +47,7 @@ const MemberShipCard = ({ site, user, onRenewalFeeClick, shipCardClassName }) =>
     if (time.isCurrentYear(expiredAt)) {
       return 'MM月DD日';
     } else {
-      // return 'YYYY年MM月DD日';
-      return 'MM月DD日';
+      return 'YYYY年MM月DD日';
     }
   };
 
@@ -62,8 +61,11 @@ const MemberShipCard = ({ site, user, onRenewalFeeClick, shipCardClassName }) =>
     if (level > 0) {
       return (
         <>
-          <span className={styles.feeDay} style={{color: theme.otherColor}}>{remainTime}</span>
-          <span style={{color: theme.desAndDateColor}}>{typeMap[typeTime]}&nbsp;•&nbsp;{time.formatDate(expirationTime, getDateFormat())}到期</span>
+          <div className={styles.feeDayContainer}>
+            <span className={styles.feeDay} style={{color: theme.otherColor}}>{remainTime}</span>
+            <span style={{color: theme.desAndDateColor}}>{typeMap[typeTime]}</span>
+          </div>
+          <span>{time.formatDate(expirationTime, getDateFormat())}到期</span>
         </>
       );
     }
@@ -140,7 +142,7 @@ const MemberShipCard = ({ site, user, onRenewalFeeClick, shipCardClassName }) =>
           <div className={styles.tagline} style={{color: theme.desAndDateColor}}>{level > 0 ? description : '访问海量站点内容'}</div>
           <div className={styles.RenewalFee} style={{visibility: noBtn ? 'hidden' : 'visible'}}>
             {renderButton()}
-            <span className={styles.feeTimer}>{renderFeeDateContent()}</span>
+            <div className={styles.feeTimer}>{renderFeeDateContent()}</div>
           </div>
         </div>
       </div>

@@ -277,7 +277,7 @@ class IndexAction extends IndexStore {
    */
   @action.bound
   async getReadCategories(opt = {}, ctx = null) {
-    console.log(opt);
+
     const result = await readCategories(opt, ctx);
     if (result.code === 0) {
       if (result.data) {
@@ -497,7 +497,7 @@ class IndexAction extends IndexStore {
     if (!targetThread || targetThread.length === 0) {
       const { pageData } = this.threads || {};
 
-      if (pageData) {
+      if (threadInfo.isApproved && pageData) {
         // TODO: 由于porxy不能正常监听unshift，先这样处理，目前只存在首页列表新增帖子
         this.threadList.addThreadInTargetList({ namespace: 'home', threadInfo });
         // pageData.unshift(threadInfo);

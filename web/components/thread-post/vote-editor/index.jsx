@@ -3,10 +3,12 @@ import { Radio, Button, Input, Toast, Icon } from '@discuzq/design';
 import { inject, observer } from 'mobx-react';
 import styles from './index.module.scss';
 import DDialog from '@components/dialog';
-import DatePicker from 'react-datepicker';
+import DatePicker, { registerLocale } from 'react-datepicker';
+import { zhCN } from 'date-fns/locale';
 import DatePickers from '@components/thread/date-picker';
 import { formatDate } from '@common/utils/format-date';
 
+registerLocale('zh-CN', zhCN);
 const Index = ({ cancel, pc, visible, threadPost }) => {
   const data = JSON.parse(JSON.stringify(threadPost.postData));
   const initSubitems = [{
@@ -143,7 +145,7 @@ const Index = ({ cancel, pc, visible, threadPost }) => {
                 onChange={date => setTime(formatDate(date, 'yyyy/MM/dd hh:mm'))}
                 showTimeSelect
                 dateFormat="yyyy/MM/dd HH:mm:ss"
-                locale="zh"
+                locale="zh-CN"
               />
               <Icon name="RightOutlined" />
             </>

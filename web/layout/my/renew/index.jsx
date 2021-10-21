@@ -24,12 +24,18 @@ class RenewalFee extends Component {
   };
 
   render() {
+    const { siteBackgroundImage: bgImage } = this.props.site;
+
     return (
       <div className={styles.renewalFeeWrapper}>
         <Header />
         <div className={styles.renewalFeeContent}>
-          <div className={styles.siteBg}>
-            <img alt="图片" className={styles.siteBgImage} src={this.props.site?.siteBackgroundImage} />
+          <div className={`${styles.siteBg} ${!bgImage && styles.defaultSiteBg}`} >
+            <img
+              src={bgImage || '/dzq-img/admin-logo-x2.png'}
+              className={styles.siteBgImage}
+              alt="图片"
+            />
           </div>
           <div className={styles.menuInfo}>
             <div className={styles.menuItem}>

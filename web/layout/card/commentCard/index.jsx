@@ -1,84 +1,80 @@
-import React from 'react';
-import Avatar from '@components/avatar';
-import { diffDate } from '@common/utils/diff-date';
-import { observer, inject } from 'mobx-react';
+import React, { useRef, useEffect, useState } from 'react';
+import { inject, observer } from 'mobx-react';
 import ImageDisplay from '@components/thread/image-display';
-import classNames from 'classnames';
-import PostContent from '@components/thread/post-content';
+import UserInfo from '@components/thread/user-info';
 import styles from './index.module.scss';
+import PostContent from '@components/thread/post-content';
 
-@inject('comment')
-@inject('card')
+const ThreadCard = inject('user', 'card', 'comment')(observer((props) => {
+  const { commentDetail: data } = props.comment;
+  const { isReady, imgReadyLength, imgReady } = props.card;
+  const nickname = data?.user?.nickname;
+  const avatar = data.user?.avatar;
+  const content = useRef(null);
+  const [overMaxHeight, setOverMaxHeight] = useState(false);
 
-@observer
-class CommentCard extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+  useEffect(() => {
+    if (!data?.images || data.images.length === 0) {
+        props.card.setImgReady();
+    } else if (imgReadyLength === data?.images?.length) {
+      props.card.setImgReady();
+      props.card.clearImgReadyLength();
+    }
+    if (imgReady && content?.current?.scrollHeight >= 1900) {
+      setOverMaxHeight(true);
+    }
+  }, []);
+  const postLoad = () => {
+    props.card.setImgReadyLength();
+  };
+  const posthandle = str => (str.length > 6 ? `${str.slice(0, 6)}...` : str);
 
-  componentDidMount() {
-    this.props.card.setImgReady();
-  }
 
-  render() {
-    const { commentDetail: data } = this.props.comment;
-
-    console.log(data);
-
-    const { groups } = data?.user || {};
-    return (
-        <div className = {styles.commentList}>
-          <div className={styles.content}>
-            <div className={styles.commentListAvatar} onClick={() => this.avatarClick()}>
-              {/* 头像和昵称*/}
-              <Avatar
-                image={
-                  (data?.user?.nickname || data?.user?.userName) && data?.user?.avatar
-                }
-                name={data?.user?.nickname || '异'}
-                circle={true}
-              ></Avatar>
-            </div>
-            {/* 评论内容*/}
-            <div className={styles.commentListContent}>
-              <div className={`${styles.commentListContentText}`}>
-                <div className={styles.commentHeader}>
-                  <div className={styles.userInfo}>
-                    <div className={styles.commentListName}>
-                      {data?.user?.nickname  || '用户异常'}
-                    </div>
-                    {!!groups?.isDisplay && (
-                      <div className={styles.groups}>{groups?.name || groups?.groupName}</div>
-                    )}
-                  </div>
-                </div>
-                <div className={classNames(styles.commentListText)}>
-                  <PostContent
-                    onRedirectToDetail={() => this.toCommentDetail()}
-                    content={data?.content}
-                    customHoverBg={true}
-                  ></PostContent>
-                </div>
-
-                {/* 图片展示 */}
-                {data?.images.length > 0 && (
-                  <div className={styles.imageDisplay}>
-                    <ImageDisplay platform="h5" imgData={data?.images} />
-                  </div>
-                )}
-              </div>
-              {data?.user && (
-                <div className={styles.commentListFooter}>
-                  <div className={styles.commentBtn}>
-                    <div className={styles.commentTime}>{diffDate(data.createdAt)}</div>
-                  </div>
-                </div>
-              )}
-            </div>
+  const filterIframe = /<iframe(([\s\S])*?)<\/iframe>/g; // iframe标签不支持生成h5海报
+  return (
+    <div>
+      {isReady && (
+      <div className={`${styles.container}`}>
+        <div className={styles.header}>
+          <div className={styles.userInfo}>
+            <UserInfo
+              name={ posthandle(nickname || '')}
+              avatar={avatar || ''}
+              groupName={data?.user?.groups?.name || ''}
+              time={`${data?.createdAt}` || ''}
+              userId={data?.user?.id}
+            ></UserInfo>
           </div>
         </div>
-    );
-  }
-}
 
-export default CommentCard;
+        <div className={styles.body} ref={content}>
+
+          {/* 文字 */}
+          {data.content && <PostContent needShowMore={false} content={data.content.replace(filterIframe, '') || ''} className={styles.content}/>}
+
+          {/* 图片 */}
+          {data.images && (
+            <ImageDisplay
+              flat
+              platform="h5"
+              imgData={data.images}
+              showLongPicture={false}
+              postLoad={postLoad}
+            />
+          )}
+
+        </div>
+        {overMaxHeight && (
+            <div className={styles.lookmoreBox}>
+              <img src="/dzq-img/look-more.jpg" alt="扫码查看更多" className={styles.lookmoreImg}/>
+            </div>
+        )}
+      </div>
+      )}
+
+    </div>
+  );
+}));
+
+export default ThreadCard;
+

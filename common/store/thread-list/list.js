@@ -375,6 +375,7 @@ export default class ListStore {
 
     targetThreads.forEach(({ listName, page, index }) => {
       this.lists[listName].data[page].splice(index, 1);
+      this.lists[listName].attribs.totalCount -= 1;
     });
 
     this.lists = { ...this.lists };

@@ -29,6 +29,7 @@ import typeofFn from '@common/utils/typeof';
 @inject('payBox')
 @inject('vlist')
 @inject('baselayout')
+@inject('threadList')
 @observer
 class PostPage extends React.Component {
   toastInstance = null;
@@ -719,7 +720,7 @@ class PostPage extends React.Component {
   }
 
   async createThread(isDraft, isAutoSave = false, isPay = false) {
-    const { threadPost, thread, site } = this.props;
+    const { threadPost, thread, site, threadList } = this.props;
 
     // 图文混排：第三方图片转存
     const { webConfig: { setAttach, qcloud } } = site;
@@ -826,6 +827,11 @@ class PostPage extends React.Component {
       thread.reset({});
       this.toastInstance && this.toastInstance?.destroy();
       this.setPostData({ threadId: data.threadId });
+
+      // 编辑帖子，帖子含敏感字段就操作删除
+      if (threadPost.postData.threadId && !data.isApproved) {
+        threadList.deleteListItem({ item: data });
+      }
       // 防止被清除
 
       // 未支付的订单

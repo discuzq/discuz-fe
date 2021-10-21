@@ -10,7 +10,7 @@ export default class CustomApplyPost extends React.Component {
   }
 
   render() {
-    const { renderData, deletePlugin, _pluginInfo } = this.props;
+    const { renderData, deletePlugin, _pluginInfo, updatePlugin } = this.props;
     if (!renderData) return null;
     if (renderData && renderData?.tomId === _pluginInfo.options.tomId) {
       const { body } = renderData || {};
@@ -19,7 +19,11 @@ export default class CustomApplyPost extends React.Component {
     }
 
     return (
-      <View className={classNames(styles['dzqp-post-widget'], styles['dzqp-mini'])}>
+      <View className={classNames(styles['dzqp-post-widget'], styles['dzqp-mini'])}
+        onClick={() => {
+          updatePlugin({ postData: renderData, _pluginInfo, isShow: true });
+        }}
+      >
         <View className={styles['dzqp-post-widget__right']}>
           <Icon className={styles['dzqp-post-widget__icon']} name='ApplyOutlined' />
           <Text className={styles['dzqp-post-widget__text']}>活动报名</Text>
@@ -27,7 +31,10 @@ export default class CustomApplyPost extends React.Component {
         <Icon
           className={styles['dzqp-post-widget__left']}
           name='DeleteOutlined'
-          onClick={() => deletePlugin()}
+          onClick={(e) => {
+            e.stopPropagation();
+            deletePlugin();
+          }}
         />
       </View>
     );

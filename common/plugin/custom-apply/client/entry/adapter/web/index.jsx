@@ -3,11 +3,14 @@ import { Icon, Dialog, Button, Input, Textarea, Radio, Toast } from '@discuzq/de
 // 移动端时间选择
 import DatePickers from '@components/thread/date-picker';
 // pc 端时间选择
-import DatePicker from 'react-datepicker';
+import DatePicker, { registerLocale } from 'react-datepicker';
+import { zhCN } from 'date-fns/locale';
+import { getHours, setHours, getMinutes, setMinutes, format } from 'date-fns';
 import classNames from 'classnames';
 import { formatDate } from '@common/utils/format-date';
 import { getPostData, formatPostData } from '@common/plugin/custom-apply/client/common';
 import styles from '../index.module.scss';
+registerLocale('zh-CN', zhCN);
 
 const TimeType = {
   actStart: 'activityStartTime',
@@ -18,16 +21,17 @@ const TimeType = {
 export default class CustomApplyEntry extends React.Component {
   constructor(props) {
     super(props);
-    console.log(props);
-    const oneHour = 3600 * 1000 * 24;
 
+    const oneDay = 3600 * 1000 * 24;
+    const nowTime = new Date();
+    const time = new Date().getTime() + oneDay;
     this.state = {
       visible: false,
       showMore: false,
       showMobileDatePicker: false,
       body: {
-        activityStartTime: new Date(), // 活动开始时间
-        activityEndTime: new Date().getTime() + oneHour, // 活动结束时间
+        activityStartTime: nowTime, // 活动开始时间
+        activityEndTime: time, // 活动结束时间
         title: '', // 活动名称
         content: '', // 活动详情
         registerStartTime: '', // 报名开始时间
@@ -37,13 +41,19 @@ export default class CustomApplyEntry extends React.Component {
         totalNumber: '',
       },
       curClickTime: TimeType.actStart,
+      minTime: setHours(setMinutes(new Date(), getMinutes(nowTime)), getHours(nowTime)),
+      maxTime: setHours(setMinutes(new Date(), 30), 23),
     };
   }
 
   componentDidUpdate(prevProps) {
     if ((this.props?.renderData?.body?.activityStartTime !== prevProps?.renderData?.body?.activityStartTime)
       && this.props?.renderData?.body.activityStartTime) {
-      this.setState({ body: formatPostData(this.props?.renderData?.body) });
+      this.setState({ body: formatPostData(this.props?.renderData?.body) }, () => {
+        const { activityStartTime, activityEndTime } = this.props?.renderData?.body;
+        this.getMinTime(activityStartTime);
+        this.getMaxTime(activityEndTime);
+      });
     }
   }
 
@@ -52,13 +62,17 @@ export default class CustomApplyEntry extends React.Component {
     const time = date;
     switch (type) {
       case TimeType.actStart:
-        this.setState({ body: { ...body, activityStartTime: time } });
+        this.setState({ body: { ...body, activityStartTime: time } }, () => {
+          this.getMinTime(date);
+        });
         break;
       case TimeType.actEnd:
         if (!this.checkActEndTime(time)) {
           Toast.info({ content: '请选择正确的活动结束时间' });
         } else {
-          this.setState({ body: { ...body, activityEndTime: time } });
+          this.setState({ body: { ...body, activityEndTime: time } }, () => {
+            this.getMaxTime(date);
+          });
         }
         break;
       case TimeType.applyStart:
@@ -69,6 +83,10 @@ export default class CustomApplyEntry extends React.Component {
         }
         break;
       case TimeType.applyEnd:
+        if (new Date(date) % 3600 === 0) {
+          this.getMinTime(date);
+          this.getMaxTime(date);
+        }
         if (!this.checkApplyEndTime(time)) {
           Toast.info({ content: '请选择正确的活动报名结束时间' });
         } else {
@@ -77,6 +95,58 @@ export default class CustomApplyEntry extends React.Component {
         break;
       default:
         break;
+    }
+  };
+
+  /**
+   * 报名结束时间早于活动结束时间置灰
+   */
+  getMinTime = (date) => {
+    const { body } = this.state;
+    const { activityStartTime, activityEndTime } = body;
+    const start = format(activityStartTime, 'yyyy/MM/dd');
+    const end = format(new Date(activityEndTime), 'yyyy/MM/dd');
+    const applyEnd = format(new Date(date), 'yyyy/MM/dd');
+
+    if (new Date(start).getTime() === new Date(applyEnd).getTime()
+      && new Date(end).getTime() - new Date(start).getTime() >= 24 * 3600) {
+      this.setState({
+        minTime: setHours(setMinutes(activityStartTime, getMinutes(activityStartTime)), getHours(activityStartTime)),
+        maxTime: setHours(setMinutes(activityStartTime, 30), 23),
+      });
+    }
+
+    if (new Date(end).getTime() === new Date(start).getTime()) {
+      this.setState({
+        minTime: setHours(setMinutes(activityStartTime, getMinutes(activityStartTime)), getHours(activityStartTime)),
+        maxTime: setHours(setMinutes(activityEndTime, getMinutes(activityEndTime)), getHours(activityEndTime)),
+      });
+    }
+  };
+
+  /**
+   * 报名结束时间晚于活动结束时间置灰
+   */
+  getMaxTime = (date) => {
+    const { body } = this.state;
+    const { activityEndTime, activityStartTime } = body;
+    const start = format(activityStartTime, 'yyyy/MM/dd');
+    const end = format(activityEndTime, 'yyyy/MM/dd');
+    const applyEnd = format(new Date(date), 'yyyy/MM/dd');
+
+    if (new Date(end).getTime() === new Date(applyEnd).getTime()
+      && new Date(end).getTime() - new Date(start).getTime() >= 24 * 3600) {
+      this.setState({
+        minTime: setHours(setMinutes(activityEndTime, 0), 0),
+        maxTime: setHours(setMinutes(activityEndTime, getMinutes(activityEndTime)), getHours(activityEndTime)),
+      });
+    }
+
+    if (new Date(end).getTime() === new Date(start).getTime()) {
+      this.setState({
+        minTime: setHours(setMinutes(activityStartTime, getMinutes(activityStartTime)), getHours(activityStartTime)),
+        maxTime: setHours(setMinutes(activityEndTime, getMinutes(activityEndTime)), getHours(activityEndTime)),
+      });
     }
   };
 
@@ -133,6 +203,9 @@ export default class CustomApplyEntry extends React.Component {
 
   handleDialogClose = () => {
     this.setState({ visible: false });
+    const { renderData, _pluginInfo } = this.props;
+    if (!renderData) return;
+    this.props.onConfirm({ postData: renderData, _pluginInfo });
   };
 
   handleMoreClick = () => {
@@ -152,7 +225,7 @@ export default class CustomApplyEntry extends React.Component {
     const { renderData, _pluginInfo } = this.props;
     const postData = getPostData(body, _pluginInfo.options.tomId) || {};
     if (renderData?.body?.activityId) postData.body.activityId = renderData?.body?.activityId;
-    this.props.onConfirm({ postData });
+    this.props.onConfirm({ postData, _pluginInfo });
     this.handleDialogClose();
   };
 
@@ -202,11 +275,12 @@ export default class CustomApplyEntry extends React.Component {
     const { siteData } = this.props;
     const platform = siteData.platform === 'h5' ? styles.h5 : styles.pc;
     const isPc = siteData.platform !== 'h5';
-    const { visible, showMore, body, showMobileDatePicker } = this.state;
+    const { visible, showMore, body, showMobileDatePicker, minTime, maxTime } = this.state;
     const moreClass = !showMore
       ? classNames(styles['dzqp-act--more'], styles.fold) : classNames(styles['dzqp-act--more'], styles.expand);
 
     if (!this.isShowApplyIcon()) return null;
+    const { renderData } = this.props;
 
     return (
       <>
@@ -216,7 +290,7 @@ export default class CustomApplyEntry extends React.Component {
           size="20"
         />
         <Dialog
-          visible={visible}
+          visible={visible || renderData?.isShow}
           onCancel={this.handleDialogClose}
           onClose={this.handleDialogClose}
           onConfirm={this.handleDialogConfirm}
@@ -230,6 +304,7 @@ export default class CustomApplyEntry extends React.Component {
             <div className={styles['dzqp-act--item_right']} onClick={() => this.handleTimeClick(TimeType.actStart)}>
               {isPc
                 ? <DatePicker
+                    locale="zh-CN"
                     selected={body.activityStartTime}
                     minDate={new Date()}
                     onChange={date => this.handleTimeChange(date, TimeType.actStart)}
@@ -246,6 +321,7 @@ export default class CustomApplyEntry extends React.Component {
             <div className={styles['dzqp-act--item_right']} onClick={() => this.handleTimeClick(TimeType.actEnd)}>
               {isPc
                 ? <DatePicker
+                    locale="zh-CN"
                     selected={body.activityEndTime}
                     minDate={body.activityStartTime}
                     onChange={date => this.handleTimeChange(date, TimeType.actEnd)}
@@ -293,6 +369,7 @@ export default class CustomApplyEntry extends React.Component {
                 <div className={styles['dzqp-act--item_right']} onClick={() => this.handleTimeClick(TimeType.applyStart)}>
                   {isPc
                     ? <DatePicker
+                        locale="zh-CN"
                         selected={body.registerStartTime}
                         maxDate={body.activityEndTime}
                         onChange={date => this.handleTimeChange(date, TimeType.applyStart)}
@@ -309,9 +386,12 @@ export default class CustomApplyEntry extends React.Component {
                 <div className={styles['dzqp-act--item_right']} onClick={() => this.handleTimeClick(TimeType.applyEnd)}>
                   {isPc
                     ? <DatePicker
+                        locale="zh-CN"
                         selected={body.registerEndTime}
                         minDate={body.registerStartTime || body.activityStartTime}
                         maxDate={body.activityEndTime}
+                        minTime={minTime}
+                        maxTime={maxTime}
                         onChange={date => this.handleTimeChange(date, TimeType.applyEnd)}
                         showTimeSelect
                         dateFormat="yyyy/MM/dd HH:mm:ss"

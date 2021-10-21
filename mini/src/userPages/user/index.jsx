@@ -19,7 +19,7 @@ class Index extends React.Component {
   getShareData(data) {
     const { site } = this.props;
     const { id = '' } = getCurrentInstance().router.params;
-    const defalutTitle = `${this.props.user?.targetUser?.nickname || this.props.user?.targetUser?.username}的主页`;
+    const defalutTitle = `${this.props.user?.targetUsers?.[id]?.nickname || this.props.user?.targetUsers?.[id]?.username}的主页`;
     const defalutPath = `/userPages/user/index?id=${id}`;
     if (data.from === 'menu') {
       return {

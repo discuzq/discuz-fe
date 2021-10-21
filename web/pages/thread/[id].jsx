@@ -188,7 +188,7 @@ class Detail extends React.Component {
 
   async getPageDate(id, postId) {
     // 获取帖子数据
-    if (!this.props?.thread?.threadData || !this.hasMaybeCache()) {
+    if (!this.props?.thread?.threadData || this.props?.thread?.threadData.needupdate || !this.hasMaybeCache()) {
       // TODO:这里可以做精细化重置
       const isPositionToComment = this.props.thread?.isPositionToComment || false;
       this.props.thread.reset({ isPositionToComment });
@@ -219,6 +219,7 @@ class Detail extends React.Component {
         }
         return;
       }
+      this.props.thread.threadData.needupdate = false;
 
       // 判断是否审核通过
       const isApproved = (this.props.thread?.threadData?.isApproved || 0) === 1;

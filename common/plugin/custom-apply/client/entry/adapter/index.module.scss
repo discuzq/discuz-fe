@@ -212,8 +212,8 @@
       display: none;
     }
     .dzq-modal__body {
-      height: calc(100vh - 130px - constant(safe-area-inset-bottom));
-      height: calc(100vh - 130px - env(safe-area-inset-bottom));
+      height: calc(100vh - 150px - constant(safe-area-inset-bottom));
+      height: calc(100vh - 150px - env(safe-area-inset-bottom));
     }
   }
 }
