@@ -27,7 +27,6 @@ class Index extends React.Component {
   page = 1;
   prePage = 10;
   static async getInitialProps(ctx, { user, site }) {
-
     const { platform } = site;
     const result = getRouterCategory(ctx, site);
     const { essence = 0, sequence = 0, attention = 0, sort = 1 } = result;
@@ -46,7 +45,7 @@ class Index extends React.Component {
         filter: { categoryids: categoryIds, types: newTypes, essence, attention, sort },
       },
     }, ctx);
-    
+
 
     // 只有pc下才去加载推荐内容
     let recommend = null;
@@ -133,8 +132,10 @@ class Index extends React.Component {
 
   // 根据选中的筛选项，设置地址栏
   setUrl = (categoryIds = [], sequence = 0) => {
-    const url = (categoryIds?.length || sequence !== 0)  ? `/?categoryId=${categoryIds.join('_')}&sequence=${sequence}` : '/'
-    this.props.router.replace(url)
+    const url = ((categoryIds?.length && categoryIds.join('') !== 'all')
+      || sequence !== 0)
+      ? `/cate/${categoryIds.join('_')}/seq/${sequence}` : '/';
+    this.props.router.replace(url);
   }
 
   dispatch = async (type, data = {}) => {
@@ -155,7 +156,7 @@ class Index extends React.Component {
     }
 
     if (type === 'click-filter') { // 点击tab
-      this.setUrl(categoryIds, sequence)
+      this.setUrl(newData.categoryids, sequence)
 
       this.page = 1;
       this.props.baselayout.setJumpingToTop();
@@ -203,7 +204,7 @@ export default HOCFetchSiteData(Index, (pass) => {
   // 因部署方式的问题，所有路径第一次访问都会访问index.html，导致会出现首页渲染出来之后跳转到制定的url地址，为了防止这种情况，对首页的渲染做一次判断，如果url不是首页连接，将不渲染首页。
   if (!isServer() && !browser.env('uc')) { // uc浏览器存在异常，首页不做判断
     const pathname = window.location.pathname;
-    if (pathname === '/' || pathname === '/index') {
+    if (pathname === '/' || pathname === '/index' || pathname.indexOf('/cate/') > -1) {
       return true;
     } else {
       return false;
