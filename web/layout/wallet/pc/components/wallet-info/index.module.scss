@@ -150,16 +150,10 @@
   display: flex;
   justify-content: center;
   margin-top: rem($margin-6n);
-  .buttonBox {
-    .button {
-      width: rem(282);
-      height: rem(36);
-      border-radius: rem($border-radius-small);
-      background: $white;
-      margin-bottom: $margin-4n;
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
+  .button {
+    width: rem(282);
+    height: rem(36);
+    background: $white;
+    border-radius: rem($border-radius-small);
   }
 }

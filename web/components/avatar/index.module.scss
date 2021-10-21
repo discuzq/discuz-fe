@@ -49,8 +49,7 @@
         margin-left: rem(16);
         flex: 1;
         .name {
-          display: inline-block;
-          width: auto;
+          width: 100%;
           font-weight: 600;
           font-size: rem($font-size-middle);
           line-height: rem($font-line-height-primary);
@@ -59,7 +58,6 @@
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
-          cursor: pointer;
         }
         .text {
           width: 100%;

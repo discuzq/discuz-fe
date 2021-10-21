@@ -162,15 +162,13 @@ const Index = ({
           </div>
         ))}
       </div>
-      {show && (
-        <MorePopop
-          show={show}
-          fromThread
-          handleH5Share={handleH5Share}
-          onClose={onClose}
-          createCard={createCard}
-        ></MorePopop>
-      )}
+      <MorePopop
+        show={show}
+        fromThread
+        handleH5Share={handleH5Share}
+        onClose={onClose}
+        createCard={createCard}
+      ></MorePopop>
     </div>
   );
 };

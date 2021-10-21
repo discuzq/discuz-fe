@@ -29,7 +29,7 @@ export default class DynamicVList extends React.Component {
 
   // 中间 -- 筛选 置顶信息 是否新内容发布 主题内容
   renderContent = (data) => {
-    const { visible, conNum, isShowDefault, onFilterClick, onPostThread, goRefresh, canPublish = () => {} } = this.props;
+    const { visible, conNum, isShowDefault, onFilterClick, onPostThread, goRefresh } = this.props;
     const { sticks, threads } = data;
     const { pageData } = threads || {};
 
@@ -58,7 +58,6 @@ export default class DynamicVList extends React.Component {
                 className={styles.threadContent}
                 data={item}
                 enableCommentList={true}
-                canPublish={canPublish}
               />
             ))}
           </div>
@@ -94,14 +93,13 @@ export default class DynamicVList extends React.Component {
       requestError,
       noMore,
       errorText,
-      onScroll = () => { },
-      canPublish = () => { }
+      onScroll = () => {}
     } = this.props;
     const { sticks, threads } = data;
     const { pageData } = threads || {};
     const { siteStore } = this.props;
     const { countThreads = 0 } = siteStore?.webConfig?.other || {};
-
+    
     return (
       <WindowVList
         list={pageData}
@@ -117,7 +115,6 @@ export default class DynamicVList extends React.Component {
         right={renderRight()}
         top={this.renderTop()}
         visible={visible}
-        canPublish={canPublish}
         renderItem={(item, index, recomputeRowHeights, onContentHeightChange, measure) => {
           return (
             <ThreadContent

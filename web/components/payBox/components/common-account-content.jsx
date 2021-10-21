@@ -69,9 +69,6 @@ export default class CommonAccountContent extends Component {
       case ORDER_TRADE_TYPE.ORDER_TYPE_TEXT: // 文字帖红包 20
         value = '文字帖红包';
         break;
-      case ORDER_TRADE_TYPE.ORDER_TYPE_RECHARGE: // 充值 30
-        value = '充值';
-        break;
       default:
         break;
     }

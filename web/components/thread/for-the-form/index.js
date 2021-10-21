@@ -7,8 +7,7 @@ import React, { memo, useState, useEffect } from 'react'; // 性能优化的
 import { Button, Input, Toast, Icon } from '@discuzq/design'; // 原来就有的封装
 import DatePickers from '@components/thread/date-picker'; // 原来就有的封装
 import DDialog from '@components/dialog';
-import DatePicker, { registerLocale } from 'react-datepicker';
-import { zhCN } from 'date-fns/locale';
+import DatePicker from 'react-datepicker';
 import { formatDate } from '@common/utils/format-date';
 import { priceFormat } from '@common/utils/price-format';
 
@@ -16,7 +15,6 @@ import 'react-datepicker/dist/react-datepicker.css';
 import styles from './index.module.scss'; // 私有样式
 import PropTypes from 'prop-types'; // 类型拦截
 
-registerLocale('zh-CN', zhCN);
 const ForTheForm = ({ confirm, cancel, data, pc, visible }) => {
   const [value, setValue] = useState('');// 悬赏金额
   // const [times, setTimes] = useState(formatDate(new Date(), 'yyyy-MM-dd h:mm'));// 悬赏的到期时间
@@ -78,7 +76,7 @@ const ForTheForm = ({ confirm, cancel, data, pc, visible }) => {
                   onChange={date => setTimes(formatDate(date, 'yyyy/MM/dd hh:mm'))}
                   showTimeSelect
                   dateFormat="yyyy/MM/dd HH:mm:ss"
-                  locale="zh-CN"
+                  locale="zh"
                 />
                 <Icon name="RightOutlined" />
               </>

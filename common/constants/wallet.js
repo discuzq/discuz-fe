@@ -41,10 +41,6 @@ export const INCOME_DETAIL_CONSTANTS = {
     text: '提现失败',
     code: 12,
   },
-  WEIXIN_CHARGE: {
-    text: '自动充值',
-    code: 180,
-  },
 };
 
 // 支出明细筛选类型

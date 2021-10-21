@@ -1,4 +1,3 @@
-import { getHeaderConfig } from './header';
 import { getFooterConfig } from '../footer';
 import { getContentConfig } from './content';
 import { checkAndGetBase64Src } from '../../utils'
@@ -10,10 +9,8 @@ const getConfig = async ({ site, comment, miniCode, siteName }) => {
   if (!miniCode) {
     return;
   }
-  const codeUrl = await miniCode.base64Img ? checkAndGetBase64Src(miniCode.base64Img) : miniCode;
-  const { height: headerHeight, config: headerConfig } = getHeaderConfig({ comment });
-
-  const { height: contentHeight, config: contentConfig } = getContentConfig({ site, comment ,baseHeight: headerHeight, });
+  const codeUrl = await miniCode.base64Img ? checkAndGetBase64Src(miniCode.base64Img) : miniCode
+  const { height: contentHeight, config: contentConfig } = getContentConfig({ site, comment });
 
   const { height: footerHeight, config: footerConfig } = getFooterConfig({
     baseHeight:  contentHeight,
@@ -29,7 +26,7 @@ const getConfig = async ({ site, comment, miniCode, siteName }) => {
     images: [],
     texts: [],
   };
-  const config = mergeObj([baseConfig, headerConfig, contentConfig, footerConfig]);
+  const config = mergeObj([baseConfig, contentConfig, footerConfig]);
 
   return config;
 };

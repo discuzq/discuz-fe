@@ -15,13 +15,6 @@ export default class CustomApplyEntry extends React.Component {
     };
   }
 
-  componentDidUpdate(prevProps) {
-    const { renderData } = this.props;
-    if (renderData?.isShow && !prevProps?.renderData.isShow) {
-      this.handleDialogOpen();
-    }
-  }
-
   change = (body) => {
     this.setState({ body });
   };
@@ -40,11 +33,6 @@ export default class CustomApplyEntry extends React.Component {
       title: '创建活动报名',
       content: <CustomApplyEntryContent {...this.props} onChange={this.change} />,
       onConfirm: this.handleDialogConfirm,
-      onCancel: () => {
-        const { renderData, _pluginInfo } = this.props;
-        if (!renderData) return;
-        this.props.onConfirm({ postData: renderData, _pluginInfo });
-      },
     });
   };
 
@@ -63,7 +51,7 @@ export default class CustomApplyEntry extends React.Component {
     const { renderData, _pluginInfo } = this.props;
     const postData = getPostData(body, _pluginInfo.options.tomId) || {};
     if (renderData?.body?.activityId) postData.body.activityId = renderData?.body?.activityId;
-    this.props.onConfirm({ postData, _pluginInfo });
+    this.props.onConfirm({ postData });
     Dialog.hide();
   };
 

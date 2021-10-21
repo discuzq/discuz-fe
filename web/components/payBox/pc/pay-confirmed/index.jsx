@@ -4,7 +4,6 @@ import { Dialog, Button, Checkbox, Icon, Input, Toast, Radio, Divider, Spin } fr
 import { inject, observer } from 'mobx-react';
 import { PAYWAY_MAP, STEP_MAP, PAY_MENT_MAP } from '../../../../../common/constants/payBoxStoreConstants';
 import throttle from '@common/utils/thottle.js';
-import Router from '@discuzq/sdk/dist/router';
 
 @inject('site')
 @inject('user')
@@ -44,27 +43,10 @@ export default class index extends Component {
         duration: 1000,
       });
     }
-    this.isRecharge();
   }
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.handleKeyDown);
-  }
-
-  // 判断是否是充值
-  isRecharge = () => {
-    const { isWechatPayOpen, webConfig } = this.props.site || {};
-    const { siteCharge } = webConfig.setSite || {};
-    const isShowRecharge = isWechatPayOpen && siteCharge === 1;
-    if (!isShowRecharge) return;
-    const { options = {} } = this.props.payBox;
-    const { type } = options;
-    // 隐藏钱包支付，保留微信支付
-    if (type === 30) {
-      this.props.payBox.payWay = PAYWAY_MAP.WX;
-      this.handleChangePaymentType(PAYWAY_MAP.WX);
-      return;
-    }
   }
 
   // 匹配输入的数字
@@ -194,19 +176,8 @@ export default class index extends Component {
     }
   };
 
-  // 去充值
-  toRechargePop = () => {
-    Router.push({ url: `/wallet` });
-    this.onClose();
-    return;
-  }
-
   // 点击确认支付
   handlePayConfirmed = throttle(async () => {
-    if (this.isToRecharge()) {
-      this.toRechargePop();
-      return;
-    }
     if (this.state.isSubmit) return;
     this.setState({
       isSubmit: true,
@@ -349,25 +320,6 @@ export default class index extends Component {
     return nodeList;
   }
 
-  // 支付按钮文本显示
-  getPayText = () => {
-    if (this.isToRecharge()) {
-      return '去充值';
-    }
-    return '确定支付';
-  }
-
-  isToRecharge = () => {
-    const { options = {} } = this.props.payBox;
-    const { amount = 0 } = options;
-    const { isWechatPayOpen, webConfig } = this.props.site || {};
-    const { siteCharge } = webConfig.setSite || {};
-    const isSiteChargeOpen = siteCharge === 1;
-    // 去充值，需要开启微信支付 && 开启充值功能 && 支付方式为钱包支付 && 钱包余额不足
-    if (isWechatPayOpen && isSiteChargeOpen && this.props.payBox.payWay === PAYWAY_MAP.WALLET && Number(this.props.payBox?.walletAvaAmount) < Number(amount)) return true;
-    return false;
-  }
-
   // 渲染钱包支付内容
   renderWalletPaymementContent = () => {
     const { user } = this.props;
@@ -377,7 +329,7 @@ export default class index extends Component {
     const { amount = 0 } = options;
     const { list = [], isSubmit } = this.state;
     const newPassWord = list.join('');
-    let disabled = (!newPassWord || newPassWord.length !== 6 || isSubmit) && !this.isToRecharge();
+    let disabled = !newPassWord || newPassWord.length !== 6 || isSubmit;
     return (
       <div className={`${styles.walletPayment}`}>
         <div className={styles.walletTitle}>
@@ -441,7 +393,7 @@ export default class index extends Component {
                 disabled={disabled}
                 full
               >
-                {isSubmit ? <Spin type="spinner">支付中...</Spin> : this.getPayText()}
+                {isSubmit ? <Spin type="spinner">支付中...</Spin> : '确认支付'}
               </Button>
             </div>
           </>
@@ -452,8 +404,7 @@ export default class index extends Component {
 
   render() {
     const { options = {}, qrCodeTimeout } = this.props?.payBox;
-    const { amount = 0, type } = options;
-    const isRecharge = type === 30;
+    const { amount = 0 } = options;
     return (
       <div>
         <div className={styles.payconfirmWrapper}>
@@ -473,11 +424,9 @@ export default class index extends Component {
                     微信支付
                   </Radio>
                 )}
-                {!isRecharge && (
-                  <Radio name={'wallet'} className={`${styles.payTab}`}>
-                    钱包支付
-                  </Radio>
-                )}
+                <Radio name={'wallet'} className={`${styles.payTab}`}>
+                  钱包支付
+                </Radio>
               </Radio.Group>
             </div>
             <Divider className={styles.payLine} />

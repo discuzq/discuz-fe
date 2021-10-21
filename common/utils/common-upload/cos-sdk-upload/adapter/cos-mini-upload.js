@@ -1,4 +1,3 @@
-// cos 上传wiki：https://cloud.tencent.com/document/product/436/11459
 import { getCosTmpKey, updateAttachment } from '@common/server';
 import time from '@discuzq/sdk/dist/time';
 const COS = require('./cos-wx-sdk-v5');
@@ -22,7 +21,7 @@ export default (options) => {
 
     const filePath = file.path;
     const filename = filePath.substr(filePath.lastIndexOf('/') + 1);
-    // const fileSize = file.size;
+    const fileSize = file.size;
     const path = `public/attachments/${time.formatDate(new Date(), 'YYYY/MM/DD')}/`;
 
     // 初始化cos实例
@@ -30,7 +29,7 @@ export default (options) => {
       getAuthorization: async (_options, callback) => {
         const res = await getCosTmpKey({
           type,
-          attachment: filename,
+          fileSize,
           fileName: filename,
         });
         const { code, data } = res;

@@ -4,7 +4,7 @@ import { View, Text } from '@tarojs/components';
 import styles from './index.module.scss';
 
 const MoneyInput = (props) => {
-  const { getmoneyNum, visible, minmoney = 1, maxmoney, inputValue: value, updateState, onChange, type = 'withdrawal' } = props;
+  const { getmoneyNum, visible, minmoney = 1, maxmoney, inputValue: value, updateState, onChange } = props;
 
   // const [value, setValue] = useState('');
 
@@ -23,7 +23,7 @@ const MoneyInput = (props) => {
   const getColorShow = useMemo(() => {
     if (value == 0.0) {
       return '';
-    } else if (type === 'withdrawal' && parseFloat(maxmoney) < parseFloat(value)) {
+    } else if (parseFloat(maxmoney) < parseFloat(value)) {
       return styles.InputRedColor;
     } else {
       return styles.InputColor;
@@ -36,11 +36,9 @@ const MoneyInput = (props) => {
 
   return (
     <View className={styles.container}>
-      <View className={styles.header}>
-        {type === 'withdrawal' ? '提现金额' : '充值金额'}
-      </View>
+      <View className={styles.header}>提现金额</View>
       <View className={styles.input}>
-        <Text className={type === 'withdrawal' && parseFloat(maxmoney) < parseFloat(value) ? styles['moneyIcon-Red'] : styles.moneyIcon}>
+        <Text className={parseFloat(maxmoney) < parseFloat(value) ? styles['moneyIcon-Red'] : styles.moneyIcon}>
           ￥
         </Text>
         <Input
@@ -53,22 +51,12 @@ const MoneyInput = (props) => {
         />
       </View>
       <View>
-        {
-          type === 'withdrawal' ? (
-            <View>
-              {parseFloat(maxmoney) < parseFloat(value) && (
-                <View className={`${styles.leastMoney} ${styles.leasterr}`}>提现金额不得大于可提现金额</View>
-              )}
-              <View className={`${styles.leastMoney} ${parseFloat(maxmoney) < parseFloat(value) && styles.leastMargin}`}>
-                提现金额最低{minmoney}元
-              </View>
-            </View>
-          ) : (
-            <View className={styles.leastMoney}>
-                充值金额最低0.1元
-            </View>
-          )
-        }
+        {parseFloat(maxmoney) < parseFloat(value) && (
+          <View className={`${styles.leastMoney} ${styles.leasterr}`}>提现金额不得大于可提现金额</View>
+        )}
+        <View className={`${styles.leastMoney} ${parseFloat(maxmoney) < parseFloat(value) && styles.leastMargin}`}>
+          提现金额最低{minmoney}元
+        </View>
       </View>
     </View>
   );

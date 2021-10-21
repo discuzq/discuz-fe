@@ -31,11 +31,6 @@
     font-size: rem($font-size-label);
     line-height: rem($font-line-height-small);
   }
-  .addIconWrapper {
-    display: inline-flex;
-    flex: 1;
-    justify-content: center;
-  }
   .addIcon {
     height: rem(48);
     line-height: rem(48);
@@ -43,9 +38,7 @@
     background: $primary-color;
     text-align: center;
     border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: inline-block;
   }
 }
 

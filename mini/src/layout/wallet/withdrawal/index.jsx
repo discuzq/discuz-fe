@@ -144,7 +144,6 @@ class Withdrawal extends React.Component {
                 visible={this.state.visible}
                 minmoney={this.props.site.cashMinSum}
                 maxmoney={this.props.walletData?.availableAmount}
-                type='withdrawal'
               />
             </View>
           </View>

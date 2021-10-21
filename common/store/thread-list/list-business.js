@@ -57,6 +57,7 @@ export const updateThreadAssignInfoInLists = (threadId, obj = {}) => {
 
       data.likeReward.users = newLikeUsers;
       data.likeReward.likePayCount = likePayCount;
+      if (typeofFn.isFunction(recomputeRowHeights)) recomputeRowHeights(data);
     }
 
     // 更新评论：新增
@@ -83,7 +84,6 @@ export const updateThreadAssignInfoInLists = (threadId, obj = {}) => {
       data.openedMore = openedMore;
     }
 
-    if (typeofFn.isFunction(recomputeRowHeights)) recomputeRowHeights(data);
     callback(data);
   };
 

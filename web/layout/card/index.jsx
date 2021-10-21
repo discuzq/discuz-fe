@@ -39,19 +39,19 @@ const Index = ({ card, threadId, commentId}) => {
       <div className={styles.poster} ref={post}>
         {/* {!threadId ? <SiteCard></SiteCard> : <ThreadCard threadId={threadId}></ThreadCard>} */}
         {
-          commentId && <CommentCard commentId={commentId}></CommentCard>
+          threadId &&  <ThreadCard threadId={threadId}></ThreadCard>
         }
         {
-          threadId && !commentId &&  <ThreadCard threadId={threadId}></ThreadCard>
+          commentId && <CommentCard commentId={commentId}></CommentCard>
         }
         {
           !threadId && !commentId && <SiteCard></SiteCard>
         }
-        <Footer setReady={setReady} threadId={threadId} commentId={commentId}></Footer>
+        <Footer setReady={setReady} threadId={threadId}></Footer>
       </div>
       {ready && imgReady ? (
         <div className={styles.imgbox}>
-          <img alt="" className={styles.centImage} src={url} />
+          <img alt="图片" className={styles.centImage} src={url} />
         </div>
       ) : (
         <div className={styles.imgbox}></div>

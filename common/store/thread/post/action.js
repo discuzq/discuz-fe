@@ -574,8 +574,7 @@ class ThreadPostAction extends ThreadPostStore {
   setPluginPostData(data) {
     const {
       _pluginInfo,
-      postData,
-      isShow = false, // 主要用于添加的发帖插件点击对应的区域是否直接再次显示
+      postData
     } = data;
     const { pluginName } = _pluginInfo;
     const { tomId, body } = postData;
@@ -587,8 +586,7 @@ class ThreadPostAction extends ThreadPostStore {
         _plugin: {
           name: pluginName
         }
-      },
-      isShow,
+      }
     }
     this.postData = { ...this.postData };
   }

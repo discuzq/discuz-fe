@@ -25,7 +25,6 @@ import layout from './layout.module.scss';
 import BaseLayout from '@components/base-layout';
 
 @inject('wallet')
-@inject('site')
 @observer
 class WalletH5Page extends React.Component {
   static options = {
@@ -62,10 +61,6 @@ class WalletH5Page extends React.Component {
   // 点击提现
   toWithrawal = () => {
     Router.push({ url: '/subPages/wallet/withdrawal/index' });
-  };
-  // 点击充值
-  toRecharge = () => {
-    Router.push({ url: '/subPages/wallet/recharge/index' });
   };
 
   // 切换选项卡
@@ -367,10 +362,6 @@ class WalletH5Page extends React.Component {
   );
 
   render() {
-    // 判断是否显示充值按钮，微信支付打开 && 充值权限打开
-    const { isWechatPayOpen, webConfig } = this.props.site || {};
-    const { siteCharge } = webConfig.setSite || {};
-    const isShowRecharge = isWechatPayOpen && siteCharge === 1;
     const tabList = [
       [
         'income',
@@ -418,9 +409,7 @@ class WalletH5Page extends React.Component {
         <BaseLayout
           noMore={this.state.page > this.state.totalPage}
           onRefresh={this.loadMore}
-          listClassName={classNames(layout.walletWrapper, {
-            [layout.walletWrapperRecharge]: isShowRecharge,
-          })}
+          listClassName={layout.walletWrapper}
           immediateCheck
           showHeader={false}
           showLoadingInCenter={!this.getWalletList().length}
@@ -475,11 +464,6 @@ class WalletH5Page extends React.Component {
           <Button className={layout.button} onClick={this.toWithrawal} type="primary">
             提现
           </Button>
-          {isShowRecharge && (
-            <Button className={layout.button} onClick={this.toRecharge} type="primary">
-              充值
-            </Button>
-          )}
         </View>
         {/* 条件过滤 */}
         <FilterView

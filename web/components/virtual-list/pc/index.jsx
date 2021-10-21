@@ -159,7 +159,6 @@ function Home(props, ref) {
             measure={measure}
             recomputeRowHeights={(data) => recomputeRowHeights(index, data)}
             enableCommentList={true}
-            canPublish={props.canPublish}
           />
         );
     }
