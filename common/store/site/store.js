@@ -66,6 +66,11 @@ class SiteStore {
     return get(this.webConfig, 'setSite.siteName');
   }
 
+  // 站点版本
+  @computed get version() {
+    return get(this.webConfig, 'setSite.version');
+  }
+
   // 站点介绍
   @computed get siteIntroduction() {
     return get(this.webConfig, 'setSite.siteIntroduction') || '暂无介绍';
