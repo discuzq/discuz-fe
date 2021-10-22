@@ -5,6 +5,7 @@ import Taro from '@tarojs/taro'
 import Router from '@discuzq/sdk/dist/router';
 import setTitle from '@common/utils/setTitle';
 import LoginHelper from '@common/utils/login-helper'
+import DZQPluginCenter from '@discuzq/plugin-center';
 import { STORAGE_KEY } from '@common/utils/viewcount-in-storage';
 import './app.scss';
 
@@ -13,9 +14,12 @@ if (process.env.NODE_ENV === 'development') {
   require('@discuzq/theme/src/index.scss');
 }
 
+const appStore = initializeStore();
+DZQPluginCenter.initStore(appStore.plugin.setPluginComponent.bind(appStore.plugin));
+
 class App extends Component {
 
-  store = initializeStore();
+  store = appStore;
 
   async componentDidMount() {
   }

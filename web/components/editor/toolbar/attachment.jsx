@@ -10,6 +10,7 @@ import { attachIcon } from '@common/constants/const';
 import { createAttachment } from '@common/server';
 import { THREAD_TYPE } from '@common/constants/thread-post';
 import { tencentVodUpload } from '@common/utils/tencent-vod';
+import DZQPluginCenterInjectionPolyfill from '../../../utils/DZQPluginCenterInjectionPolyfill';
 
 // 插件引入
 /**DZQ->plugin->register<plugin_post@post_extension_entry_hook>**/
@@ -218,29 +219,26 @@ function AttachmentToolbar(props) {
         </div>
       ) : null;
     });
-
-    // 插件注入
-    defaultEntryList = defaultEntryList.concat(DZQPluginCenter.injection('plugin_post', 'post_extension_entry_hook').map(({ render, pluginInfo }) => {
-      const clsName = getIconCls({ type: pluginInfo.pluginName });
-      return (
-        <div key={pluginInfo.pluginName} className={clsName}>
-          {render({
-            site: props.site,
-            onConfirm: props.onPluginSetPostData,
-            renderData: props.postData.plugin,
-            postData: {
-              navInfo: props.threadPost.navInfo
-            }
-          })}
-        </div>
-      )
-    }));
-
     return defaultEntryList;
   }
 
 
-  if (props.pc) return icons();
+  if (props.pc) return (
+    <>
+      {icons()}
+      <DZQPluginCenterInjectionPolyfill
+        className={getIconCls()}
+        target='plugin_post' 
+        hookName='post_extension_entry_hook' 
+        pluginProps={{
+          onConfirm: props.onPluginSetPostData,
+          renderData: props.postData.plugin,
+          postData: {
+            navInfo: props.threadPost.navInfo
+        }
+      }}/>
+    </>
+  );
   const styl = !showAll ? { display: 'none' } : {};
   const action = props.currentSelectedToolbar || currentAction;
   const currentIcon = attachIcon.filter(item => item.type === action)[0]?.name
@@ -262,6 +260,17 @@ function AttachmentToolbar(props) {
       <div className={styles['dvditor-attachment-toolbar__inner']} style={styl}>
         <div className={styles['dvditor-attachment-toolbar__left']}>
           {icons()}
+          <DZQPluginCenterInjectionPolyfill 
+            className={getIconCls()}
+            target='plugin_post' 
+            hookName='post_extension_entry_hook' 
+            pluginProps={{
+              onConfirm: props.onPluginSetPostData,
+              renderData: props.postData.plugin,
+              postData: {
+                navInfo: props.threadPost.navInfo
+            }
+          }}/>
         </div>
         <div
           className={classNames(styles['dvditor-attachment-toolbar__right'], styles.show)}

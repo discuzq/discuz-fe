@@ -21,7 +21,7 @@ import * as localData from '@common/utils/thread-post-localdata';
 import TagLocalData from '@components/thread-post/tag-localdata';
 import VoteWidget from '@components/thread-post/vote-widget';
 import typeofFn from '@common/utils/typeof';
-
+import DZQPluginCenterInjection from '@discuzq/plugin-center/dist/components/DZQPluginCenterInjection';
 import Dialog from '@discuzq/design/dist/components/dialog/index';
 
 // 插件引入
@@ -30,6 +30,7 @@ import Dialog from '@discuzq/design/dist/components/dialog/index';
 @inject('payBox')
 @inject('index')
 @inject('site')
+@inject('plugin')
 @inject('user')
 @inject('thread')
 @inject('threadPost')
@@ -859,22 +860,16 @@ class Index extends Component {
                 )}
 
                 {product.detailContent && <Units type='product' productSrc={product.imagePath} productDesc={product.title} productPrice={product.price} onDelete={() => setPostData({ product: {} })} />}
-
-                {
-                  DZQPluginCenter.injection('plugin_post', 'post_extension_content_hook').map(({render, pluginInfo}) => (
-                      <View key={pluginInfo.pluginName}>
-                        {render({
-                          site: this.props.site,
-                          renderData: postData.plugin,
-                          deletePlugin: this.props.threadPost.deletePluginPostData,
-                          updatePlugin: this.props.threadPost.setPluginPostData,
-                          showPluginDialog: this.showPluginDialog,
-                          closePluginDialog: this.closePluginDialog
-                        })}
-                      </View>
-                    ))
-                }
-
+                <DZQPluginCenterInjection
+                  target='plugin_post'
+                  hookName='post_extension_content_hook'
+                  pluginProps={{
+                    renderData: postData.plugin,
+                    deletePlugin: this.props.threadPost.deletePluginPostData,
+                    updatePlugin: this.props.threadPost.setPluginPostData,
+                    showPluginDialog: this.showPluginDialog,
+                    closePluginDialog: this.closePluginDialog
+                }}/>
               </View>
 
             </View>

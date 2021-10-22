@@ -69,6 +69,10 @@ const miniConfig = require('./src/app.config');
   copy('./dist/indexPages/common.js', './dist/userPages/common.js');
   copy('./dist/indexPages/common.wxss', './dist/userPages/common.wxss');
 
+  if (fs.existsSync(path.resolve('./dist/pluginPages'))) {
+    copy('./dist/indexPages/common.js', './dist/pluginPages/common.js');
+    copy('./dist/indexPages/common.wxss', './dist/pluginPages/common.wxss');
+  }
 
   // app.js添加对discuzq.js的引用
   const appjs = './dist/app.js';

@@ -31,7 +31,7 @@ export default (options) => {
         const res = await getCosTmpKey({
           type,
           attachment: filename,
-          fileName: filename,
+          fileName: type === 1 ? filename : file.name,
         });
         const { code, data } = res;
         if (code === 0) {

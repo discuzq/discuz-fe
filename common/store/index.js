@@ -32,6 +32,7 @@ import CardStore from './card/action';
 import CommentPosition from './thread/comment-position/action';
 import EmotionStore from './emotion/action';
 import ThreadListStore from './thread-list/list';
+import DZQPluginStore from '@discuzq/plugin-center/dist/pluginMobxStore';
 
 useStaticRendering(isServer());
 
@@ -44,6 +45,7 @@ export default function initializeStore(initProps = {}) {
         envConfig: ENV_CONFIG,
         ...site,
       }),
+      plugin: new DZQPluginStore(),
       index: new IndexStore(),
       user: new UserStore(user),
       card: new CardStore(),
@@ -81,6 +83,7 @@ export default function initializeStore(initProps = {}) {
         envConfig: ENV_CONFIG,
         ...site,
       }),
+      plugin: new DZQPluginStore(),
       index: new IndexStore(),
       user: new UserStore(user),
       card: new CardStore(),

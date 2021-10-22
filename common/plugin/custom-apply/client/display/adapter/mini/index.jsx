@@ -184,7 +184,6 @@ class CustomApplyDisplay extends React.Component {
     const { isRegistered } = body;
     // 过期 || 已满 || 结束 || 未开始
     const isCanNotApply = body?.isExpired || body?.isMemberFull || isApplyEnd || !isApplyStart;
-
     const { popupShow } = this.state;
     return (
       <>

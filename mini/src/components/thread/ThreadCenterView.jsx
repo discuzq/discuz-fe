@@ -14,6 +14,7 @@ import Packet from './packet';
 import styles from './index.module.scss';
 import { View, Text } from '@tarojs/components';
 import { getElementRect, randomStr, noop, handleLink } from './utils'
+import DZQPluginCenterInjection from '@discuzq/plugin-center/dist/components/DZQPluginCenterInjection';
 
 // 插件引入
 /**DZQ->plugin->register<plugin_index@thread_extension_display_hook>**/
@@ -168,24 +169,17 @@ const Index = (props) => {
 
         {/* 投票帖子展示 */}
         {voteData && <VoteDisplay voteData={voteData} updateViewCount={props.updateViewCount} threadId={threadId} />}
-        {
-          DZQPluginCenter.injection('plugin_index', 'thread_extension_display_hook').map(({ render, pluginInfo }) => {
-            return (
-              <View key={pluginInfo.name}>
-                {render({
-                  site: props.site,
-                  renderData: plugin,
-                  threadData: props.data,
-                  updateListThreadIndexes: props.updateListThreadIndexes,
-                  updateThread: props.updateThread,
-                  isLogin: props.user.isLogin.bind(props.user),
-                  userInfo: props.user.userInfo,
-                  recomputeRowHeights: props.recomputeRowHeights
-                })}
-              </View>
-            )
-          })
-        }
+        <DZQPluginCenterInjection
+          target='plugin_index'
+          hookName='thread_extension_display_hook'
+          pluginProps={{
+            renderData: plugin,
+            threadData: props.data,
+            updateListThreadIndexes: props.updateListThreadIndexes,
+            updateThread: props.updateThread,
+            recomputeRowHeights: props.recomputeRowHeights
+          }}
+        />
       </>
     );
   };

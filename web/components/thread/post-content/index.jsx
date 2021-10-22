@@ -64,7 +64,7 @@ const PostContent = ({
   
   // 将图片链接替换成 webp 及小图
   const replaceImagesFromText = (contentText) => {
-    const images = contentText.match(/<img.*?\/>/g)?.filter(image => (!image.includes('emoji')));
+    const images = contentText.match(/<img.*?[\/]?>/g)?.filter(image => (!image.includes('emoji')));
 
     if (images && images.length) {
       const imageLgAndSmUrlList = [];

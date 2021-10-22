@@ -63,6 +63,8 @@ export const WEB_SITE_JOIN_WHITE_LIST = [
   '/user/wx-rebind-action', // 换绑授权
   '/my', // 个人中心
   '/forum/partner-invite', // 站点加入
+  '/wallet', // 钱包充值
+  '/wallet/recharge', // 充值界面
 ];
 
 // mini端站点加入路由白名单
@@ -84,6 +86,7 @@ export const MINI_SITE_JOIN_WHITE_LIST = [
   '/userPages/my/index', // 个人中心
   '/subPages/forum/partner-invite/index', // 站点加入
   '/userPages/my/edit/paypwd/index', // 设置支付密码
+  '/subPages/wallet/recharge/index', // 充值界面
 ];
 
 // mini端站点，用户账号审核中可以访问的路由白名单

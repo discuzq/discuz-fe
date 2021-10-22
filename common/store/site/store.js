@@ -24,6 +24,8 @@ class SiteStore {
   @observable isUserLoginVisible = null;
   @observable errPageType = null;
   @observable pluginConfig = null; // 插件配置
+  // @observable pluginStore = {};
+  
   @computed get isRegister() {
     return !this.isSmsOpen && this.wechatEnv === 'none' && this.registerClose;
   }

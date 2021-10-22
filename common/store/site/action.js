@@ -7,6 +7,11 @@ class SiteAction extends SiteStore {
     super(props);
   }
 
+  // @action
+  // setPluginStore(store) {
+  //   this.pluginStore = store
+  // }
+
   /**
    * 获取插件配置信息
    */

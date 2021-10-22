@@ -31,3 +31,5 @@ dist/
 mini/dist
 
 sls.config.yaml
+.pluginConfig.js
+pluginPages/

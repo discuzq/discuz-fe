@@ -20,14 +20,16 @@ import IframeVideoDisplay from '@components/thread-post/iframe-video-display';
 import Avatar from '@components/avatar';
 import Packet from '@components/thread/packet';
 import PacketOpen from '@components/red-packet-animation/h5';
-import { withRouter } from 'next/router';
+import Router from '@discuzq/sdk/dist/router';
+import DZQPluginCenterInjectionPolyfill from '../../../../utils/DZQPluginCenterInjectionPolyfill';
+import isServer from '@common/utils/is-server';
 
 
 // 插件引入
 /**DZQ->plugin->register<plugin_detail@thread_extension_display_hook>**/
 
 // 帖子内容
-const RenderThreadContent = withRouter(inject('index', 'site', 'user', 'thread')(observer((props) => {
+const RenderThreadContent = (inject('index', 'site', 'user', 'thread', 'plugin')(observer((props) => {
   const { store: threadStore, site, index, thread, user } = props;
   const { text, indexes } = threadStore?.threadData?.content || {};
   const { parentCategoryName, categoryName } = threadStore?.threadData;
@@ -273,6 +275,16 @@ const RenderThreadContent = withRouter(inject('index', 'site', 'user', 'thread')
         {/* 投票 */}
         {parseContent.VOTE_THREAD
           && <VoteDisplay voteData={parseContent.VOTE_THREAD} threadId={threadStore?.threadData?.threadId} page="detail" />}
+    
+        <DZQPluginCenterInjectionPolyfill
+          target='plugin_detail' 
+          hookName='thread_extension_display_hook' 
+          pluginProps={{
+            threadData: threadStore?.threadData,
+            renderData: parseContent.plugin,
+            updateListThreadIndexes: index.updateListThreadIndexes.bind(index),
+            updateThread: thread.updateThread.bind(thread),
+        }}/>
 
         {/* 付费附件 */}
         {needAttachmentPay && (
@@ -283,24 +295,8 @@ const RenderThreadContent = withRouter(inject('index', 'site', 'user', 'thread')
             </Button>
           </div>
         )}
-
-          {
-            DZQPluginCenter.injection('plugin_detail', 'thread_extension_display_hook').map(({render, pluginInfo}) => {
-              return (
-                <div key={pluginInfo.name}>
-                  {render({
-                    site: site,
-                    threadData: threadStore?.threadData,
-                    renderData: parseContent.plugin,
-                    updateListThreadIndexes: index.updateListThreadIndexes.bind(index),
-                    updateThread: thread.updateThread.bind(thread),
-                    isLogin: user.isLogin.bind(user),
-                    userInfo: user.userInfo
-                  })}
-                </div>
-              )
-            })
-          }
+        
+          
 
           {/* 标签 */}
           {(parentCategoryName || categoryName) && (
@@ -334,7 +330,7 @@ const RenderThreadContent = withRouter(inject('index', 'site', 'user', 'thread')
               <div className={styles.top}>{tipList.length}人打赏</div>
               <div className={styles.itemList}>
                 {tipList.map(i=>(
-                  <div key={i.userId} onClick={()=>props.router.push(`/user/${i.userId}`)} className={styles.itemAvatar}>
+                  <div key={i.userId} onClick={()=>Router.push({ url: `/user/${i.userId}` })} className={styles.itemAvatar}>
                       <Avatar
                         image={i.avatar}
                         name={i.nickname}

@@ -17,16 +17,18 @@ import { detectH5Orient } from '@common/utils/detect-orient';
 import browser from '@common/utils/browser';
 import Toast from '@discuzq/design/dist/components/toast';
 import { STORAGE_KEY, STORAGE_TYPE } from '@common/utils/viewcount-in-storage';
-
+import DZQPluginCenter from '@discuzq/plugin-center';
 
 // if (!isServer()) {
 //   process.env.NODE_ENV === 'production' && sentry();
 // }
+const appStore = initializeStore();
+DZQPluginCenter.initStore(appStore.plugin.setPluginComponent.bind(appStore.plugin));
 
 class DzqApp extends App {
   constructor(props) {
     super(props);
-    this.appStore = initializeStore();
+    this.appStore = appStore;
     this.updateSize = this.updateSize.bind(this);
     this.toastInstance = null;
   }
@@ -68,6 +70,55 @@ class DzqApp extends App {
         if(STORAGE_TYPE === "session") sessionStorage.removeItem(STORAGE_KEY);
       });
     }
+
+    //  // 测试
+    // setTimeout(() => {
+    //   let js = false;
+    //   let css = false;
+    //   const script = document.createElement('script');
+    //   script.src = "http://0.0.0.0:8081/dist/CustomIfram/index.js";
+    //   script.onload = () => {
+    //     console.log('加载完毕！');
+    //     js = true;
+    //     // if (css) {
+    //       const {map, pluginName} = DZQPluginCenter.register(window.DZQPlugin['CustomIfram'].default);
+    //       console.log()
+    //       this.appStore.plugin.setPluginComponent(pluginName, map);
+
+    //     // }
+    //   }
+
+    //   const script2 = document.createElement('script');
+    //   script2.src = "http://0.0.0.0:8081/dist/CustomIframDisplay/index.js";
+    //   script2.onload = () => {
+    //     console.log('加载完毕！');
+    //     js = true;
+    //     // if (css) {
+    //       const {map, pluginName} = DZQPluginCenter.register(window.DZQPlugin['CustomIframDisplay'].default);
+    //       console.log()
+    //       this.appStore.plugin.setPluginComponent(pluginName, map);
+
+    //     // }
+    //   }
+
+    //   const script3 = document.createElement('script');
+    //   script3.src = "http://0.0.0.0:8081/dist/CustomIframPost/index.js";
+    //   script3.onload = () => {
+    //     console.log('加载完毕！');
+    //     js = true;
+    //     // if (css) {
+    //       const {map, pluginName} = DZQPluginCenter.register(window.DZQPlugin['CustomIframPost'].default);
+    //       console.log()
+    //       this.appStore.plugin.setPluginComponent(pluginName, map);
+
+    //     // }
+    //   }
+
+    //   // document.body.appendChild(link);
+    //   document.body.appendChild(script);
+    //   document.body.appendChild(script2);
+    //   document.body.appendChild(script3);
+    // }, 3000);
   }
 
   componentWillUnmount() {
@@ -121,7 +172,6 @@ class DzqApp extends App {
             />
           </Head>
           <CustomHead />
-
           <PayBoxProvider>
             <Component {...pageProps} />
           </PayBoxProvider>

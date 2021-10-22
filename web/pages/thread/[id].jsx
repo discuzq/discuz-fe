@@ -354,4 +354,4 @@ class Detail extends React.Component {
 }
 
 // eslint-disable-next-line new-cap
-export default withRouter(HOCFetchSiteData(Detail));
+export default HOCFetchSiteData(withRouter(Detail));

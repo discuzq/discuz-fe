@@ -10,12 +10,13 @@ import Icon from '@discuzq/design/dist/components/icon/index';
 import { attachIcon } from '@common/constants/const';
 import { Units } from '@components/common';
 import { THREAD_TYPE } from '@common/constants/thread-post';
+import DZQPluginCenterInjection from '@discuzq/plugin-center/dist/components/DZQPluginCenterInjection';
 
 // 插件引入
 /**DZQ->plugin->register<plugin_post@post_extension_entry_hook>**/
 
 
-const Index = inject('site', 'user', 'threadPost')(observer((props) => {
+const Index = inject('site', 'user', 'plugin', 'threadPost')(observer((props) => {
   const { threadPost, clickCb, onCategoryClick, onSetplugShow, user, operationType, site } = props;
   const { webConfig: { other: { threadOptimize } } } = site;
 
@@ -86,29 +87,24 @@ const Index = inject('site', 'user', 'threadPost')(observer((props) => {
       );
     });
 
-    // 插件注入
-    plugs = plugs.concat(DZQPluginCenter.injection('plugin_post', 'post_extension_entry_hook').map(({render, pluginInfo}) => {
-      const clsName = getIconCls(null);
-      return (
-        <View key={pluginInfo.pluginName} className={clsName}>
-          {render({
-            site: props.site,
-            onConfirm: props.threadPost.setPluginPostData,
-            renderData: props.threadPost.postData.plugin,
-            showPluginDialog: props.showPluginDialog,
-            closePluginDialog: props.closePluginDialog,
-            postData: {
-              navInfo: threadPost.navInfo,
-            },
-          })}
-        </View>
-      )
-    }));
-
     return (
       <View className={styles['plugin-icon-container']}>
         <View className={styles['plugin-icon']}>
           {plugs}
+          <DZQPluginCenterInjection
+            className={getIconCls(null)}
+            target='plugin_post'
+            hookName='post_extension_entry_hook'
+            pluginProps={{
+              onConfirm: props.threadPost.setPluginPostData,
+              renderData: props.threadPost.postData.plugin,
+              showPluginDialog: props.showPluginDialog,
+              closePluginDialog: props.closePluginDialog,
+              postData: {
+                navInfo: threadPost.navInfo,
+              },
+            }}
+          />
         </View>
 
         <View className={styles['switcher']} onClick={() => {

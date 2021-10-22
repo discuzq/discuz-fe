@@ -9,6 +9,9 @@ import InputPopup from '../components/input-popup';
 import DeletePopup from '@components/thread-detail-pc/delete-popup';
 import goToLoginPage from '@common/utils/go-to-login-page';
 import { debounce } from '@common/utils/throttle-debounce';
+import Router from '@discuzq/sdk/dist/router';
+
+
 // 评论列表
 @inject('thread')
 @inject('comment')
@@ -327,7 +330,7 @@ class RenderCommentList extends React.Component {
   // 跳转评论详情
   onCommentClick(data) {
     if (data.id && this.props.thread?.threadData?.id) {
-      this.props.router.push(`/thread/comment/${data.id}?threadId=${this.props.thread?.threadData?.id}`);
+      Router.push({url: `/thread/comment/${data.id}?threadId=${this.props.thread?.threadData?.id}`});
     }
   }
 
@@ -384,7 +387,7 @@ class RenderCommentList extends React.Component {
   avatarClick(data) {
     const { userId } = data;
     if (!userId) return;
-    this.props.router.push(`/user/${userId}`);
+    Router.push({url: `/user/${userId}`});
   }
 
   // 点击回复头像

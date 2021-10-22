@@ -22,6 +22,7 @@ import { updateThreadAssignInfoInLists, updatePayThreadInfo, getThreadCommentLis
 @inject('index')
 @inject('user')
 @inject('thread')
+@inject('plugin')
 @inject('card')
 @observer
 class Index extends React.Component {
@@ -286,7 +287,7 @@ class Index extends React.Component {
   }
 
   render() {
-    const { index, thread, data, card, className = '', site = {}, showBottomStyle = true, collect = '', unifyOnClick = null, isShowIcon = false, user: users, onTextItemClick = null, extraTag, extraInfo } = this.props;
+    const { plugin, index, thread, data, card, className = '', site = {}, showBottomStyle = true, collect = '', unifyOnClick = null, isShowIcon = false, user: users, onTextItemClick = null, extraTag, extraInfo } = this.props;
     const { platform = 'pc' } = site;
     const threadStore = this.props.thread;
     const { onContentHeightChange = noop, onImageReady = noop, onVideoReady = noop } = this.props;
@@ -344,6 +345,13 @@ class Index extends React.Component {
 
         <ThreadCenterView
           site={site}
+          plugin={{
+            pluginComponent: plugin.pluginComponent,
+            plugin: {
+              setPluginStore: plugin.setPluginStore,
+              getPluginStore: plugin.getPluginStore,
+            }
+          }}
           user={users}
           updateThread={thread.updateThread.bind(thread)}
           updateListThreadIndexes={index.updateListThreadIndexes.bind(index)}

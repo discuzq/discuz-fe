@@ -38,6 +38,7 @@ import VoteWidget from '@components/thread-post/vote-widget';
 import VoteEditor from '@components/thread-post/vote-editor';
 import IframeVideo from '@components/thread-post/iframe-video';
 import IframeVideoDisplay from '@components/thread-post/iframe-video-display';
+import DZQPluginCenterInjectionPolyfill from '../../../../utils/DZQPluginCenterInjectionPolyfill';
 
 // 插件引入
 /**DZQ->plugin->register<plugin_post@post_extension_content_hook>**/
@@ -383,19 +384,14 @@ class ThreadCreate extends React.Component {
               onDelete={() => this.props.setPostData({ product: {} })}
             />
           )}
-
-          {
-            DZQPluginCenter.injection('plugin_post', 'post_extension_content_hook').map(({ render, pluginInfo }) => (
-                <div key={pluginInfo.pluginName}>
-                  {render({
-                    site: this.props.site,
-                    renderData: postData.plugin,
-                    deletePlugin: this.props.threadPost.deletePluginPostData,
-                    updatePlugin: this.props.threadPost.setPluginPostData,
-                  })}
-                </div>
-            ))
-          }
+          <DZQPluginCenterInjectionPolyfill
+            target='plugin_post' 
+            hookName='post_extension_content_hook' 
+            pluginProps={{
+              renderData: postData.plugin,
+              deletePlugin: this.props.threadPost.deletePluginPostData,
+              updatePlugin: this.props.threadPost.setPluginPostData
+          }}/>
         </div>
         <div id="post-bottombar" className={styles['post-bottombar']}>
           {threadPost.isHaveLocalData && (<div id="post-localdata" className={styles['post-localdata']}>

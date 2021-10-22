@@ -39,7 +39,7 @@ class PC extends React.Component {
   )
 
   renderContent = () => {
-    const { index } = this.props;
+    const { index, plugin } = this.props;
     const list = (index.drafts && index.drafts.pageData) || [];
     return (
       <div className={styles.wrapper}>

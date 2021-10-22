@@ -15,6 +15,7 @@ import ThreadCenterView from '@components/thread/ThreadCenterView';
 @inject('index')
 @inject('user')
 @inject('thread')
+@inject('plugin')
 @observer
 class Index extends Component {
   page = 1;

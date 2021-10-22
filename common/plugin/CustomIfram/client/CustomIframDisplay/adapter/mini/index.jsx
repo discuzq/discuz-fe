@@ -12,7 +12,6 @@ export default class CustomIframDisplayContent extends React.PureComponent {
       if ( !renderData ) {
         return null;
       }
-      console.log('mini', renderData);
 
       const { body, tomId } = renderData;
       const { url } = body;

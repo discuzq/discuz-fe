@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
-import { withRouter } from 'next/router';
 import Router from '@discuzq/sdk/dist/router';
 
 import layout from './layout.module.scss';
@@ -31,7 +30,6 @@ import isWeiXin from '@common/utils/is-weixin';
 import RenderThreadContent from './content';
 import RenderCommentList from './comment-list';
 import classNames from 'classnames';
-import HOCFetchSiteData from '@middleware/HOCFetchSiteData';
 
 import BottomView from '@components/list/BottomView';
 import Copyright from '@components/copyright';
@@ -280,7 +278,7 @@ class ThreadH5Page extends React.Component {
     // 编辑
     if (type === 'edit') {
       if (!this.props.thread?.threadData?.id) return;
-      this.props.router.push(`/thread/post?id=${this.props.thread?.threadData?.id}`);
+      Router.push({ url: `/thread/post?id=${this.props.thread?.threadData?.id}` });
     }
 
     // 举报
@@ -404,7 +402,7 @@ class ThreadH5Page extends React.Component {
       });
 
       setTimeout(() => {
-        this.props.router.push('/');
+        Router.push({url: '/'});
       }, 1000);
 
       return;
@@ -694,19 +692,21 @@ class ThreadH5Page extends React.Component {
       this.props.index.refreshHomeData({ categoryIds: [categoryId] });
     }
     this.props.vlist.resetPosition();
-    this.props.router.push(`/?categoryId=${categoryId}&sequence=0`);
+    Router.push({ url: `/` });
+
   }
 
   replyAvatarClick(reply, comment, floor) {
     if (floor === 2) {
       const { userId } = reply;
       if (!userId) return;
-      this.props.router.push(`/user/${userId}`);
+    Router.push({ url: `/user/${userId}` });
+
     }
     if (floor === 3) {
       const { commentUserId } = reply;
       if (!commentUserId) return;
-      this.props.router.push(`/user/${commentUserId}`);
+      Router.push({ url: `/user/${commentUserId}` });
     }
   }
 
@@ -714,7 +714,7 @@ class ThreadH5Page extends React.Component {
     const { threadData } = this.props.thread || {};
     const useId = threadData?.user?.userId;
     if (!useId) return;
-    this.props.router.push(`/user/${threadData?.user?.userId}`);
+    Router.push({ url: `/user/${threadData?.user?.userId}` });
   }
 
   // 点击加载更多
@@ -848,7 +848,6 @@ class ThreadH5Page extends React.Component {
                     <Fragment>
                       <RenderCommentList
                         isPositionComment={true}
-                        router={this.props.router}
                         sort={flag => this.onSortChange(flag)}
                         replyAvatarClick={(comment, reply, floor) => this.replyAvatarClick(comment, reply, floor)}
                       ></RenderCommentList>
@@ -874,7 +873,6 @@ class ThreadH5Page extends React.Component {
                     canPublish={this.props.canPublish}
                     positionRef={this.positionRef}
                     showHeader={!isShowCommentList}
-                    router={this.props.router}
                     sort={flag => this.onSortChange(flag)}
                     onEditClick={comment => this.onEditClick(comment)}
                     replyAvatarClick={(comment, reply, floor) => this.replyAvatarClick(comment, reply, floor)}
@@ -1013,4 +1011,4 @@ class ThreadH5Page extends React.Component {
   }
 }
 
-export default withRouter(ThreadH5Page);
+export default ThreadH5Page;

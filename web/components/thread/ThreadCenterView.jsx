@@ -12,6 +12,7 @@ import IframeVideoDisplay from '@components/thread-post/iframe-video-display';
 import Packet from './packet';
 import styles from './index.module.scss';
 import SiteMapLink from '@components/site-map-link';
+import DZQPluginCenterInjectionPolyfill from '../../utils/DZQPluginCenterInjectionPolyfill';
 
 // 插件引入
 /**DZQ->plugin->register<plugin_index@thread_extension_display_hook>**/
@@ -76,6 +77,7 @@ const Index = (props) => {
       iframeData,
       plugin
     } = handleAttachmentData(data);
+
     return (
       <>
         {text && <PostContent
@@ -154,25 +156,17 @@ const Index = (props) => {
         />}
         {/* 投票帖子展示 */}
         {voteData && <VoteDisplay recomputeRowHeights={props.recomputeRowHeights} voteData={voteData} threadId={threadId} />}
-
-        {
-          DZQPluginCenter.injection('plugin_index', 'thread_extension_display_hook').map(({ render, pluginInfo }) => {
-            return (
-              <div key={pluginInfo.name}>
-                {render({
-                  site: props.site,
-                  renderData: plugin,
-                  threadData: props.data,
-                  updateListThreadIndexes: props.updateListThreadIndexes,
-                  updateThread: props.updateThread,
-                  isLogin: props.user.isLogin.bind(props.user),
-                  userInfo: props.user.userInfo,
-                  recomputeRowHeights: props.recomputeRowHeights
-                })}
-              </div>
-            )
-          })
-        }
+        <DZQPluginCenterInjectionPolyfill
+          target='plugin_index' 
+          hookName='thread_extension_display_hook' 
+          pluginProps={{
+            renderData: plugin,
+            threadData: props.data,
+            updateListThreadIndexes: props.updateListThreadIndexes,
+            updateThread: props.updateThread,
+            recomputeRowHeights: props.recomputeRowHeights
+        }}/>
+        
       </>
     );
   };

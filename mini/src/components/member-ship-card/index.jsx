@@ -82,8 +82,10 @@ const MemberShipCard = ({ site, user, onRenewalFeeClick, shipCardClassName }) =>
       } else {
         return (
           <>
-            <Text className={styles.feeDay}>{expiredDays}</Text>天&nbsp;•&nbsp;
-            {time.formatDate(expiredAt, getDateFormat())}到期
+            <View className={styles.feeDayContainer}>
+              <Text className={styles.feeDay}>{expiredDays}</Text>天
+            </View>
+            <Text>{time.formatDate(expiredAt, getDateFormat())}到期</Text>
           </>
         );
       }

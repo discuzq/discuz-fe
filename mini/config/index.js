@@ -1,4 +1,14 @@
 const path = require('path');
+const getCompileInClude = require('@discuzq/cli/config/taro/getCompileInClude');
+
+const include = [
+  path.resolve(__dirname, '../../common')
+];
+const pluginDir = getCompileInClude();
+if (pluginDir) {
+  include.push(pluginDir)
+}
+
 const config = {
   projectName: 'discuz-app-mini',
   date: '2021-2-19',
@@ -42,9 +52,7 @@ const config = {
   framework: 'react',
   mini: {
     compile: {
-      include: [
-        path.resolve(__dirname, '../../common'),
-      ],
+      include: include,
     },
     baseLevel: 20,
     postcss: {

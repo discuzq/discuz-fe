@@ -7,6 +7,12 @@
   // overflow: hidden;
   .contentWrapper{
     .content {
+
+      :global{
+        iframe{
+          max-width: 100%;
+        }
+      }
       //@include cursor-on-pc;
       cursor: text;
       width: 100%;

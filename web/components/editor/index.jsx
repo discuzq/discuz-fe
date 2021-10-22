@@ -35,7 +35,10 @@ function DVditor(props) {
     hintCustom = () => {},
     hintHide = () => {},
     site = {},
+    plugin
   } = props;
+
+
   const vditorId = 'dzq-vditor';
   let timeoutId = null;
 
@@ -543,4 +546,4 @@ function DVditor(props) {
   );
 }
 
-export default inject('threadPost', 'site')(observer(DVditor));
+export default inject('threadPost', 'site', 'plugin')(observer(DVditor));

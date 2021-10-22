@@ -19,7 +19,7 @@ import classnames from 'classnames';
 import UserInfo from '@components/thread/user-info';
 import Packet from '@components/thread/packet'
 import Avatar from '@components/avatar';
-
+import DZQPluginCenterInjection from '@discuzq/plugin-center/dist/components/DZQPluginCenterInjection';
 import { setClipboardData } from '@tarojs/taro';
 import { parseContentData } from '../../utils';
 import styles from './index.module.scss';
@@ -28,7 +28,7 @@ import styles from './index.module.scss';
 /**DZQ->plugin->register<plugin_detail@thread_extension_display_hook>**/
 
 // 帖子内容
-const RenderThreadContent = inject('index', 'site', 'user', 'thread')(
+const RenderThreadContent = inject('index', 'site', 'user', 'plugin', 'thread')(
   observer((props) => {
     const { store: threadStore, site, index, thread, user } = props;
     const { text, indexes } = threadStore?.threadData?.content || {};
@@ -295,24 +295,15 @@ const RenderThreadContent = inject('index', 'site', 'user', 'thread')(
               </Button>
             </View>
           )}
-
-          {
-            DZQPluginCenter.injection('plugin_detail', 'thread_extension_display_hook').map(({ render, pluginInfo }) => {
-              return (
-                <View key={pluginInfo.name}>
-                  {render({
-                    site: site,
-                    threadData: threadStore?.threadData,
-                    renderData: parseContent.plugin,
-                    updateListThreadIndexes: index.updateListThreadIndexes.bind(index),
-                    updateThread: thread.updateThread.bind(thread),
-                    isLogin: user.isLogin.bind(user),
-                    userInfo: user.userInfo
-                  })}
-                </View>
-              )
-            })
-          }
+          <DZQPluginCenterInjection
+            target='plugin_detail'
+            hookName='thread_extension_display_hook'
+            pluginProps={{
+              threadData: threadStore?.threadData,
+              renderData: parseContent.plugin,
+              updateListThreadIndexes: index.updateListThreadIndexes.bind(index),
+              updateThread: thread.updateThread.bind(thread),
+          }}/>
 
           {/* 标签 */}
           {(parentCategoryName || categoryName) && (

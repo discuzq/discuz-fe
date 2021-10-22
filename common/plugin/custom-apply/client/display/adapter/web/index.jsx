@@ -12,6 +12,7 @@ let countDownIns = null;
 class CustomApplyDisplay extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
       isDetailPage: props.dzqRouter.router.router.pathname === '/thread/[id]' ? true : false,
       popupShow: false,
@@ -29,6 +30,7 @@ class CustomApplyDisplay extends React.Component {
   }
 
   componentDidMount() {
+
     if (!countDownIns) countDownIns = new CountDown();
     const { renderData } = this.props;
 
@@ -160,11 +162,8 @@ class CustomApplyDisplay extends React.Component {
         threadId: tid,
         _plugin,
       };
-      console.log(renderData)
-      console.log(tid, tomId, tomValue)
-      console.log(updateThread(tomId, tomValue));
+      updateThread(tomId, tomValue);
       const newThreadData = updateListThreadIndexes(tid, tomId, tomValue);
-      console.log(newThreadData)
       if (newThreadData && recomputeRowHeights) recomputeRowHeights(newThreadData);
       Toast.info({ content: isRegistered ? '取消报名成功' : '报名成功' });
     } else Toast.error({ content: res.msg || '报名失败' });
