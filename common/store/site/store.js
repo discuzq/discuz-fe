@@ -25,7 +25,7 @@ class SiteStore {
   @observable errPageType = null;
   @observable pluginConfig = null; // 插件配置
   // @observable pluginStore = {};
-  
+
   @computed get isRegister() {
     return !this.isSmsOpen && this.wechatEnv === 'none' && this.registerClose;
   }
@@ -165,6 +165,11 @@ class SiteStore {
   // 站点有效期
   @computed get siteExpire() {
     return get(this.webConfig,'setSite.siteExpire')
+  }
+
+  // 附件上传限制数
+  @computed get attachmentLimit() {
+    return get(this.webConfig, 'setSite.attachmentLimit', 10);
   }
 }
 

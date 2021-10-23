@@ -116,7 +116,7 @@ class ThreadPCPage extends React.Component {
       currentAttachOperation,
     } = this.props;
     const { postData } = threadPost;
-    const { webConfig = {} } = site;
+    const { webConfig = {}, attachmentLimit = 9 } = site;
     const { setAttach, qcloud } = webConfig;
     const { supportImgExt, supportMaxSize } = setAttach;
     const { qcloudCosBucketName, qcloudCosBucketArea, qcloudCosSignUrl, qcloudCos } = qcloud;
@@ -232,7 +232,7 @@ class ThreadPCPage extends React.Component {
                   {/* 附件上传组件 */}
                   {(currentDefaultOperation === defaultOperation.attach || Object.keys(postData.files).length > 0) && (
                     <FileUpload
-                      limit={9}
+                      limit={attachmentLimit}
                       cosOptions={{
                         supportImgExt,
                         supportMaxSize,
@@ -267,14 +267,14 @@ class ThreadPCPage extends React.Component {
                     />
                   )}
                   <DZQPluginCenterInjectionPolyfill
-                    target='plugin_post' 
-                    hookName='post_extension_content_hook' 
+                    target='plugin_post'
+                    hookName='post_extension_content_hook'
                     pluginProps={{
                       renderData: postData.plugin,
                       deletePlugin: this.props.threadPost.deletePluginPostData,
                       updatePlugin: this.props.threadPost.setPluginPostData
                   }}/>
-                  
+
                 </div>
 
               </div>
