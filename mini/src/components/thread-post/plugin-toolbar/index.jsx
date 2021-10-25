@@ -86,9 +86,9 @@ const Index = inject('site', 'user', 'plugin', 'threadPost')(observer((props) =>
         />
       );
     });
-
+    const styl = plugShow ? { display: 'flex' } : { display: 'none' };
     return (
-      <View className={styles['plugin-icon-container']}>
+      <View className={styles['plugin-icon-container']} style={styl}>
         <View className={styles['plugin-icon']}>
           {plugs}
           <DZQPluginCenterInjection
@@ -115,7 +115,7 @@ const Index = inject('site', 'user', 'plugin', 'threadPost')(observer((props) =>
         </View>
       </View>
     );
-  }, [tep, currentplug, operationType, threadPost.postData])
+  }, [tep, currentplug, operationType, threadPost.postData, plugShow])
 
   useEffect(() => {
     if (!operationType) {
@@ -144,7 +144,8 @@ const Index = inject('site', 'user', 'plugin', 'threadPost')(observer((props) =>
   return (
     <View className={`${styles['container']} ${plugShow ? styles['container-plugin-show'] : ''}`}>
       <View className={styles['category']}>
-        {plugShow ? plug : category}
+        {plugShow ? null : category}
+        {plug}
       </View>
       <View onClick={() => {
         setplugShow(!plugShow);

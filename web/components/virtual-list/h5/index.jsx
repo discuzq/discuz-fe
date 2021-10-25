@@ -162,7 +162,7 @@ function VList(props, ref) {
             data-id={data.threadId}
             data-height={immutableHeightMap[index]}
           >
-            {renderListItem(data.type, data, flag ? measure : () => {}, {
+            {renderListItem(data.type, data, measure, {
               index,
               key,
               parent,

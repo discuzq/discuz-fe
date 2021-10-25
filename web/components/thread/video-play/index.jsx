@@ -50,7 +50,7 @@ const Index = ({
         // 暂停之前正在播放的视频
         baselayout.pauseWebPlayingVideo(e.target);
       }
-  
+
       if(baselayout.playingAudioDom) {
         // 暂停之前正在播放的音频
         baselayout.pauseWebPlayingAudio();
@@ -73,7 +73,7 @@ const Index = ({
 
     // height容错
     const newHeight = (height === 'NaN' || !height) ? 0 : height
-    
+
     setWidth(width);
     setHeight(newHeight);
   }, []);
@@ -98,6 +98,7 @@ const Index = ({
             poster={coverUrl}
             duration={time}
             playsinline={true}
+            preload='none'
           />
         )
       }

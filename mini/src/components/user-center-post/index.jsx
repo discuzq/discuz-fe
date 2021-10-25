@@ -48,7 +48,7 @@ class UserCenterPost extends React.Component {
     // 获取可新建发帖的分类
     const data = getCategoriesCanCreate();
     const parent = data[0] || {};
-    const child = !!parent.children.length ? parent.children[0] : {};
+    const child = !!parent.children?.length ? parent.children[0] : {};
     setCategorySelected({ parent, child });
     setPostData({ categoryId: child.pid || parent.pid });
     return { success: true };
@@ -78,7 +78,7 @@ class UserCenterPost extends React.Component {
       });
       setPostData({ contentText: '' });
       this.initState();
-      this.props.index.addThread(result.data);
+      this.props.index?.addThread(result.data);
     } else {
       Toast.error({
         content: result.msg || '发布失败',
@@ -96,17 +96,10 @@ class UserCenterPost extends React.Component {
           <View className={styles.userCenterPostAvatar}>
             <Avatar image={user.avatarUrl} name={user.nickname} circle />
           </View>
-          <View
-            style={{
-              width: '100%',
-            }}
-          >
+          <View style={{ width: '100%' }}>
             <View className={styles.userCenterPostInfo}>
               <View className={styles.userCenterPostInput}>
-                <Input
-                  style={{
-                    width: '100%',
-                  }}
+                <Input style={{ width: '100%' }}
                   placeholder='分享新鲜事'
                   value={this.state.value}
                   onChange={debounce((e) => {
@@ -117,17 +110,17 @@ class UserCenterPost extends React.Component {
                 />
               </View>
             </View>
-            <View className={styles.userCenterPostBtn}>
-              <Button
-                disabled={this.state.isPostDisabled}
-                onClick={this.handleClick}
-                className={styles.btn}
-                type="primary"
-              >
-                发布
-              </Button>
-            </View>
           </View>
+        </View>
+        <View className={styles.userCenterPostBtn}>
+          <Button
+            type="primary"
+            className={styles.btn}
+            disabled={this.state.isPostDisabled}
+            onClick={this.handleClick}
+          >
+            发布
+          </Button>
         </View>
       </View>
     );

@@ -1,15 +1,14 @@
 import React from 'react';
 import styles from './index.module.scss';
-import { Input, Icon, Button, Toast } from '@discuzq/design';
+import { Input, Button, Toast } from '@discuzq/design';
 import { inject, observer } from 'mobx-react';
-import Router from '@discuzq/sdk/dist/router';
-import { defaultOperation } from '@common/constants/const';
-import { THREAD_TYPE } from '@common/constants/thread-post';
+import classNames from 'classnames';
 import Avatar from '@components/avatar';
 import throttle from '@common/utils/thottle.js';
 import xss from '@common/utils/xss';
 
 // 用户中心发帖模块
+@inject('site')
 @inject('user')
 @inject('threadPost')
 @inject('index')
@@ -40,8 +39,8 @@ class UserCenterPost extends React.Component {
     }
     // 获取可新建发帖的分类
     const data = getCategoriesCanCreate();
-    const parent = data[0];
-    const child = !!parent.children.length ? parent.children[0] : {};
+    const parent = data[0] || {};
+    const child = !!parent.children?.length ? parent.children[0] : {};
     setCategorySelected({ parent, child });
     setPostData({ categoryId: child.pid || parent.pid });
     return { success: true };
@@ -59,6 +58,9 @@ class UserCenterPost extends React.Component {
     const { createThread, setPostData, postData } = this.props.threadPost;
     if (this.state.isPostDisabled) return;
     if (!postData.contentText) return Toast.info({ content: '请输入发帖内容' });
+    Toast.loading({
+      content: '发布中...',
+    });
     // 如果开始没有获取到发帖分类的数据--尝试重新获取
     if (!postData.categoryId) {
       const { success, msg } = await this.handleThreadPostData();
@@ -76,7 +78,7 @@ class UserCenterPost extends React.Component {
       });
       setPostData({ contentText: '' });
       this.initState();
-      this.props.index.addThread(result.data);
+      this.props.index?.addThread(result.data);
     } else {
       Toast.error({
         content: result.msg || '发布失败',
@@ -86,86 +88,40 @@ class UserCenterPost extends React.Component {
   }, 500);
 
   render() {
-    const { user } = this.props;
+    const { site, user } = this.props;
+    const { isPC } = site;
+
     return (
-      <div
-        className={styles.userCenterPost}
-      // onClick={() => {
-      //   Router.push({ url: '/thread/post' });
-      // }}
-      >
+      <div className={classNames(styles.userCenterPost, isPC && styles.pc)}>
         <div className={styles.userCenterPostTitle}>发帖</div>
         <div className={styles.userCenterPostContent}>
           <div className={styles.userCenterPostAvatar}>
             <Avatar image={user.avatarUrl} name={user.nickname} circle />
           </div>
-          <div
-            style={{
-              width: '100%',
-            }}
-          >
+          <div style={{ width: '100%' }}>
             <div className={styles.userCenterPostInfo}>
               <div className={styles.userCenterPostInput}>
                 <Input
-                  style={{
-                    width: '100%',
-                  }}
+                  style={{ width: '100%' }}
+                  className={styles.postInput}
                   placeholder={'分享新鲜事'}
                   onChange={this.handleChange}
                   value={this.props.threadPost?.postData?.contentText}
-                  trim
                 />
               </div>
             </div>
           </div>
         </div>
         <div className={styles.userCenterPostBtn}>
-          <Button disabled={this.state.isPostDisabled} onClick={this.handleClick} className={styles.btn} type="primary">
+          <Button
+            type="primary"
+            className={styles.btn}
+            disabled={this.state.isPostDisabled}
+            onClick={this.handleClick}
+          >
             发布
           </Button>
         </div>
-        {/* <div className={styles.userCenterPostList}>
-          {this.props.user.threadExtendPermissions[THREAD_TYPE.image] && (
-            <div className={styles.userCenterPostListItem}>
-              <Icon color={'#8590A6'} size={20} name={'PictureOutlinedBig'} />
-            </div>
-          )}
-          {this.props.user.threadExtendPermissions[THREAD_TYPE.video] && (
-            <div className={styles.userCenterPostListItem}>
-              <Icon color={'#8590A6'} size={20} name={'VideoOutlined'} />
-            </div>
-          )}
-          {this.props.user.threadExtendPermissions[THREAD_TYPE.voice] && (
-            <div className={styles.userCenterPostListItem}>
-              <Icon color={'#8590A6'} size={20} name={'MicroOutlined'} />
-            </div>
-          )}
-          {this.props.user.threadExtendPermissions[THREAD_TYPE.goods] && (
-            <div className={styles.userCenterPostListItem}>
-              <Icon color={'#8590A6'} size={20} name={'ShoppingCartOutlined'} />
-            </div>
-          )}
-          {this.props.user.threadExtendPermissions[THREAD_TYPE.reward] && (
-            <div className={styles.userCenterPostListItem}>
-              <Icon color={'#8590A6'} size={20} name={'QuestionOutlined'} />
-            </div>
-          )}
-          {this.props.user.threadExtendPermissions[defaultOperation.attach] && (
-            <div className={styles.userCenterPostListItem}>
-              <Icon color={'#8590A6'} size={20} name={'PaperClipOutlined'} />
-            </div>
-          )}
-          {this.props.user.threadExtendPermissions[defaultOperation.redpacket] && (
-            <div className={styles.userCenterPostListItem}>
-              <Icon color={'#8590A6'} size={20} name={'RedPacketOutlined'} />
-            </div>
-          )}
-          {this.props.user.threadExtendPermissions[defaultOperation.pay] && (
-            <div className={styles.userCenterPostListItem}>
-              <Icon color={'#8590A6'} size={20} name={'GoldCoinOutlined'} />
-            </div>
-          )}
-        </div> */}
       </div>
     );
   }

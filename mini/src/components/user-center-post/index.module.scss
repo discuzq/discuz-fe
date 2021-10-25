@@ -17,9 +17,9 @@
   .userCenterPostTitle {
     font-size: $font-size-middle;
     color: $text-color-primary;
-    font-weight: 600;
-    height: 22px;
-    line-height: 22px;
+    font-weight: $font-weight-regular;
+    height: $font-line-height-primary;
+    line-height: $font-line-height-primary;
   }
 
   .userCenterPostInfo {
@@ -33,23 +33,17 @@
     .userCenterPostInput {
       width: 100%;
 
-      input {
-        padding-left: $padding-4n;
-        // background-color: $body-bg-color;
-        border-color: $border-color;
-      }
       :global {
+        .dzq-input__inner {
+          border-color: $border-color;
+          padding-left: $padding-4n;
+        }
+
         .input-placeholder {
           color: $text-color-placeholder;
         }
       }
     }
-  }
-
-  .userCenterPostList {
-    padding-top: $padding-6n;
-    display: flex;
-    justify-content: space-between;
   }
 
   .userCenterPostBtn {

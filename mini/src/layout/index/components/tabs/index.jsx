@@ -120,7 +120,7 @@ const Index = forwardRef((props, ref) => {
                   }
                 >
                   {currentCategories?.map((item, index) => (
-                    <Tabs.TabPanel key={index} id={item.categoryId} label={item.name} />
+                    <Tabs.TabPanel key={index} id={item.pid} label={item.name} />
                   ))}
                 </Tabs>
               </View>

@@ -1,31 +1,29 @@
 @import '@common/styles/index.scss';
 
 .userCenterPost {
-  padding: rem($padding-4n);
-  cursor: pointer;
-  // padding-bottom: rem($padding-6n);
+  padding: $padding-4n;
 
   .userCenterPostContent {
     display: flex;
     width: 100%;
 
     .userCenterPostAvatar {
-      padding-top: rem($padding-4n);
-      margin-right: rem($margin-2n);
+      padding-top: $padding-4n;
+      margin-right: $margin-2n;
     }
   }
 
   .userCenterPostTitle {
-    font-size: rem($font-size-middle);
+    font-size: $font-size-middle;
     color: $text-color-primary;
-    font-weight: 600;
-    height: rem(22);
-    line-height: rem(22);
+    font-weight: $font-weight-regular;
+    height: $font-line-height-primary;
+    line-height: $font-line-height-primary;
   }
 
   .userCenterPostInfo {
     display: flex;
-    padding-top: rem($padding-4n);
+    padding-top: $padding-4n;
 
     input {
       -webkit-appearance: none;
@@ -34,44 +32,43 @@
     .userCenterPostInput {
       width: 100%;
 
-      input {
-        padding-left: $padding-4n;
-        // background-color: $body-bg-color;
-        border-color: $border-color;
-      }
       :global {
+        .dzq-input__inner {
+          border-color: $border-color;
+          padding-left: $padding-4n;
+        }
+
         .input-placeholder {
-          color: var(--color-text-placeholder);
+          color: $text-color-placeholder;
+          font-size: $font-size-primary;
         }
       }
     }
   }
 
-  .userCenterPostList {
-    padding-top: rem($padding-6n);
-    display: flex;
-    justify-content: space-between;
-  }
-
   .userCenterPostBtn {
     width: 100%;
     text-align: right;
-    margin-top: rem($margin-4n);
-
-    @media screen and (max-width: 800px) {
-      .btn {
-        width: rem(76);
-        height: rem(36);
-        padding: 0;
-        line-height: rem(36);
-      }
-    }
+    margin-top: $margin-4n;
 
     .btn {
-      width: rem(100);
+      width: rem(76);
       height: rem(36);
       padding: 0;
-      line-height: rem(36);
+    }
+  }
+
+  &.pc{
+    padding: $padding-6n $padding-6n $padding-4n;
+
+    .userCenterPostTitle {
+      font-size: $font-size-middle-extra;
+    }
+
+    .userCenterPostBtn{
+      .btn {
+        width: rem(100);
+      }
     }
   }
 }
