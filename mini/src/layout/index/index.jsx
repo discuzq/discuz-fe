@@ -139,7 +139,7 @@ class IndexH5Page extends React.Component {
     return (
       <BaseLayout
         showHeader={false}
-        showTabBar
+        showTabBar={!hasRedPacket}
         onRefresh={this.onRefresh}
         noMore={!isClickTab && currentPage >= totalPage}
         isFinished={isFinished}

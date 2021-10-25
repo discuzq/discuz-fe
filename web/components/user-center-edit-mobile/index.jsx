@@ -186,14 +186,10 @@ class index extends Component {
           if (calback && typeof calback === 'function') calback();
         })
         .catch((err) => {
-          console.log(err);
           Toast.error({
             content: err.Message || '发送验证码失败',
             hasMask: false,
             duration: 2000,
-          });
-          this.setState({
-            bindMobile: null,
           });
           if (calback && typeof calback === 'function') calback(err);
         });

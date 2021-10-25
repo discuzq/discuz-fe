@@ -228,7 +228,7 @@ class IndexH5Page extends React.Component {
   renderSSRContent(thread, sticks) {
     if (  process.env.DISCUZ_RUN === 'ssr' && ThreadContent ) {
       const { pageData } = thread
-      
+
       return (
         <div className='ssr-box' style={{display: 'none'}}>
           <HomeHeader />
@@ -250,7 +250,7 @@ class IndexH5Page extends React.Component {
               })
             }
           </div>
-          
+
         </div>
       );
     }
@@ -268,7 +268,7 @@ class IndexH5Page extends React.Component {
     return (
       <BaseLayout
         showHeader={false}
-        showTabBar
+        showTabBar={!hasRedPacket}
         onRefresh={this.onRefresh}
         noMore={currentPage >= totalPage}
         isFinished={isFinished}
