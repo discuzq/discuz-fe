@@ -110,7 +110,7 @@ class Index extends Component {
   // 跳转用户中心
   toUserCenter = (e, canJump, item) => {
     e.stopPropagation();
-    if (!canJump || !item.nickname || !item.userId) return;
+    if (!canJump || !item.nickname || !item.userId || item.isAnonymous) return;
     Taro.navigateTo({ url: `/userPages/user/index?id=${item.userId}` })
   }
 
