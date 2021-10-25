@@ -38,7 +38,7 @@ import MorePopop from '@components/more-popop';
 
 
 import { parseContentData } from '../utils';
-const hongbaoMini = 'https://imgcache.qq.com/operation/dianshi/other/redpacket-mini.10b46eefd630a5d5d322d6bbc07690ac4536ee2d.png';
+const hongbaoMini = 'https://cloudcache.tencentcs.com/operation/dianshi/other/redpacket-mini.10b46eefd630a5d5d322d6bbc07690ac4536ee2d.png';
 
 @inject('site')
 @inject('user')
@@ -402,7 +402,7 @@ class ThreadH5Page extends React.Component {
       });
 
       setTimeout(() => {
-        Router.push({url: '/'});
+        Router.push({ url: '/' });
       }, 1000);
 
       return;
@@ -692,16 +692,14 @@ class ThreadH5Page extends React.Component {
       this.props.index.refreshHomeData({ categoryIds: [categoryId] });
     }
     this.props.vlist.resetPosition();
-    Router.push({ url: `/` });
-
+    Router.push({ url: '/' });
   }
 
   replyAvatarClick(reply, comment, floor) {
     if (floor === 2) {
       const { userId } = reply;
       if (!userId) return;
-    Router.push({ url: `/user/${userId}` });
-
+      Router.push({ url: `/user/${userId}` });
     }
     if (floor === 3) {
       const { commentUserId } = reply;
@@ -758,7 +756,7 @@ class ThreadH5Page extends React.Component {
     const { thread: threadStore } = this.props;
     const { isReady, isCommentReady, isNoMore, totalCount, isCommentListError } = threadStore;
     const { indexes } = threadStore?.threadData?.content || {};
-    const {RED_PACKET} = parseContentData(indexes);
+    const { RED_PACKET } = parseContentData(indexes);
     const hasHongbao = RED_PACKET?.condition === 0 && RED_PACKET?.remainNumber > 0; // 是否s是回复红包且还有剩余未领完红包
 
     const fun = {
@@ -852,13 +850,13 @@ class ThreadH5Page extends React.Component {
                         replyAvatarClick={(comment, reply, floor) => this.replyAvatarClick(comment, reply, floor)}
                       ></RenderCommentList>
                       {!isCommentPositionNoMore && (
-                        // <BottomView
-                        //   onClick={() => this.onLoadMoreClick()}
-                        //   noMoreType="line"
-                        //   loadingText="点击加载更多"
-                        //   isError={isCommentListError}
-                        //   noMore={isCommentPositionNoMore}
-                        // ></BottomView>
+                      // <BottomView
+                      //   onClick={() => this.onLoadMoreClick()}
+                      //   noMoreType="line"
+                      //   loadingText="点击加载更多"
+                      //   isError={isCommentListError}
+                      //   noMore={isCommentPositionNoMore}
+                      // ></BottomView>
 
                         <div className={layout.showMore} onClick={() => this.onLoadMoreClick()}>
                           <div className={layout.hidePercent}>展开更多评论</div>

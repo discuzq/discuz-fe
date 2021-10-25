@@ -1,4 +1,11 @@
 const pluginsConfig = require('./.pluginConfig');
+
+let mergedConfig = [];
+
+if (pluginsConfig.pages.length > 0) {
+  mergedConfig = [pluginsConfig]
+}
+
 /**
  * 入口配置文件：https://taro-docs.jd.com/taro/docs/next/tutorial/
  */
@@ -86,7 +93,7 @@ const config = {
         'my/renew/index',
       ],
     },
-    pluginsConfig
+    ...mergedConfig
   ],
   permission: {
     'scope.userLocation': {

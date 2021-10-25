@@ -132,11 +132,11 @@ class MyDocument extends Document {
               var cosDocumentPreviewSDK = document.createElement('script');
               cosDocumentPreviewSDK.type = 'text/javascript';
               cosDocumentPreviewSDK.async = true;
-              cosDocumentPreviewSDK.src = "https://imgcache.qq.com/operation/dianshi/other/cos-document-preview-sdk-v0.1.1.9128e51973a36da64dfb242554132ab7f86a5125.js";
+              cosDocumentPreviewSDK.src = "https://cloudcache.tencentcs.com/operation/dianshi/other/cos-document-preview-sdk-v0.1.1.9128e51973a36da64dfb242554132ab7f86a5125.js";
               document.getElementsByTagName('body')[0].appendChild(cosDocumentPreviewSDK);
 
             }, 500)
-        `}}/>
+        ` }}/>
       </Html>
     );
   }

@@ -7,7 +7,7 @@ import { View, Text, Button, Image } from '@tarojs/components';
 import Router from '@discuzq/sdk/dist/router';
 import { inject, observer } from 'mobx-react';
 
-const TopicHeaderImg = 'https://imgcache.qq.com/operation/dianshi/other/topic-header.05dc9960be3b4aa9e8c0beab476ab7cc1ecc1639.png';
+const TopicHeaderImg = 'https://cloudcache.tencentcs.com/operation/dianshi/other/topic-header.05dc9960be3b4aa9e8c0beab476ab7cc1ecc1639.png';
 /**
  * 用户组件
  * @prop {string} title 话题标题

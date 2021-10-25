@@ -8,7 +8,8 @@ import goToLoginPage from '@common/utils/go-to-login-page';
 import Taro from '@tarojs/taro';
 import Toast from '@discuzq/design/dist/components/toast';
 import { noop } from '../utils';
-const hongbaoMini = 'https://imgcache.qq.com/operation/dianshi/other/redpacket-mini.10b46eefd630a5d5d322d6bbc07690ac4536ee2d.png';
+
+const hongbaoMini = 'https://cloudcache.tencentcs.com/operation/dianshi/other/redpacket-mini.10b46eefd630a5d5d322d6bbc07690ac4536ee2d.png';
 
 /**
  * 帖子底部内容

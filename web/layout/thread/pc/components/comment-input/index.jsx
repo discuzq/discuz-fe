@@ -11,7 +11,7 @@ import AtSelect from '@components/thread-post/at-select';
 import classnames from 'classnames';
 import { inject } from 'mobx-react';
 
-const hongbaoMini = 'https://imgcache.qq.com/operation/dianshi/other/redpacket-mini.10b46eefd630a5d5d322d6bbc07690ac4536ee2d.png';
+const hongbaoMini = 'https://cloudcache.tencentcs.com/operation/dianshi/other/redpacket-mini.10b46eefd630a5d5d322d6bbc07690ac4536ee2d.png';
 
 
 const CommentInput = inject('site')((props) => {

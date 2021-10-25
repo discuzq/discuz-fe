@@ -107,6 +107,26 @@ http.interceptors.request.use(
 // 响应结果进行设置
 http.interceptors.response.use((res) => {
   const { data, status, statusText } = res;
+
+  // ssr服务日志
+  if (process.env.NODE_ENV !== 'development' && isServer()) {
+    const content = data ? JSON.stringify(data) : '';
+    global.ssr_trace_router.spanID += 1;
+    const consoleData = {
+      ssr_log_type: 'api',
+      ...global.ssr_trace_router,
+      req_method: res.request.method,
+      req_host: res.request.host,
+      req_url: res.request.path,
+      req_ua: res.request._header,
+      res_status:res.request.res.statusCode,
+      res_msg: res.request.res.statusMessage,
+      res_content: content,
+      res_content_length: content.length
+    }
+    console.log(JSON.stringify(consoleData));
+  }
+
   // 如果4002将重定向到登录
   // if (data.Code === -4002) {
   //   LoginHelper.saveAndLogin();

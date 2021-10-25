@@ -7,7 +7,7 @@ import styles from './index.module.scss';
 // import img404 from '../../../../web/public/dzq-img/404.png';
 import Taro from '@tarojs/taro';
 
-const img404 = 'https://imgcache.qq.com/operation/dianshi/other/404.c57a3a41feb16d1530344c8b1f258e0db5e298f9.png';
+const img404 = 'https://cloudcache.tencentcs.com/operation/dianshi/other/404.c57a3a41feb16d1530344c8b1f258e0db5e298f9.png';
 
 class NotFindPage extends Component {
   componentWillMount() { }

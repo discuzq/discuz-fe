@@ -3,7 +3,7 @@ import { View, Text, Image } from '@tarojs/components';
 import Page from '@components/page';
 import styles from './index.module.scss';
 // import imgError from '../../../../web/public/dzq-img/error.png';
-const imgError = 'https://imgcache.qq.com/operation/dianshi/other/error.6332cffff6f7fcc0a193a12a7eb74cab05332bba.png';
+const imgError = 'https://cloudcache.tencentcs.com/operation/dianshi/other/error.6332cffff6f7fcc0a193a12a7eb74cab05332bba.png';
 
 class SiteError extends Component {
   componentWillMount() { }

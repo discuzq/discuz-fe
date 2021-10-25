@@ -7,7 +7,7 @@ import Page from '@components/page';
 import { ERROR_PAGE_TIPS } from '@common/constants/site';
 import styles from './index.module.scss';
 // import imgError from '../../../../web/public/dzq-img/error.png';
-const imgError = 'https://imgcache.qq.com/operation/dianshi/other/error.6332cffff6f7fcc0a193a12a7eb74cab05332bba.png';
+const imgError = 'https://cloudcache.tencentcs.com/operation/dianshi/other/error.6332cffff6f7fcc0a193a12a7eb74cab05332bba.png';
 
 @inject('site')
 @observer

@@ -78,7 +78,6 @@ class PostPage extends React.Component {
     const { fetchEmoji, emojis } = this.props.threadPost;
     if (emojis.length === 0) fetchEmoji();
     this.fetchDetail();
-
   }
 
   componentWillUnmount() {
@@ -106,7 +105,7 @@ class PostPage extends React.Component {
     if ((url || '').indexOf('/my/edit/paypwd') === -1
     && (url || '').indexOf('/pay/middle') === -1
     && (url || '').indexOf('/my/edit/find-paypwd') === -1
-    && (url || '').indexOf('/wallet/recharge') === -1) {
+    && (url || '').indexOf('/wallet') === -1) {
       if (this.vditor) this.vditor.setValue('');
       this.props.threadPost.resetPostData();
     }
@@ -150,8 +149,7 @@ class PostPage extends React.Component {
       if (ret.code === 0) {
         // 设置主题状态、是否能操作红包和悬赏
         // const { postData, isThreadPaid } = this.props.threadPost;
-        const { postData } = this.props.threadPost;
-        const { isDraft } = postData;
+        const { isDraft } = ret.data;
         // if (isThreadPaid) {
         //   Toast.info({ content: '已经支付的帖子不支持编辑', duration: 1000, hasMask: true });
         //   const timer = setTimeout(() => {
@@ -942,7 +940,7 @@ class PostPage extends React.Component {
 
   render() {
     // const { isPC } = this.props.site;
-   
+
     const pc = (
       <IndexPCPage
         setPostData={data => this.setPostData(data)}

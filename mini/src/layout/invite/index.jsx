@@ -1,16 +1,16 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import { Image } from '@tarojs/components';
+import { Image , View, Button } from '@tarojs/components';
 import Icon from '@discuzq/design/dist/components/icon/index';
 import Toast from '@discuzq/design/dist/components/toast/index';
 import Avatar from '@discuzq/design/dist/components/avatar/index';
-import { View, Button } from '@tarojs/components';
+
 import HomeHeader from '@components/home-header';
 import layout from './index.module.scss';
 // import bgImage from './../../../../web/public/dzq-img/invite-banner-bg.png';
 import NoMoreDataTip from '@components/no-more-data-tip';
 
-const bgImage = 'https://imgcache.qq.com/operation/dianshi/other/invite-banner-bg.8ebc5c7a58f15fe8979ce893715bf37422ae2e68.png';
+const bgImage = 'https://cloudcache.tencentcs.com/operation/dianshi/other/invite-banner-bg.8ebc5c7a58f15fe8979ce893715bf37422ae2e68.png';
 
 @inject('site')
 @inject('user')
@@ -51,7 +51,7 @@ class InviteH5Page extends React.Component {
             <View className={layout.user_info}>
               <View className={layout.user_info_author}>
                 <Avatar
-                  size={'big'}
+                  size="big"
                   image={inviteData.avatar}
                   text={inviteData.nickname && inviteData.nickname.substring(0, 1)}
                 />

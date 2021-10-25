@@ -43,12 +43,12 @@
     justify-content: flex-end;
     color: $white;
     text-align: center;
-    background: $primary-color url('https://imgcache.qq.com/operation/dianshi/other/walletbackground.d038c3fcc736f8c7bb086e90c5abe4df9b946fc0.png') 100% no-repeat padding-box;
+    background: $primary-color url('https://cloudcache.tencentcs.com/operation/dianshi/other/walletbackground.d038c3fcc736f8c7bb086e90c5abe4df9b946fc0.png') 100% no-repeat padding-box;
     background-size: 100% 100%;
 
     .moneyTitle {
       height: 20px;
-      
+
       font-weight: normal;
       font-size: $font-size-primary;
       line-height: 20px;
@@ -56,7 +56,7 @@
     }
     .moneyNum {
       height: 42px;
-      
+
       font-weight: 600;
       font-size: 30px;
       line-height: 42px;

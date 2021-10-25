@@ -53,5 +53,5 @@ export default function getAttachmentIconLink(type) {
       iconLink = "file-outlined.8dafcd0a20ee70430ba1d3420e015a232a64fa05.png";
       break;
   }
-  return `https://imgcache.qq.com/operation/dianshi/other/${iconLink}`;
+  return `https://cloudcache.tencentcs.com/operation/dianshi/other/${iconLink}`;
 }

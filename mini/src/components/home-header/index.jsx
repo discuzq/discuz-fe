@@ -44,8 +44,8 @@ class HomeHeader extends React.Component {
   }
 
   getLogo() {
-    const joinLogoImg = 'https://imgcache.qq.com/operation/dianshi/other/join-banner-bg.be07bc0bef2342ec905cefd82b2c4a0048adfa50.png';
-    const logoImg = 'https://imgcache.qq.com/operation/dianshi/other/admin-logo-x2.8fa268b8494228cc8187ebd3dfded18ff7463e1a.png';
+    const joinLogoImg = 'https://cloudcache.tencentcs.com/operation/dianshi/other/join-banner-bg.be07bc0bef2342ec905cefd82b2c4a0048adfa50.png';
+    const logoImg = 'https://cloudcache.tencentcs.com/operation/dianshi/other/admin-logo-x2.8fa268b8494228cc8187ebd3dfded18ff7463e1a.png';
 
 
 

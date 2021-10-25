@@ -6,9 +6,9 @@ import { View, Text, Image } from '@tarojs/components'
 
 // import hongbaoMini from '../../../../../web/public/dzq-img/redpacket-mini.png'
 
-const redPacketImg = 'https://imgcache.qq.com/operation/dianshi/other/red-packet.270fbda74e6ea8e566edc39d5774364137b8f24a.png';
-const rewardQuestion = 'https://imgcache.qq.com/operation/dianshi/other/reward-question.fea1a42822220833a0e6caeee552c7abb43cd7d7.png';
-const hongbaoMini = 'https://imgcache.qq.com/operation/dianshi/other/redpacket-mini.10b46eefd630a5d5d322d6bbc07690ac4536ee2d.png';
+const redPacketImg = 'https://cloudcache.tencentcs.com/operation/dianshi/other/red-packet.270fbda74e6ea8e566edc39d5774364137b8f24a.png';
+const rewardQuestion = 'https://cloudcache.tencentcs.com/operation/dianshi/other/reward-question.fea1a42822220833a0e6caeee552c7abb43cd7d7.png';
+const hongbaoMini = 'https://cloudcache.tencentcs.com/operation/dianshi/other/redpacket-mini.10b46eefd630a5d5d322d6bbc07690ac4536ee2d.png';
 
 /**
  * 帖子红包、悬赏视图
@@ -20,14 +20,12 @@ const Index = ({ money = 0, remainMoney = 0, number, remainNumber, type = 0, onC
   const title = useMemo(() => {
     if (type === 0) {
       return condition === 0 ? '回复领红包' : '集赞领红包'
-    } else {
-      return '评论领赏金'
     }
+      return '评论领赏金'
+
   }, [type])
 
-  const url = useMemo(() => {
-    return type === 0 ? redPacketImg : rewardQuestion;
-  }, [type])
+  const url = useMemo(() => type === 0 ? redPacketImg : rewardQuestion, [type])
 
   // 格式化金额，保留两位小数，且去除小数点后面的0
   const formatMoney = useMemo(() => {
