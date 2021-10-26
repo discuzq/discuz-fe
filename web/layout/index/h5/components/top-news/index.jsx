@@ -50,7 +50,7 @@ const TopNews = ({ data = [], router, platform = 'h5', user = null}) => {
   return (
     <div className={`${styles.list} top-news`}>
       {data?.map((item, index) => (
-        <>
+        <div key={index}>
           <SiteMapLink href={`/thread/${item.threadId}`} text={item.title}/>
           <div
             key={index}
@@ -65,7 +65,7 @@ const TopNews = ({ data = [], router, platform = 'h5', user = null}) => {
               />
             </div>
           </div>
-        </>
+        </div>
       ))}
     </div>
   );

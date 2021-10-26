@@ -238,7 +238,7 @@ class IndexPCPage extends React.Component {
       return (
         <div className='ssr-box' style={{ display: 'none' }}>
           {sticks && sticks.length > 0 && <TopNews data={sticks} platform="pc" isShowBorder={false} />}
-          <div>
+          <div className='ssr-box-list'>
             {
               pageData && pageData.length != 0 && pageData.map((item, index) => {
                 return (

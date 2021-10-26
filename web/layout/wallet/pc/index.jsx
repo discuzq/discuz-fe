@@ -81,7 +81,7 @@ class ThreadPCPage extends React.Component {
 
   fetchIncomeDetail = async () => {
     try {
-      const detailRes = await this.props.wallet.getInconmeDetail({
+      const detailRes = await this.props.wallet.getIncomeDetail({
         page: this.state.page,
         type: this.state.selectType,
         date: this.state.consumptionTime,

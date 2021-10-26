@@ -10,7 +10,6 @@ import Router from '@discuzq/sdk/dist/router';
 import Taro from '@tarojs/taro';
 
 import Page from '@components/page';
-import List from '@components/list';
 import DatePickers from '@components/thread-post/date-time-picker';
 import { formatDate } from '@common/utils/format-date.js';
 import { INCOME_DETAIL_CONSTANTS, EXPAND_DETAIL_CONSTANTS, CASH_DETAIL_CONSTANTS } from '@common/constants/wallet';
@@ -60,16 +59,20 @@ class WalletH5Page extends React.Component {
   }
 
   // 点击提现
-  toWithrawal = () => {
+  toWithdrawal = () => {
     Router.push({ url: '/subPages/wallet/withdrawal/index' });
   };
+
   // 点击充值
   toRecharge = () => {
-    Router.push({ url: '/subPages/wallet/recharge/index' });
+    Taro.navigateTo({ url: '/subPages/wallet/recharge/index' });
   };
 
   // 切换选项卡
   onTabActive = (val) => {
+    this.props.wallet.resetInfo()
+    this.props.wallet.getUserWalletInfo();
+
     this.setState({
       tabsType: val,
     });
@@ -210,7 +213,7 @@ class WalletH5Page extends React.Component {
 
   fetchIncomeDetail = async () => {
     try {
-      const detailRes = await this.props.wallet.getInconmeDetail({
+      const detailRes = await this.props.wallet.getIncomeDetail({
         page: this.state.page,
         type: this.state.selectType,
         date: this.state.consumptionTime,
@@ -472,7 +475,7 @@ class WalletH5Page extends React.Component {
           </View>
         </BaseLayout>
         <View className={layout.footer}>
-          <Button className={layout.button} onClick={this.toWithrawal} type="primary">
+          <Button className={layout.button} onClick={this.toWithdrawal} type="primary">
             提现
           </Button>
           {isShowRecharge && (

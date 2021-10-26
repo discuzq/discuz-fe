@@ -18,7 +18,7 @@ const setWalletInfoPageData = (data, obj, {
     return item
   })
 
-  if (!obj[type]) {
+  if (!obj[type] || page === 1) {
     obj[type] = {};
   }
   if (!obj[type][date]) {
@@ -27,6 +27,8 @@ const setWalletInfoPageData = (data, obj, {
   if (!obj[type][date][page]) {
     obj[type][date][page] = get(newData, 'pageData', []);
   }
+
+  obj = {...obj}
 };
 
 const getTypeStr = (code) => {
@@ -75,7 +77,7 @@ class WalletAction extends WalletStore {
 
     // 获取收入明细
     @action
-    getInconmeDetail = async ({ ...props }) => {
+    getIncomeDetail = async ({ ...props }) => {
       const { page = 1, date = time.formatDate(new Date(), 'YYYY-MM'), type = 'all' } = props;
       const param = {
         walletLogType: 'income',
@@ -259,7 +261,7 @@ class WalletAction extends WalletStore {
             msg: '充值成功',
           };
         }
-  
+
         return {
           success: false,
           msg: msg || '充值失败',

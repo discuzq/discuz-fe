@@ -2,7 +2,6 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'next/router';
 import { Tabs, Icon, Button, Toast } from '@discuzq/design';
-import Header from '@components/header';
 import WalletInfo from './components/wallet-info/index';
 import IncomeList from './components/income-list/index';
 import PayList from './components/pay-list/index';
@@ -12,7 +11,6 @@ import FilterView from './components/all-state-popup';
 import DatePickers from '@components/thread/date-picker';
 import { formatDate } from '@common/utils/format-date.js';
 import { INCOME_DETAIL_CONSTANTS, EXPAND_DETAIL_CONSTANTS, CASH_DETAIL_CONSTANTS } from '@common/constants/wallet';
-import List from '@components/list';
 import { typeFilter } from './adapter';
 import BaseLayout from '@components/base-layout'
 
@@ -59,7 +57,8 @@ class WalletH5Page extends React.Component {
 
   // 切换选项卡
   onTabActive = (val) => {
-    this.props.wallet.resetInfo()
+    this.props.wallet.resetInfo();
+    this.props.wallet.getUserWalletInfo();
     this.setState({
       tabsType: val,
     });
@@ -191,7 +190,7 @@ class WalletH5Page extends React.Component {
 
   fetchIncomeDetail = async () => {
     try {
-      const detailRes = await this.props.wallet.getInconmeDetail({
+      const detailRes = await this.props.wallet.getIncomeDetail({
         page: this.state.page,
         type: this.state.selectType,
         date: this.state.consumptionTime,

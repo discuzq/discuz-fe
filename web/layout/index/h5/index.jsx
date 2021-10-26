@@ -234,7 +234,7 @@ class IndexH5Page extends React.Component {
           <HomeHeader />
           {this.renderTabs()}
           {this.renderHeaderContent()}
-          <div>
+          <div className='ssr-box-list'>
             {
               pageData && pageData.length != 0 && pageData.map((item, index) => {
                 return (
