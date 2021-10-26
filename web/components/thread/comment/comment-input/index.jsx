@@ -43,11 +43,8 @@ const CommentInput = inject('site')(inject('user')((props) => {
 
   const onEventClick = useCallback((e) => {
     e && e.stopPropagation();
-    if (e.target.id === 'emojiBtn') {
-      // setShowEmojis(!showEmojis);
-      return;
-    }
-    setCursorPos(0);
+    if (e.target.id === 'emojiBtn') return;
+
     setShowEmojis(false);
   }, []);
 
@@ -72,7 +69,6 @@ const CommentInput = inject('site')(inject('user')((props) => {
       return;
     }
 
-    setCursorPos(0);
     setShowEmojis(!showEmojis);
 
     // 请求表情地址
@@ -87,23 +83,18 @@ const CommentInput = inject('site')(inject('user')((props) => {
 
   // 完成选择表情
   const onEmojiClick = (emoji) => {
-    // 在光标位置插入
-    let insertPosition = 0;
-    if (cursorPos === 0) {
-      insertPosition = textareaRef?.current?.selectionStart || 0;
-    } else {
-      insertPosition = cursorPos;
-    }
-    const newValue = value.substr(0, insertPosition) + (emoji.code || '') + value.substr(insertPosition);
+    const newValue = value.substr(0, cursorPos) + (emoji.code || '') + value.substr(cursorPos);
     setValue(newValue);
-    setCursorPos(insertPosition + emoji.code.length);
-
-    // setShowEmojis(false);
+    setCursorPos(cursorPos + emoji.code.length);
   };
 
   const onFocus = (e) => {
     typeof props.onFocus === 'function' && props.onFocus(e);
   };
+
+  const onBlur = (e) => {
+    setCursorPos(e.target.selectionStart)
+  }
 
   const style = {
     maxWidth: '100%',
@@ -134,6 +125,7 @@ const CommentInput = inject('site')(inject('user')((props) => {
           disabled={loading}
           ref={textareaRef}
           onFocus={onFocus}
+          onBlur={onBlur}
         ></Input>
       </div>
 
