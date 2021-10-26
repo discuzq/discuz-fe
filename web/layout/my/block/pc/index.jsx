@@ -2,10 +2,7 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'next/router';
 import styles from './index.module.scss';
-import SectionTitle from '@components/section-title';
 import BaseLayout from '@components/base-layout';
-import List from '@components/list';
-import Users from '@layout/search/h5/components/active-users';
 import Copyright from '@components/copyright';
 import ShieldList from './components/shield-list';
 import UserCenterFansPc from '@components/user-center/fans-pc';
@@ -46,6 +43,11 @@ class BlockPcPage extends React.Component {
       this.props.user.clearUserShield();
     }
   }
+
+  // 点击屏蔽项去到他人页面
+  handleItemClick = (item) => {
+    this.props.router.push(`/user/${item.denyUserId}`);
+  };
 
   // 加载更多函数
   loadMore = async () => {
@@ -88,7 +90,7 @@ class BlockPcPage extends React.Component {
           icon={{ type: 3, name: 'ScreenOutlined' }}
           rightText={`共有${userShieldTotalCount}位用户`}
         >
-          <ShieldList data={userShield} />
+          <ShieldList data={userShield} onItemClick={this.handleItemClick} />
         </SidebarPanel>
       </BaseLayout>
     );

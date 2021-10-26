@@ -1,14 +1,8 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import Router from '@discuzq/sdk/dist/router';
 import { withRouter } from 'next/router';
-import Header from '@components/header';
-import List from '@components/list';
-import NoData from '@components/no-data';
-import { Button, Spin } from '@discuzq/design';
 import styles from './index.module.scss';
 import Avatar from '@components/avatar';
-import throttle from '@common/utils/thottle';
 import BaseLayout from '@components/base-layout';
 
 @inject('site')
@@ -44,9 +38,9 @@ class Index extends React.Component {
     this.props.router.events.off('routeChangeStart', this.beforeRouterChange);
   }
 
-  // 点击头像去到他人页面
+  // 点击屏蔽项去到他人页面
   handleOnClick = (item) => {
-    Router.push({ url: `/user/${item.denyUserId}` });
+    this.props.router.push(`/user/${item.denyUserId}`);
   };
 
   // 加载更多函数
