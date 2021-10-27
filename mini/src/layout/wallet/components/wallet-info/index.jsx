@@ -1,4 +1,5 @@
 import React from 'react';
+import { IMG_SRC_HOST } from '@common/constants/site';
 import { inject, observer } from 'mobx-react';
 import { View, Text } from '@tarojs/components';
 import styles from './index.module.scss';
@@ -18,6 +19,7 @@ class WalletInfo extends React.Component {
     return (
       <View
         className={styles.container}
+        style={{backgroundImage: `url(${IMG_SRC_HOST}/assets/walletbackground.d038c3fcc736f8c7bb086e90c5abe4df9b946fc0.png)`}}
       >
         <View className={styles.totalAmount}>
           <View className={styles.moneyTitle}>当前总金额</View>

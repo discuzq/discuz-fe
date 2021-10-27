@@ -1,4 +1,5 @@
 import React from 'react';
+import { IMG_SRC_HOST } from '@common/constants/site';
 import styles from './index.module.scss';
 import Icon from '@discuzq/design/dist/components/icon/index';
 import { inject, observer } from 'mobx-react';
@@ -44,8 +45,8 @@ class HomeHeader extends React.Component {
   }
 
   getLogo() {
-    const joinLogoImg = 'https://cloudcache.tencentcs.com/operation/dianshi/other/join-banner-bg.be07bc0bef2342ec905cefd82b2c4a0048adfa50.png';
-    const logoImg = 'https://cloudcache.tencentcs.com/operation/dianshi/other/admin-logo-x2.8fa268b8494228cc8187ebd3dfded18ff7463e1a.png';
+    const joinLogoImg = `${IMG_SRC_HOST}/assets/join-banner-bg.be07bc0bef2342ec905cefd82b2c4a0048adfa50.png`;
+    const logoImg = `${IMG_SRC_HOST}/assets/admin-logo-x2.8fa268b8494228cc8187ebd3dfded18ff7463e1a.png`;
 
 
 

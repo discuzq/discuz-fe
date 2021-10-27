@@ -4,13 +4,14 @@ import { Image , View, Button } from '@tarojs/components';
 import Icon from '@discuzq/design/dist/components/icon/index';
 import Toast from '@discuzq/design/dist/components/toast/index';
 import Avatar from '@discuzq/design/dist/components/avatar/index';
+import { IMG_SRC_HOST } from '@common/constants/site';
 
 import HomeHeader from '@components/home-header';
 import layout from './index.module.scss';
 // import bgImage from './../../../../web/public/dzq-img/invite-banner-bg.png';
 import NoMoreDataTip from '@components/no-more-data-tip';
 
-const bgImage = 'https://cloudcache.tencentcs.com/operation/dianshi/other/invite-banner-bg.8ebc5c7a58f15fe8979ce893715bf37422ae2e68.png';
+const bgImage = `${IMG_SRC_HOST}/assets/invite-banner-bg.8ebc5c7a58f15fe8979ce893715bf37422ae2e68.png`;
 
 @inject('site')
 @inject('user')

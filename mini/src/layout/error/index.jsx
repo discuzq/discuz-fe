@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import Button from '@discuzq/design/dist/components/button';
 import { View, Text, Image } from '@tarojs/components';
 import Taro from '@tarojs/taro';
+import { IMG_SRC_HOST } from '@common/constants/site';
 import styles from './index.module.scss';
 // import error from '../../public/dzq-img/error.png';
-const error = 'https://cloudcache.tencentcs.com/operation/dianshi/other/error.6332cffff6f7fcc0a193a12a7eb74cab05332bba.png';
+const error = `${IMG_SRC_HOST}/assets/error.6332cffff6f7fcc0a193a12a7eb74cab05332bba.png`;
 
 export default function ErrorPage(props) {
   const [text] = useState(props.text || '服务器错误 SERVER ERROR');

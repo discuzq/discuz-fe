@@ -36,8 +36,9 @@ import styles from './post/index.module.scss';
 import Router from '@discuzq/sdk/dist/router';
 import canPublish from '@common/utils/can-publish';
 import { parseContentData } from './utils';
+import { IMG_SRC_HOST } from '@common/constants/site';
 
-const hongbaoMini = 'https://cloudcache.tencentcs.com/operation/dianshi/other/redpacket-mini.10b46eefd630a5d5d322d6bbc07690ac4536ee2d.png';
+const hongbaoMini = `${IMG_SRC_HOST}/assets/redpacket-mini.10b46eefd630a5d5d322d6bbc07690ac4536ee2d.png`;
 
 @inject('site')
 @inject('user')

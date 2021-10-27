@@ -17,6 +17,8 @@ export const ERROR_PAGE_TIPS = {
   apply: '出bug了 页面暂时无法展示'
 }
 
+export const IMG_SRC_HOST = ENV_CONFIG.COMMON_BASE_URL;
+
 /**
  * 后端错误码
 **/

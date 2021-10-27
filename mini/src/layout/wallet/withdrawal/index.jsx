@@ -5,6 +5,7 @@ import Toast from '@discuzq/design/dist/components/toast/index';
 import Icon from '@discuzq/design/dist/components/icon/index';
 import Dialog from '@discuzq/design/dist/components/dialog/index';
 import { View } from '@tarojs/components';
+import { IMG_SRC_HOST } from '@common/constants/site';
 import classNames from 'classnames';
 import MoneyInput from './components/money-input';
 import Payment from './components/payment';
@@ -150,7 +151,7 @@ class Withdrawal extends React.Component {
           <View className={styles.main}>
             {/* 自定义顶部返回 */}
             {this.renderTitleContent()}
-            <View className={styles.totalAmount}>
+            <View className={styles.totalAmount} style={{backgroundImage: `url(${IMG_SRC_HOST}/assets/walletbackground.d038c3fcc736f8c7bb086e90c5abe4df9b946fc0.png)`}}>
               <View className={styles.moneyTitle}>可提现金额</View>
               <View className={styles.moneyNum}>{this.props.walletData?.availableAmount}</View>
             </View>

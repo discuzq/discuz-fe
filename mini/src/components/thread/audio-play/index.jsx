@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { inject, observer } from 'mobx-react';
+import { IMG_SRC_HOST } from '@common/constants/site';
 import styles from './index.module.scss';
 import Audio from '@discuzq/design/dist/components/audio/index';
 import { noop } from '../utils';
@@ -7,7 +8,7 @@ import { View, Image } from '@tarojs/components'
 import Taro from '@tarojs/taro';
 // import parAudioImg from '../../../../../web/public/dzq-img/pay-audio.png';
 
-const parAudioImg = 'https://cloudcache.tencentcs.com/operation/dianshi/other/pay-audio.c99a58e762f9bb2b4c54bc59bf00a6b6613afd91.png';
+const parAudioImg = `${IMG_SRC_HOST}/assets/pay-audio.c99a58e762f9bb2b4c54bc59bf00a6b6613afd91.png`;
 
 /**
  * 语音

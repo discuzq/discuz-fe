@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react';
 import Button from '@discuzq/design/dist/components/button/index';
 import Icon from '@discuzq/design/dist/components/icon/index';
 import { View } from '@tarojs/components';
+import { IMG_SRC_HOST } from '@common/constants/site';
 import classNames from 'classnames';
 import MoneyInput from '../withdrawal/components/money-input';
 import styles from './index.module.scss';
@@ -126,7 +127,7 @@ class Recharge extends React.Component {
           <View className={styles.main}>
             {/* 自定义顶部返回 */}
             {this.renderTitleContent()}
-            <View className={styles.totalAmount}>
+            <View className={styles.totalAmount} style={{backgroundImage: `url(${IMG_SRC_HOST}/assets/walletbackground.d038c3fcc736f8c7bb086e90c5abe4df9b946fc0.png)`}}>
               <View className={styles.moneyTitle}>充值</View>
             </View>
             <View className={styles.moneyInput}>

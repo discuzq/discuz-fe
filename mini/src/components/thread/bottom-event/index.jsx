@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useEffect } from 'react';
+import { IMG_SRC_HOST } from '@common/constants/site';
 import styles from './index.module.scss';
 import Tip from '../tip';
 import Icon from '@discuzq/design/dist/components/icon/index';
@@ -9,7 +10,7 @@ import Taro from '@tarojs/taro';
 import Toast from '@discuzq/design/dist/components/toast';
 import { noop } from '../utils';
 
-const hongbaoMini = 'https://cloudcache.tencentcs.com/operation/dianshi/other/redpacket-mini.10b46eefd630a5d5d322d6bbc07690ac4536ee2d.png';
+const hongbaoMini = `${IMG_SRC_HOST}/assets/redpacket-mini.10b46eefd630a5d5d322d6bbc07690ac4536ee2d.png`;
 
 /**
  * 帖子底部内容

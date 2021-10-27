@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { IMG_SRC_HOST } from '@common/constants/site';
 import styles from './index.module.scss';
 import { View, Text, Image } from '@tarojs/components'
 // import redPacketImg from '../../../../../web/public/dzq-img/red-packet.png';
@@ -6,9 +7,9 @@ import { View, Text, Image } from '@tarojs/components'
 
 // import hongbaoMini from '../../../../../web/public/dzq-img/redpacket-mini.png'
 
-const redPacketImg = 'https://cloudcache.tencentcs.com/operation/dianshi/other/red-packet.270fbda74e6ea8e566edc39d5774364137b8f24a.png';
-const rewardQuestion = 'https://cloudcache.tencentcs.com/operation/dianshi/other/reward-question.fea1a42822220833a0e6caeee552c7abb43cd7d7.png';
-const hongbaoMini = 'https://cloudcache.tencentcs.com/operation/dianshi/other/redpacket-mini.10b46eefd630a5d5d322d6bbc07690ac4536ee2d.png';
+const redPacketImg = `${IMG_SRC_HOST}/assets/red-packet.270fbda74e6ea8e566edc39d5774364137b8f24a.png`;
+const rewardQuestion = `${IMG_SRC_HOST}/assets/reward-question.fea1a42822220833a0e6caeee552c7abb43cd7d7.png`;
+const hongbaoMini = `${IMG_SRC_HOST}/assets/redpacket-mini.10b46eefd630a5d5d322d6bbc07690ac4536ee2d.png`;
 
 /**
  * 帖子红包、悬赏视图

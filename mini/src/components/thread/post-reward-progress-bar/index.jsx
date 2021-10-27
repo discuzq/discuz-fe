@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import Progress from '@discuzq/design/dist/components/progress/index';
+import { IMG_SRC_HOST } from '@common/constants/site';
 
 import styles from './index.module.scss';
 import { View, Text, Image } from '@tarojs/components'
@@ -7,8 +8,8 @@ import { View, Text, Image } from '@tarojs/components'
 // import redpacketMiniImg from '../../../../../web/public/dzq-img/redpacket-mini.png';
 // import coinImg from '../../../../../web/public/dzq-img/coin.png';
 
-const coinImg = 'https://cloudcache.tencentcs.com/operation/dianshi/other/coin.e66d1d9205f2d6a18b38fe29b733eb109e168504.png';
-const redpacketMiniImg = 'https://cloudcache.tencentcs.com/operation/dianshi/other/redpacket-mini.10b46eefd630a5d5d322d6bbc07690ac4536ee2d.png';
+const coinImg = `${IMG_SRC_HOST}/assets/coin.e66d1d9205f2d6a18b38fe29b733eb109e168504.png`;
+const redpacketMiniImg = `${IMG_SRC_HOST}/assets/redpacket-mini.10b46eefd630a5d5d322d6bbc07690ac4536ee2d.png`;
 
 /**
  * 帖子奖励进度条
