@@ -8,12 +8,12 @@ import { inject, observer } from 'mobx-react';
 import UserCenterThreads from '@components/user-center-threads';
 import BaseLayout from '@components/base-layout';
 import Router from '@discuzq/sdk/dist/router';
+import Taro, { getImageInfo, getCurrentInstance, eventCenter } from '@tarojs/taro';
 import { View, Text } from '@tarojs/components';
-import Taro, { getCurrentInstance, eventCenter } from '@tarojs/taro';
+
 import SectionTitle from '@components/section-title';
 import BottomView from '@components/list/BottomView';
 import ImagePreviewer from '@discuzq/design/dist/components/image-previewer/index';
-import checkImgExists from '@common/utils/check-image-exists';
 
 @inject('site')
 @inject('user')
@@ -24,7 +24,7 @@ class H5OthersPage extends React.Component {
     super(props);
     this.state = {
       fetchUserInfoLoading: true,
-      previewBackgroundUrl: null // 预览背景图片链接
+      previewBackgroundUrl: null, // 预览背景图片链接
     };
 
     this.previewBackgroundLoading = false; // 预览背景图片是否在预加载
@@ -92,6 +92,8 @@ class H5OthersPage extends React.Component {
 
       await this.props.user.getTargetUserInfo({ userId: this.targetUserId });
 
+      await this.getBackgroundUrl();
+
       this.setState({
         fetchUserInfoLoading: false,
       });
@@ -112,6 +114,7 @@ class H5OthersPage extends React.Component {
     this.setNavigationBarStyle();
     const { id = '' } = getCurrentInstance().router.params;
     const myId = this.props.user?.id;
+
     if (String(myId) === id) {
       Router.replace({ url: '/userPages/my/index' });
       return;
@@ -199,34 +202,45 @@ class H5OthersPage extends React.Component {
   };
 
   getBackgroundUrl = async () => {
-    if (this.state.previewBackgroundUrl) return;
-    let backgroundUrl = '';
     const { id = '' } = getCurrentInstance().router.params;
+
+    let backgroundPreviewUrl = '';
+
     if (id && this.props.user?.targetUsers[id]) {
       const targetUsers = this.props.user.targetUsers[id];
-      backgroundUrl = await checkImgExists(targetUsers.originalBackGroundUrl, targetUsers.backgroundUrl);
+      if (targetUsers.originalBackGroundUrl) {
+        try {
+          await getImageInfo({
+            src: targetUsers.originalBackGroundUrl,
+          });
+          backgroundPreviewUrl = targetUsers.originalBackGroundUrl;
+        } catch (e) {
+          console.log(e);
+        }
+      }
+
+      if (targetUsers.backgroundUrl) {
+        if (!backgroundPreviewUrl) {
+          try {
+            await getImageInfo({
+              src: targetUsers.backgroundUrl,
+            });
+            backgroundPreviewUrl = targetUsers.backgroundUrl;
+          } catch (e) {
+            console.log(e);
+          }
+        }
+      }
+
     }
-    backgroundUrl && this.setState({
-      previewBackgroundUrl: backgroundUrl
-    })
+
+    if (backgroundPreviewUrl) {
+      this.setState({
+        previewBackgroundUrl: backgroundPreviewUrl,
+      });
+    }
+
   };
-
-  previewBackgroundPreLoad = async () => {
-    const { previewBackgroundUrl } = this.state;
-    const { id = '' } = getCurrentInstance().router.params;
-    const { user } = this.props;
-
-    if( !id || !user.targetUsers[id] || previewBackgroundUrl || this.previewBackgroundLoading){
-      return;
-    }
-    this.previewBackgroundLoading = true;
-    const imgUrl = await checkImgExists(user.targetUsers[id].originalBackGroundUrl, user.targetUsers[id].backgroundUrl);
-    this.previewBackgroundLoading = false;
-    this.setState({
-      previewBackgroundUrl: imgUrl
-    })
-
-  }
 
   showPreviewerRef = () => {
     if (this.previewerRef.current) {
@@ -247,9 +261,8 @@ class H5OthersPage extends React.Component {
     const { targetUserId } = this;
     const { threadList } = this.props;
     const { lists } = threadList;
-    const { previewBackgroundUrl } = this.state
+    const { previewBackgroundUrl } = this.state;
 
-    this.previewBackgroundPreLoad(); // 背景图预加载
     const userThreadsList = threadList.getList({
       namespace: `user/${targetUserId}`,
     });
@@ -269,8 +282,6 @@ class H5OthersPage extends React.Component {
       key: 'currentPage',
     });
 
-    !previewBackgroundUrl && this.getBackgroundUrl();
-
     return (
       <BaseLayout
         showHeader={false}
@@ -287,7 +298,7 @@ class H5OthersPage extends React.Component {
           )}
           <View
             style={{
-              display: !this.state.fetchUserInfoLoading ? 'block' : 'none'
+              display: !this.state.fetchUserInfoLoading ? 'block' : 'none',
             }}
           >
             <View onClick={this.handlePreviewBgImage}>
@@ -320,11 +331,7 @@ class H5OthersPage extends React.Component {
           </View>
         </View>
         {previewBackgroundUrl && (
-          <ImagePreviewer
-            ref={this.previewerRef}
-            imgUrls={[previewBackgroundUrl]}
-            currentUrl={previewBackgroundUrl}
-          />
+          <ImagePreviewer ref={this.previewerRef} imgUrls={[previewBackgroundUrl]} currentUrl={previewBackgroundUrl} />
         )}
       </BaseLayout>
     );

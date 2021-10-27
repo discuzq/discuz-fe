@@ -17,7 +17,7 @@ const STATUS_MAP = {
   4: '待打款',
   5: '已打款',
   6: '打款失败',
-}
+};
 
 @observer
 class IncomeList extends React.Component {
@@ -27,25 +27,31 @@ class IncomeList extends React.Component {
   }
 
   render() {
-    const { itemKey, dataLength } = this.props
-    const { cashApplyAmount, tradeTime, cashStatus, tradeNo } = this.props.withdrawalVal
+    const { itemKey, dataLength } = this.props;
+    const { cashApplyAmount, tradeTime, cashStatus, tradeNo, receiveAccount } = this.props.withdrawalVal;
     return (
       <div className={styles.container}>
         <div className={styles.content}>
           <div className={styles.text}>提现</div>
           <div className={styles.money}>{cashApplyAmount}</div>
         </div>
+
+        <div className={styles.footer}>
+          <div className={styles.time}>{tradeTime ? time.formatDate(tradeTime, 'YYYY-MM-DD HH:mm') : '暂无时间'}</div>
+          <div className={styles[`withdrawalStatus${cashStatus}`]}>{STATUS_MAP[cashStatus]}</div>
+        </div>
+
         <div className={styles.footer}>
           <div className={styles.time}>
-            {tradeTime ? time.formatDate(tradeTime, 'YYYY-MM-DD HH:mm') : '暂无时间'}
-          </div>
-          <div className={styles[`withdrawalStatus${cashStatus}`]}>
-            {STATUS_MAP[cashStatus]}
+            <span>流水号：</span>
+            <span>{tradeNo || '暂无'}</span>
           </div>
         </div>
-        {/* // FIXME:这里的结构有问题 怪怪的 所以只能用数组长度取消底部边框线 */}
-        <div className={styles.serialNumber} style={{borderBottom: itemKey === dataLength - 1 && 0}}>
-          <span>流水号:</span><span>{tradeNo || '暂无'}</span>
+        <div className={styles.footer}>
+          <div className={styles.time}>
+            <span>收款账号：</span>
+            <span className={styles.receiveAccount}>{receiveAccount || '暂无'}</span>
+          </div>
         </div>
       </div>
     );

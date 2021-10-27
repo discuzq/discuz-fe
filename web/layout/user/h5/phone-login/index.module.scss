@@ -1,8 +1,6 @@
 @import '@common/styles/mixin/login.scss';
 @import '@common/styles/index.scss';
-.container {
-  height: 100vh;
-}
+.container {}
 
 .content {
   @include content;

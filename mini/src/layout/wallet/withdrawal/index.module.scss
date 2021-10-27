@@ -11,6 +11,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  flex: 1;
 
   .topBar {
     position: fixed;
@@ -141,4 +142,24 @@
     max-width: 200px;
     @include text-ellipsis();
   }
+}
+
+.payment {
+  flex: 1;
+  width: 100%;
+  margin-top: 10px;
+}
+
+
+.title {
+  font-size: rem($font-size-middle);
+  color: $text-color-primary;
+  margin-top: rem(rem($margin-4n));
+}
+
+.info {
+  margin-top: rem($margin-2n);
+  font-size: rem($font-size-base);
+  color: $text-color-regular;
+  line-height: $font-line-height-base
 }

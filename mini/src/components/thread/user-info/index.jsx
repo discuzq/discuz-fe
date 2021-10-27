@@ -54,7 +54,7 @@ export default function UserInfo(props) {
       <View className={styles.right}>
         <View className={styles.info}>
           <View className={styles.name} onClick={(e) => props.onClick(e)}>{props.name}</View>
-          {!props.isAnonymous && props.groupName && <View className={`${styles.groupName} ${tagsNumber > 2 ? styles.groupNameText : ''}`}>{props.groupName}</View>}
+          {!props.isAnonymous && props.groupName && <View className={`${styles.groupName} ${tagsNumber < 3 ? styles.groupName2 : styles.groupName3}`}>{props.groupName}</View>}
         </View>
 
         <View className={styles.meta}>

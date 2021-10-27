@@ -142,7 +142,7 @@ class WeixinBindQrCodePage extends React.Component {
       setAccessToken({
         accessToken: loginToken,
       });
-      loginHelper.restore();
+      window.location.href = '/';
     }
   };
 

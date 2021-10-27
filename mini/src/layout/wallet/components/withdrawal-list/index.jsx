@@ -5,7 +5,6 @@ import { diffDate } from '@common/utils/diff-date';
 import { time } from '@discuzq/sdk/dist/index';
 import styles from './index.module.scss';
 
-
 const STATUS_MAP = {
   1: '待审核',
   2: '审核通过',
@@ -24,7 +23,7 @@ class IncomeList extends React.Component {
 
   render() {
     const { itemKey, dataLength } = this.props;
-    const { cashApplyAmount, tradeTime, cashStatus, tradeNo } = this.props.withdrawalVal;
+    const { cashApplyAmount, tradeTime, cashStatus, tradeNo, receiveAccount } = this.props.withdrawalVal;
     return (
       <View className={styles.container}>
         <View className={styles.content}>
@@ -32,13 +31,22 @@ class IncomeList extends React.Component {
           <View className={styles.money}>{cashApplyAmount}</View>
         </View>
         <View className={styles.footer}>
-          <View className={styles.time}>{tradeTime ? time.formatDate(tradeTime,  'YYYY-MM-DD HH:mm') : ''}</View>
+          <View className={styles.time}>{tradeTime ? time.formatDate(tradeTime, 'YYYY-MM-DD HH:mm') : '暂无时间'}</View>
           <View className={styles[`withdrawalStatus${cashStatus}`]}>{STATUS_MAP[cashStatus]}</View>
         </View>
-        {/* // FIXME:这里的结构有问题 怪怪的 所以只能用数组长度取消底部边框线 */}
-        <View className={styles.serialNumber} style={{ borderBottom: itemKey === dataLength - 1 && 0 }}>
-          <Text>流水号:</Text>
-          <Text>{tradeNo || '暂无'}</Text>
+
+        <View className={styles.footer}>
+          <View className={styles.time}>
+            <Text>流水号：</Text>
+            <Text>{tradeNo || '暂无'}</Text>
+          </View>
+        </View>
+
+        <View className={styles.footer}>
+          <View className={styles.time}>
+            <Text>收款账号：</Text>
+            <Text>{receiveAccount || '暂无'}</Text>
+          </View>
         </View>
       </View>
     );

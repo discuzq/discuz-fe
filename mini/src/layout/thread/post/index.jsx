@@ -104,7 +104,7 @@ class Index extends Component {
   inst = getCurrentInstance();
 
   // 插件使用弹窗
-  showPluginDialog( component ) {
+  showPluginDialog(component) {
     this.setState({
       pluginDialogShow: true,
       pluginDialogContent: component
@@ -180,11 +180,11 @@ class Index extends Component {
       //   return;
       // }
       // 更改交互：已发布帖子可以编辑内容，但是不能编辑红包或者悬赏属性
-        this.setState({
-          postType: isDraft ? 'isDraft' : 'isEdit',
-          canEditRedpacket: isDraft,
-          canEditReward: isDraft,
-        });
+      this.setState({
+        postType: isDraft ? 'isDraft' : 'isEdit',
+        canEditRedpacket: isDraft,
+        canEditReward: isDraft,
+      });
       const status = isDraft ? THREAD_STATUS.draft : THREAD_STATUS.edit;
       threadPost.setThreadStatus(status);
       threadPost.formatThreadDetailToPostData(ret.data, true);
@@ -396,7 +396,7 @@ class Index extends Component {
 
     let mediaFile = file;
     if (type === 'audio') {
-      mediaFile = (({fileSize: size, tempFilePath}) => ({size, tempFilePath}))(file);
+      mediaFile = (({ fileSize: size, tempFilePath }) => ({ size, tempFilePath }))(file);
     }
     VodUploader.start({
       mediaFile,
@@ -415,7 +415,7 @@ class Index extends Component {
         }
       },
       // 上传中回调，获取上传进度等信息
-      progress (result) {
+      progress(result) {
       },
       // 上传完成回调，获取上传后的视频 URL 等信息
       finish: async (result) => {
@@ -455,7 +455,7 @@ class Index extends Component {
         // this.scrollerIntoView();
       },
       // 上传错误回调，处理异常
-      error (result) {
+      error(result) {
         Taro.showToast({
           title: '上传失败',
           icon: 'none',
@@ -472,7 +472,7 @@ class Index extends Component {
   redpacketContent = () => {
     const { postData, redpacketTotalAmount: amount } = this.props.threadPost;
     const { redpacket: { rule, number, condition, likenum } } = postData;
-    return `${rule === 1 ? '随机红包' : '定额红包'}\\总金额${amount}元\\${number}个${condition === 1 && likenum > 0 ?  `\\集赞个数${likenum}` : ''}`;
+    return `${rule === 1 ? '随机红包' : '定额红包'}\\总金额${amount}元\\${number}个${condition === 1 && likenum > 0 ? `\\集赞个数${likenum}` : ''}`;
   }
 
   // 验证码滑动成功的回调
@@ -657,18 +657,15 @@ class Index extends Component {
   }
 
   setIndexPageData = () => {
-    const { threadId, data } = this.state;
-    const { params } = this.inst.router;
-    // 更新帖子到首页列表
-    if (params && params.id) {
+    const { postType, threadId, data } = this.state;
+    const { pid = '' } = data;
+
+    // 再编辑发布成功，更新主题到首页
+    if (postType === 'isEdit') {
       this.props.index.updateAssignThreadAllData(threadId, data);
-      // 添加帖子到首页数据
-    } else {
-      const { pid = '' } = data;
-      // 首页如果是全部或者是当前分类，则执行数据添加操作
-      if (this.props.index.isNeedAddThread(pid) && data?.isApproved) {
-        this.props.index.addThread(data);
-      }
+      // 首次发布和草稿发布成功，首页如果是全部或者是当前分类且无需审核，则执行数据添加操作
+    } else if (this.props.index.isNeedAddThread(pid) && data?.isApproved) {
+      this.props.index.addThread(data);
     }
   };
 
@@ -797,7 +794,7 @@ class Index extends Component {
           <View className={styles.topBar} style={navStyle} onClick={e => e.stopPropagation()}>
             <Icon name="RightOutlined" onClick={() => this.handlePageJump(false)} />
             <View className={styles['topBar-title']}>
-              <View className={styles['topBar-title-inner']}>{ headTitle ?  `发布 - ${headTitle}` : '发布' }</View>
+              <View className={styles['topBar-title-inner']}>{headTitle ? `发布 - ${headTitle}` : '发布'}</View>
             </View>
           </View>
 
@@ -843,7 +840,7 @@ class Index extends Component {
                         deleteShow
                         src={video.thumbUrl}
                         onDelete={() => setPostData({ video: {} })}
-                        onVideoLoaded={() => {}}
+                        onVideoLoaded={() => { }}
                       />
                     )}
                   </View>
@@ -869,7 +866,7 @@ class Index extends Component {
                     updatePlugin: this.props.threadPost.setPluginPostData,
                     showPluginDialog: this.showPluginDialog,
                     closePluginDialog: this.closePluginDialog
-                }}/>
+                  }} />
               </View>
 
             </View>

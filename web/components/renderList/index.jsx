@@ -33,7 +33,7 @@ const columns = [
  * @returns
  */
 function RenderList({ columns = [], data = [], className = '' }) {
-  const titles = columns.map(item => item.title);
+  const titles = columns.map((item) => item.title);
 
   return (
     <div className={classnames('renderList', className)}>
@@ -43,12 +43,13 @@ function RenderList({ columns = [], data = [], className = '' }) {
           display: 'flex',
         }}
       >
-        {titles.map(title => (
+        {columns.map(({ title, style }) => (
           <div
             key={title}
             className={'listTitle'}
             style={{
               width: `${100 / columns.length}%`,
+              ...style,
             }}
           >
             {title}
@@ -64,12 +65,13 @@ function RenderList({ columns = [], data = [], className = '' }) {
               display: 'flex',
             }}
           >
-            {columns.map(column => (
+            {columns.map((column) => (
               <div
                 className={'listColumn'}
                 key={`${column.key} + ${idx}`}
                 style={{
                   width: `${100 / columns.length}%`,
+                  ...column.style,
                 }}
               >
                 {column.render(item)}

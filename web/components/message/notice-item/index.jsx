@@ -129,7 +129,7 @@ class Index extends Component {
   // 跳转用户中心
   toUserCenter = (e, canJump, item) => {
     e.stopPropagation();
-    if (!canJump || !item.nickname || !item.userId) return;
+    if (!canJump || !item.nickname || !item.userId || item.isAnonymous) return;
     Router.push({ url: `/user/${item.userId}` });
   };
 
@@ -181,7 +181,7 @@ class Index extends Component {
             <UnreadRedDot type='avatar' unreadCount={item.unreadCount}>
               <Avatar
                 isShowUserInfo={isPC && item.nickname && type !== 'account'}
-                userId={item.userId}
+                userId={!item.isAnonymous && item.userId}
                 image={avatarUrl}
                 name={item.nickname}
                 circle={true}

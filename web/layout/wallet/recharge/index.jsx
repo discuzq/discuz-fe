@@ -40,23 +40,20 @@ class Recharge extends React.Component {
       inputValue: '',
     });
   };
-  
+
   // 充值
   onRechargeMoney = async () => {
     if (this.getDisabeledButton()) return;
     const inputValue = this.state.inputValue;
     const { rechargeMoney } = this.props.wallet;
     const { success, msg } = await rechargeMoney(inputValue);
-
-    if (this.props.onCreateCash) {
-      this.props.onCreateCash();
-    }
     if (success) {
       Toast.success({
         content: msg,
         duration: 2000,
       });
-      const { getUserWalletInfo } = this.props.wallet;
+      const { getUserWalletInfo, getIncomeDetail } = this.props.wallet;
+      await getIncomeDetail();
       await getUserWalletInfo();
       this.initState();
       Router.back();
