@@ -54,6 +54,7 @@
 
   .check {
     margin-left: auto;
-    padding: 0;
+    padding: 0 0 0 rem($padding-2n);
+    margin-right: 0;
   }
 }

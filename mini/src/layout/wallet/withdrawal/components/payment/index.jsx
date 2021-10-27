@@ -53,24 +53,31 @@ const Payment = (props, ref) => {
     return str;
   };
 
+  const onItemClick = (e, type) => {
+    if (e.target?.dataset?.type !== 'input') {
+      setdefaultValue(type);
+    }
+  };
+
   return (
     <View className={styles.pay}>
       <View className={`${styles.payItem} ${styles.title}`}>收款账号</View>
 
-      <Radio.Group defaultValue={defaultValue} onChange={setdefaultValue}>
-        <View className={`${styles.payItem} ${styles.noborder}`}>
+      <Radio.Group value={defaultValue} onChange={setdefaultValue}>
+        <View className={`${styles.payItem} ${styles.noborder}`} onClick={(e) => onItemClick(e, 'wx')}>
           <Text className={`${styles.label} ${defaultValue === 'wx' && styles.checked}`}>微信号</Text>
           <Input
             placeholder="输入微信号"
             value={wxValue}
             className={styles.input}
             onChange={(e) => setWxValue(e.target.value)}
+            data-type="input"
           />
           <Radio name="wx" className={styles.check}></Radio>
         </View>
         <View className={`${styles.payItem} ${styles.tips}`}>优先打款到绑定微信号</View>
 
-        <View className={styles.payItem}>
+        <View className={styles.payItem}  onClick={(e) => onItemClick(e, 'tel')}>
           <Text className={`${styles.label} ${defaultValue === 'tel' && styles.checked}`}>手机号</Text>
           <Input
             placeholder="输入手机号"
@@ -78,11 +85,12 @@ const Payment = (props, ref) => {
             value={telValue}
             className={styles.input}
             onChange={(e) => setTelValue(e.target.value)}
+            data-type="input"
           />
           <Radio name="tel" className={styles.check}></Radio>
         </View>
-          
-        <View className={`${styles.payItem} ${styles.noborder}`}>
+
+        <View className={`${styles.payItem} ${styles.noborder}`}  onClick={(e) => onItemClick(e, 'card')}>
           <Text className={`${styles.label} ${defaultValue === 'card' && styles.checked}`}>银行卡</Text>
           <Radio name="card" className={styles.check}></Radio>
         </View>
