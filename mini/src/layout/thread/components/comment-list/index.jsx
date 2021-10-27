@@ -182,7 +182,7 @@ class CommentList extends React.Component {
             ></Avatar>
           </View>
           <View className={styles.commentListContent}>
-            <View className={`${styles.commentListContentText} ${this.props.active && styles.active}`}>
+            <View onClick={this.handleClick.bind(this)} className={`${styles.commentListContentText} ${this.props.active && styles.active}`}>
               <View className={styles.commentHeader}>
                 <View className={styles.userInfo}>
                   <View className={styles.commentListName}>
@@ -206,7 +206,6 @@ class CommentList extends React.Component {
                   useShowMore={!!this.state.isShowOne}
                   content={this.props?.data?.content}
                   customHoverBg
-                  onClick={this.handleClick.bind(this)}
                 ></PostContent>
               </View>
               {/* <RichText

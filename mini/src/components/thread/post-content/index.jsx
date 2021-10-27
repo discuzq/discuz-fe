@@ -250,7 +250,6 @@ const PostContent = ({
       >
         <View className={styles.content}>
           <RichText
-            className={styles.richtext} 
             content={openedMore && cutContentForDisplay ? cutContentForDisplay : urlToLink(filterContent)}
             onClick={handleClick}
             onImgClick={handleImgClick}
