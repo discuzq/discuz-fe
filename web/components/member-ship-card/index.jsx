@@ -171,7 +171,7 @@ const MemberShipCard = ({ site, user, onRenewalFeeClick, shipCardClassName }) =>
               };
               return (
                 <Tabs.TabPanel key={level} id={level} label={groupName}>
-                  <div>
+                  <div className={styles.tabPanelContent}>
                     <div className={classnames(styles.tabPanel, {
                       [styles.mobileTabPanel]: !isPC
                     })}>
