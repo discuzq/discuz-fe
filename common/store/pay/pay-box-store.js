@@ -172,7 +172,9 @@ class PayBoxStore {
         if (this.onOrderCreated) {
           this.onOrderCreated(this.orderInfo);
         }
-        this.step = STEP_MAP.PAYWAY;
+        setTimeout(()=>{
+          this.step = STEP_MAP.PAYWAY;
+        },200)
         return createRes;
       }
       this.resErrorFactory(createRes);

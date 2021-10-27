@@ -176,7 +176,7 @@ class WalletInfo extends React.Component {
     return columns;
   };
 
-  // 获取冻结金额列
+  // 获取提现金额列
   getWithdrawalColumns = () => {
     const columns = [
       {
@@ -186,6 +186,9 @@ class WalletInfo extends React.Component {
       },
       {
         title: '提现状态',
+        style: {
+          width: '15%'
+        },
         key: 'status',
         render: item => <span className={
           classNames(styles.normalText,{
@@ -198,6 +201,9 @@ class WalletInfo extends React.Component {
       },
       {
         title: '提现金额',
+        style: {
+          width: '15%'
+        },
         key: 'cashApplyAmount',
         render: item => <span className={`${styles.frozenAmount}`}>-{item.cashApplyAmount}</span>,
       },
@@ -206,6 +212,16 @@ class WalletInfo extends React.Component {
         key: 'time',
         render: item => (
           <span className={`${styles.timer}`}>{item.tradeTime ? time.formatDate(item.tradeTime, 'YYYY-MM-DD HH:mm') : '暂无'}</span>
+        ),
+      },
+      {
+        title: '提现账号',
+        key: 'receiveAccount',
+        style: {
+          width: '30%',
+        },
+        render: item => (
+          <span className={`${styles.receiveAccount}`}>{ item?.receiveAccount || '银行卡：中国银行，仇凯；\n 银行卡号：420989832813123'}</span>
         ),
       },
     ];

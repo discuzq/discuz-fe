@@ -1,0 +1,112 @@
+import { Input, Radio } from '@discuzq/design';
+import { View, Text } from '@tarojs/components';
+import React, { forwardRef, useImperativeHandle, useState } from 'react';
+import styles from './index.module.scss';
+import locals from '@common/utils/local-bridge';
+
+const Payment = (props, ref) => {
+  // 获取缓存
+  let info = locals.get('USER_PAYMENT_INFO');
+  if (info) {
+    try {
+      info = JSON.parse(info);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const [wxValue, setWxValue] = useState(info?.wxValue || '');
+  const [telValue, setTelValue] = useState(info?.telValue || '');
+  const [name, setName] = useState(info?.name || '');
+  const [no, setNo] = useState(info?.no || '');
+
+  const [defaultValue, setdefaultValue] = useState(info?.type || 'wx');
+
+  useImperativeHandle(ref, () => ({
+    getData: () => {
+      const data = {
+        type: defaultValue,
+        wxValue,
+        telValue,
+        name,
+        no,
+      };
+      // 设置缓存
+      locals.set('USER_PAYMENT_INFO', JSON.stringify(data));
+      return { desc: getInfoStr() };
+    },
+  }));
+
+  const getInfoStr = () => {
+    let str = '';
+    switch (defaultValue) {
+      case 'wx':
+        str = `微信：${wxValue || ''}`;
+        break;
+      case 'tel':
+        str = `手机号：${telValue || ''}`;
+        break;
+      default:
+        str = `银行卡：${name || ''}；\n 银行卡号：${no || ''}`;
+        break;
+    }
+    return str;
+  };
+
+  return (
+    <View className={styles.pay}>
+      <View className={`${styles.payItem} ${styles.title}`}>收款账号</View>
+
+      <Radio.Group defaultValue={defaultValue} onChange={setdefaultValue}>
+        <View className={`${styles.payItem} ${styles.noborder}`}>
+          <Text className={`${styles.label} ${defaultValue === 'wx' && styles.checked}`}>微信号</Text>
+          <Input
+            placeholder="输入微信号"
+            value={wxValue}
+            className={styles.input}
+            onChange={(e) => setWxValue(e.target.value)}
+          />
+          <Radio name="wx" className={styles.check}></Radio>
+        </View>
+        <View className={`${styles.payItem} ${styles.tips}`}>优先打款到绑定微信号</View>
+
+        <View className={styles.payItem}>
+          <Text className={`${styles.label} ${defaultValue === 'tel' && styles.checked}`}>手机号</Text>
+          <Input
+            placeholder="输入手机号"
+            mode="number"
+            value={telValue}
+            className={styles.input}
+            onChange={(e) => setTelValue(e.target.value)}
+          />
+          <Radio name="tel" className={styles.check}></Radio>
+        </View>
+          
+        <View className={`${styles.payItem} ${styles.noborder}`}>
+          <Text className={`${styles.label} ${defaultValue === 'card' && styles.checked}`}>银行卡</Text>
+          <Radio name="card" className={styles.check}></Radio>
+        </View>
+
+        <View className={styles.payItem}>
+          <Input
+            value={name}
+            placeholder="输入银行名称，姓名"
+            className={styles.input}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </View>
+        <View className={styles.payItem}>
+          <Input
+            mode="number"
+            value={no}
+            placeholder="输入银行卡号"
+            className={styles.input}
+            onChange={(e) => setNo(e.target.value)}
+          />
+        </View>
+      </Radio.Group>
+    </View>
+  );
+};
+
+export default forwardRef(Payment);
