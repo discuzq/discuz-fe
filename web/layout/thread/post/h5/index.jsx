@@ -385,13 +385,13 @@ class ThreadCreate extends React.Component {
             />
           )}
           <DZQPluginCenterInjectionPolyfill
-            target='plugin_post' 
-            hookName='post_extension_content_hook' 
+            target='plugin_post'
+            hookName='post_extension_content_hook'
             pluginProps={{
               renderData: postData.plugin,
               deletePlugin: this.props.threadPost.deletePluginPostData,
-              updatePlugin: this.props.threadPost.setPluginPostData
-          }}/>
+              updatePlugin: this.props.threadPost.setPluginPostData,
+            }}/>
         </div>
         <div id="post-bottombar" className={styles['post-bottombar']}>
           {threadPost.isHaveLocalData && (<div id="post-localdata" className={styles['post-localdata']}>
@@ -551,6 +551,8 @@ class ThreadCreate extends React.Component {
             cancel={() => {
               this.props.handleSetState({ currentAttachOperation: false });
               this.props.threadPost.setCurrentSelectedToolbar(false);
+              // 位置重新计算
+              this.handler();
             }}
           />
         )}

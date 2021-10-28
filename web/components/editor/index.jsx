@@ -35,7 +35,7 @@ function DVditor(props) {
     hintCustom = () => {},
     hintHide = () => {},
     site = {},
-    plugin
+    plugin,
   } = props;
 
 
@@ -96,6 +96,7 @@ function DVditor(props) {
       if (browser.env(constants.ANDROID)) {
         if (!pc && getSelection().rangeCount > 0) getSelection().removeAllRanges();
       }
+      if (!vditor && !window.vditorInstance) return;
     }
   }, [emoji]);
 
