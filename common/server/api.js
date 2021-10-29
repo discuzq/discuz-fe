@@ -200,9 +200,9 @@ http.interceptors.response.use((res) => {
     }
     case JUMP_TO_DISABLED: {
       if (process.env.DISCUZ_ENV === 'web') {
-        url = '/user/status?statusCode=-4009';
+        url = `/user/status?statusCode=-4009&statusMsg=${data?.Data?.banReason}`;
       } else {
-        url = '/userPages/user/status/index?statusCode=-4009'
+        url = `/userPages/user/status/index?statusCode=-4009&statusMsg=${data?.Data?.banReason}`
       }
       Router.push({
         url

@@ -108,7 +108,7 @@ const checkUserStatus = (resp) => {
     }
 
     if (code) {
-      const rejectReason = get(resp, 'data.rejectReason', '') || get(resp, 'data.reason', '');
+      const rejectReason = get(resp, 'data.rejectReason', '') || get(resp, 'data.banReason', '');
       throw {
         Code: code,
         Message: rejectReason,
