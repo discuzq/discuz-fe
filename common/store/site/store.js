@@ -25,7 +25,15 @@ class SiteStore {
   @observable errPageType = null;
   @observable pluginConfig = null; // 插件配置
   // @observable pluginStore = {};
-  
+
+  // TODO: 目前报名帖占用，待调整成页面级的
+  @observable
+  navInfo = {
+    statusBarHeight: 44, // 默认的状态栏高度
+    navHeight: 40, // 默认的导航栏高度
+    menubtnWidth: 80, // 胶囊按钮的宽度
+  }
+
   @computed get isRegister() {
     return !this.isSmsOpen && this.wechatEnv === 'none' && this.registerClose;
   }

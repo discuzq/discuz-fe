@@ -79,6 +79,12 @@ class SiteAction extends SiteStore {
     }
     return false;
   }
+
+  // TODO: 目前报名帖占用，待调整成页面级的
+  @action
+  setNavInfo(info) {
+    if (info) this.navInfo = info;
+  }
 }
 
 export default SiteAction;

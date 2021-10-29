@@ -64,3 +64,41 @@
     }
   }
 }
+
+.additional {
+  display: block;
+  padding: 0 !important;
+  overflow-x: scroll;
+  &-wrapper {
+    padding: $padding-4n;
+    display: flex;
+    align-items: center;
+    text-align: left;
+    border-bottom: $border-solid-1;
+    white-space: nowrap;
+    &:last-child {
+      border-bottom: 0;
+    }
+
+    .img {
+      display: inline-block;
+    }
+  }
+  &-user {
+    @include lamp-clamp(1);
+    display: inline-block;
+    width: 70px;
+    font-size: $font-size-base;
+    color: $text-color-primary;
+  }
+  &-item {
+    @include lamp-clamp(1);
+    display: inline-block;
+    width: 25%;
+    font-size: $font-size-base;
+    color: $text-color-primary;
+  }
+  .button {
+    display: inline-flex !important;
+  }
+}

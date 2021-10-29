@@ -4,6 +4,14 @@ import Avatar from '../../avatar';
 import { noop } from '../utils';
 import styles from './index.module.scss';
 import { ThreadCommonContext } from '../utils'
+import classNames from 'classnames';
+
+const attachInfo = {
+  name: '姓名',
+  mobile: '手机号',
+  weixin: '微信号',
+  address: '联系地址',
+};
 
 /**
  * 用户信息视图
@@ -29,6 +37,7 @@ const Index = ({
   platform,
   itemStyle = {},
   className = '',
+  additionalInfo = {}, // 报名帖的额外字段信息
 }) => {
 
   const handleClick = (e) => {
@@ -41,15 +50,50 @@ const Index = ({
   };
 
   const classString = `${styles.listItem} ${className}`;
+  const isHaveAdditionalInfo = Object.keys(additionalInfo || {}).length > 0;
 
   return (
-    <div className={classString.trim()} key={index} onClick={handleClick} style={itemStyle}>
+    <div className={classNames(classString.trim(), {
+      [styles.additional]: isHaveAdditionalInfo,
+    })} key={index} style={itemStyle}>
+      {isHaveAdditionalInfo && index === 0 && (
+        <div className={styles['additional-wrapper']}>
+          <div className={styles['additional-user']}>
+            用户
+          </div>
+          {Object.keys(additionalInfo || {}).map((item, ind) => (
+            <div className={styles['additional-item']} key={ind}>
+              {attachInfo[item]}
+            </div>
+          ))}
+        </div>
+      )}
+      {isHaveAdditionalInfo && (
+        <div className={styles['additional-wrapper']}>
+          <div className={styles['additional-user']} onClick={handleClick}>
+            <Avatar
+              className={styles.img}
+              image={imgSrc}
+              name={title}
+              isShowUserInfo={platform === 'pc'}
+              userId={userId}
+              userType={type}
+            />
+          </div>
+          {Object.keys(additionalInfo || {}).map((item, key) => (
+            <div className={styles['additional-item']} key={key}>
+              {additionalInfo[item]}
+            </div>
+          ))}
+        </div>
+      )}
+      {!isHaveAdditionalInfo && <>
       <div className={styles.wrapper}>
           <div className={styles.header}>
-              <Avatar 
-                className={styles.img} 
-                image={imgSrc} 
-                name={title} 
+              <Avatar
+                className={styles.img}
+                image={imgSrc}
+                name={title}
                 isShowUserInfo={platform === 'pc'}
                 userId={userId}
                 userType={type}
@@ -72,6 +116,7 @@ const Index = ({
           <Button type="primary" className={styles.button} onClick={handleClick}><span>查看主页</span></Button>
         )
       }
+      </>}
     </div>
   );
 };

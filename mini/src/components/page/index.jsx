@@ -44,6 +44,10 @@ export default class Page extends React.Component {
     disabledToast: false,
   };
 
+  componentDidMount() {
+    this.getNavHeight();
+  }
+
   // 检查是否满足渲染条件
   isPass(noWait = false) {
     const { noWithLogin, withLogin, site, user, commonLogin } = this.props;
@@ -178,6 +182,14 @@ export default class Page extends React.Component {
       );
     }
     return children;
+  }
+
+  getNavHeight() {
+    const { statusBarHeight } = Taro.getSystemInfoSync();
+    const menubtnRect = Taro.getMenuButtonBoundingClientRect();
+    const { top = 0, height = 0, width = 0 } = menubtnRect || {};
+    const navHeight = (top - statusBarHeight) * 2 + height;
+    this.props.site.setNavInfo({ statusBarHeight, navHeight, menubtnWidth: width, ready: true })
   }
 
   render() {
