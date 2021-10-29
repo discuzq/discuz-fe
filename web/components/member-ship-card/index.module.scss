@@ -244,6 +244,11 @@
   }
 }
 
-
+// fix: oppor9s 等手机页面无法滚动问题
+.tabPanelContent {
+  height: calc(100vh - 106px);
+  overflow-y: overlay;
+  overflow-y: auto;
+}
 
 

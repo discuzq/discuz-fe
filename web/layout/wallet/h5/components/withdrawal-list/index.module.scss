@@ -1,9 +1,14 @@
 @import '@common/styles/index.scss';
 
 .container {
-  padding: rem($padding-4n) rem($padding-4n) 0;
+  padding: rem($padding-4n) rem($padding-4n);
   background: $white;
   font-size: $font-size-middle;
+  border-bottom: $border-solid-1;
+
+  &:last-child {
+    border-bottom: none;
+  }
 }
 
 .content {
@@ -31,9 +36,11 @@
 .footer {
   display: flex;
   justify-content: space-between;
-  
+  margin-bottom: rem($margin-2n);
   font-weight: normal;
   font-size: rem($font-size-label);
+  color: $text-color-secondary;
+  
   .time {
     text-align: left;
     color: $text-color-secondary;
@@ -52,15 +59,6 @@
   }
 }
 
-.serialNumber {
-  
-  font-weight: normal;
-  font-size: rem($font-size-label);
-  text-align: left;
-  color: $text-color-secondary;
-  padding: {
-    top: rem($padding-2n);
-    bottom: rem($padding-4n);
-  }
-  border-bottom: $border-solid-1;
+.receiveAccount {
+  line-height: $font-size-middle;
 }

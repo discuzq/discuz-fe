@@ -142,7 +142,7 @@ class IndexPCPage extends React.Component {
   };
 
   onNavigationClick = ({ categoryIds }) => {
-    const categories = this.props.index.categories || [];
+    const categories = this.props.index.currentCategories || [];
     // 获取处理之后的分类id
     const id = categoryIds[0];
     const newCategoryIds = getSelectedCategoryIds(categories, id);

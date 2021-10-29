@@ -1,13 +1,11 @@
 import React from 'react';
 import UserCenterFriends from '../user-center-friends';
-import Spin from '@discuzq/design/dist/components/spin/index';
 import { View } from '@tarojs/components';
 import styles from './index.module.scss';
-import { createFollow, deleteFollow, getUserFans, readUsersList } from '@server';
+import { createFollow, deleteFollow, readUsersList } from '@server';
 import { get } from '@common/utils/get';
 import deepClone from '@common/utils/deep-clone';
-import NoData from '@components/no-data';
-
+import List from '@components/list';
 class UserCenterUsers extends React.Component {
   firstLoaded = false;
   containerRef = React.createRef(null);
@@ -32,7 +30,6 @@ class UserCenterUsers extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: true,
       users: [],
     };
   }
@@ -138,44 +135,17 @@ class UserCenterUsers extends React.Component {
     // 第一次加载完后，才允许加载更多页面
     await this.fetchUsers();
     this.firstLoaded = true;
-    this.setState({
-      loading: false,
-    });
-    if (!this.containerRef.current) return;
-    this.containerRef.current.addEventListener('scroll', this.loadMore);
   }
 
   // 清理，防止内存泄露
   componentWillUnmount() {
-    if (!this.containerRef.current) return;
-    this.containerRef.current.removeEventListener('scroll', this.loadMore);
   }
 
-  // 检查是否满足触底加载更多的条件
-  checkLoadCondition() {
-    const hasMorePage = this.totalPage >= this.page;
-    if (this.state.loading) return false;
-    if (!this.props.loadMorePage) {
-      return false;
-    }
-    if (!hasMorePage) return false;
-
-    return true;
-  }
 
   // 加载更多函数
   loadMore = async () => {
-    const scrollDom = this.containerRef.current;
-    if (scrollDom.clientHeight + scrollDom.scrollTop === scrollDom.scrollHeight) {
-      if (!this.checkLoadCondition()) return;
-      this.setState({
-        loading: true,
-      });
-      await this.fetchUsers();
-      this.setState({
-        loading: false,
-      });
-    }
+    await this.fetchUsers();
+    return
   };
 
   // 判断关注状态
@@ -192,16 +162,14 @@ class UserCenterUsers extends React.Component {
   };
 
   render() {
-    const isNoData = this.state?.users?.length === 0 && !this.state.loading;
     return (
-      <View
+      <List
+        onRefresh={this.loadMore}
         className={this.props.className}
-        ref={this.containerRef}
-        style={{
-          height: '100%',
-          // overflow: 'scroll',
-          ...this.props.styles,
-        }}
+        noMore={this.totalPage < this.page}
+        hasOnScrollToLower={true}
+        height={'100%'}
+        className={styles.userCenterFriends}
       >
         {this.state?.users?.map((user, index) => {
           if (index + 1 > this.props.limit) return null;
@@ -223,14 +191,7 @@ class UserCenterUsers extends React.Component {
             </View>
           );
         })}
-        {isNoData && <NoData />}
-        <View className={styles.loadMoreContainer}>
-          {this.state.loading
-            && <View className={styles.spinner}>
-                  <Spin type={'spinner'}>加载中 ...</Spin>
-              </View>
-          }</View>
-      </View>
+      </List>
     );
   }
 }

@@ -55,7 +55,7 @@ function getObjectURL(file) {
 function AttachmentToolbar(props) {
   let file = null;
   let toastInstance = null;
-  const [showAll, setShowAll] = useState(true);
+  const [showAll, setShowAll] = useState(false);
   const [currentAction, setCurrentAction] = useState('');
   const inputRef = React.createRef(null);
   const { onVideoUpload = () => { } } = props;

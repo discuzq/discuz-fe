@@ -3,7 +3,6 @@
 .container {
   box-sizing: content-box;
   width: rem(361);
-  height: rem(316);
   margin: 0 auto;
   border-radius: rem(5);
   background: $white;
@@ -76,4 +75,24 @@
       @include button-primary()
     }
   }
+}
+
+.payment {
+  margin: 0 rem(-$margin-6n);
+  padding-top: rem($padding-10);
+  background: $body-bg-color
+}
+
+
+.title {
+  font-size: rem($font-size-middle);
+  color: $text-color-primary;
+  margin-top: rem(rem($margin-4n));
+}
+
+.info {
+  margin-top: rem($margin-2n);
+  font-size: rem($font-size-base);
+  color: $text-color-regular;
+  line-height: $font-line-height-base
 }
