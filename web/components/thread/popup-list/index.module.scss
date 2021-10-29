@@ -2,7 +2,9 @@
 
 $tabs-list-min-height: 70vh;
 $overlay-container-max-width: 572;
-
+.export {
+  color: $primary-color !important;
+}
 .list {
   overflow-y: auto;
   height: 70vh;
@@ -58,6 +60,10 @@ $overlay-container-max-width: 572;
     }
     .dzq-tabs__scroll {
       width: auto;
+    }
+    .dzq-tabs__external {
+      display: flex;
+      align-items: center;
     }
   }
 }

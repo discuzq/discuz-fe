@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { Tabs, Popup, Icon, Spin } from '@discuzq/design';
+import { Tabs, Popup, Icon, Spin, Button } from '@discuzq/design';
 import { readRegisterList } from '@discuzq/sdk/dist/api/plugin/read-register';
 import UserItem from '../user-item';
 import styles from './index.module.scss';
@@ -9,6 +9,7 @@ import { readLikedUsers } from '@server';
 import List from '@components/list';
 import BottomView from '@components/list/BottomView';
 import { withRouter } from 'next/router';
+import typeofFn from '@common/utils/typeof';
 
 /**
  * 帖子点赞、打赏点击之后的弹出视图
@@ -17,8 +18,8 @@ import { withRouter } from 'next/router';
  * @param {boolean} isCustom 自定义，主要是报名插件需要使用
  */
 
-const Index = ({ visible = false, onHidden = () => {}, tipData = {}, router, isCustom = false, activityId }) => {
-
+const Index = ({ visible = false, onHidden = () => { }, tipData = {}, router,
+  isCustom = false, activityId, exportFn }) => {
   const allPageNum = useRef(1);
   const likePageNum = useRef(1);
   const tipPageNum = useRef(1);
@@ -188,6 +189,12 @@ const Index = ({ visible = false, onHidden = () => {}, tipData = {}, router, isC
 
   if (isCustom) tabItems = [tabItems[0]];
 
+  const data = tabItems[0] || {};
+  const oneData = data?.data?.pageData?.list[0] || {};
+  const isHavaAdditionalInfo = isCustom
+    && typeofFn.isObject(oneData?.additionalInfo)
+    && Object.keys(oneData?.additionalInfo).length > 0;
+
   const renderTabPanel = platform => (
     tabItems.map((dataSource, index) => {
       const arr = dataSource?.data?.pageData?.list;
@@ -221,10 +228,12 @@ const Index = ({ visible = false, onHidden = () => {}, tipData = {}, router, isC
                     arr.map((item, index) => (
                         <UserItem
                           key={index}
+                          index={index}
                           imgSrc={item.avatar}
                           title={item.nickname || item.username}
                           subTitle={item.passedAt}
                           userId={item.userId}
+                          additionalInfo={item.additionalInfo}
                           platform={platform}
                           onClick={onUserClick}
                           type={item.type}
@@ -259,11 +268,14 @@ const Index = ({ visible = false, onHidden = () => {}, tipData = {}, router, isC
           activeId={current}
           className={`${styles.tabs} ${tipData?.platform === 'pc' && styles.tabsPC}`}
           tabBarExtraContent={
-            tipData?.platform === 'pc' && (
-              <div onClick={onClose} className={styles.tabIcon}>
-                <Icon name="CloseOutlined" size={12} />
-              </div>
-            )
+            <>
+              {isCustom && isHavaAdditionalInfo && <Button type="text" onClick={exportFn} className={styles.export}>导出</Button>}
+              {tipData?.platform === 'pc' && (
+                <div onClick={onClose} className={styles.tabIcon}>
+                  <Icon name="CloseOutlined" size={12} />
+                </div>
+              )}
+            </>
           }
         >
           {renderTabPanel(tipData?.platform)}

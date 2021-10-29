@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon, Dialog, Button, Input, Textarea, Radio, Toast } from '@discuzq/design';
+import { Icon, Dialog, Button, Input, Textarea, Radio, Toast, Checkbox } from '@discuzq/design';
 // 移动端时间选择
 import DatePickers from '@components/thread/date-picker';
 // pc 端时间选择
@@ -8,7 +8,7 @@ import { zhCN } from 'date-fns/locale';
 import { getHours, setHours, getMinutes, setMinutes, format } from 'date-fns';
 import classNames from 'classnames';
 import { formatDate } from '@common/utils/format-date';
-import { getPostData, formatPostData } from '@common/plugin/custom-apply/client/common';
+import { getPostData, formatPostData, ATTACH_INFO_TYPE } from '@common/plugin/custom-apply/client/common';
 import styles from '../index.module.scss';
 registerLocale('zh-CN', zhCN);
 
@@ -39,6 +39,7 @@ export default class CustomApplyEntry extends React.Component {
         actPlace: '', // 活动地点
         actPeopleLimitType: 0, // 0 不限制；1 限制
         totalNumber: '',
+        additionalInfoType: [], // 报名选项
       },
       curClickTime: TimeType.actStart,
       minTime: setHours(setMinutes(new Date(), getMinutes(nowTime)), getHours(nowTime)),
@@ -226,7 +227,7 @@ export default class CustomApplyEntry extends React.Component {
     const postData = getPostData(body, _pluginInfo.options.tomId) || {};
     if (renderData?.body?.activityId) postData.body.activityId = renderData?.body?.activityId;
     this.props.onConfirm({ postData, _pluginInfo });
-    this.handleDialogClose();
+    this.setState({ visible: false });
   };
 
   handleLimitChange = (val) => {
@@ -269,6 +270,15 @@ export default class CustomApplyEntry extends React.Component {
     const [act] = (pluginConfig || []).filter(item => item.app_id === _pluginInfo.options.tomId);
     if (act?.authority?.canUsePlugin) return true;
     return false;
+  };
+
+  handleCheckAll = (val) => {
+    const additionalInfoType = val ? Object.values(ATTACH_INFO_TYPE) : [];
+    this.setState({ body: { ...this.state.body, additionalInfoType } });
+  };
+
+  handleCheck = (list) => {
+    this.setState({ body: { ...this.state.body, additionalInfoType: list } });
   };
 
   render() {
@@ -433,6 +443,25 @@ export default class CustomApplyEntry extends React.Component {
                     </Radio>
                   </Radio.Group>
                 </div>
+              </div>
+              <div className={classNames(styles['dzqp-act--item'], styles.options)}>
+                <div className={styles.flex}>
+                  <div className={styles['dzqp-act--item_title']}>报名必填</div>
+                  <div className={styles['dzqp-act--item_right']}>
+                    <Checkbox
+                      checked={body.additionalInfoType?.length === 4} onChange={this.handleCheckAll}>全选</Checkbox>
+                  </div>
+                </div>
+                <Checkbox.Group
+                  onChange={this.handleCheck}
+                  value={body.additionalInfoType}
+                  className={styles['apply-options']}
+                >
+                  <Checkbox name={ATTACH_INFO_TYPE.name}>姓名</Checkbox>
+                  <Checkbox name={ATTACH_INFO_TYPE.mobile}>手机号</Checkbox>
+                  <Checkbox name={ATTACH_INFO_TYPE.weixin}>微信号</Checkbox>
+                  <Checkbox name={ATTACH_INFO_TYPE.address}>地址</Checkbox>
+                </Checkbox.Group>
               </div>
             </>
           )}

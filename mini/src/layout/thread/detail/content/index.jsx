@@ -28,7 +28,7 @@ import styles from './index.module.scss';
 /**DZQ->plugin->register<plugin_detail@thread_extension_display_hook>**/
 
 // 帖子内容
-const RenderThreadContent = inject('index', 'site', 'user', 'plugin', 'thread')(
+const RenderThreadContent = inject('index', 'site', 'user', 'plugin', 'thread', 'threadPost')(
   observer((props) => {
     const { store: threadStore, site, index, thread, user } = props;
     const { text, indexes } = threadStore?.threadData?.content || {};
@@ -399,7 +399,7 @@ const RenderThreadContent = inject('index', 'site', 'user', 'plugin', 'thread')(
           </View>
         )}
 
-     
+
       </View>
     );
   }),
