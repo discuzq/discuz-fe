@@ -40,7 +40,7 @@ class Index extends React.Component {
     const threads = await readThreadList({
       params: {
         // 为优化seo，对ssr部署时，获取50条数据，普通用户10条
-        perPage: process.env.NODE_ENV !== 'development' && process.env.DISCUZ_RUN === 'ssr' ? 50 : 10,
+        perPage: process.env.NODE_ENV !== 'development' && process.env.DISCUZ_RUN === 'ssr' ? 100 : 10,
         page: 1,
         sequence,
         filter: { categoryids: categoryIds, types: newTypes, essence, attention, sort },

@@ -1,12 +1,17 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { View, Text } from '@tarojs/components';
-import { Button, Icon, Avatar, Toast } from '@discuzq/design';
+import Taro from '@tarojs/taro';
+import { Button, Icon, Avatar, Toast, Dialog } from '@discuzq/design';
 import PopupList from '@components/thread/popup-list';
 import CountDown from '@common/utils/count-down';
 import LoginHelper from '@common/utils/login-helper';
+import CustomApplyAttach from './attach';
+import { ATTACH_INFO_NAME } from '@common/plugin/custom-apply/View/src/common';
 import classNames from 'classnames';
 import styles from '../index.module.scss';
+import actEntryStyles from '../../../entry/adapter/index.module.scss';
+import setAuthorization from '@common/utils/set-authorization';
 
 let countDownIns = null;
 
@@ -23,6 +28,8 @@ class CustomApplyDisplay extends React.Component {
       seconds: 0,
       isApplyEnd: false, // 报名时间是否已结束
       isApplyStart: false, // 报名时间是否已开始
+      additionalInfo: {}, // 报名字段详细信息
+      isAttachShow: false,
     };
     this.handleActOperate = this.handleActOperate.bind(this);
     this.createRegister = this.createRegister.bind(this);
@@ -67,7 +74,7 @@ class CustomApplyDisplay extends React.Component {
         method: 'POST',
         params,
         data,
-        ...others
+        ...others,
       };
       const result = await this.props.dzqRequest.dispatcher(options);
       return result;
@@ -84,7 +91,7 @@ class CustomApplyDisplay extends React.Component {
         method: 'POST',
         params,
         data,
-        ...others
+        ...others,
       };
       const result = await this.props.dzqRequest.dispatcher(options);
       return result;
@@ -119,18 +126,18 @@ class CustomApplyDisplay extends React.Component {
     if (isApplyEnd) return '报名已结束';
   };
 
-  handleActOperate = async () => {
-    const { renderData, userInfo, isLogin, threadData, updateThread, updateListThreadIndexes, recomputeRowHeights } = this.props;
-    if (!isLogin()) {
-      LoginHelper.saveAndLogin();
-      return;
-    }
+  submit = async () => {
+    const { renderData, userInfo, threadData,
+      updateThread, updateListThreadIndexes, recomputeRowHeights } = this.props;
     const { tomId, body, _plugin } = renderData || {};
     const { isRegistered, activityId, registerUsers, totalNumber } = body;
     const action = isRegistered ? this.deleteRegister : this.createRegister;
-    this.setState({ loading: true });
-    const res = await action({ data: { activityId } });
+    this.setState({ loading: true, isAttachShow: false });
+    const params = { activityId };
+    if (Object.keys(this.state.additionalInfo)) params.additionalInfo = this.state.additionalInfo;
+    const res = await action({ data: params });
     this.setState({ loading: false });
+
     if (res.code === 0) {
       const authorInfo = userInfo;
       const uid = authorInfo.id;
@@ -160,11 +167,31 @@ class CustomApplyDisplay extends React.Component {
         threadId: tid,
         _plugin,
       };
+      this.setState({ additionalInfo: {} });
       updateThread(tomId, tomValue);
       const newThreadData = updateListThreadIndexes(tid, tomId, tomValue);
       if (newThreadData && recomputeRowHeights) recomputeRowHeights(newThreadData);
       Toast.info({ content: isRegistered ? '取消报名成功' : '报名成功' });
     } else Toast.error({ content: res.msg || '报名失败' });
+    return res;
+  };
+
+  handleActOperate = async () => {
+    const { renderData, isLogin } = this.props;
+    if (!isLogin()) {
+      LoginHelper.saveAndLogin();
+      return;
+    }
+    const { body } = renderData || {};
+    const { isRegistered, additionalInfoType = [] } = body;
+    // 报名 + 并且有额外需要添加的字段
+    if (!this.state.isAttachShow && !isRegistered && additionalInfoType && additionalInfoType.length) {
+      this.setState({ isAttachShow: true }, () => {
+        this.handleAttachDialogOpen();
+      });
+      return;
+    }
+    const res = await this.submit();
     return res;
   };
 
@@ -176,12 +203,102 @@ class CustomApplyDisplay extends React.Component {
     }
   };
 
+  change = (additionalInfo) => {
+    this.setState({ additionalInfo });
+  }
+
+  handleAttachDialogOpen = () => {
+    const { siteData } = this.props;
+    const { activityId } = this.props?.renderData?.body;
+    const { navInfo = {} } = siteData || {};
+    const navStyle = !this.state.isDetailPage ? {
+      marginTop: `${navInfo.statusBarHeight}px`,
+      height: `${navInfo.navHeight}px`,
+    } : {};
+    Dialog.confirm({
+      isNew: true,
+      className: classNames(actEntryStyles['dzqp-act'], actEntryStyles.h5, actEntryStyles.mini),
+      headerStyle: navStyle,
+      title: '填写信息',
+      content: <CustomApplyAttach {...this.props}
+          activityId={activityId} additionalInfo={this.state.additionalInfo} onChange={this.change} />,
+      onConfirm: this.handleAttachConfirm,
+      onCancel: () => {
+        this.setState({ isAttachShow: false });
+      },
+    });
+  };
+
+  handleAttachConfirm = () => {
+    const { body } = this.props.renderData || {};
+    const { additionalInfo = {} } = this.state;
+    const { additionalInfoType = [] } = body || {};
+    const len = (additionalInfoType || [])?.length;
+    let flag = false;
+    for (let i = 0; i < len; i++) {
+      const key = additionalInfoType[i];
+      if (!additionalInfo[ATTACH_INFO_NAME[key]?.key]) {
+        flag = true;
+        Toast.info({ content: `请输入${ATTACH_INFO_NAME[key]?.value}` });
+        break;
+      }
+    }
+    if (!flag) {
+      this.handleActOperate();
+      Dialog && Dialog.hide();
+      return true;
+    }
+    return false;
+  };
+
+  exportInfo() {
+    const { renderData, siteData, isLogin } = this.props;
+    if (!isLogin()) {
+      LoginHelper.saveAndLogin();
+      return;
+    }
+    const { body } = renderData || {};
+    const { activityId } = body;
+    const url = `${siteData?.envConfig?.COMMON_BASE_URL}/plugin/activity/api/register/export?activityId=${activityId}`;
+    Toast.info({ content: '导出中...' });
+    const config = setAuthorization({});
+
+    Taro.downloadFile({
+      url,
+      header: {
+        ...(config?.headers || {}),
+      },
+      success: (res) => {
+        // Toast.info({ content: '下载成功' });
+        // 这里是打开文档
+        Taro.openDocument({
+          filePath: res.tempFilePath,
+          success() {
+            Toast.info({ content: '下载成功' });
+          },
+          fail: () => {
+            Toast.info({ content: '不支持该文件的预览，请到web端进行下载' });
+          },
+        });
+      },
+      fail: (error) => {
+        if (error?.errMsg.indexOf('domain list') !== -1) {
+          Toast.info({ content: '下载链接不在域名列表中' });
+        } else if (error?.errMsg.indexOf('invalid url') !== -1) {
+          Toast.info({ content: '下载链接无效' });
+        } else {
+          Toast.info({ content: error.errMsg });
+        }
+      },
+    });
+  }
+
   render() {
     const { siteData, renderData } = this.props;
     const { isApplyEnd, minutes, seconds, days, hours, isApplyStart } = this.state;
     if (!renderData) return null;
     const { body } = renderData || {};
-    const { isRegistered } = body;
+    const { isRegistered } = body || {};
     // 过期 || 已满 || 结束 || 未开始
     const isCanNotApply = body?.isExpired || body?.isMemberFull || isApplyEnd || !isApplyStart;
     const { popupShow } = this.state;
@@ -286,6 +403,7 @@ class CustomApplyDisplay extends React.Component {
           visible={popupShow}
           onHidden={() => this.setState({ popupShow: false })}
           tipData={{ platform: siteData.platform }}
+          exportFn={this.exportInfo.bind(this)}
         />}
       </>
     );

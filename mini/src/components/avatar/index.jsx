@@ -3,7 +3,7 @@ import Avatar from '@discuzq/design/dist/components/avatar/index';
 import { View } from '@tarojs/components';
 import { useCallback } from 'react';
 import calcCosImageQuality from '@common/utils/calc-cos-image-quality';
-
+import classNames from 'classnames';
 import styles from './index.module.scss';
 
 export default function avatar(props) {
@@ -16,7 +16,8 @@ export default function avatar(props) {
     circle = true,
     size = 'primary',
     withStopPropagation = false, // 是否需要阻止冒泡 默认false不阻止
-    level = 6
+    level = 6,
+    wrapperClass = '',
   } = props;
 
   const userName = useMemo(() => {
@@ -46,14 +47,14 @@ export default function avatar(props) {
 
   if (image && image !== '') {
     return (
-      <View onClick={clickHandle} className={styles.avatarWrapper}>
+      <View onClick={clickHandle} className={classNames(styles.avatarWrapper, wrapperClass)}>
         <Avatar className={className} circle={circle} image={currAvatarImage} size={size}></Avatar>
       </View>
     );
   }
 
   return (
-    <View onClick={clickHandle} className={styles.avatarWrapper}>
+    <View onClick={clickHandle} className={classNames(styles.avatarWrapper, wrapperClass)}>
       <Avatar className={className} circle={circle} text={userName} size={size}></Avatar>
     </View>
   );
