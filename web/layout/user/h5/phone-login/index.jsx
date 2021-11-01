@@ -175,7 +175,7 @@ class LoginPhoneH5Page extends React.Component {
         {
           platform === 'h5'
             ? <HomeHeader hideInfo mode='login'/>
-            : <Header/>
+            : null
         }
         <div className={platform === 'h5' ? layout.content : layout.pc_content}>
           <div className={platform === 'h5' ? layout.title : layout.pc_title}>手机号码登录/注册</div>

@@ -133,7 +133,7 @@ class UsernameH5Login extends React.Component {
         {
           platform === 'h5'
             ? <HomeHeader hideInfo mode='login'/>
-            : <Header/>
+            : null
         }
         <div className={platform === 'h5' ? layout.content : layout.pc_content}>
           <div className={platform === 'h5' ? layout.title : layout.pc_title}>用户名登录</div>

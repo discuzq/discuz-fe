@@ -15,7 +15,7 @@ class Header extends React.Component {
     const { platform } = site;
 
     if (platform === 'pc') {
-      return <PCHeader {...this.props} />;
+      return  <PCHeader {...this.props} />;
     }
     return <H5Header {...this.props} />;
   }

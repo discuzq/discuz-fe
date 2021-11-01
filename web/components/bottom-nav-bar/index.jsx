@@ -9,17 +9,34 @@ import { unreadUpdateInterval } from '@common/constants/message';
 import HOCFetchSiteData from '@middleware/HOCFetchSiteData';
 import LoginHelper from '@common/utils/login-helper';
 import SiteMapLink from '@components/site-map-link';
+
+import GlobalFooterHook from '@common/plugin-hooks/plugin_global@footer';
+
 /**
  * BottomNavBar组件
  * @prop {boolean} placeholder 固定在底部时，是否在标签位置生成一个等高的占位元素
  * @prop {boolean} curr 常亮icon
  */
 
-const BottomNavBar = ({ router, index, user, fixed = true, placeholder = false, curr = 'home', onClick = noop, message, canPublish }) => {
+const BottomNavBar = ({
+  router,
+  user,
+  fixed = true,
+  placeholder = false,
+  curr = 'home',
+  onClick = noop,
+  message,
+  canPublish,
+  site,
+  index,
+}) => {
   const { totalUnread, readUnreadCount } = message;
-  const checkCurrActiveTab = useCallback((curr, target) => {
-    return curr === target;
-  }, [curr]);
+  const checkCurrActiveTab = useCallback(
+    (curr, target) => {
+      return curr === target;
+    },
+    [curr],
+  );
 
   const [tabs, setTabs] = useState([
     { icon: 'HomeOutlined', text: '首页', active: checkCurrActiveTab(curr, 'home'), router: '/' },
@@ -69,10 +86,10 @@ const BottomNavBar = ({ router, index, user, fixed = true, placeholder = false, 
       }
     }
 
-    onClick(i, idx)
+    onClick(i, idx);
     const temp = [...tabs];
     if (i.text) {
-      temp.find(i => i.active).active = false;
+      temp.find((i) => i.active).active = false;
       temp[idx].active = true;
       setTabs(temp);
     }
@@ -80,44 +97,52 @@ const BottomNavBar = ({ router, index, user, fixed = true, placeholder = false, 
     router.push(url);
   };
 
-  return (
+  const component = (
     <>
       <div className={styles.footer} style={{ position: fixed ? 'fixed' : '' }}>
-        {tabs.map((i, idx) => (i.text ? (
-          <>
-            <SiteMapLink href={i.router} text={i.text}/>
-            <div key={idx} className={styles.item + (i.active ? ` ${styles.active}` : '')} onClick={(e) => handleClick(e, i, idx)}>
-              {
-                i.icon === 'MailOutlined' ? (
-                  <UnreadRedDot dotStyle={{top: "-6px"}} unreadCount={totalUnread}>
+        {tabs.map((i, idx) =>
+          i.text ? (
+            <>
+              <SiteMapLink href={i.router} text={i.text} />
+              <div
+                key={idx}
+                className={styles.item + (i.active ? ` ${styles.active}` : '')}
+                onClick={(e) => handleClick(e, i, idx)}
+              >
+                {i.icon === 'MailOutlined' ? (
+                  <UnreadRedDot dotStyle={{ top: '-6px' }} unreadCount={totalUnread}>
                     <Icon name={i.icon} size={20} />
                   </UnreadRedDot>
                 ) : (
                   <Icon name={i.icon} size={20} />
-                )
-              }
-              <div className={styles.text}>{i.text}</div>
-            </div>
-          </>
-
-        ) : (
-          <>
-            <SiteMapLink href={i.router} text='发帖'/>
-            <div key={idx} className={styles.addIconWrapper} onClick={(e) => handleClick(e, i, idx)}>
-              <div className={styles.addIcon}>
-                <Icon name={i.icon} size={28} color="#fff" />
+                )}
+                <div className={styles.text}>{i.text}</div>
               </div>
-            </div>
-          </>
-        )))}
+            </>
+          ) : (
+            <>
+              <SiteMapLink href={i.router} text="发帖" />
+              <div key={idx} className={styles.addIconWrapper} onClick={(e) => handleClick(e, i, idx)}>
+                <div className={styles.addIcon}>
+                  <Icon name={i.icon} size={28} color="#fff" />
+                </div>
+              </div>
+            </>
+          ),
+        )}
       </div>
-      {
-        fixed && placeholder && (
-          <div className={styles.placeholder} />
-        )
-      }
+      {fixed && placeholder && <div className={styles.placeholder} />}
     </>
+  );
+
+  return (
+    <GlobalFooterHook
+      component={component}
+      site={site}
+      user={{ permissions: user.permissions }}
+      message={{ totalUnread }}
+    ></GlobalFooterHook>
   );
 };
 
-export default HOCFetchSiteData(withRouter(inject('index', 'user', 'message')(observer(BottomNavBar))));
+export default HOCFetchSiteData(withRouter(inject('site', 'index', 'user', 'message')(observer(BottomNavBar))));

@@ -12,6 +12,8 @@ import { unreadUpdateInterval } from '@common/constants/message';
 import LoginHelper from '@common/utils/login-helper';
 import SiteMapLink from '@components/site-map-link';
 
+import GlobalHeaderHooks from '@common/plugin-hooks/plugin_global@header';
+
 @inject('site')
 @inject('user')
 @inject('message')
@@ -70,7 +72,18 @@ class Header extends React.Component {
     const { value = '' } = this.state;
     const { onSearch } = this.props;
     this.props.search.resetIndexData();
-    this.props.baselayout.search = -1
+    this.props.baselayout.search = -1;
+    if (!onSearch) {
+      Router.push({ url: `/search?keyword=${value}` });
+    } else {
+      onSearch(value);
+    }
+  };
+
+  handlePluginSearch = (value) => {
+    const { onSearch } = this.props;
+    this.props.search.resetIndexData();
+    this.props.baselayout.search = -1;
     if (!onSearch) {
       Router.push({ url: `/search?keyword=${value}` });
     } else {
@@ -79,17 +92,17 @@ class Header extends React.Component {
   };
 
   handleClickSearchIcon = () => {
-    this.props.baselayout.search = -1
-    if (this.props.router.pathname.indexOf('/search') !== -1 &&
-        this.props.router.pathname.indexOf('/result-') === -1) return;
+    this.props.baselayout.search = -1;
+    if (this.props.router.pathname.indexOf('/search') !== -1 && this.props.router.pathname.indexOf('/result-') === -1)
+      return;
     this.props.search.resetIndexData();
     this.handleRouter('/search');
-  }
+  };
 
   handleRouter = (url) => {
     if (url === '/search') {
       this.props.search.resetIndexData();
-      this.props.baselayout.search = -1
+      this.props.baselayout.search = -1;
     }
     this.props.router.push(url);
   };
@@ -114,7 +127,14 @@ class Header extends React.Component {
         />
       );
     }
-    return <img className={styles.siteLogo} alt="站点logo" src="/dzq-img/admin-logo-pc.png" onClick={() => LoginHelper.gotoIndex()} />;
+    return (
+      <img
+        className={styles.siteLogo}
+        alt="站点logo"
+        src="/dzq-img/admin-logo-pc.png"
+        onClick={() => LoginHelper.gotoIndex()}
+      />
+    );
   }
 
   dropdownUserUserCenterActionImpl = () => {
@@ -205,7 +225,8 @@ class Header extends React.Component {
       forum,
     } = this.props;
     const { otherPermissions } = forum || {};
-    return (
+
+    const component = (
       <div className={styles.header}>
         <div className={styles.headerFixedBox}>
           <div className={styles.headerContent}>
@@ -219,7 +240,7 @@ class Header extends React.Component {
                   icon="SearchOutlined"
                   value={this.state.value}
                   onEnter={this.handleSearch}
-                  onChange={e => this.onChangeInput(e.target.value)}
+                  onChange={(e) => this.onChangeInput(e.target.value)}
                   onIconClick={this.handleSearch}
                 />
               </div>
@@ -227,7 +248,7 @@ class Header extends React.Component {
             <div className={styles.right}>
               <div className={styles.iconList}>
                 <div className={styles.iconItem} onClick={() => LoginHelper.gotoIndex()}>
-                  <SiteMapLink href='/' text='首页'/>
+                  <SiteMapLink href="/" text="首页" />
                   <Icon
                     onClick={() => {
                       this.iconClickHandle('home');
@@ -240,7 +261,7 @@ class Header extends React.Component {
                 <div className={styles.iconItem} onClick={() => this.handleRouter('/message')}>
                   <UnreadRedDot unreadCount={totalUnread}>
                     <div className={styles.message}>
-                      <SiteMapLink href='/message' text='消息'/>
+                      <SiteMapLink href="/message" text="消息" />
                       <Icon
                         onClick={() => {
                           this.iconClickHandle('home');
@@ -256,7 +277,7 @@ class Header extends React.Component {
                   <></>
                 ) : (
                   <div className={styles.iconItem} onClick={() => this.handleClickSearchIcon()}>
-                    <SiteMapLink href='/search' text='发现'/>
+                    <SiteMapLink href="/search" text="发现" />
                     <Icon
                       onClick={() => {
                         this.iconClickHandle('home');
@@ -274,6 +295,14 @@ class Header extends React.Component {
           </div>
         </div>
       </div>
+    );
+
+    return (
+      <GlobalHeaderHooks
+        component={component}
+        message={{ totalUnread }}
+        onSearch={(value) => this.handlePluginSearch(value)}
+      ></GlobalHeaderHooks>
     );
   }
 }
