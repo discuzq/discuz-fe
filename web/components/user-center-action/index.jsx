@@ -1,139 +1,157 @@
+/* eslint-disable spaced-comment */
 import React from 'react';
 import { Icon } from '@discuzq/design';
 import styles from './index.module.scss';
 import Router from '@discuzq/sdk/dist/router';
 import { observer, inject } from 'mobx-react';
 import UnreadRedDot from '@components/unread-red-dot';
+import DZQPluginCenterInjectionPolyfill from '../../utils/DZQPluginCenterInjectionPolyfill';
+
+// 插件引入
+/**DZQ->plugin->register<plugin_user@user_extension_action_hook>**/
+
 @inject('user')
 @inject('message')
+@inject('site')
 @observer
 class UserCenterAction extends React.Component {
-  // 点击我的消息
-  handleMyMessage = () => {
-    Router.push({ url: '/message' });
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      actions: [
+        {
+          cid: 'message',
+          name: '我的消息',
+          url: '/message',
+          iconName: 'MailOutlined',
+          visible: true,
+        },
+        {
+          cid: 'wallet',
+          name: '我的钱包',
+          url: '/wallet',
+          iconName: 'PayOutlined',
+          visible: true,
+        },
+        {
+          cid: 'collect',
+          name: '我的收藏',
+          url: '/my/collect',
+          iconName: 'CollectOutlinedBig',
+          visible: true,
+        },
+        {
+          cid: 'like',
+          name: '我的点赞',
+          url: '/my/like',
+          iconName: 'LikeOutlined',
+          visible: this.props.site.platform === 'pc',
+        },
+        {
+          cid: 'block',
+          name: '我的屏蔽',
+          url: '/my/block',
+          iconName: 'ShieldOutlined',
+          visible: true,
+        },
+        {
+          cid: 'buy',
+          name: '我的购买',
+          url: '/my/buy',
+          iconName: 'ShoppingCartOutlined',
+          visible: true,
+        },
+        {
+          cid: 'draft',
+          name: '我的草稿箱',
+          url: '/my/draft',
+          iconName: 'RetrieveOutlined',
+          visible: true,
+        },
+        {
+          cid: 'forum',
+          name: '站点信息',
+          url: '/forum',
+          iconName: 'NotepadOutlined',
+          visible: true,
+        },
+        {
+          cid: 'invite',
+          name: '推广邀请',
+          url: '/invite',
+          iconName: 'NotbookOutlined',
+          visible: !this.props.user.isAdmini,
+        },
+      ],
+      rowActionCount: this.props.site.platform === 'pc' ? 9 : 4,
+    };
+  }
 
-  // 点击我的钱包
-  handleMyWallet = () => {
-    Router.push({ url: '/wallet' });
-  };
+  handleActionItem = (item) => {
+    if (item.onClick && typeof item.onClick === 'function') {
+      item.onClick(item);
+      return;
+    }
 
-  // 点击站点信息
-  handleMySiteInfo = () => {
-    Router.push({ url: '/forum' });
-  };
-
-  // 点击推广信息
-  handleMyInvite = () => {
-    Router.push({ url: '/invite' });
-  };
-
-  // 点击我的屏蔽
-  handleMyBan = () => {
-    Router.push({ url: '/my/block' });
-  };
-
-  // 点击我的购买
-  handleMyBuy = () => {
-    Router.push({ url: '/my/buy' });
-  };
-
-  // 点击我的草稿箱
-  handleMyDraft = () => {
-    Router.push({ url: '/my/draft' });
-  };
-
-  // 点击我的收藏
-  handleMyCollect = () => {
-    Router.push({ url: '/my/collect' });
+    item.url && Router.push({ url: item.url });
   };
 
   componentDidMount() {
     this.props.message.readUnreadCount();
   }
 
-  render() {
-    const { message } = this.props;
-    const { totalUnread } = message;
+  renderActionItem = (item, totalUnread) => {
+    if (item.render) {
+      return item.render();
+    }
     return (
-      //   移动端实现
-      <div className={styles.userActionMobile}>
-        <div className={styles.userCenterAction}>
-          <div className={styles.userCenterActionItemContainer}>
-            <div onClick={this.handleMyMessage} className={styles.userCenterActionItem}>
-              <div className={styles.userCenterActionItemIcon}>
-                <UnreadRedDot unreadCount={totalUnread}>
-                  <Icon name={'MailOutlined'} color={'#4F5A70'} size={20} />
-                </UnreadRedDot>
-              </div>
-              <div className={styles.userCenterActionItemDesc}>我的消息</div>
-            </div>
-          </div>
-
-          <div className={styles.userCenterActionItemContainer}>
-            <div onClick={this.handleMyWallet} className={styles.userCenterActionItem}>
-              <div className={styles.userCenterActionItemIcon}>
-                <Icon name={'PayOutlined'} color={'#4F5A70'} size={20} />
-              </div>
-              <div className={styles.userCenterActionItemDesc}>我的钱包</div>
-            </div>
-          </div>
-
-          <div className={styles.userCenterActionItemContainer}>
-            <div onClick={this.handleMyCollect} className={styles.userCenterActionItem}>
-              <div className={styles.userCenterActionItemIcon}>
-                <Icon name={'CollectOutlinedBig'} color={'#4F5A70'} size={20} />
-              </div>
-              <div className={styles.userCenterActionItemDesc}>我的收藏</div>
-            </div>
-          </div>
-
-          <div className={styles.userCenterActionItemContainer}>
-            <div onClick={this.handleMyBan} className={styles.userCenterActionItem}>
-              <div className={styles.userCenterActionItemIcon}>
-                <Icon name={'ShieldOutlined'} color={'#4F5A70'} size={20} />
-              </div>
-              <div className={styles.userCenterActionItemDesc}>我的屏蔽</div>
-            </div>
-          </div>
+      <div
+        onClick={() => {
+          this.handleActionItem(item);
+        }}
+        className={styles.userCenterActionItem}
+      >
+        <div className={styles.userCenterActionItemIcon}>
+          {item.cid === 'message' ? (
+            <UnreadRedDot unreadCount={totalUnread}>
+              <Icon name={item.iconName} size={20} />
+            </UnreadRedDot>
+          ) : (
+            <Icon name={item.iconName} size={20} />
+          )}
         </div>
-        <div className={styles.userCenterAction}>
-          <div onClick={this.handleMyBuy} className={styles.userCenterActionItemContainer}>
-            <div className={styles.userCenterActionItem}>
-              <div className={styles.userCenterActionItemIcon}>
-                <Icon name={'ShoppingCartOutlined'} color={'#4F5A70'} size={20} />
-              </div>
-              <div className={styles.userCenterActionItemDesc}>我的购买</div>
-            </div>
-          </div>
+        <div className={styles.userCenterActionItemDesc}>{item.name}</div>
+      </div>
+    );
+  };
 
-          <div className={styles.userCenterActionItemContainer}>
-            <div onClick={this.handleMyDraft} className={styles.userCenterActionItem}>
-              <div className={styles.userCenterActionItemIcon}>
-                <Icon name={'RetrieveOutlined'} color={'#4F5A70'} size={20} />
-              </div>
-              <div className={styles.userCenterActionItemDesc}>我的草稿箱</div>
-            </div>
-          </div>
+  renderActionItems = () => {
+    const { totalUnread } = this.props.message;
+    const { actions } = this.state;
+    const itemEles = [];
 
-          <div className={styles.userCenterActionItemContainer}>
-            <div onClick={this.handleMySiteInfo} className={styles.userCenterActionItem}>
-              <div className={styles.userCenterActionItemIcon}>
-                <Icon name={'NotepadOutlined'} color={'#4F5A70'} size={20} />
-              </div>
-              <div className={styles.userCenterActionItemDesc}>站点信息</div>
-            </div>
-          </div>
+    actions.map((item) => {
+      item.visible && itemEles.push(this.renderActionItem(item, totalUnread));
+    });
 
-          <div className={styles.userCenterActionItemContainer} style={{ visibility: this.props.user.isAdmini && 'hidden' }}>
-            <div onClick={this.handleMyInvite} className={styles.userCenterActionItem}>
-              <div className={styles.userCenterActionItemIcon}>
-                <Icon name={'NotbookOutlined'} color={'#4F5A70'} size={20} />
-              </div>
-              <div className={styles.userCenterActionItemDesc}>推广邀请</div>
-            </div>
-          </div>
-        </div>
+    return itemEles;
+  };
+
+  render() {
+    const { actions, rowActionCount } = this.state;
+
+    return (
+      <div
+        className={`${styles.userCenterAction} ${this.props.site.platform === 'pc' ? styles.pc : styles.h5} ${
+          actions.length < rowActionCount && styles.userCenterColumnStyle
+        }`}
+      >
+        {this.renderActionItems()}
+        <DZQPluginCenterInjectionPolyfill
+          className={styles.userCenterPluginActionItem}
+          target="plugin_user"
+          hookName="user_extension_action_hook"
+        />
       </div>
     );
   }

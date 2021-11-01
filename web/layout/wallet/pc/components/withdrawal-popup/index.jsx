@@ -1,11 +1,13 @@
-import React, { useState, Component } from 'react';
+import React, { useState, Component, createRef } from 'react';
 import { inject, observer } from 'mobx-react';
 import { Popup, Toast } from '@discuzq/design';
-import { Icon, Button } from '@discuzq/design';
+import { Icon, Button, Dialog } from '@discuzq/design';
 import styles from './index.module.scss';
 import MoneyInput from '../money-input';
 import classNames from 'classnames';
 import Router from '@discuzq/sdk/dist/router';
+import Payment from '../payment';
+
 @inject('wallet')
 @inject('site')
 class WithdrawalPop extends Component {
@@ -14,7 +16,11 @@ class WithdrawalPop extends Component {
     this.state = {
       visible: true,
       inputValue: '', // 金额输入内容
+      showConfirm: false,
+      receiveAccount: '',
     };
+
+    this.paymentRef = createRef(null);
   }
 
   updateState = ({ name, value }) => {
@@ -34,6 +40,8 @@ class WithdrawalPop extends Component {
     this.setState({
       visible: true,
       inputValue: '',
+      showConfirm: false,
+      receiveAccount: '',
     });
     this.props.onClose && this.props.onClose();
   };
@@ -64,6 +72,7 @@ class WithdrawalPop extends Component {
     this.props.wallet
       .createWalletCash({
         money: this.state.inputValue,
+        receiveAccount: this.state.receiveAccount,
       })
       .then(async (res) => {
         Toast.success({
@@ -93,7 +102,7 @@ class WithdrawalPop extends Component {
   operateWallet = (type) => {
     // 提现操作
     if (type === 'withdrawal') {
-      this.moneyToWeixin();
+      this.onConfirm();
       return;
     }
     // 充值操作
@@ -101,6 +110,16 @@ class WithdrawalPop extends Component {
       this.onRechargeMoney(this.state.inputValue);
       return;
     }
+  };
+
+  // 确认操作
+  onConfirm = () => {
+    const paymentInfo = this.paymentRef?.current?.getData();
+
+    this.setState({
+      showConfirm: true,
+      receiveAccount: paymentInfo?.desc,
+    });
   };
 
   // 充值
@@ -126,7 +145,7 @@ class WithdrawalPop extends Component {
         duration: 2000,
       });
     }
-  }
+  };
 
   render() {
     const { visible: popupVisible, onClose, moneyToWixin, operateWalletType = 'withdrawal' } = this.props;
@@ -135,28 +154,30 @@ class WithdrawalPop extends Component {
 
     return (
       <Popup position="center" visible={popupVisible} onClose={onClose}>
-        <div className={classNames(styles.container, {
-          [styles.rechargeContainer]: operateWalletType === 'recharge'
-        })}>
-          <div className={classNames(styles.header, {
-            [styles.rechargeHeader]: operateWalletType === 'recharge'
-          })}>
+        <div
+          className={classNames(styles.container, {
+            [styles.rechargeContainer]: operateWalletType === 'recharge',
+          })}
+        >
+          <div
+            className={classNames(styles.header, {
+              [styles.rechargeHeader]: operateWalletType === 'recharge',
+            })}
+          >
             <div></div>
-            <div className={styles.title}>
-              {operateWalletType === 'withdrawal' ? '提现' : '充值'}
-            </div>
+            <div className={styles.title}>{operateWalletType === 'withdrawal' ? '提现' : '充值'}</div>
             <div onClick={onClose}>
               <Icon name="CloseOutlined" size="12" color="#8590a6"></Icon>
             </div>
           </div>
-          {
-            operateWalletType === 'withdrawal' ? (
+          {operateWalletType === 'withdrawal' ? (
             <div className={styles.availableAmount}>
               <div className={styles.text}>可提现金额</div>
               <div className={styles.moneyNum}>{walletAvaAmount}</div>
             </div>
-            ) : ''
-          }
+          ) : (
+            ''
+          )}
           <div className={styles.moneyInput}>
             <MoneyInput
               inputValue={this.state.inputValue}
@@ -168,16 +189,39 @@ class WithdrawalPop extends Component {
               moneyInputType={operateWalletType}
             ></MoneyInput>
           </div>
+          {operateWalletType === 'withdrawal' && (
+            <div className={styles.payment}>
+              <Payment ref={this.paymentRef}></Payment>
+            </div>
+          )}
           <div
             className={classNames(styles.button, {
               [styles.bgBtnColor]: !this.getDisabeledButton(),
               [styles.rechargeButton]: operateWalletType === 'recharge',
             })}
           >
-            <Button type={'primary'} onClick={() => this.operateWallet(operateWalletType)} disabled={this.getDisabeledButton()}>
+            <Button
+              type={'primary'}
+              onClick={() => this.operateWallet(operateWalletType)}
+              disabled={this.getDisabeledButton()}
+            >
               {operateWalletType === 'withdrawal' ? '提现到微信钱包' : '立即充值'}
             </Button>
           </div>
+
+          <Dialog
+            isNew={true}
+            title="确认信息"
+            visible={this.state.showConfirm}
+            onClose={() => this.updateState({ name: 'showConfirm', value: false })}
+            onCancel={() => this.updateState({ name: 'showConfirm', value: false })}
+            onConfirm={() => this.moneyToWeixin()}
+          >
+            <div className={styles.title}>提现金额：</div>
+            <div className={styles.info}>{this.state.inputValue}元</div>
+            <div className={styles.title}>提现账号：</div>
+            <div className={styles.info}>{this.state.receiveAccount}</div>
+          </Dialog>
         </div>
       </Popup>
     );

@@ -2,7 +2,7 @@
  * 编辑器
  * 基于 vditor 开源组件：https://github.com/Vanessa219/vditor
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Vditor from '@discuzq/vditor';
 import classNames from 'classnames';
 import { baseOptions, baseToolbar } from './options';
@@ -35,7 +35,7 @@ function DVditor(props) {
     hintCustom = () => {},
     hintHide = () => {},
     site = {},
-    plugin
+    plugin,
   } = props;
 
 
@@ -44,6 +44,8 @@ function DVditor(props) {
 
   const [isFocus, setIsFocus] = useState(false);
   const [vditor, setVditor] = useState(null);
+
+  const isEmojiInsert = useRef(null);
 
   const html2mdSetValue = (text) => {
     try {
@@ -86,6 +88,7 @@ function DVditor(props) {
 
   useEffect(() => {
     if (emoji && emoji.code) {
+      isEmojiInsert.current = true;
       setState({ emoji: {} });
       // 因为vditor的lute中有一些emoji表情和 emoji.code 重叠了。这里直接先这样处理
       let value = `<img alt="${emoji.code}dzqemoji" src="${emoji.url}" class="qq-emotion" />`;
@@ -96,6 +99,18 @@ function DVditor(props) {
       if (browser.env(constants.ANDROID)) {
         if (!pc && getSelection().rangeCount > 0) getSelection().removeAllRanges();
       }
+
+      if (browser.env(constants.IOS)) {
+        getSelection().removeAllRanges();
+      }
+
+      if (typeof window !== 'undefined') {
+        if (browser.env(constants.IOS)) {
+          document.activeElement.blur();
+        }
+      }
+
+      if (!vditor && !window.vditorInstance) return;
     }
   }, [emoji]);
 
@@ -160,7 +175,11 @@ function DVditor(props) {
 
   useEffect(() => {
     if (!isServer()) {
-      window.vditorInstance.focus();
+      if (isEmojiInsert.current === true) {
+        isEmojiInsert.current = false;
+      } else {
+        window.vditorInstance.focus();
+      }
     }
   }, [value, vditor]);
 

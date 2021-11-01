@@ -1,3 +1,4 @@
+/* eslint-disable spaced-comment */
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styles from './index.module.scss';
@@ -57,7 +58,6 @@ class ThreadPCPage extends React.Component {
   }
 
   componentDidMount() {
-
     // 监听插件区域的高度变化调整编辑器的min-height style，使编辑器初始化时占满编辑框，更容易监测到图片拖拽上传
     const resizeObserver = new ResizeObserver(() => {
       const el = this.pluginContainer.current;
@@ -147,8 +147,7 @@ class ThreadPCPage extends React.Component {
                   onBlur={() => { }}
                   onInit={this.props.handleVditorInit}
                   setState={this.props.handleSetState}
-                  hintCustom={(type, key, textareaPosition, lastindex, vditor) =>
-                    this.hintCustom(type, key, textareaPosition, lastindex, vditor)}
+                  hintCustom={(type, key, textareaPosition, lastindex, vditor) => this.hintCustom(type, key, textareaPosition, lastindex, vditor)}
                   hintHide={this.hintHide}
                 />
 
@@ -253,7 +252,7 @@ class ThreadPCPage extends React.Component {
                   {(postData?.vote?.voteTitle) && (
                     <VoteWidget isPc={true} onDelete={() => this.props.setPostData({ vote: {} })} onClick={() => {
                       this.props.handleAttachClick({
-                        type: THREAD_TYPE.vote
+                        type: THREAD_TYPE.vote,
                       });
                     }} />
                   )}
@@ -366,7 +365,7 @@ class ThreadPCPage extends React.Component {
             </div>
             <ClassifyPopup pc onClick={this.hintHide} categoryId={threadPost.postData.categoryId} />
             <div className={styles.footer}>
-              <Button type="info" disabled={this.props.postType === "isEdit" && !postData.isDraft}
+              <Button type="info" disabled={this.props.postType === 'isEdit' && !postData.isDraft}
                 onClick={() => this.props.handleDraft()}>保存至草稿箱</Button>
               <Button type="primary" onClick={() => this.props.handleSubmit()}>发布</Button>
             </div>

@@ -1,3 +1,4 @@
+/* eslint-disable spaced-comment */
 import React from 'react';
 import styles from './index.module.scss';
 import { Divider, Spin, ImagePreviewer } from '@discuzq/design';
@@ -12,6 +13,9 @@ import NoData from '@components/no-data';
 import { withRouter } from 'next/router';
 import Router from '@discuzq/sdk/dist/router';
 import setWxShare from '@common/utils/set-wx-share';
+
+// 插件引入
+/**DZQ->plugin->register<plugin_user@user_extension_left_layout_hook>**/
 
 @inject('site')
 @inject('user')

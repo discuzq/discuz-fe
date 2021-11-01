@@ -129,7 +129,7 @@
     .listItem {
       display: flex;
       justify-content: space-between;
-      height: rem(36);
+      min-height: rem(36);
       padding: rem($padding-2n) rem($padding-4n);
       font-weight: normal;
       font-size: rem($font-size-primary);
@@ -140,7 +140,7 @@
     .listColumn {
       overflow: hidden;
       text-overflow: ellipsis;
-      white-space: nowrap;
+      // white-space: nowrap;
       display: flex;
       align-items: center;
     }
@@ -187,6 +187,13 @@
 .timer {
   font-size: rem($font-size-primary);
   color: $text-color-secondary;
+}
+
+.receiveAccount {
+  font-size: rem($font-size-primary);
+  color: $text-color-secondary;
+  white-space: pre-wrap;
+  overflow: auto;
 }
 
 .withdrawalAmount, .payAmount, .frozenAmount {

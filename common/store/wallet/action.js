@@ -227,10 +227,11 @@ class WalletAction extends WalletStore {
 
     // 发起提现
     @action
-    createWalletCash = async ({ money }) => {
+    createWalletCash = async ({ money, receiveAccount }) => {
       const res = await createWalletCash({
         data: {
           cashApplyAmount: money,
+          receiveAccount,
         },
       });
 

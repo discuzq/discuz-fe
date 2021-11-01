@@ -1,3 +1,4 @@
+// web 端使用的首页链接参数
 export default function getRouterCategory(router, site) {
   const defaultData = {
     categoryids: ['all'], // 这里的逻辑如果更改，记得需要更改下面的计算属性：isCurrentAllCategory
@@ -8,12 +9,15 @@ export default function getRouterCategory(router, site) {
     essence: 0,
   };
   try {
-    const { categoryId = '' } = router.query;
+    const { slug } = router.query;
+    if (!slug) return defaultData;
+    // eslint-disable-next-line prefer-const
+    let [, categoryId, , sequence] = slug;
     const { webConfig } = site || {};
     const { other } = webConfig || {};
     const { threadTab } = other || {}; // 所有:0,1 推荐:2 精华:3 已关注:4
     // sequence 对应请求里面的 scope 字段：列表所属模块域 0:普通 1：推荐 2：付费首页 3：搜索页
-    let sequence = '0';
+    // let sequence = '0';
     if (threadTab === 1 || threadTab === 0) sequence = '0';
     if (threadTab === 2) sequence = '1';
     if (threadTab === 3) defaultData.essence = 1;

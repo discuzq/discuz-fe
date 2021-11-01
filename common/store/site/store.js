@@ -142,37 +142,37 @@ class SiteStore {
 
   // 站点背景图
   @computed get siteBackgroundImage() {
-    return get(this.webConfig, 'setSite.siteBackgroundImage')
+    return get(this.webConfig, 'setSite.siteBackgroundImage');
   }
 
   // 站长
   @computed get siteAuthor() {
-    return get(this.webConfig, 'setSite.siteAuthor')
+    return get(this.webConfig, 'setSite.siteAuthor');
   }
 
   // 是否付费模式
   @computed get siteMode() {
-    return get(this.webConfig, 'setSite.siteMode')
+    return get(this.webConfig, 'setSite.siteMode');
   }
 
   // 站点付费金额
   @computed get sitePrice() {
-    return get(this.webConfig,'setSite.sitePrice')
+    return get(this.webConfig, 'setSite.sitePrice');
   }
 
   // 站点成员数
   @computed get countUsers() {
-    return get(this.webConfig,'other.countUsers')
+    return get(this.webConfig, 'other.countUsers');
   }
 
   // 站点主题数
   @computed get countThreads() {
-    return get(this.webConfig,'other.countThreads')
+    return get(this.webConfig, 'other.countThreads');
   }
 
   // 站点有效期
   @computed get siteExpire() {
-    return get(this.webConfig,'setSite.siteExpire')
+    return get(this.webConfig, 'setSite.siteExpire');
   }
 }
 

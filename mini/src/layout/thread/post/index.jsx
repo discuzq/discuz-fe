@@ -856,7 +856,7 @@ class Index extends Component {
                   }} />
                 )}
 
-                {product.detailContent && <Units type='product' productSrc={product.imagePath} productDesc={product.title} productPrice={product.price} onDelete={() => setPostData({ product: {} })} />}
+                {/* {product.detailContent && <Units type='product' productSrc={product.imagePath} productDesc={product.title} productPrice={product.price} onDelete={() => setPostData({ product: {} })} />} */}
                 <DZQPluginCenterInjection
                   target='plugin_post'
                   hookName='post_extension_content_hook'
