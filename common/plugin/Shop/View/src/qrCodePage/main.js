@@ -11,5 +11,5 @@ export default class QrCodePage {
   static options = {
     tomId: '61540fef8f4de8',
   }; // 需要在注入时提供的额外数据
-  static path = config.path;
+  static path = config.view.qrCodePage.path;
 }
