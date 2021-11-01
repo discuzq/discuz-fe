@@ -19,7 +19,6 @@ const Index = ({ site, setReady, threadId = '', commentId = '' }) => {
     href[href.length - 1] =  '';
   }
 
-  console.log(href.join('/'))
   useEffect(async () => {
     try {
       // const threadPath = `/indexPages/thread/index?id=${threadId}`;

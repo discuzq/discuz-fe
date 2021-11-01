@@ -32,6 +32,9 @@
   }
 }
 .shareBtn {
+  &.hasHidePart{
+    height: 104px;
+  }
   position: fixed;
   bottom: 0;
   left: 0;
@@ -45,6 +48,12 @@
   padding-bottom: env(safe-area-inset-bottom); ///兼容 IOS>11.2/
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
+  .checkbox{
+    height: rem(10px);
+    padding-left: rem(18);
+    width: 100%;
+  }
   .btn {
     width: 343px;
     height: 42px;
@@ -67,7 +76,7 @@
 }
 
 .emptyHeight {
-  height: 74px;
+  height: 104px;
   padding-bottom: constant(safe-area-inset-bottom); ///兼容 IOS<11.2/
   padding-bottom: env(safe-area-inset-bottom); ///兼容 IOS>11.2/
 }

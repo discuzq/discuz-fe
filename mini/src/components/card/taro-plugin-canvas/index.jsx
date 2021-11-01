@@ -3,7 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types';
 import { Canvas } from '@tarojs/components';
 import { randomString, getHeight, downloadImageAndInfo } from './utils/tools';
-import { drawImage, drawText, drawBlock, drawLine, } from './utils/draw';
+import { drawImage, drawText, drawBlock, drawLine, clearCanvas} from './utils/draw';
 import './index.css';
 
 let count = 1;
@@ -68,6 +68,7 @@ export default class CanvasDrawer extends React.Component {
                 }, resolve);
             });
         this.onCreate = () => {
+            this.drawArr = [];
             const { onCreateFail, config } = this.props;
             if (config['hide-loading'] === false) {
                 Taro.showLoading({ mask: true, title: '生成中...' });
@@ -88,6 +89,7 @@ export default class CanvasDrawer extends React.Component {
         };
         this.create = (config) => {
             this.ctx = Taro.createCanvasContext(this.canvasId, this.$scope);
+            this.ctx.clearRect(0,0,config.width,config.height);
             const height = getHeight(config);
             this.setState({
                 pixelRatio: config.pixelRatio || 1,
@@ -207,6 +209,7 @@ export default class CanvasDrawer extends React.Component {
         const height = getHeight(config);
         this.initCanvas(config.width, height, config.debug);
     }
+ 
     componentDidMount() {
         const sysInfo = Taro.getSystemInfoSync();
         const {screenWidth} = sysInfo;
@@ -215,6 +218,16 @@ export default class CanvasDrawer extends React.Component {
         });
         this.onCreate();
     }
+
+    componentDidUpdate(preProps){
+        if(this.props.hidePart !== preProps.hidePart){
+            setTimeout(()=>{
+                this.onCreate();
+            },0)
+        }
+    }
+
+
     componentWillUnmount() { }
     render() {
         const { pxWidth, pxHeight, debug } = this.state;

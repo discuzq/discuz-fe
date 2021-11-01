@@ -1,5 +1,5 @@
 import htmlparser2 from 'htmlparser2';
-import { getByteLen } from '../utils';
+import { getByteLen , cutText } from '../utils';
 import replaceStringInRegex from '@common/utils/replace-string-in-regex';
 import priceShare from '../card-img/admin-logo-pc.jpg';
 import lookMoreImg from '../card-img/look-more.jpg';
@@ -14,16 +14,17 @@ import {
   imagesGap,
   posterPadding,
   contentWidth,
+  screenHeight,
   categoryHeight,
   baseX,
   minGap,
   priceContentHeight,
 } from './constants';
 
-export const getContentConfig = async ({ site, thread, baseHeight }) => {
+export const getContentConfig = async ({ site, thread, baseHeight ,hidePart}) => {
   const {setSite} = site.webConfig || ''
-  const texts = handleTexts(thread, baseHeight);
-  const images = await handlePrice(thread, setSite) || handleImagesArea(thread, baseHeight, texts.height); // texts.height是：{ originalTextHeight, renderedTextHeight }
+  const texts = handleTexts(thread, baseHeight, hidePart);
+  const images = await handlePrice(thread, setSite) || handleImagesArea(thread, baseHeight, texts.height, hidePart); // texts.height是：{ originalTextHeight, renderedTextHeight }
   const lookMore = handleLookMore(baseHeight, texts.height, images.height); // images.height是：{ originalImageHeight, renderedImgHeight }
   const categories = handleCategories(thread, baseHeight, texts.height, images.height, lookMore.height);
   const totalContentHeight =
@@ -72,10 +73,10 @@ const handlePrice = async (thread, setSite) => {
     }
   }
 }
-const handleTexts = (thread, baseHeight) => {
+const handleTexts = (thread, baseHeight, hidePart) => {
   const userInfoHeight = baseHeight;
 
-  let { content = '', contentHeight = 0 } = handleContent(thread);
+  let { content = '', contentHeight = 0 } = handleContent(thread, hidePart);
   const contentTextHeight = { originalTextHeight: contentHeight };
 
   const { title = '', titleHeight = 0 } = handleTitle(thread);
@@ -102,7 +103,7 @@ const handleTexts = (thread, baseHeight) => {
         lineHeight: 44,
         fontWeight: 'bold',
         textAlign: 'left',
-        zIndex: 10,
+        zIndex: 11,
         baseLine: 'top',
         fontFamily: 'PingFang SC',
       },
@@ -116,7 +117,8 @@ const handleTexts = (thread, baseHeight) => {
         lineHeight: baseLineHeight,
         lineNum: maxTextLineNum,
         textAlign: 'left',
-        zIndex: 10,
+        zIndex: 50,
+        backgroundColor:'#ffffff',
         baseLine: 'top',
         color: '#0B0B37',
         fontFamily: 'PingFang SC',
@@ -125,14 +127,14 @@ const handleTexts = (thread, baseHeight) => {
   };
 };
 
-const handleImagesArea = (thread, baseHeight, { renderedTextHeight }) => {
+const handleImagesArea = (thread, baseHeight, { renderedTextHeight }, hidePart) => {
   let renderedImgHeight = 0;
 
   const images = [];
   let imgInfo = {};
   // 图片区域，返回一组图片url集合
   if (thread.content?.indexes[101]?.body || thread.content?.indexes.$0?.body) {
-    imgInfo = handleImage(thread, renderedTextHeight, baseHeight);
+    imgInfo = handleImage(thread, renderedTextHeight, baseHeight ,hidePart);
   }
 
   if (imgInfo?.imagesArray) {
@@ -241,7 +243,7 @@ const handleCategories = (thread, baseHeight, { renderedTextHeight = 0 }, { rend
 };
 
 // 处理文字
-const handleContent = (thread) => {
+const handleContent = (thread, hidePart) => {
   // 处理文字
   let content = [];
   const { Parser } = htmlparser2;
@@ -273,13 +275,25 @@ const handleContent = (thread) => {
   // 计算文本高度,计算有多少文字乘以文字宽度最后除以一行的宽度,再乘以一行的高度52
   // const contentHeight = (Math.ceil((getByteLen(content) * 14) / contentWidth) + (n >= 0 ? n : 0)) * baseLineHeight;
   const { textLineNumber, n } = handleHeightAccuracy(content);
-  const contentHeight = (textLineNumber + (n >= 0 ? n : 0)) * baseLineHeight;
+  let allLine = textLineNumber + (n >= 0 ? n : 0);
+  if( hidePart ){
+    const maxLine = 10;
+    if(allLine < maxLine ){
+      content = content.slice(0, Math.ceil(content.length/2)) + (content.length > 1?'...':'')
+    }else{
+      content = `${cutText(content , contentWidth , maxLine)  }...`;
+    }
+    const { textLineNumber:curTextLineNumber, n:curN} = handleHeightAccuracy(content);
+    allLine = curTextLineNumber + (curN >= 0 ?  curN: 0);
+  }
+
+  const contentHeight = allLine * baseLineHeight;
   return { content, contentHeight };
 };
 
 const handleHeightAccuracy = (content) => {
   const date = new Date();
-  const replaceTextSign = date.getTime() + '';
+  const replaceTextSign = `${date.getTime()  }`;
   const contentArr = content.replace(/[\n]/g, replaceTextSign).split(replaceTextSign);
   let textLineNumber = 0;
   // 换行符个数
@@ -294,12 +308,13 @@ const handleHeightAccuracy = (content) => {
 }
 
 // 处理图片，返回一组图片url和高度的集合
-const handleImage = (thread, contentHeight, userInfoHeight) => {
+const handleImage = (thread, contentHeight, userInfoHeight , hidePart) => {
   let imgArray = [];
   // 处理付费或无内容时的图片
   imgArray = thread.content?.indexes[101]?.body || thread.content?.indexes.$0?.body;
   const imagesArray = [];
-  const availableImageSpace = maxContentHeight - contentHeight - userInfoHeight;
+  const availableImageSpace = ( hidePart ? screenHeight : maxContentHeight ) - contentHeight - userInfoHeight;
+  
 
   let sumOfFilesHeight = 0; // 根据帖子中的图片高度计算渲染多少个图，用于减少访问数量
   for (let i = 0; i < imgArray.length; i++) {

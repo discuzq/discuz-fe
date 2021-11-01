@@ -20,6 +20,32 @@ export const getByteLen = (val) => {
   return len;
 }
 
+export const cutText = (content, contentWidth, maxLine) => {
+  const everyLineNum = Math.floor(contentWidth/28);
+  const date = new Date();
+  const replaceTextSign = `${date.getTime()}`;
+  let contentArr = content.replace(/[\n]/g, replaceTextSign).split(replaceTextSign);
+  let textLineNumber = 0;
+  // 将文本分段判断文本行数，每段文本末尾会有一个换行符被统计视为一行，所以每段文本最后一行不记录统计行数
+  for (let i = 0; i < contentArr.length; i++) {
+    if(contentArr[i]) {
+      const partLine = Math.floor((getByteLen(contentArr[i]) * 16) / contentWidth);
+      if(textLineNumber + partLine >= maxLine){
+        console.log(everyLineNum,maxLine,textLineNumber,contentArr[i].slice(0, everyLineNum*( maxLine - textLineNumber) ))
+        contentArr[i] = contentArr[i].slice(0, everyLineNum*( maxLine - textLineNumber) );
+        console.log(contentArr[i]);
+        contentArr = contentArr.slice(0,i+1);
+        console.log(contentArr);
+
+        break
+      }else{
+        textLineNumber += partLine;
+      }
+    }
+  }
+  return contentArr.join('\n');
+}
+
 const openConfirm = function () {
   Taro.showModal({
     content: '检测到您没打开此小程序的相机权限，是否去设置打开？',
