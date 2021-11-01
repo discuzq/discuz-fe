@@ -7,9 +7,14 @@
   height: rem(306);
   justify-content: center;
 
+  .dzq-qrcode-img-error {
+    font-size: 16px;
+  }
   .dzq-qrcode-img {
     margin-bottom: rem(25);
+    font-size: 16px;
     width: rem(198);
+    text-align: center;
   }
 
   .dzq-qrcode-msg {

@@ -15,8 +15,8 @@ export default class Qrcode extends React.PureComponent {
   }
 
   async openMiniShop(miniShopConfig) {
-    if (miniShopConfig?.setting?.wxScheme) {
-      window.location.href = miniShopConfig.setting.wxScheme;
+    if (miniShopConfig?.setting?.publicValue?.wxScheme) {
+      window.location.href = miniShopConfig.setting.publicValue.wxScheme;
     }
   }
 
@@ -33,21 +33,30 @@ export default class Qrcode extends React.PureComponent {
   render() {
     const { miniShopConfig } = this.state;
     const { siteData } = this.props;
+    // const wxQrcode = miniShopConfig?.setting?.publicValue?.wxQrcode
+    const wxQrcode = ''
     return (
       <div className={styles['dzq-qrcode-box']}>
-        <img className={styles['dzq-qrcode-img']} src={miniShopConfig?.setting?.publicValue?.wxQrcode} />
-        {siteData.platform === 'pc' ? (
-          <span className={`${styles['dzq-qrcode-msg']} ${styles.pc}`}>
-            <Icon name="ScanOutlined" size={16} className={styles['dzq-qrcode-scan-icon']} />
-            扫码访问商城
-          </span>
-        ) : (
-          <span className={`${styles['dzq-qrcode-msg']} ${styles.h5}`}>
-            <span>长按保存二维码</span>
-            <span>使用微信扫码访问</span>
-          </span>
-        )}
-      </div>
+        {
+          wxQrcode ?
+          <>
+            <img className={styles['dzq-qrcode-img']} src={wxQrcode} alt="商城二维码加载失败"/>
+            {siteData.platform === 'pc' ? (
+              <span className={`${styles['dzq-qrcode-msg']} ${styles.pc}`}>
+                <Icon name="ScanOutlined" size={16} className={styles['dzq-qrcode-scan-icon']} />
+                扫码访问商城
+              </span>
+            ) : (
+              <span className={`${styles['dzq-qrcode-img-msg']} ${styles.h5}`}>
+                <span>长按保存二维码</span>
+                <span>使用微信扫码访问</span>
+              </span>
+            )}
+          </>
+          :
+          <span className={styles['dzq-qrcode-img-error']}>未配置商城二维码</span>
+        }
+    </div>    
     );
   }
 }
