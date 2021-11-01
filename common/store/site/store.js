@@ -169,7 +169,7 @@ class SiteStore {
 
   // 附件上传限制数
   @computed get attachmentLimit() {
-    return get(this.webConfig, 'setAttach.supportMaxUploadAttachmentNum', 9);
+    return Number(get(this.webConfig, 'setAttach.supportMaxUploadAttachmentNum', 9));
   }
 }
 

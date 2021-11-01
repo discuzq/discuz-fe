@@ -20,7 +20,6 @@ export default inject('threadPost', 'site')(observer(({ type, threadPost, site, 
   const { setAttach, qcloud } = webConfig;
   const { supportImgExt, supportMaxSize } = setAttach;
   const { qcloudCosBucketName, qcloudCosBucketArea, qcloudCosSignUrl, qcloudCos } = qcloud;
-  console.log('attachmentLimit', attachmentLimit)
   const localData = JSON.parse(JSON.stringify(postData));
 
   const { images, files, audio } = localData;

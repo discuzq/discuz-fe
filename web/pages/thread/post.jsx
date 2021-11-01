@@ -436,7 +436,6 @@ class PostPage extends React.Component {
   // 附件、图片上传之前
   beforeUpload = (cloneList, showFileList, type) => {
     const { webConfig, attachmentLimit } = this.props.site;
-    console.log('webConfig', webConfig, attachmentLimit)
     if (!webConfig) return false;
     // 站点支持的文件类型、文件大小
     const { supportFileExt, supportImgExt, supportMaxSize } = webConfig.setAttach;
