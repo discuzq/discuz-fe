@@ -1,5 +1,5 @@
 import Component from './adapter';
-import config from '../config.json';
+import config from '../../../config.json';
 
 export default class CustomIfram {
   static pluginName = config.name_en // 插件名称

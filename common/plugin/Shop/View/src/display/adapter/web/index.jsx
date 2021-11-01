@@ -1,6 +1,6 @@
 import React from 'react';
 import { Icon, Dialog } from '@discuzq/design';
-import { MINI_SHOP_TYPE, PLATFORM_SHOP_TYPE } from '@common/plugin/Shop/client/common';
+import { MINI_SHOP_TYPE, PLATFORM_SHOP_TYPE } from '@common/plugin/Shop/View/src/common';
 import styles from '../index.module.scss';
 
 export default class ShopDisplay extends React.Component {

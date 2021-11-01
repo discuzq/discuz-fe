@@ -13,6 +13,7 @@ const PLATFORM_SHOP_TYPE = 10;
 export default class ShopPostEntry extends React.Component {
   constructor(props) {
     super(props);
+    console.log('post entry');
 
     this.state = {
       visible: false,
