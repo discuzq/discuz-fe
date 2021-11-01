@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text } from '@tarojs/components';
 import { Icon, Dialog, Toast } from '@discuzq/design';
 import CustomApplyEntryContent from './content';
-import { getPostData } from '@common/plugin/custom-apply/client/common';
+import { getPostData } from '@common/plugin/custom-apply/View/src/common';
 import classNames from 'classnames';
 import styles from '../index.module.scss';
 

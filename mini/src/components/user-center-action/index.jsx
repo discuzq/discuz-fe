@@ -133,7 +133,7 @@ class UserCenterAction extends React.Component {
       <View className={`${styles.userCenterAction} ${actions.length < rowActionCount && styles.userCenterColumnStyle}`}>
         {this.renderActionItems()}
         <DZQPluginCenterInjection
-          className={styles.userCenterActionItem}
+          className={styles.userCenterPluginActionItem}
           target="plugin_user"
           hookName="user_extension_action_hook"
         />

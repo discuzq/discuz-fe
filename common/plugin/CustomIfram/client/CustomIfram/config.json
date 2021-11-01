@@ -1,8 +1,0 @@
-{
-    "pluginName": "CustomIfram",
-    "version": "1.0.0",
-    "target": "plugin_post",
-    "hookName": "post_extension_entry_hook",
-    "platform": ["pc", "h5", "mini"],
-    "disables": true
-}

@@ -8,15 +8,18 @@
   display: flex;
   flex-wrap: wrap;
 
+  .userCenterActionItem, .userCenterPluginActionItem {
+    cursor: pointer;
+    min-width: rem(60);
+    width: percentage(100/4/100);
+  }
+
   .userCenterActionItem {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    cursor: pointer;
-    min-width: rem(60);
     padding: rem($padding-4n) 0;
-    width: percentage(100/4/100);
 
     .userCenterActionItemIcon {
     }

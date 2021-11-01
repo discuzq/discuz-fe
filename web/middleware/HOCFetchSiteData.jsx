@@ -32,6 +32,7 @@ import {
 } from '@common/constants/site';
 import LoginHelper from '@common/utils/login-helper';
 import { USER_STATUS } from '@common/constants/login';
+import pluginRequest from '@discuzq/plugin-center/dist/pluginRequest';
 
 // 获取全站数据
 export default function HOCFetchSiteData(Component, _isPass) {
@@ -41,6 +42,7 @@ export default function HOCFetchSiteData(Component, _isPass) {
   @inject('thread')
   @inject('emotion')
   @inject('commonLogin')
+  @inject('plugin')
   @observer
   class FetchSiteData extends React.Component {
     // 应用初始化
@@ -166,9 +168,6 @@ export default function HOCFetchSiteData(Component, _isPass) {
           result.data && site.setSiteConfig(result.data);
           result.data && forum.setOtherPermissions(result.data);
 
-          // 获取插件信息
-          const pluginConfig = await readPluginList();
-          if (pluginConfig.code === 0) site.setPluginConfig(pluginConfig.data);
           // 设置全局状态
           this.setAppCommonStatus(result);
           siteConfig = result.data || null;
@@ -176,6 +175,19 @@ export default function HOCFetchSiteData(Component, _isPass) {
       } else {
         siteConfig = site ? site.webConfig : null;
       }
+      
+       // 获取插件信息
+       if ( site && site.pluginConfig ) {
+        pluginRequest(site.pluginConfig, this.props.plugin.setPluginComponent.bind(this.props.plugin));
+       } else {
+        const pluginConfig = await readPluginList();
+        if (pluginConfig.code === 0) {
+          site.setPluginConfig(pluginConfig.data);
+          pluginRequest(pluginConfig.data, this.props.plugin.setPluginComponent.bind(this.props.plugin));
+        }
+       }
+      
+
       // 初始化登陆方式
       site.initUserLoginEntryStatus();
 
@@ -462,7 +474,7 @@ export default function HOCFetchSiteData(Component, _isPass) {
           </div>
         );
       }
-      return <Component canPublish={this.canPublish} {...this.filterProps(this.props)}/>;
+      return <Component canPublish={this.canPublish} {...this.filterProps(this.props)}/>
     }
   }
 

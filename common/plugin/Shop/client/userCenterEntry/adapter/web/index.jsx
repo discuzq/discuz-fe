@@ -52,8 +52,8 @@ export default class UserCenterEntry extends React.PureComponent {
     const { visible, showPcMiniShop } = this.state;
     return (
       <>
-        {visible && (
-          <div onClick={this.handleMiniShopOpen} className={styles.userCenterActionItem}>
+        {  visible && (
+          <div onClick={this.handleMiniShopOpen} className={`${styles.userCenterActionItem} ${siteData.platform === 'pc' ? styles.pc : styles.h5}`}>
             <div className={styles.userCenterActionItemIcon}>
               <Icon name="ShopOutlined" size={20} />
             </div>

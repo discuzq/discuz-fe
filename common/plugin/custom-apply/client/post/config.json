@@ -1,8 +1,0 @@
-{
-  "pluginName": "CustomActApply",
-  "version": "1.0.0",
-  "target": "plugin_post",
-  "hookName": "post_extension_content_hook",
-  "platform": ["pc", "h5", "mini"],
-  "disables": false
-}

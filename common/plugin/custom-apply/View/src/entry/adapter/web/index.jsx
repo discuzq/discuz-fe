@@ -8,7 +8,7 @@ import { zhCN } from 'date-fns/locale';
 import { getHours, setHours, getMinutes, setMinutes, format } from 'date-fns';
 import classNames from 'classnames';
 import { formatDate } from '@common/utils/format-date';
-import { getPostData, formatPostData, ATTACH_INFO_TYPE } from '@common/plugin/custom-apply/client/common';
+import { getPostData, formatPostData } from '@common/plugin/custom-apply/View/src/common';
 import styles from '../index.module.scss';
 registerLocale('zh-CN', zhCN);
 

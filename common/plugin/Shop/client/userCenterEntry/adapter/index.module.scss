@@ -5,6 +5,14 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  &.pc {
+    padding: rem($padding-6n) 0;
+  }
+
+  &.h5, &.mini {
+    padding: rem($padding-4n) 0;
+  }
 }
 .userCenterActionItemDesc {
   margin-top: rem($margin-2n);

@@ -148,7 +148,7 @@ class UserCenterAction extends React.Component {
       >
         {this.renderActionItems()}
         <DZQPluginCenterInjectionPolyfill
-          className={styles.userCenterActionItem}
+          className={styles.userCenterPluginActionItem}
           target="plugin_user"
           hookName="user_extension_action_hook"
         />

@@ -8,6 +8,5 @@ module.exports = nextConfig((config) => {
     //     autoPrerender: false,
     // }
     // config.plugins.push(new BundleAnalyzerPlugin({ analyzerPort: 8919 }));
-
     return config;
 });
