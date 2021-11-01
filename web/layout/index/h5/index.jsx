@@ -19,7 +19,7 @@ import Autoplay from '@common/utils/autoplay';
 import PacketOpen from '@components/red-packet-animation/web';
 import ThreadContent from '@components/thread/SSRAdapter';
 import SiteMapLink from '@components/site-map-link';
-
+import ssrTextContent from '../ssr-test';
 
 @inject('site')
 @inject('user')
@@ -250,7 +250,7 @@ class IndexH5Page extends React.Component {
               })
             }
           </div>
-
+          <div className='ssr-box-list-end' dangerouslySetInnerHTML={{__html: ssrTextContent}}/>
         </div>
       );
     }

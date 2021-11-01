@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text } from '@tarojs/components';
 import { Input } from '@discuzq/design';
 import actEntryStyles from '../../../entry/adapter/index.module.scss';
-import { ATTACH_INFO_TYPE, ATTACH_INFO_NAME } from '@common/plugin/custom-apply/client/common';
+import { ATTACH_INFO_TYPE, ATTACH_INFO_NAME } from '@common/plugin/custom-apply/View/src/common';
 import { debounce } from '@common/utils/throttle-debounce';
 
 export default class CustomApplyAttach extends React.Component {

@@ -19,7 +19,7 @@ import Autoplay from '@common/utils/autoplay';
 import PacketOpen from '@components/red-packet-animation/web';
 import ThreadContent from '@components/thread/SSRAdapter';
 import TopNews from '../h5/components/top-news/SSRAdapter';
-
+import ssrTextContent from '../ssr-test';
 
 const DynamicVListLoading = dynamic(() => import('./components/dynamic-vlist'), {
   loading: (res) => {
@@ -254,7 +254,7 @@ class IndexPCPage extends React.Component {
               })
             }
           </div>
-
+          <div className='ssr-box-list-end' dangerouslySetInnerHTML={{__html: ssrTextContent}}/>
         </div>
       );
     }

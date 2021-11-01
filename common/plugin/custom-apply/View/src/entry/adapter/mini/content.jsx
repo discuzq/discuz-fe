@@ -4,7 +4,7 @@ import { Icon, Dialog, Button, Input, Textarea, Radio, Toast, Checkbox } from '@
 import DatePickers from '@components/thread-post/date-time-picker';
 import classNames from 'classnames';
 import { formatDate } from '@common/utils/format-date';
-import { formatPostData, ATTACH_INFO_TYPE } from '@common/plugin/custom-apply/client/common';
+import { formatPostData, ATTACH_INFO_TYPE } from '@common/plugin/custom-apply/View/src/common';
 import { debounce } from '@common/utils/throttle-debounce';
 import styles from '../index.module.scss';
 

@@ -4,7 +4,7 @@ import { Button, Icon, Avatar, Toast, Dialog, Input } from '@discuzq/design';
 import PopupList from '@components/thread/popup-list';
 import CountDown from '@common/utils/count-down';
 import LoginHelper from '@common/utils/login-helper';
-import { ATTACH_INFO_TYPE, ATTACH_INFO_NAME } from '@common/plugin/custom-apply/client/common';
+import { ATTACH_INFO_TYPE, ATTACH_INFO_NAME } from '@common/plugin/custom-apply/View/src/common';
 import classNames from 'classnames';
 import styles from '../index.module.scss';
 import actEntryStyles from '../../../entry/adapter/index.module.scss';

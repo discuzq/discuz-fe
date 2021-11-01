@@ -7,7 +7,7 @@ import PopupList from '@components/thread/popup-list';
 import CountDown from '@common/utils/count-down';
 import LoginHelper from '@common/utils/login-helper';
 import CustomApplyAttach from './attach';
-import { ATTACH_INFO_NAME } from '@common/plugin/custom-apply/client/common';
+import { ATTACH_INFO_NAME } from '@common/plugin/custom-apply/View/src/common';
 import classNames from 'classnames';
 import styles from '../index.module.scss';
 import actEntryStyles from '../../../entry/adapter/index.module.scss';
@@ -262,10 +262,11 @@ class CustomApplyDisplay extends React.Component {
     const url = `${siteData?.envConfig?.COMMON_BASE_URL}/plugin/activity/api/register/export?activityId=${activityId}`;
     Toast.info({ content: '导出中...' });
     const config = setAuthorization({});
+
     Taro.downloadFile({
       url,
       header: {
-        ...config,
+        ...(config?.headers || {}),
       },
       success: (res) => {
         // Toast.info({ content: '下载成功' });
@@ -276,7 +277,7 @@ class CustomApplyDisplay extends React.Component {
             Toast.info({ content: '下载成功' });
           },
           fail: () => {
-            Toast.info({ content: '下载失败，可以到Web端试试' });
+            Toast.info({ content: '不支持该文件的预览，请到web端进行下载' });
           },
         });
       },
