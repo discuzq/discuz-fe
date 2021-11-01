@@ -27,6 +27,11 @@ export default class ShopCreateDisplay extends React.Component {
       const { shopPluginData } = selectPagePluginData;
       if (shopPluginData && shopPluginData.postData && shopPluginData.postData.tomId) {
         this.props.updatePlugin(shopPluginData);
+
+        // 消费掉后去除
+        this.props.pluginAction.set('shop', {
+          shopPluginData: null,
+        });
       }
     }
   }
