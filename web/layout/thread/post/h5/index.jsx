@@ -248,7 +248,7 @@ class ThreadCreate extends React.Component {
     const { threadExtendPermissions, permissions } = user;
     const { postData, setPostData } = threadPost;
 
-    const { webConfig = {} } = site;
+    const { webConfig = {}, attachmentLimit = 9 } = site;
     const { setAttach, qcloud } = webConfig;
     const { supportImgExt, supportMaxSize } = setAttach;
     const { qcloudCosBucketName, qcloudCosBucketArea, qcloudCosSignUrl, qcloudCos } = qcloud;
@@ -360,7 +360,7 @@ class ThreadCreate extends React.Component {
           {/* 附件上传组件 */}
           {(currentDefaultOperation === defaultOperation.attach || Object.keys(postData.files).length > 0) && (
             <FileUpload
-              limit={9}
+              limit={attachmentLimit}
               fileList={Object.values(postData.files)}
               onChange={fileList => this.props.handleUploadChange(fileList, THREAD_TYPE.file)}
               onComplete={(ret, file) => this.props.handleUploadComplete(ret, file, THREAD_TYPE.file)}

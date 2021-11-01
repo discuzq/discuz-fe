@@ -174,6 +174,11 @@ class SiteStore {
   @computed get siteExpire() {
     return get(this.webConfig, 'setSite.siteExpire');
   }
+
+  // 附件上传限制数
+  @computed get attachmentLimit() {
+    return Number(get(this.webConfig, 'setAttach.supportMaxUploadAttachmentNum', 9));
+  }
 }
 
 export default SiteStore;
