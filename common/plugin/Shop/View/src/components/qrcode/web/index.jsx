@@ -35,7 +35,7 @@ export default class Qrcode extends React.PureComponent {
     const { siteData } = this.props;
     return (
       <div className={styles['dzq-qrcode-box']}>
-        <img className={styles['dzq-qrcode-img']} src={miniShopConfig?.setting?.wxQrcode} />
+        <img className={styles['dzq-qrcode-img']} src={miniShopConfig?.setting?.publicValue?.wxQrcode} />
         {siteData.platform === 'pc' ? (
           <span className={`${styles['dzq-qrcode-msg']} ${styles.pc}`}>
             <Icon name="ScanOutlined" size={16} className={styles['dzq-qrcode-scan-icon']} />
