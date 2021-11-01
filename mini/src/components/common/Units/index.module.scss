@@ -200,6 +200,7 @@
 
   .tag-text {
     @include text-ellipsis();
+    line-height: 24px;
   }
 
   .remove {
