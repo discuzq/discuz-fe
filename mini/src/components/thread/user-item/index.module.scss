@@ -110,10 +110,21 @@
 
   &-user {
     @include lamp-clamp(1);
-    display: inline-block;
-    width: 70px;
+    display: inline-flex;
+    width: 100px;
+    align-items: center;
     font-size: $font-size-base;
     color: $text-color-primary;
+
+    .img {
+      display: inline-block;
+    }
+
+    .title {
+      width: 56px;
+      margin-left: 4px;
+      @include text-ellipsis();
+    }
   }
 
   &-item {

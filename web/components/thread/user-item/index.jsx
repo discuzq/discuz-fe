@@ -79,6 +79,7 @@ const Index = ({
               userId={userId}
               userType={type}
             />
+            <span className={styles.title}>{title}</span>
           </div>
           {Object.keys(additionalInfo || {}).map((item, key) => (
             <div className={styles['additional-item']} key={key}>

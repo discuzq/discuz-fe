@@ -83,6 +83,7 @@ const Index = ({
               userId={userId}
               userType={type}
             />
+            <View className={styles.title}>{title}</View>
           </View>
           {Object.keys(additionalInfo || {}).map((item, key) => (
             <View className={styles['additional-item']} key={key}>

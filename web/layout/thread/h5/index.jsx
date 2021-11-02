@@ -692,7 +692,7 @@ class ThreadH5Page extends React.Component {
       this.props.index.refreshHomeData({ categoryIds: [categoryId] });
     }
     this.props.vlist.resetPosition();
-    Router.push({ url: '/' });
+    Router.push({ url: `/?categoryId=${categoryId}&sequence=0` });
   }
 
   replyAvatarClick(reply, comment, floor) {

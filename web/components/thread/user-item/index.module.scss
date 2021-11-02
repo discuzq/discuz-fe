@@ -68,7 +68,6 @@
 .additional {
   display: block;
   padding: 0 !important;
-  overflow-x: scroll;
   &-wrapper {
     padding: $padding-4n;
     display: flex;
@@ -80,16 +79,23 @@
       border-bottom: 0;
     }
 
-    .img {
-      display: inline-block;
-    }
   }
   &-user {
     @include lamp-clamp(1);
-    display: inline-block;
-    width: 70px;
+    display: inline-flex;
+    width: 100px;
+    align-items: center;
     font-size: $font-size-base;
     color: $text-color-primary;
+
+    .img {
+      display: inline-block;
+    }
+    .title {
+      width: 56px;
+      margin-left: 4px;
+      @include text-ellipsis();
+    }
   }
   &-item {
     @include lamp-clamp(1);
