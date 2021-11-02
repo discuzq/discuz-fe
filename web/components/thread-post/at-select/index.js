@@ -112,7 +112,7 @@ class AtSelect extends Component {
     const isFollow = !this.getSearchKeyword();
     const avatar = isFollow ? item?.user?.avatar : item.avatar;
     const username = isFollow ? item?.user?.userName : item.username;
-    const nickname = isFollow ? item?.user?.nickName : item.nickname;
+    const nickname = isFollow ? item?.user?.nickname : item.nickname;
     const groupName = isFollow ? item?.group?.groupName : item.groupName;
     const userId = isFollow ? item.user?.userId : item.userId;
     return { avatar, username, groupName, userId, nickname };

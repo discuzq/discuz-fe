@@ -150,7 +150,7 @@ const Index = ({
             <div className={styles.fabulous} onClick={() => handleClick(item)}>
               {
                 item.name === '评论' &&  hasCommentHongbao ? (
-                  <img className={styles.hongbaoMini} src={hongbaoicon}></img>
+                  <img title='回复领红包' className={styles.hongbaoMini} src={hongbaoicon}></img>
                 ) : (
                   <Icon
                   className={`${styles.icon} ${item.type} ${item.actived ? styles.likedColor : styles.dislikedColor}`}
