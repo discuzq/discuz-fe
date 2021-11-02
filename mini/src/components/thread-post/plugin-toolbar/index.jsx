@@ -1,3 +1,4 @@
+/* eslint-disable spaced-comment */
 
 /**
  * 发帖页底部分类、图片等工具栏
@@ -15,20 +16,28 @@ import DZQPluginCenterInjection from '@discuzq/plugin-center/dist/components/DZQ
 // 插件引入
 /**DZQ->plugin->register<plugin_post@post_extension_entry_hook>**/
 
+const Index = inject(
+  'site',
+  'user',
+  'plugin',
+  'threadPost',
+)(
+  observer((props) => {
+    const { threadPost, clickCb, onCategoryClick, onSetplugShow, user, operationType, site } = props;
+    const {
+      webConfig: {
+        other: { threadOptimize },
+      },
+    } = site;
 
-const Index = inject('site', 'user', 'plugin', 'threadPost')(observer((props) => {
-  const { threadPost, clickCb, onCategoryClick, onSetplugShow, user, operationType, site } = props;
-  const { webConfig: { other: { threadOptimize } } } = site;
+    // 控制插件icon的显示/隐藏
+    const [plugShow, setplugShow] = useState(false);
+    // 设置当前选中的插件
+    const [currentplug, setCurrentplug] = useState({});
 
-  // 控制插件icon的显示/隐藏
-  const [plugShow, setplugShow] = useState(false);
-  // 设置当前选中的插件
-  const [currentplug, setCurrentplug] = useState({});
+    const [canInsertplugsin, setCanInsertplugsin] = useState({});
 
-  const [canInsertplugsin, setCanInsertplugsin] = useState({});
-
-  const content = useCallback(
-    () => {
+    const content = useCallback(() => {
       const { parent, child } = threadPost.categorySelected;
       return `${parent.name || ''}${child.name ? ` \\ ${child.name}` : ''}`;
     },
@@ -84,7 +93,7 @@ const Index = inject('site', 'user', 'plugin', 'threadPost')(observer((props) =>
           name={item.name}
           // color={((item.type === operationType && item.type !== THREAD_TYPE.anonymity)
           //   || (threadPost.postData.anonymous && item.type === THREAD_TYPE.anonymity)) && item.active}
-          size='20'
+          size="20"
         />
       );
     });
@@ -106,58 +115,58 @@ const Index = inject('site', 'user', 'plugin', 'threadPost')(observer((props) =>
                 navInfo: threadPost.navInfo,
               },
             }}
-          />
+          >
+            <Icon className={styles['icon-color']} name="MoreBOutlined" size="20" />
+          </View>
         </View>
+      );
+    }, [tep, currentplug, operationType, threadPost.postData, plugShow]);
 
-        <View className={styles['switcher']} onClick={() => {
-          setplugShow(false);
-          onSetplugShow();
-        }}>
-          <Icon className={styles['icon-color']} name="MoreBOutlined" size='20' />
+    useEffect(() => {
+      if (!operationType) {
+        setCurrentplug({});
+      }
+      attachIcon.forEach((item) => {
+        if (item.type === operationType) {
+          setCurrentplug(item);
+        }
+      });
+    }, [operationType]);
+
+    // 分类元素
+    const category = (
+      <View className={styles.category} onClick={onCategoryClick}>
+        <Icon name="MenuOutlined" size="14" className={styles.icon} />
+        <Text className={styles.text}>分类</Text>
+        <Units
+          type="tag"
+          style={{ margin: '0', maxWidth: '200px' }}
+          tagContent={content() || '选择分类(必选)'}
+          onTagClick={() => {}}
+        />
+      </View>
+    );
+
+    return (
+      <View className={`${styles.container} ${plugShow ? styles['container-plugin-show'] : ''}`}>
+        <View className={styles.category}>
+          {plugShow ? null : category}
+          {plug}
+        </View>
+        <View
+          onClick={() => {
+            setplugShow(!plugShow);
+            onSetplugShow();
+          }}
+        >
+          {!plugShow && (
+            <Icon className={styles['icon-color']} name={currentplug.name || canInsertplugsin[0]?.name} size="20" />
+          )}
+          <Icon className={styles['icon-color']} name="MoreBOutlined" size="20" />
         </View>
       </View>
     );
-  }, [tep, currentplug, operationType, threadPost.postData, plugShow])
-
-  useEffect(() => {
-    if (!operationType) {
-      setCurrentplug({});
-    }
-    attachIcon.forEach((item) => {
-      if (item.type === operationType) {
-        setCurrentplug(item);
-      }
-    });
-  }, [operationType]);
-
-  // 分类元素
-  const category = (
-    <View className={styles['category']} onClick={onCategoryClick}>
-      <Icon
-        name="MenuOutlined"
-        size='14'
-        className={styles['icon']}
-      />
-      <Text className={styles['text']}>分类</Text>
-      <Units type='tag' style={{margin: '0', maxWidth: '200px'}} tagContent={content() || '选择分类(必选)'} onTagClick={() => {}} />
-    </View>
-  );
-
-  return (
-    <View className={`${styles['container']} ${plugShow ? styles['container-plugin-show'] : ''}`}>
-      <View className={styles['category']}>
-        {plugShow ? null : category}
-        {plug}
-      </View>
-      <View onClick={() => {
-        setplugShow(!plugShow);
-        onSetplugShow();
-      }}>
-        {(!plugShow) && (<Icon className={styles['icon-color']} name={currentplug.name || canInsertplugsin[0]?.name} size='20' />)}
-        <Icon className={styles['icon-color']} name="MoreBOutlined" size='20' />
-      </View>
-    </View>
-  );
-}));
+  }),
+);
 
 export default memo(Index);

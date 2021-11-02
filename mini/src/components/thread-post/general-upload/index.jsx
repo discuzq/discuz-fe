@@ -16,11 +16,10 @@ import commonUpload from '@common/utils/common-upload';
 
 export default inject('threadPost', 'site')(observer(({ type, threadPost, site, audioUpload, children, pageScrollTo }) => {
   const { postData, setPostData } = threadPost;
-  const { webConfig = {}, envConfig } = site;
+  const { webConfig = {}, envConfig, attachmentLimit = 9 } = site;
   const { setAttach, qcloud } = webConfig;
   const { supportImgExt, supportMaxSize } = setAttach;
   const { qcloudCosBucketName, qcloudCosBucketArea, qcloudCosSignUrl, qcloudCos } = qcloud;
-
   const localData = JSON.parse(JSON.stringify(postData));
 
   const { images, files, audio } = localData;
@@ -34,7 +33,8 @@ export default inject('threadPost', 'site')(observer(({ type, threadPost, site, 
     const { supportFileExt, supportImgExt, supportMaxSize } = webConfig?.setAttach;
     const supportExt = isImage ? supportImgExt : supportFileExt; // 支持的文件格式
     const showList = isImage ? images : files; // 已上传文件列表
-    const remainLength = 9 - Object.keys(showList).length; // 剩余可传数量
+    const limit = isImage ? 9 : attachmentLimit;
+    const remainLength = limit - Object.keys(showList).length; // 剩余可传数量
 
 
 
@@ -131,7 +131,7 @@ export default inject('threadPost', 'site')(observer(({ type, threadPost, site, 
   // 选择附件
   const chooseFile = () => {
     Taro.chooseMessageFile({
-      count: 9,
+      count: attachmentLimit,
       type: 'file',
       success(res) {
         checkWithUpload(res.tempFiles, false)
@@ -152,7 +152,7 @@ export default inject('threadPost', 'site')(observer(({ type, threadPost, site, 
       })}
 
       <View id='thread-post-file'>
-        {(type === THREAD_TYPE.file && Object.values(files).length < 9) && (<Units type='atta-upload' onUpload={chooseFile} />)}
+        {(type === THREAD_TYPE.file && Object.values(files).length < attachmentLimit) && (<Units type='atta-upload' onUpload={chooseFile} />)}
       </View>
     </>
   );

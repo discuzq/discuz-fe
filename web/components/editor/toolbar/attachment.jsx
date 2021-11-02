@@ -1,3 +1,4 @@
+/* eslint-disable spaced-comment */
 /**
  * 附件操作栏比如：图片上传、视频上传、语音上传等
  */
@@ -54,7 +55,7 @@ function getObjectURL(file) {
 function AttachmentToolbar(props) {
   let file = null;
   let toastInstance = null;
-  const [showAll, setShowAll] = useState(true);
+  const [showAll, setShowAll] = useState(false);
   const [currentAction, setCurrentAction] = useState('');
   const inputRef = React.createRef(null);
   const { onVideoUpload = () => { } } = props;
@@ -177,8 +178,7 @@ function AttachmentToolbar(props) {
 
 
   const icons = () => {
-
-    let defaultEntryList = attachIcon.map((item) => {
+    const defaultEntryList = attachIcon.map((item) => {
       const { permission } = props;
       if (props.pc && item.type === THREAD_TYPE.voice) return null;
       const clsName = getIconCls(item);
@@ -200,7 +200,7 @@ function AttachmentToolbar(props) {
       return isShow ? (
         <div key={item.name} className={clsName}>
           <Icon
-            onClick={e => {
+            onClick={(e) => {
               handleAttachClick(e, item);
               trggerInput(item);
             }}
@@ -220,8 +220,7 @@ function AttachmentToolbar(props) {
       ) : null;
     });
     return defaultEntryList;
-  }
-
+  };
 
   if (props.pc) return (
     <>
@@ -232,11 +231,9 @@ function AttachmentToolbar(props) {
         hookName='post_extension_entry_hook'
         pluginProps={{
           onConfirm: props.onPluginSetPostData,
-          renderData: props.postData.plugin,
-          postData: {
-            navInfo: props.threadPost.navInfo
-        }
-      }}/>
+          renderData: props.threadPost.postData.plugin,
+          postData: props.threadPost.postData,
+        }}/>
     </>
   );
   const styl = !showAll ? { display: 'none' } : {};
@@ -266,11 +263,9 @@ function AttachmentToolbar(props) {
             hookName='post_extension_entry_hook'
             pluginProps={{
               onConfirm: props.onPluginSetPostData,
-              renderData: props.postData.plugin,
-              postData: {
-                navInfo: props.threadPost.navInfo
-            }
-          }}/>
+              renderData: props.threadPost.postData.plugin,
+              postData: props.threadPost.postData,
+            }}/>
         </div>
         <div
           className={classNames(styles['dvditor-attachment-toolbar__right'], styles.show)}

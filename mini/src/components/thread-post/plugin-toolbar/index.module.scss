@@ -39,6 +39,9 @@
     }
     &.active {
       color: $icon-color-active;
+      :global(.dzq-icon) {
+        color: $icon-color-active;
+      }
     }
   }
 

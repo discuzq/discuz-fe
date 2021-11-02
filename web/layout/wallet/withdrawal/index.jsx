@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { createRef } from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'next/router';
 import Header from '@components/header';
 import MoneyInput from './components/money-input';
+import Payment from './components/payment';
 import styles from './index.module.scss';
-import { Icon, Button, Toast } from '@discuzq/design';
+import { Icon, Button, Toast, Dialog } from '@discuzq/design';
 import classNames from 'classnames';
 import Router from '@discuzq/sdk/dist/router';
 
@@ -19,7 +20,11 @@ class Withdrawal extends React.Component {
       moneyOverThanAmount: false, // 是否超过当前可提现金额
       withdrawalAmount: 0,
       inputValue: '', // 金额输入内容
+      showConfirm: false,
+      receiveAccount: '',
     };
+
+    this.paymentRef = createRef(null);
   }
 
   updateState = ({ name, value }) => {
@@ -41,16 +46,29 @@ class Withdrawal extends React.Component {
       moneyOverThanAmount: false, // 是否超过当前可提现金额
       withdrawalAmount: 0,
       inputValue: '',
+      showConfirm: false,
+      receiveAccount: '',
     });
   };
+
+  onConfirm = () => {
+    const paymentInfo = this.paymentRef?.current?.getData();
+
+    this.setState({
+      showConfirm: true,
+      receiveAccount: paymentInfo?.desc,
+    });
+  }
 
   // 提现到微信钱包
   moneyToWeixin = async () => {
     if (this.getDisabeledButton()) return;
 
+    // return;
     this.props.wallet
       .createWalletCash({
         money: this.state.inputValue,
+        receiveAccount: this.state.receiveAccount,
       })
       .then(async (res) => {
         Toast.success({
@@ -104,10 +122,15 @@ class Withdrawal extends React.Component {
                 visible={this.state.visible}
                 minmoney={this.props.site.cashMinSum}
                 maxmoney={this.props.walletData?.availableAmount}
-                type='withdrawal'
+                type="withdrawal"
               />
             </div>
           </div>
+
+          <div className={styles.payment}>
+            <Payment ref={this.paymentRef}></Payment>
+          </div>
+
           <div
             className={classNames(styles.footer, {
               [styles.bgBtnColor]: !this.getDisabeledButton(),
@@ -116,13 +139,27 @@ class Withdrawal extends React.Component {
             <Button
               type={'primary'}
               className={styles.button}
-              onClick={this.moneyToWeixin}
+              onClick={this.onConfirm}
               disabled={this.getDisabeledButton()}
             >
               提现到微信钱包
             </Button>
           </div>
         </div>
+
+        <Dialog
+          isNew={true}
+          title="确认信息"
+          visible={this.state.showConfirm}
+          onClose={() => this.updateState({ name: 'showConfirm', value: false })}
+          onCancel={() => this.updateState({ name: 'showConfirm', value: false })}
+          onConfirm={() => this.moneyToWeixin()}
+        >
+          <div className={styles.title}>提现金额：</div>
+          <div className={styles.info}>{this.state.inputValue}元</div>
+          <div className={styles.title}>提现账号：</div>
+          <div className={styles.info}>{this.state.receiveAccount}</div>
+        </Dialog>
       </>
     );
   }

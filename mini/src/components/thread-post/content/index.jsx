@@ -47,7 +47,7 @@ const Index = forwardRef(({
     * 初始化渲染时IOS系统默认使用了22px的行高，css中真实行高确是28px。需要补偿展示高度
     */
     if (postType !== 'isFirst' && e.detail.lineCount > 1 && !initialized) {
-      setRealHeight(parseInt(e.detail.height * (28 / 22) + 100));
+      setRealHeight(parseInt(e.detail.height * (28 / 22) + 120));
       setInitialized(true);
       return;
     }

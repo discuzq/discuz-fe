@@ -1,10 +1,11 @@
+/* eslint-disable spaced-comment */
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 import styles from './index.module.scss';
 import clearLoginStatus from '@common/utils/clear-login-status';
 import UserCenterPost from '@components/user-center-post';
-import UserCenterAction from '@components/user-center-action-pc';
+import UserCenterAction from '@components/user-center-action';
 import SidebarPanel from '@components/sidebar-panel';
 import Avatar from '@components/avatar';
 import Copyright from '@components/copyright';
@@ -18,6 +19,9 @@ import UserCenterHeaderPc from '@components/user-center/header-pc';
 import MemberShipCard from '@components/member-ship-card';
 import RenewalFee from '@components/user-center/renewal-fee';
 import UserCenterThreads from '@components/user-center-threads';
+
+// 插件引入
+/**DZQ->plugin->register<plugin_user@user_extension_left_layout_hook>**/
 
 @inject('site')
 @inject('user')

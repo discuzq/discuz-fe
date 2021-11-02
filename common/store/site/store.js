@@ -25,7 +25,15 @@ class SiteStore {
   @observable errPageType = null;
   @observable pluginConfig = null; // 插件配置
   // @observable pluginStore = {};
-  
+
+  // TODO: 目前报名帖占用，待调整成页面级的
+  @observable
+  navInfo = {
+    statusBarHeight: 44, // 默认的状态栏高度
+    navHeight: 40, // 默认的导航栏高度
+    menubtnWidth: 80, // 胶囊按钮的宽度
+  }
+
   @computed get isRegister() {
     return !this.isSmsOpen && this.wechatEnv === 'none' && this.registerClose;
   }
@@ -134,37 +142,42 @@ class SiteStore {
 
   // 站点背景图
   @computed get siteBackgroundImage() {
-    return get(this.webConfig, 'setSite.siteBackgroundImage')
+    return get(this.webConfig, 'setSite.siteBackgroundImage');
   }
 
   // 站长
   @computed get siteAuthor() {
-    return get(this.webConfig, 'setSite.siteAuthor')
+    return get(this.webConfig, 'setSite.siteAuthor');
   }
 
   // 是否付费模式
   @computed get siteMode() {
-    return get(this.webConfig, 'setSite.siteMode')
+    return get(this.webConfig, 'setSite.siteMode');
   }
 
   // 站点付费金额
   @computed get sitePrice() {
-    return get(this.webConfig,'setSite.sitePrice')
+    return get(this.webConfig, 'setSite.sitePrice');
   }
 
   // 站点成员数
   @computed get countUsers() {
-    return get(this.webConfig,'other.countUsers')
+    return get(this.webConfig, 'other.countUsers');
   }
 
   // 站点主题数
   @computed get countThreads() {
-    return get(this.webConfig,'other.countThreads')
+    return get(this.webConfig, 'other.countThreads');
   }
 
   // 站点有效期
   @computed get siteExpire() {
-    return get(this.webConfig,'setSite.siteExpire')
+    return get(this.webConfig, 'setSite.siteExpire');
+  }
+
+  // 附件上传限制数
+  @computed get attachmentLimit() {
+    return Number(get(this.webConfig, 'setAttach.supportMaxUploadAttachmentNum', 9));
   }
 }
 

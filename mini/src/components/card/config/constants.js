@@ -14,6 +14,7 @@ export const padding32 = 32;
 // 内容宽度
 export const contentWidth = posterWidth - posterPadding * 2 - posterFrameWidth * 2;
 
+export const screenHeight = 700;
 
 export const commentX = 120;
 

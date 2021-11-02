@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, Text } from '@tarojs/components';
-import { Icon, Dialog, Button, Input, Textarea, Radio, Toast } from '@discuzq/design';
+import { Icon, Dialog, Button, Input, Textarea, Radio, Toast, Checkbox } from '@discuzq/design';
 import DatePickers from '@components/thread-post/date-time-picker';
 import classNames from 'classnames';
 import { formatDate } from '@common/utils/format-date';
-import { formatPostData } from '@common/plugin/custom-apply/View/src/common';
+import { formatPostData, ATTACH_INFO_TYPE } from '@common/plugin/custom-apply/View/src/common';
 import { debounce } from '@common/utils/throttle-debounce';
+import { ONE_DAY } from '@common/constants/thread-post';
 import styles from '../index.module.scss';
 
 const TimeType = {
@@ -17,14 +18,13 @@ const TimeType = {
 export default class CustomApplyEntryContent extends React.Component {
   constructor(props) {
     super(props);
-    const oneHour = 3600 * 1000 * 24;
 
     this.state = {
       showMore: false,
       showMobileDatePicker: false,
       body: {
         activityStartTime: new Date(), // 活动开始时间
-        activityEndTime: new Date().getTime() + oneHour, // 活动结束时间
+        activityEndTime: new Date().getTime() + ONE_DAY, // 活动结束时间
         title: '', // 活动名称
         content: '', // 活动详情
         registerStartTime: '', // 报名开始时间
@@ -32,6 +32,7 @@ export default class CustomApplyEntryContent extends React.Component {
         actPlace: '', // 活动地点
         actPeopleLimitType: 0, // 0 不限制；1 限制
         totalNumber: '',
+        additionalInfoType: [], // 报名选项
       },
       curClickTime: TimeType.actStart,
     };
@@ -64,27 +65,21 @@ export default class CustomApplyEntryContent extends React.Component {
         });
         break;
       case TimeType.actEnd:
-        if (!this.checkActEndTime(time)) {
-          Toast.info({ content: '请选择正确的活动结束时间' });
-        } else {
+        if (this.checkActEndTime(time)) {
           this.setState({ body: { ...body, activityEndTime: time } }, () => {
             this.props.onChange(this.state.body);
           });
         }
         break;
       case TimeType.applyStart:
-        if (!this.checkApplyStartTime(time)) {
-          Toast.info({ content: '请选择正确的活动报名开始时间' });
-        } else {
+        if (this.checkApplyStartTime(time)) {
           this.setState({ body: { ...body, registerStartTime: time } }, () => {
             this.props.onChange(this.state.body);
           });
         }
         break;
       case TimeType.applyEnd:
-        if (!this.checkApplyEndTime(time)) {
-          Toast.info({ content: '请选择正确的活动报名结束时间' });
-        } else {
+        if (this.checkApplyEndTime(time)) {
           this.setState({ body: { ...body, registerEndTime: time } }, () => {
             this.props.onChange(this.state.body);
           });
@@ -99,42 +94,43 @@ export default class CustomApplyEntryContent extends React.Component {
 
   checkActEndTime = (time) => {
     const { activityStartTime } = this.state.body || {};
-    if (this.getTimestamp(activityStartTime) > this.getTimestamp(time)
-      || this.getTimestamp(time) < this.getTimestamp(new Date().getTime())) {
+    if (this.getTimestamp(time) <= this.getTimestamp(activityStartTime)) {
+      Toast.info({ content: '活动结束时间必须大于活动开始时间' });
       return false;
     }
     return true;
   };
 
   checkApplyStartTime = (time) => {
-    const { body } = this.state;
-    const { activityEndTime, registerEndTime } = body || {};
-    if (this.getTimestamp(time) > this.getTimestamp(activityEndTime)
-      || (registerEndTime && this.getTimestamp(time) > this.getTimestamp(registerEndTime))) {
+    const { activityEndTime } = this.state.body || {};
+    if (this.getTimestamp(time) > this.getTimestamp(activityEndTime)) {
+      Toast.info({ content: '报名开始时间必须小于活动结束时间' });
       return false;
     }
     return true;
   };
 
   checkApplyEndTime = (time) => {
-    const { body } = this.state;
-    const { activityStartTime, registerStartTime, activityEndTime } = body || {};
-    if ((!registerStartTime && this.getTimestamp(time) < this.getTimestamp(activityStartTime))
-      || this.getTimestamp(time) > this.getTimestamp(activityEndTime)
-      || (registerStartTime && this.getTimestamp(time) < this.getTimestamp(registerStartTime))) {
+    const { registerStartTime, activityEndTime } = this.state.body || {};
+    if (this.getTimestamp(time) <= this.getTimestamp(registerStartTime)) {
+      Toast.info({ content: '报名结束时间必须大于报名开始时间' });
+      return false;
+    }
+    if (this.getTimestamp(time) > this.getTimestamp(activityEndTime)) {
+      Toast.info({ content: '报名结束时间不能大于活动结束时间' });
       return false;
     }
     return true;
   };
 
-  handletitleChange = debounce((e) => {
+  handleTitleChange = debounce((e) => {
     const { body } = this.state;
     this.setState({ body: { ...body, title: e.target.value } }, () => {
       this.props.onChange(this.state.body);
     });
   }, 400);
 
-  handlecontentChange = debounce((e) => {
+  handleContentChange = debounce((e) => {
     const { body } = this.state;
     this.setState({ body: { ...body, content: e.target.value } }, () => {
       this.props.onChange(this.state.body);
@@ -185,6 +181,19 @@ export default class CustomApplyEntryContent extends React.Component {
     return new Date();
   };
 
+  handleCheckAll = (val) => {
+    const additionalInfoType = val ? Object.values(ATTACH_INFO_TYPE) : [];
+    this.setState({ body: { ...this.state.body, additionalInfoType } }, () => {
+      this.props.onChange(this.state.body);
+    });
+  };
+
+  handleCheck = (list) => {
+    this.setState({ body: { ...this.state.body, additionalInfoType: list } }, () => {
+      this.props.onChange(this.state.body);
+    });
+  };
+
   render() {
     const { showMore, body } = this.state;
     const moreClass = !showMore
@@ -220,7 +229,7 @@ export default class CustomApplyEntryContent extends React.Component {
                 placeholder="最多支持50个字符"
                 maxLength={50}
                 value={body.title}
-                onChange={this.handletitleChange}
+                onChange={this.handleTitleChange}
               />
             </View>
             <View className={classNames(styles['dzqp-act--item'], styles['act-detail'])}>
@@ -233,7 +242,7 @@ export default class CustomApplyEntryContent extends React.Component {
                 rows={4}
                 maxLength={200}
                 value={body.content}
-                onChange={this.handlecontentChange}
+                onChange={this.handleContentChange}
               />
             </View>
             <View className={styles['dzqp-act--item']}>
@@ -282,6 +291,24 @@ export default class CustomApplyEntryContent extends React.Component {
                   </Radio>
                 </Radio.Group>
               </View>
+            </View>
+            <View className={classNames(styles['dzqp-act--item'], styles.options)}>
+              <View className={styles.flex}>
+                <View className={styles['dzqp-act--item_title']}>报名必填</View>
+                <View className={styles['dzqp-act--item_right']}>
+                  <Checkbox checked={body.additionalInfoType?.length === 4} onChange={this.handleCheckAll}>全选</Checkbox>
+                </View>
+              </View>
+              <Checkbox.Group
+                onChange={this.handleCheck}
+                value={body.additionalInfoType}
+                className={styles['apply-options']}
+              >
+                <Checkbox name={ATTACH_INFO_TYPE.name}>姓名</Checkbox>
+                <Checkbox name={ATTACH_INFO_TYPE.mobile}>手机号</Checkbox>
+                <Checkbox name={ATTACH_INFO_TYPE.weixin}>微信号</Checkbox>
+                <Checkbox name={ATTACH_INFO_TYPE.address}>地址</Checkbox>
+              </Checkbox.Group>
             </View>
           </>
         )}

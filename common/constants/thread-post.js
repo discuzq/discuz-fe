@@ -1,4 +1,5 @@
 export const MAX_COUNT = 50000;
+export const ONE_DAY = 24 * 3600 * 1000; // 一天的毫秒数
 /**
  * 加载或者总数对应的类型
  */

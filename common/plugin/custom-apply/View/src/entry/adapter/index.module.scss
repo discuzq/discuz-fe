@@ -1,5 +1,16 @@
 @import '@common/styles/index.scss';
-
+.flex {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.apply-options {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 .dzqp-act {
   .dzq-modal__body {
     padding: 0;
@@ -12,7 +23,10 @@
     justify-content: space-between;
     align-items: center;
     border-bottom: $border-solid-1;
-
+    &.options {
+      flex-direction: column;
+      justify-content: flex-start;
+    }
     &:last-child {
       border-bottom: 0;
     }
@@ -155,6 +169,25 @@
           transform: rotateZ(-90deg);
         }
       }
+    }
+  }
+
+  :global {
+    .react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box{
+      border-radius: 0 !important;
+    }
+    .react-datepicker__time-list{
+      overflow-x: hidden !important;
+    }
+  }
+}
+.dzqp-act.pc {
+  :global {
+    .dzq-modal__body {
+      margin-right: -16px;
+      padding-right: 16px;
+      max-height: 500px;
+      overflow-y: scroll;
     }
   }
 }

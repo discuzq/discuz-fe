@@ -142,10 +142,13 @@ class IndexH5Page extends React.Component {
     const { isFinished, isClickTab } = this.state;
     const { threads = {}, TwoDThreads, currentCategories, filter, threadError } = index;
     const { currentPage = 1, totalPage, pageData } = threads || {};
+
+    hasRedPacket && index.setHiddenTabBar(true);
+
     return (
       <BaseLayout
         showHeader={false}
-        showTabBar={!hasRedPacket}
+        showTabBar
         onRefresh={this.onRefresh}
         noMore={!isClickTab && currentPage >= totalPage}
         isFinished={isFinished}
@@ -191,7 +194,11 @@ class IndexH5Page extends React.Component {
           onSubmit={this.changeFilter}
           permissions={user.threadExtendPermissions}
         />
-        {hasRedPacket > 0 && <PacketOpen onClose={() => thread.setRedPacket(0)} money={hasRedPacket} />}
+        { hasRedPacket > 0 && <PacketOpen money={hasRedPacket} onClose={() => {
+              thread.setRedPacket(0)
+              index.setHiddenTabBar(false)
+            }}
+          />}
       </BaseLayout>
     );
   }

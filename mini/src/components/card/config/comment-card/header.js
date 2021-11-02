@@ -13,6 +13,7 @@ export const getHeaderConfig = ({ comment }) => {
             createTime,
           ],
           images: [],
+          blocks: [],
       }
     };
     if(!comment.user.avatar) {
