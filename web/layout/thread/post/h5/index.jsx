@@ -247,7 +247,7 @@ class ThreadCreate extends React.Component {
     const { threadPost, user, site } = this.props;
     const { threadExtendPermissions, permissions } = user;
     const { postData, setPostData } = threadPost;
-
+    const { plugin } = postData;
     const { webConfig = {} } = site;
     const { setAttach, qcloud } = webConfig;
     const { supportImgExt, supportMaxSize } = setAttach;
@@ -388,7 +388,7 @@ class ThreadCreate extends React.Component {
             target='plugin_post'
             hookName='post_extension_content_hook'
             pluginProps={{
-              renderData: postData.plugin,
+              renderData: plugin,
               deletePlugin: this.props.threadPost.deletePluginPostData,
               updatePlugin: this.props.threadPost.setPluginPostData,
             }}/>
