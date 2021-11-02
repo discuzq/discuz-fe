@@ -20,10 +20,10 @@ export default class UserCenterEntry extends React.Component {
     const { _pluginInfo, siteData } = this.props;
     let pluginConfig = siteData?.pluginConfig || [];
     const miniShopConfig = pluginConfig.find((config) => config.app_id === _pluginInfo.options.tomId);
+    const { webConfig: { other: { threadOptimize } } } = siteData;
 
-    // 后台配置并且开启了微信商店，才显示商城
-    if (miniShopConfig?.setting?.publicValue?.isOpen && miniShopConfig?.setting?.publicValue?.wxAppId) {
-
+    // 后台开启了商店并且配置了商城相关配置，才显示商城
+    if (threadOptimize && miniShopConfig?.setting?.publicValue?.wxAppId) {
       this.setState({
         visible: true,
         miniShopConfig,

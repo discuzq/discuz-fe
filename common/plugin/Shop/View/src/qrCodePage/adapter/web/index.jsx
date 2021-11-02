@@ -14,13 +14,13 @@ export default class QrcodePage extends React.Component {
   }
 
   render() {
-    const { dzqRequest, _pluginInfo, siteData } = this.props;
+    const { dzqRequest, _pluginInfo, siteData, dzqRequestHandleError } = this.props;
 
     return (
       <div className={styles['qrcode-page']}>
         <Header />
         <div className={styles['qrcode-content']}>
-          <Qrcode dzqRequest={dzqRequest} _pluginInfo={_pluginInfo} siteData={siteData} />
+          <Qrcode dzqRequest={dzqRequest} _pluginInfo={_pluginInfo} siteData={siteData} dzqRequestHandleError={dzqRequestHandleError}/>
         </div>
       </div>
     );
