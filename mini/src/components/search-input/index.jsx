@@ -4,7 +4,6 @@ import { View, Input } from '@tarojs/components';
 import { debounce, throttle } from '@common/utils/throttle-debounce.js';
 
 import styles from './index.module.scss';
-import { useEffect } from 'react';
 
 /**
  * 搜索输入框
@@ -13,6 +12,7 @@ import { useEffect } from 'react';
  * @prop {function} onCancel 取消事件
  * @prop {string} defaultValue 默认值
  * @prop {string} isShowCancel 是否显示取消按钮
+ * @prop {string} afterEnterClear 是否搜索后清除搜索内容
  */
 
 const SearchInput = ({
@@ -21,6 +21,7 @@ const SearchInput = ({
   defaultValue = '',
   isShowCancel = true,
   isShowBottom = true,
+  afterEnterClear = false,
   searchWhileTyping = false,
   searchWhileTypingStartsAt = 0,
 }) => {
@@ -28,6 +29,11 @@ const SearchInput = ({
   const [isShow, setIsShow] = React.useState(false);
   const timeoutID = React.useRef(null);
   const inputRef = useRef(null);
+
+  const reset = () => {
+    setValue('');
+    setIsShow(false)
+  }
 
   const inputChange = (e) => {
     const val = e.target.value;
@@ -54,6 +60,7 @@ const SearchInput = ({
     }
     timeoutID.current = setTimeout(() => {
       onSearch(val);
+      afterEnterClear && reset();
     }, 500);
   }
 
@@ -61,8 +68,7 @@ const SearchInput = ({
     if(inputRef.current.props) {
       inputRef.current.props.value = '';
     }
-    setValue('');
-    setIsShow(false)
+    reset();
   }
 
   return (
