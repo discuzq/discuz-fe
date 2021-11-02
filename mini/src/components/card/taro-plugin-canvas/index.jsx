@@ -65,7 +65,9 @@ export default class CanvasDrawer extends React.Component {
                     pxWidth: this.toPx(w),
                     pxHeight: this.toPx(h),
                     debug,
-                }, resolve);
+                }, ()=>{
+                    setTimeout(resolve,0)
+                });
             });
         this.onCreate = () => {
             this.drawArr = [];
@@ -166,6 +168,7 @@ export default class CanvasDrawer extends React.Component {
             });
         };
         this.getTempFile = (otherOptions) => {
+            console.log(this.$scope);
             const { onCreateSuccess, onCreateFail } = this.props;
             Taro.canvasToTempFilePath({
                 canvasId: this.canvasId,
@@ -204,11 +207,7 @@ export default class CanvasDrawer extends React.Component {
         this.cache = {};
         this.drawArr = [];
     }
-    componentWillMount() {
-        const { config } = this.props;
-        const height = getHeight(config);
-        this.initCanvas(config.width, height, config.debug);
-    }
+
  
     componentDidMount() {
         const sysInfo = Taro.getSystemInfoSync();
@@ -219,11 +218,17 @@ export default class CanvasDrawer extends React.Component {
         this.onCreate();
     }
 
-    componentDidUpdate(preProps){
-        if(this.props.hidePart !== preProps.hidePart){
-            setTimeout(()=>{
+    // componentWillUpdate(_props) {
+    //     if(this.props.config !== _props.config){
+    //     const { config } = this.props;
+    //     const height = getHeight(config);
+    //     this.initCanvas(config.width, height, config.debug);
+    //     }
+    // }
+
+    componentDidUpdate(_props){
+        if(this.props.config !== _props.config){
                 this.onCreate();
-            },0)
         }
     }
 

@@ -31,12 +31,8 @@ export const cutText = (content, contentWidth, maxLine) => {
     if(contentArr[i]) {
       const partLine = Math.floor((getByteLen(contentArr[i]) * 16) / contentWidth);
       if(textLineNumber + partLine >= maxLine){
-        console.log(everyLineNum,maxLine,textLineNumber,contentArr[i].slice(0, everyLineNum*( maxLine - textLineNumber) ))
         contentArr[i] = contentArr[i].slice(0, everyLineNum*( maxLine - textLineNumber) );
-        console.log(contentArr[i]);
         contentArr = contentArr.slice(0,i+1);
-        console.log(contentArr);
-
         break
       }else{
         textLineNumber += partLine;

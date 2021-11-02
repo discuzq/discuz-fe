@@ -240,7 +240,6 @@ const PostContent = ({
     generateAppRelativePageLinks();
 
   }, [filterContent]);
-
   return (
     <View className={styles.container} {...props}>
       <View

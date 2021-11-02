@@ -706,6 +706,7 @@ class CommentH5Page extends React.Component {
 
           {/* 操作内容弹层 */}
           <OperationPopup
+            opContent={this.operationData || this.props.comment.commentDetail}
             visible={this.state.showOperationPopup}
             onCancel={() => this.setState({ showOperationPopup: false })}
             onOperationClick={val => this.onOperationClick(val)}
