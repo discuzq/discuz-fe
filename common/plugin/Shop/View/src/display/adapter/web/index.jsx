@@ -2,6 +2,7 @@ import React from 'react';
 import { Icon, Dialog } from '@discuzq/design';
 import { MINI_SHOP_TYPE, PLATFORM_SHOP_TYPE } from '@common/plugin/Shop/View/src/common';
 import styles from '../index.module.scss';
+import classNames from 'classnames';
 
 export default class ShopDisplay extends React.Component {
   handleBuy = (data, type) => {
@@ -34,6 +35,7 @@ export default class ShopDisplay extends React.Component {
     const { products } = body || {};
     return (products || []).map((item) => {
       const { data, type } = item;
+
       return (
         <div className={styles.wrapper} key={data?.id} onClick={() => this.handleBuy(data, type)}>
           <div className={styles['wrapper-left']}>
@@ -52,6 +54,16 @@ export default class ShopDisplay extends React.Component {
               </div>
             </div>
           </div>
+          {type === MINI_SHOP_TYPE && (
+            <div
+              className={classNames(styles['wrapper-right'], styles['wrapper-platform'])}
+            >
+              <Icon size="20" name="ShoppingCartOutlined" />
+              <div className={styles['wrapper-right_footer']}>
+                购买商品
+              </div>
+            </div>
+          )}
         </div>
       );
     });
