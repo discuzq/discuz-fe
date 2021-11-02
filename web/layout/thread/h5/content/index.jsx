@@ -81,7 +81,7 @@ const RenderThreadContent = (inject('index', 'site', 'user', 'thread', 'plugin')
 
   const parseContent = parseContentData(indexes);
 
-  if (parseContent.RED_PACKET?.condition === 1) { // 如果是集赞红包则查询一下红包领取状态
+  if (isApproved && parseContent.RED_PACKET?.condition === 1) { // 如果是集赞红包则查询一下红包领取状态
     threadStore.getRedPacketInfo(parseContent.RED_PACKET.threadId);
   }
 

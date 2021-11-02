@@ -9,6 +9,7 @@ import { getHours, setHours, getMinutes, setMinutes, format } from 'date-fns';
 import classNames from 'classnames';
 import { formatDate } from '@common/utils/format-date';
 import { getPostData, formatPostData, ATTACH_INFO_TYPE } from '@common/plugin/custom-apply/View/src/common';
+import { ONE_DAY } from '@common/constants/thread-post';
 import styles from '../index.module.scss';
 registerLocale('zh-CN', zhCN);
 
@@ -18,13 +19,13 @@ const TimeType = {
   applyStart: 'registerStartTime',
   applyEnd: 'registerEndTime',
 };
+
 export default class CustomApplyEntry extends React.Component {
   constructor(props) {
     super(props);
 
-    const oneDay = 3600 * 1000 * 24;
     const nowTime = new Date();
-    const time = new Date().getTime() + oneDay;
+    const time = nowTime.getTime() + ONE_DAY;
     this.state = {
       visible: false,
       showMore: false,
@@ -47,14 +48,20 @@ export default class CustomApplyEntry extends React.Component {
     };
   }
 
-  componentDidUpdate(prevProps) {
-    if ((this.props?.renderData?.body?.activityStartTime !== prevProps?.renderData?.body?.activityStartTime)
-      && this.props?.renderData?.body.activityStartTime) {
-      this.setState({ body: formatPostData(this.props?.renderData?.body) }, () => {
-        const { activityStartTime, activityEndTime } = this.props?.renderData?.body;
-        this.getMinTime(activityStartTime);
-        this.getMaxTime(activityEndTime);
-      });
+  // update
+  componentDidUpdate(prevProps, prevState) {
+    const { renderData } = this.props;
+    // 弹框弹起时，准备同步state和renderData
+    if ((this.state.visible && !renderData?.isShow && prevState.visible !== this.state.visible)
+      || (renderData?.isShow && prevProps?.renderData?.isShow !== renderData.isShow)
+    ) {
+      if (renderData?.body?.activityStartTime) {
+        this.setState({ body: formatPostData(renderData.body), visible: true }, () => {
+          const { activityStartTime, activityEndTime } = renderData.body;
+          this.getMinTime(activityStartTime);
+          this.getMaxTime(activityEndTime);
+        });
+      }
     }
   }
 
@@ -68,18 +75,14 @@ export default class CustomApplyEntry extends React.Component {
         });
         break;
       case TimeType.actEnd:
-        if (!this.checkActEndTime(time)) {
-          Toast.info({ content: '请选择正确的活动结束时间' });
-        } else {
+        if (this.checkActEndTime(time)) {
           this.setState({ body: { ...body, activityEndTime: time } }, () => {
             this.getMaxTime(date);
           });
         }
         break;
       case TimeType.applyStart:
-        if (!this.checkApplyStartTime(time)) {
-          Toast.info({ content: '请选择正确的活动报名开始时间' });
-        } else {
+        if (this.checkApplyStartTime(time)) {
           this.setState({ body: { ...body, registerStartTime: time } });
         }
         break;
@@ -88,9 +91,7 @@ export default class CustomApplyEntry extends React.Component {
           this.getMinTime(date);
           this.getMaxTime(date);
         }
-        if (!this.checkApplyEndTime(time)) {
-          Toast.info({ content: '请选择正确的活动报名结束时间' });
-        } else {
+        if (this.checkApplyEndTime(time)) {
           this.setState({ body: { ...body, registerEndTime: time } });
         }
         break;
@@ -155,40 +156,41 @@ export default class CustomApplyEntry extends React.Component {
 
   checkActEndTime = (time) => {
     const { activityStartTime } = this.state.body || {};
-    if (this.getTimestamp(activityStartTime) > this.getTimestamp(time)
-      || this.getTimestamp(time) < this.getTimestamp(new Date().getTime())) {
+    if (this.getTimestamp(time) <= this.getTimestamp(activityStartTime)) {
+      Toast.info({ content: '活动结束时间必须大于活动开始时间' });
       return false;
     }
     return true;
   };
 
   checkApplyStartTime = (time) => {
-    const { body } = this.state;
-    const { activityEndTime, registerEndTime } = body || {};
-    if (this.getTimestamp(time) > this.getTimestamp(activityEndTime)
-      || (registerEndTime && this.getTimestamp(time) > this.getTimestamp(registerEndTime))) {
+    const { activityEndTime } = this.state.body || {};
+    if (this.getTimestamp(time) >= this.getTimestamp(activityEndTime)) {
+      Toast.info({ content: '报名开始时间必须小于活动结束时间' });
       return false;
     }
     return true;
   };
 
   checkApplyEndTime = (time) => {
-    const { body } = this.state;
-    const { activityStartTime, registerStartTime, activityEndTime } = body || {};
-    if ((!registerStartTime && this.getTimestamp(time) < this.getTimestamp(activityStartTime))
-      || this.getTimestamp(time) > this.getTimestamp(activityEndTime)
-      || (registerStartTime && this.getTimestamp(time) < this.getTimestamp(registerStartTime))) {
+    const { registerStartTime, activityEndTime } = this.state.body || {};
+    if (this.getTimestamp(time) <= this.getTimestamp(registerStartTime)) {
+      Toast.info({ content: '报名结束时间必须大于报名开始时间' });
+      return false;
+    }
+    if (this.getTimestamp(time) > this.getTimestamp(activityEndTime)) {
+      Toast.info({ content: '报名结束时间不能大于活动结束时间' });
       return false;
     }
     return true;
   };
 
-  handletitleChange = (e) => {
+  handleTitleChange = (e) => {
     const { body } = this.state;
     this.setState({ body: { ...body, title: e.target.value } });
   };
 
-  handlecontentChange = (e) => {
+  handleContentChange = (e) => {
     const { body } = this.state;
     this.setState({ body: { ...body, content: e.target.value } });
   }
@@ -205,7 +207,7 @@ export default class CustomApplyEntry extends React.Component {
   handleDialogClose = () => {
     this.setState({ visible: false });
     const { renderData, _pluginInfo } = this.props;
-    if (!renderData) return;
+    if (!renderData?.isShow) return;
     this.props.onConfirm({ postData: renderData, _pluginInfo });
   };
 
@@ -215,14 +217,11 @@ export default class CustomApplyEntry extends React.Component {
 
   handleDialogConfirm = () => {
     const { body } = this.state;
-    if (!body.activityStartTime || !body.activityEndTime) {
-      Toast.info({ content: '活动开始时间和结束时间必填' });
-      return false;
-    }
-    if (this.getTimestamp(body.activityEndTime) <= this.getTimestamp(new Date())) {
-      Toast.info({ content: '活动结束时间必须大于当前时间' });
-      return false;
-    }
+    const { activityStartTime, activityEndTime, registerStartTime, registerEndTime } = body;
+    if (!this.checkActEndTime(activityEndTime)) return false;
+    if (!this.checkApplyStartTime(registerStartTime)) return false;
+    if (!this.checkApplyEndTime(registerEndTime)) return false;
+
     const { renderData, _pluginInfo } = this.props;
     const postData = getPostData(body, _pluginInfo.options.tomId) || {};
     if (renderData?.body?.activityId) postData.body.activityId = renderData?.body?.activityId;
@@ -290,7 +289,6 @@ export default class CustomApplyEntry extends React.Component {
       ? classNames(styles['dzqp-act--more'], styles.fold) : classNames(styles['dzqp-act--more'], styles.expand);
 
     if (!this.isShowApplyIcon()) return null;
-    const { renderData } = this.props;
 
     return (
       <>
@@ -300,7 +298,8 @@ export default class CustomApplyEntry extends React.Component {
           size="20"
         />
         <Dialog
-          visible={visible || renderData?.isShow}
+          visible={visible}
+          maskClosable={false}
           onCancel={this.handleDialogClose}
           onClose={this.handleDialogClose}
           onConfirm={this.handleDialogConfirm}
@@ -321,7 +320,7 @@ export default class CustomApplyEntry extends React.Component {
                     showTimeSelect
                     dateFormat="yyyy/MM/dd HH:mm:ss"
                   />
-                : <span>{ formatDate(body.activityStartTime, 'yyyy/MM/dd hh:mm:ss') }</span>
+                : <span>{formatDate(body.activityStartTime, 'yyyy/MM/dd hh:mm:ss')}</span>
               }
               <Icon name="RightOutlined" size="8" />
             </div>
@@ -338,7 +337,7 @@ export default class CustomApplyEntry extends React.Component {
                     showTimeSelect
                     dateFormat="yyyy/MM/dd HH:mm:ss"
                   />
-                : <span>{ formatDate(body.activityEndTime, 'yyyy/MM/dd hh:mm:ss') }</span>
+                : <span>{formatDate(body.activityEndTime, 'yyyy/MM/dd hh:mm:ss')}</span>
               }
               <Icon name="RightOutlined" size="8" />
             </div>
@@ -358,7 +357,7 @@ export default class CustomApplyEntry extends React.Component {
                   placeholder="最多支持50个字符"
                   maxLength={50}
                   value={body.title}
-                  onChange={this.handletitleChange}
+                  onChange={this.handleTitleChange}
                 />
               </div>
               <div className={classNames(styles['dzqp-act--item'], styles['act-detail'])}>
@@ -371,7 +370,7 @@ export default class CustomApplyEntry extends React.Component {
                   rows={4}
                   maxLength={200}
                   value={body.content}
-                  onChange={this.handlecontentChange}
+                  onChange={this.handleContentChange}
                 />
               </div>
               <div className={styles['dzqp-act--item']}>
@@ -386,7 +385,7 @@ export default class CustomApplyEntry extends React.Component {
                         showTimeSelect
                         dateFormat="yyyy/MM/dd HH:mm:ss"
                       />
-                    : <span>{ body.registerStartTime && formatDate(body.registerStartTime, 'yyyy/MM/dd hh:mm:ss') }</span>
+                    : <span>{body.registerStartTime && formatDate(body.registerStartTime, 'yyyy/MM/dd hh:mm:ss')}</span>
                   }
                   <Icon name="RightOutlined" size="8" />
                 </div>
@@ -400,13 +399,13 @@ export default class CustomApplyEntry extends React.Component {
                         selected={body.registerEndTime}
                         minDate={body.registerStartTime || body.activityStartTime}
                         maxDate={body.activityEndTime}
-                        minTime={minTime}
-                        maxTime={maxTime}
+                        // minTime={minTime}
+                        // maxTime={maxTime}
                         onChange={date => this.handleTimeChange(date, TimeType.applyEnd)}
                         showTimeSelect
                         dateFormat="yyyy/MM/dd HH:mm:ss"
                       />
-                    : <span>{ body.registerEndTime && formatDate(body.registerEndTime, 'yyyy/MM/dd hh:mm:ss') }</span>
+                    : <span>{body.registerEndTime && formatDate(body.registerEndTime, 'yyyy/MM/dd hh:mm:ss')}</span>
                   }
                   <Icon name="RightOutlined" size="8" />
                 </div>

@@ -30,6 +30,8 @@
       font-size: $font-size-base;
       line-height: $font-line-height-middle;
       color: $text-color-primary;
+      white-space: pre-wrap;
+      word-break: break-all;
       &.text-clamp {
         @include lamp-clamp(2);
       }
