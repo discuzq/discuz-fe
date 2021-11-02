@@ -6,6 +6,14 @@ import { noop } from '../utils';
 import styles from './index.module.scss';
 import { ThreadCommonContext } from '../utils'
 import { View, Text } from '@tarojs/components'
+import classNames from 'classnames';
+
+const attachInfo = {
+  name: '姓名',
+  mobile: '手机号',
+  weixin: '微信号',
+  address: '联系地址',
+};
 
 /**
  * 用户信息视图
@@ -31,6 +39,7 @@ const Index = ({
   platform,
   itemStyle = {},
   className = '',
+  additionalInfo = {}, // 报名帖的额外字段信息
 }) => {
   const handleClick = (e) => {
     e.stopPropagation();
@@ -45,9 +54,44 @@ const Index = ({
                             (type === 3) ? styles.heart : "";
 
   const classString = `${styles.listItem} ${className}`;
-
+  const isHaveAdditionalInfo = Object.keys(additionalInfo || {}).length > 0;
   return (
-    <View className={classString.trim()} key={index} onClick={handleClick} style={itemStyle}>
+    <View className={classNames(classString.trim(), {
+      [styles.additional]: isHaveAdditionalInfo,
+    })} key={index} onClick={handleClick} style={itemStyle}>
+      {isHaveAdditionalInfo && index === 0 && (
+        <View className={styles['additional-wrapper']}>
+          <View className={styles['additional-user']}>
+            用户
+          </View>
+          {Object.keys(additionalInfo || {}).map((item, ind) => (
+            <View className={styles['additional-item']} key={ind}>
+              {attachInfo[item]}
+            </View>
+          ))}
+        </View>
+      )}
+      {isHaveAdditionalInfo && (
+        <View className={styles['additional-wrapper']}>
+          <View className={styles['additional-user']} onClick={handleClick}>
+            <Avatar
+              wrapperClass={styles['img-wrapper']}
+              className={styles.img}
+              image={imgSrc}
+              name={title}
+              isShowUserInfo={platform === 'pc'}
+              userId={userId}
+              userType={type}
+            />
+          </View>
+          {Object.keys(additionalInfo || {}).map((item, key) => (
+            <View className={styles['additional-item']} key={key}>
+              {additionalInfo[item]}
+            </View>
+          ))}
+        </View>
+      )}
+      {!isHaveAdditionalInfo && <>
       <View className={styles.wrapper}>
           <View className={styles.header}>
               <Avatar
@@ -82,6 +126,7 @@ const Index = ({
           <Button type="primary" className={styles.button} onClick={handleClick}>查看主页</Button>
         )
       }
+      </>}
     </View>
   );
 };

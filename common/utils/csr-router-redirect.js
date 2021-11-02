@@ -2,16 +2,18 @@ import Router from '@discuzq/sdk/dist/router';
 import typeofFn from '@common/utils/typeof';
 
 export default function csrRouterRedirect() {
+
     if (process.env.DISCUZ_RUN === 'static') {
         let routerMap = process.env.ROUTER_MAP;
         if ( typeofFn.isString(routerMap) ) {
           routerMap = JSON.parse(routerMap);
         }
-  
+
         // // 当CSR出现末尾是index，会导致不能正确跳转的问题；
         let { pathname } = window.location;
-  
-        if (pathname !== '' && pathname !== '/') {
+        const isIndex = pathname === '/' || pathname.indexOf('/cate/') > -1;
+
+        if (pathname !== '' && !isIndex) {
           const pathnameArr = pathname.split('/');
           if (pathnameArr[pathnameArr.length - 1] === 'index') {
             pathnameArr.pop();
@@ -20,7 +22,7 @@ export default function csrRouterRedirect() {
         }
 
         // 如果是首页不处理
-        if ( pathname === '' || pathname === '/' ) {
+        if ( pathname === '' || isIndex) {
             return;
         }
 

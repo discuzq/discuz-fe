@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { createRef } from 'react';
 import { inject, observer } from 'mobx-react';
 import Button from '@discuzq/design/dist/components/button/index';
 import Toast from '@discuzq/design/dist/components/toast/index';
 import Icon from '@discuzq/design/dist/components/icon/index';
+import Dialog from '@discuzq/design/dist/components/dialog/index';
 import { View } from '@tarojs/components';
 import { IMG_SRC_HOST } from '@common/constants/site';
 import classNames from 'classnames';
 import MoneyInput from './components/money-input';
+import Payment from './components/payment';
 import styles from './index.module.scss';
 import Taro from '@tarojs/taro';
 
@@ -21,7 +23,11 @@ class Withdrawal extends React.Component {
       moneyOverThanAmount: false, // 是否超过当前可提现金额
       withdrawalAmount: 0,
       inputValue: '', // 金额输入内容
+      showConfirm: false,
+      receiveAccount: '',
     };
+
+    this.paymentRef = createRef(null);
   }
 
   updateState = ({ name, value }) => {
@@ -43,6 +49,17 @@ class Withdrawal extends React.Component {
       moneyOverThanAmount: false, // 是否超过当前可提现金额
       withdrawalAmount: 0,
       inputValue: '',
+      showConfirm: false,
+      receiveAccount: '',
+    });
+  };
+
+  onConfirm = () => {
+    const paymentInfo = this.paymentRef?.current?.getData();
+
+    this.setState({
+      showConfirm: true,
+      receiveAccount: paymentInfo?.desc,
     });
   };
 
@@ -52,6 +69,7 @@ class Withdrawal extends React.Component {
     this.props.wallet
       .createWalletCash({
         money: this.state.inputValue,
+        receiveAccount: this.state.receiveAccount,
       })
       .then(async () => {
         Toast.success({
@@ -145,8 +163,11 @@ class Withdrawal extends React.Component {
                 visible={this.state.visible}
                 minmoney={this.props.site.cashMinSum}
                 maxmoney={this.props.walletData?.availableAmount}
-                type='withdrawal'
+                type="withdrawal"
               />
+            </View>
+            <View className={styles.payment}>
+              <Payment ref={this.paymentRef}></Payment>
             </View>
           </View>
           <View
@@ -157,12 +178,26 @@ class Withdrawal extends React.Component {
             <Button
               type={'primary'}
               className={styles.button}
-              onClick={this.moneyToWeixin}
+              onClick={this.onConfirm}
               disabled={this.getDisabeledButton()}
             >
               <View className={styles.buttonContent}>提现到微信钱包</View>
             </Button>
           </View>
+
+          <Dialog
+            isNew={true}
+            title="确认信息"
+            visible={this.state.showConfirm}
+            onClose={() => this.updateState({ name: 'showConfirm', value: false })}
+            onCancel={() => this.updateState({ name: 'showConfirm', value: false })}
+            onConfirm={() => this.moneyToWeixin()}
+          >
+            <View className={styles.title}>提现金额：</View>
+            <View className={styles.info}>{this.state.inputValue}元</View>
+            <View className={styles.title}>提现账号：</View>
+            <View className={styles.info}>{this.state.receiveAccount}</View>
+          </Dialog>
         </View>
       </>
     );

@@ -9,8 +9,9 @@ import goToLoginPage from '@common/utils/go-to-login-page';
 import Taro from '@tarojs/taro';
 import Toast from '@discuzq/design/dist/components/toast';
 import { noop } from '../utils';
+import hongbaoicon from './hongbaoicon';
+// const hongbaoMini = `${IMG_SRC_HOST}/assets/redpacket-mini.10b46eefd630a5d5d322d6bbc07690ac4536ee2d.png`;
 
-const hongbaoMini = `${IMG_SRC_HOST}/assets/redpacket-mini.10b46eefd630a5d5d322d6bbc07690ac4536ee2d.png`;
 
 /**
  * 帖子底部内容
@@ -151,18 +152,25 @@ const Index = ({
           ) : (
             <View key={index} className={styles.fabulous} onClick={() => handleClick(item)}>
               <View className={styles.fabulousIcon}>
-                <Icon
-                  className={`${styles.icon} ${item.type} ${
-                    (isLiked && item.name === '赞') || item.actived ? styles.likedColor : styles.dislikedColor
-                  }`}
-                  name={item.icon}
-                  size={16}
-                ></Icon>
+                {
+                  item.name === '评论' &&  hasCommentHongbao ? (
+                    <Image className={styles.hongbaoMini} src={hongbaoicon}></Image>
+                  ) : (
+                    <Icon
+                    className={`${styles.icon} ${item.type} ${
+                      (isLiked && item.name === '赞') || item.actived ? styles.likedColor : styles.dislikedColor
+                    }`}
+                    name={item.icon}
+                    size={16}
+                  ></Icon>
+                  )
+                }
+           
               </View>
               <Text className={(isLiked && item.name === '赞') || item.actived ? styles.fabulousCancel : styles.fabulousPost}>
                 {item.num ? item.num : item.name}
               </Text>
-              {item.hasHongbao &&  <Image className={styles.hongbaoMini} src={hongbaoMini}></Image>}
+              {/* {item.hasHongbao &&  <Image className={styles.hongbaoMini} src={hongbaoMini}></Image>} */}
 
             </View>
           ),

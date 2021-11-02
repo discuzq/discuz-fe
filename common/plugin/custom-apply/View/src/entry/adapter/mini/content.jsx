@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text } from '@tarojs/components';
-import { Icon, Dialog, Button, Input, Textarea, Radio, Toast } from '@discuzq/design';
+import { Icon, Dialog, Button, Input, Textarea, Radio, Toast, Checkbox } from '@discuzq/design';
 import DatePickers from '@components/thread-post/date-time-picker';
 import classNames from 'classnames';
 import { formatDate } from '@common/utils/format-date';
-import { formatPostData } from '@common/plugin/custom-apply/View/src/common';
+import { formatPostData, ATTACH_INFO_TYPE } from '@common/plugin/custom-apply/View/src/common';
 import { debounce } from '@common/utils/throttle-debounce';
 import { ONE_DAY } from '@common/constants/thread-post';
 import styles from '../index.module.scss';
@@ -32,6 +32,7 @@ export default class CustomApplyEntryContent extends React.Component {
         actPlace: '', // 活动地点
         actPeopleLimitType: 0, // 0 不限制；1 限制
         totalNumber: '',
+        additionalInfoType: [], // 报名选项
       },
       curClickTime: TimeType.actStart,
     };
@@ -180,6 +181,19 @@ export default class CustomApplyEntryContent extends React.Component {
     return new Date();
   };
 
+  handleCheckAll = (val) => {
+    const additionalInfoType = val ? Object.values(ATTACH_INFO_TYPE) : [];
+    this.setState({ body: { ...this.state.body, additionalInfoType } }, () => {
+      this.props.onChange(this.state.body);
+    });
+  };
+
+  handleCheck = (list) => {
+    this.setState({ body: { ...this.state.body, additionalInfoType: list } }, () => {
+      this.props.onChange(this.state.body);
+    });
+  };
+
   render() {
     const { showMore, body } = this.state;
     const moreClass = !showMore
@@ -277,6 +291,24 @@ export default class CustomApplyEntryContent extends React.Component {
                   </Radio>
                 </Radio.Group>
               </View>
+            </View>
+            <View className={classNames(styles['dzqp-act--item'], styles.options)}>
+              <View className={styles.flex}>
+                <View className={styles['dzqp-act--item_title']}>报名必填</View>
+                <View className={styles['dzqp-act--item_right']}>
+                  <Checkbox checked={body.additionalInfoType?.length === 4} onChange={this.handleCheckAll}>全选</Checkbox>
+                </View>
+              </View>
+              <Checkbox.Group
+                onChange={this.handleCheck}
+                value={body.additionalInfoType}
+                className={styles['apply-options']}
+              >
+                <Checkbox name={ATTACH_INFO_TYPE.name}>姓名</Checkbox>
+                <Checkbox name={ATTACH_INFO_TYPE.mobile}>手机号</Checkbox>
+                <Checkbox name={ATTACH_INFO_TYPE.weixin}>微信号</Checkbox>
+                <Checkbox name={ATTACH_INFO_TYPE.address}>地址</Checkbox>
+              </Checkbox.Group>
             </View>
           </>
         )}

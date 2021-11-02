@@ -30,7 +30,7 @@ export default [
       // },
       {
         name: '商品',
-        pid: '104',
+        pid: '61540fef8f4de8',
       },
       {
         name: '红包',

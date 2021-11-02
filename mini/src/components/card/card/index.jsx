@@ -71,6 +71,7 @@ export default class Simple extends React.Component {
     })
   }
   render() {
+
     return (
       <View className={styles.painter}>
         <View className={styles.canvanBox}>
@@ -86,6 +87,7 @@ export default class Simple extends React.Component {
             (
               <View className={styles.boxImg}>
                 <TaroCanvasDrawer
+                  hidePart = {this.props.hidePart}
                   config={this.state.config} // 绘制配置
                   onCreateSuccess={this.onCreateSuccess} // 绘制成功回调
                   onCreateFail={this.onCreateFail} // 绘制失败回调

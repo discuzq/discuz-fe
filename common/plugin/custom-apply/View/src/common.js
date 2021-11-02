@@ -15,6 +15,7 @@ export const getPostData = (body, tomId) => {
     content,
     actPlace,
     totalNumber,
+    additionalInfoType,
   } = body;
   const registerStartTime = body.registerStartTime ? body.registerStartTime : body.activityStartTime;
   const registerEndTime = body.registerEndTime ? body.registerEndTime : body.activityEndTime;
@@ -27,6 +28,7 @@ export const getPostData = (body, tomId) => {
     activityEndTime: getTime(activityEndTime),
     registerStartTime: getTime(registerStartTime),
     registerEndTime: getTime(registerEndTime),
+    additionalInfoType,
   };
   if (actPlace) result = { ...result, position: {
     address: actPlace,
@@ -51,6 +53,7 @@ export const formatPostData = (body) => {
     content,
     totalNumber,
     position,
+    additionalInfoType,
   } = body;
   return {
     activityStartTime: getDateTime(activityStartTime),
@@ -62,5 +65,33 @@ export const formatPostData = (body) => {
     actPlace: position?.location || '',
     totalNumber: totalNumber === 0 ? '' : totalNumber,
     actPeopleLimitType: totalNumber === 0 ? 0 : 1,
+    additionalInfoType,
   };
+};
+
+// 报名附加信息
+export const ATTACH_INFO_TYPE = {
+  name: 1,
+  mobile: 2,
+  weixin: 3,
+  address: 4,
+};
+
+export const ATTACH_INFO_NAME = {
+  [ATTACH_INFO_TYPE.name]: {
+    value: '姓名',
+    key: 'name',
+  },
+  [ATTACH_INFO_TYPE.mobile]: {
+    value: '手机号',
+    key: 'mobile',
+  },
+  [ATTACH_INFO_TYPE.weixin]: {
+    value: '微信号',
+    key: 'weixin',
+  },
+  [ATTACH_INFO_TYPE.address]: {
+    value: '联系地址',
+    key: 'address',
+  },
 };

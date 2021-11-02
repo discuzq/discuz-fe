@@ -1,11 +1,13 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import { Button, Icon, Avatar, Toast } from '@discuzq/design';
+import { Button, Icon, Avatar, Toast, Dialog, Input } from '@discuzq/design';
 import PopupList from '@components/thread/popup-list';
 import CountDown from '@common/utils/count-down';
 import LoginHelper from '@common/utils/login-helper';
+import { ATTACH_INFO_TYPE, ATTACH_INFO_NAME } from '@common/plugin/custom-apply/View/src/common';
 import classNames from 'classnames';
 import styles from '../index.module.scss';
+import actEntryStyles from '../../../entry/adapter/index.module.scss';
 
 let countDownIns = null;
 
@@ -14,7 +16,7 @@ class CustomApplyDisplay extends React.Component {
     super(props);
 
     this.state = {
-      isDetailPage: props.dzqRouter.router.router.pathname === '/thread/[id]' ? true : false,
+      isDetailPage: props.dzqRouter.router.router.pathname === '/thread/[id]',
       popupShow: false,
       loading: false,
       days: 0,
@@ -23,6 +25,8 @@ class CustomApplyDisplay extends React.Component {
       seconds: 0,
       isApplyEnd: false, // 报名时间是否已结束
       isApplyStart: false, // 报名时间是否已开始
+      isAttachShow: false, // 是否显示报名字段
+      additionalInfo: {}, // 报名字段详细信息
     };
     this.handleActOperate = this.handleActOperate.bind(this);
     this.createRegister = this.createRegister.bind(this);
@@ -30,10 +34,8 @@ class CustomApplyDisplay extends React.Component {
   }
 
   componentDidMount() {
-
     if (!countDownIns) countDownIns = new CountDown();
     const { renderData } = this.props;
-
     const { body } = renderData || {};
     if (body?.registerEndTime || body?.registerStartTime) {
       const start = body?.registerStartTime?.replace(/-/g, '/');
@@ -68,7 +70,7 @@ class CustomApplyDisplay extends React.Component {
         method: 'POST',
         params,
         data,
-        ...others
+        ...others,
       };
       const result = await this.props.dzqRequest.dispatcher(options);
       return result;
@@ -85,10 +87,22 @@ class CustomApplyDisplay extends React.Component {
         method: 'POST',
         params,
         data,
-        ...others
+        ...others,
       };
       const result = await this.props.dzqRequest.dispatcher(options);
       return result;
+    } catch (error) {
+      return this.props.dzqRequestHandleError(error);
+    }
+  }
+
+  async exportInfo() {
+    try {
+      const { renderData, siteData } = this.props;
+      const { body } = renderData || {};
+      const { activityId } = body;
+      Toast.info({ content: '导出中...' });
+      window.open(`${siteData?.envConfig?.COMMON_BASE_URL}/plugin/activity/api/register/export?activityId=${activityId}`);
     } catch (error) {
       return this.props.dzqRequestHandleError(error);
     }
@@ -120,19 +134,18 @@ class CustomApplyDisplay extends React.Component {
     if (isApplyEnd) return '报名已结束';
   };
 
-  handleActOperate = async () => {
-    const { renderData, userInfo, isLogin, threadData, updateThread, updateListThreadIndexes, recomputeRowHeights } = this.props;
-    if (!isLogin()) {
-      LoginHelper.saveAndLogin();
-      return;
-    }
+  submit = async () => {
+    const { renderData, userInfo, threadData,
+      updateThread, updateListThreadIndexes, recomputeRowHeights } = this.props;
     const { tomId, body, _plugin } = renderData || {};
     const { isRegistered, activityId, registerUsers, totalNumber } = body;
     const action = isRegistered ? this.deleteRegister : this.createRegister;
-    this.setState({ loading: true });
-    const res = await action({ data: { activityId } });
-
+    this.setState({ loading: true, isAttachShow: false });
+    const params = { activityId };
+    if (Object.keys(this.state.additionalInfo)) params.additionalInfo = this.state.additionalInfo;
+    const res = await action({ data: params });
     this.setState({ loading: false });
+
     if (res.code === 0) {
       const authorInfo = userInfo;
       const uid = authorInfo.id;
@@ -170,24 +183,70 @@ class CustomApplyDisplay extends React.Component {
     return res;
   };
 
+  handleActOperate = async () => {
+    const { renderData, isLogin } = this.props;
+    if (!isLogin()) {
+      LoginHelper.saveAndLogin();
+      return;
+    }
+    const { body } = renderData || {};
+    const { isRegistered, additionalInfoType = [] } = body;
+    // 报名 + 并且有额外需要添加的字段
+    if (!this.state.isAttachShow && !isRegistered && additionalInfoType && additionalInfoType.length) {
+      this.setState({ isAttachShow: true });
+      return;
+    }
+
+    const res = await this.submit();
+    return res;
+  };
+
   handleMoreClick = () => {
     const { dzqRouter, threadData } = this.props;
     const tid = this.state.isDetailPage ? threadData?.id : threadData?.threadId;
     if (tid) {
-      dzqRouter.push({url: `/thread/${tid}`});
+      dzqRouter.push({ url: `/thread/${tid}` });
     }
+  };
+
+  handleAttachClose = () => this.setState({ isAttachShow: false });
+
+  handleAttachInfoChange = (e, item) => {
+    const { key } = ATTACH_INFO_NAME[item?.toString()] || {};
+    if (!key) return;
+    const { additionalInfo } = this.state;
+    additionalInfo[key] = e.target.value;
+    this.setState({ additionalInfo });
+  };
+
+  handleAttachConfirm = () => {
+    const { body } = this.props.renderData || {};
+    const { additionalInfo = {} } = this.state;
+    const { additionalInfoType } = body || {};
+    const len = (additionalInfoType || [])?.length;
+    let flag = false;
+    for (let i = 0; i < len; i++) {
+      const key = additionalInfoType[i];
+      if (!additionalInfo[ATTACH_INFO_NAME[key]?.key]) {
+        flag = true;
+        Toast.info({ content: `请输入${ATTACH_INFO_NAME[key]?.value}` });
+        break;
+      }
+    }
+    if (!flag) this.handleActOperate();
   };
 
   render() {
     const { siteData, renderData } = this.props;
-    const { isApplyEnd, minutes, seconds, days, hours, isApplyStart } = this.state;
+    const { isApplyEnd, minutes, seconds, days, hours, isApplyStart, additionalInfo } = this.state;
     if (!renderData) return null;
     const { body } = renderData || {};
-    const { isRegistered } = body;
+    const { isRegistered, additionalInfoType } = body || {};
     // 过期 || 已满 || 结束 || 未开始
     const isCanNotApply = body?.isExpired || body?.isMemberFull || isApplyEnd || !isApplyStart;
     const { popupShow } = this.state;
     const platform = siteData.platform === 'h5' ? styles.h5 : styles.pc;
+
     return (
       <>
         <div className={classNames(styles.wrapper, platform)}>
@@ -287,7 +346,38 @@ class CustomApplyDisplay extends React.Component {
           visible={popupShow}
           onHidden={() => this.setState({ popupShow: false })}
           tipData={{ platform: siteData.platform }}
+          exportFn={this.exportInfo.bind(this)}
         />}
+        {this.state.isAttachShow && (
+          <Dialog
+            title="填写信息"
+            visible={this.state.isAttachShow}
+            onCancel={this.handleAttachClose}
+            onClose={this.handleAttachClose}
+            onConfirm={this.handleAttachConfirm}
+            isNew={true}
+            type='confirm'
+            className={classNames(actEntryStyles['dzqp-act'],
+              siteData.platform === 'h5' ? actEntryStyles.h5 : actEntryStyles.pc)}
+          >
+            {(additionalInfoType || []).map(item => (<div className={actEntryStyles['dzqp-act--item']}>
+                <div className={actEntryStyles['dzqp-act--item_title']} key={item}>
+                  {ATTACH_INFO_NAME[item?.toString()]?.value}
+                </div>
+                <div className={actEntryStyles['dzqp-act--item_right']}>
+                  <Input
+                    className={actEntryStyles['dzqp-act--item_right']}
+                    htmlType={item === ATTACH_INFO_TYPE.mobile ? 'number' : 'text'}
+                    mode={item === ATTACH_INFO_TYPE.mobile ? 'number' : 'text'}
+                    placeholder={`请输入${ATTACH_INFO_NAME[item?.toString()]?.value}`}
+                    maxLength={50}
+                    value={additionalInfo[ATTACH_INFO_NAME[item?.toString()]?.key] || ''}
+                    onChange={e => this.handleAttachInfoChange(e, item?.toString())}
+                  />
+                </div>
+              </div>))}
+          </Dialog>
+        )}
       </>
     );
   }

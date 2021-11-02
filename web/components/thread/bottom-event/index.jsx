@@ -7,8 +7,8 @@ import MorePopop from '@components/more-popop';
 import Router from '@discuzq/sdk/dist/router';
 import goToLoginPage from '@common/utils/go-to-login-page';
 import Toast from '@discuzq/design/dist/components/toast';
-const hongbaoMini = 'https://cloudcache.tencentcs.com/operation/dianshi/other/redpacket-mini.10b46eefd630a5d5d322d6bbc07690ac4536ee2d.png';
-
+// const hongbaoMini = 'https://cloudcache.tencentcs.com/operation/dianshi/other/redpacket-mini.10b46eefd630a5d5d322d6bbc07690ac4536ee2d.png';
+import hongbaoicon from './hongbaoicon';
 
 /**
  * 帖子底部内容
@@ -59,7 +59,6 @@ const Index = ({
         type: 'commonet',
         num: comment,
         actived: isCommented,
-        hasHongbao: hasCommentHongbao,
       },
       {
         icon: 'ShareAltOutlined',
@@ -149,15 +148,21 @@ const Index = ({
         {postList.map((item, index) => (
           <div key={index} className={styles.fabulousContainer}>
             <div className={styles.fabulous} onClick={() => handleClick(item)}>
-              <Icon
-                className={`${styles.icon} ${item.type} ${item.actived ? styles.likedColor : styles.dislikedColor}`}
-                name={item.icon}
-                size={16}
-              ></Icon>
+              {
+                item.name === '评论' &&  hasCommentHongbao ? (
+                  <img title='回复领红包' className={styles.hongbaoMini} src={hongbaoicon}></img>
+                ) : (
+                  <Icon
+                  className={`${styles.icon} ${item.type} ${item.actived ? styles.likedColor : styles.dislikedColor}`}
+                  name={item.icon}
+                  size={16}
+                ></Icon>
+                )
+              }
               <span className={item.actived ? styles.fabulousCancel : styles.fabulousPost}>
                 {item.num ? item.num : item.name}
               </span>
-              {item.hasHongbao &&  <img className={styles.hongbaoMini} src={hongbaoMini}></img>}
+              {/* {item.hasHongbao &&  <img className={styles.hongbaoMini} src={hongbaoMini}></img>} */}
             </div>
           </div>
         ))}

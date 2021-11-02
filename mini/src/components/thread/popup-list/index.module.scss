@@ -1,5 +1,7 @@
 @import '@common/styles/index.scss';
-
+.export {
+  color: $primary-color !important;
+}
 .list {
   overflow-y: auto;
   height: 70vh;
@@ -38,6 +40,10 @@
     }
     .dzq-tabs__scroll {
       width: auto;
+    }
+    .dzq-tabs__external {
+      display: flex;
+      align-items: center;
     }
   }
 }

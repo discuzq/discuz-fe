@@ -120,11 +120,11 @@ export const attachIcon = [
     active: activeColor,
     type: THREAD_TYPE.voice,
   },
-  {
-    name: 'ShoppingCartOutlined',
-    active: activeColor,
-    type: THREAD_TYPE.goods,
-  },
+  // {
+  //   name: 'ShoppingCartOutlined',
+  //   active: activeColor,
+  //   type: THREAD_TYPE.goods,
+  // },
   {
     name: 'QuestionOutlined',
     active: activeColor,

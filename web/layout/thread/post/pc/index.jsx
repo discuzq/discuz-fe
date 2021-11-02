@@ -1,3 +1,4 @@
+/* eslint-disable spaced-comment */
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styles from './index.module.scss';
@@ -57,7 +58,6 @@ class ThreadPCPage extends React.Component {
   }
 
   componentDidMount() {
-
     // 监听插件区域的高度变化调整编辑器的min-height style，使编辑器初始化时占满编辑框，更容易监测到图片拖拽上传
     const resizeObserver = new ResizeObserver(() => {
       const el = this.pluginContainer.current;
@@ -116,7 +116,7 @@ class ThreadPCPage extends React.Component {
       currentAttachOperation,
     } = this.props;
     const { postData } = threadPost;
-    const { webConfig = {} } = site;
+    const { webConfig = {}, attachmentLimit = 9 } = site;
     const { setAttach, qcloud } = webConfig;
     const { supportImgExt, supportMaxSize } = setAttach;
     const { qcloudCosBucketName, qcloudCosBucketArea, qcloudCosSignUrl, qcloudCos } = qcloud;
@@ -147,8 +147,7 @@ class ThreadPCPage extends React.Component {
                   onBlur={() => { }}
                   onInit={this.props.handleVditorInit}
                   setState={this.props.handleSetState}
-                  hintCustom={(type, key, textareaPosition, lastindex, vditor) =>
-                    this.hintCustom(type, key, textareaPosition, lastindex, vditor)}
+                  hintCustom={(type, key, textareaPosition, lastindex, vditor) => this.hintCustom(type, key, textareaPosition, lastindex, vditor)}
                   hintHide={this.hintHide}
                 />
 
@@ -232,7 +231,7 @@ class ThreadPCPage extends React.Component {
                   {/* 附件上传组件 */}
                   {(currentDefaultOperation === defaultOperation.attach || Object.keys(postData.files).length > 0) && (
                     <FileUpload
-                      limit={9}
+                      limit={attachmentLimit}
                       cosOptions={{
                         supportImgExt,
                         supportMaxSize,
@@ -253,7 +252,7 @@ class ThreadPCPage extends React.Component {
                   {(postData?.vote?.voteTitle) && (
                     <VoteWidget isPc={true} onDelete={() => this.props.setPostData({ vote: {} })} onClick={() => {
                       this.props.handleAttachClick({
-                        type: THREAD_TYPE.vote
+                        type: THREAD_TYPE.vote,
                       });
                     }} />
                   )}
@@ -267,14 +266,14 @@ class ThreadPCPage extends React.Component {
                     />
                   )}
                   <DZQPluginCenterInjectionPolyfill
-                    target='plugin_post' 
-                    hookName='post_extension_content_hook' 
+                    target='plugin_post'
+                    hookName='post_extension_content_hook'
                     pluginProps={{
                       renderData: postData.plugin,
                       deletePlugin: this.props.threadPost.deletePluginPostData,
                       updatePlugin: this.props.threadPost.setPluginPostData
                   }}/>
-                  
+
                 </div>
 
               </div>
@@ -366,7 +365,7 @@ class ThreadPCPage extends React.Component {
             </div>
             <ClassifyPopup pc onClick={this.hintHide} categoryId={threadPost.postData.categoryId} />
             <div className={styles.footer}>
-              <Button type="info" disabled={this.props.postType === "isEdit" && !postData.isDraft}
+              <Button type="info" disabled={this.props.postType === 'isEdit' && !postData.isDraft}
                 onClick={() => this.props.handleDraft()}>保存至草稿箱</Button>
               <Button type="primary" onClick={() => this.props.handleSubmit()}>发布</Button>
             </div>

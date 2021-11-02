@@ -92,7 +92,7 @@ export const getSelectedCategoryIds = (categories, id) => {
         newCategoryIds.push(item.categoryId);
       });
     }
-
+    if (!tmp?.length) newCategoryIds = ['all'];
     return newCategoryIds
 }
 

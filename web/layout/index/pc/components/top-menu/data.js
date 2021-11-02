@@ -42,7 +42,7 @@ export default [
       // },
       {
         label: '商品',
-        value: '104',
+        value: '61540fef8f4de8',
         isActive: false,
       },
       {

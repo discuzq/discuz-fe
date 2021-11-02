@@ -1,44 +1,54 @@
 @import '@common/styles/index.scss';
 
-.userCenterAction {
-    display: flex;
-    padding: rem($padding-4n);
-    flex-wrap: wrap;
-    justify-content: space-between;
-
-    .userCenterActionItemContainer {
-
-        .userCenterActionItem {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            margin-right: rem(32);
-            min-width: rem(60);
-            cursor: pointer;
-
-            &:last-child {
-                margin-right: 0;
-            }
-
-            .userCenterActionItemIcon {}
-
-            .userCenterActionItemDesc {
-                margin-top: rem($margin-2n);
-                color: $text-color-regular;
-                font-size: rem($font-size-small);
-            }
-        }
-    }
-
+.userCenterColumnStyle {
+  justify-content: space-between;
 }
 
-.userActionMobile {
-    .userCenterActionItemContainer {
-        display: flex;
+.userCenterAction {
+  display: flex;
+  flex-wrap: wrap;
 
-        .userCenterActionItem {
-            margin: 0;
-        }
+  .userCenterActionItem, .userCenterPluginActionItem {
+    cursor: pointer;
+    min-width: rem(60);
+  }
+
+  .userCenterActionItem {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .userCenterActionItemIcon {
     }
+
+    .userCenterActionItemDesc {
+      margin-top: rem($margin-2n);
+      color: $text-color-regular;
+      font-size: rem($font-size-small);
+    }
+  }
+}
+
+.userCenterAction {
+  &.pc {
+    padding: 0 rem($padding-2n);
+
+    .userCenterActionItem, .userCenterPluginActionItem {
+      width: percentage(100/9/100);
+    }
+    .userCenterActionItem {
+      padding: rem($padding-6n) 0;
+
+    }
+  }
+
+  &.h5 {
+    .userCenterActionItem, .userCenterPluginActionItem {
+      width: percentage(100/4/100);
+    }
+    .userCenterActionItem {
+      padding: rem($padding-4n) 0;
+    }
+  }
 }

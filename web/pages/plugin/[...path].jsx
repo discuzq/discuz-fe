@@ -21,20 +21,18 @@ class PagePlugin extends React.Component {
     };
   }
 
-  getTargetPlugin = () => {
-    return (<DZQPluginCenterInjectionPolyfill
-          target='plugin_system' 
-          hookName='add_page_hook'
-          condition={(pluginInfo) => {
-            return pluginInfo.path === this.state.pluginPath
-          }}
-    />)
-  }
+  getTargetPlugin = () => (
+    <DZQPluginCenterInjectionPolyfill
+      target="plugin_system"
+      hookName="add_page_hook"
+      condition={pluginInfo => pluginInfo.path === this.state.pluginPath}
+    />
+  );
 
   renderTargetPlugin = () => {
     const targetPlugins = this.getTargetPlugin();
     return targetPlugins;
-  }
+  };
 
   render() {
     return this.renderTargetPlugin();

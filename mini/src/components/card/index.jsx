@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { View, Button } from '@tarojs/components'
+import { Checkbox } from '@discuzq/design';
 import styles from './index.module.scss'
 import Card from './card';
 import { saveToAlbum } from './utils'
@@ -17,17 +18,17 @@ const Index = ({
   data,
   comment,
 }) => {
+  const [hidePart, setHidePart] = useState(false);
+
   useEffect(() => {
     if(comment){
-      console.log(getCommentConfig({ site, comment, miniCode, siteName }))
-      getCommentConfig({ site, comment, miniCode, siteName }).then(
+      getCommentConfig({ site, comment, miniCode, siteName, hidePart }).then(
         config => {
-          console.log(config,'config')
           setConfig(config);
         }
       )
     }else if(thread) {
-      getConfig({ site, thread, miniCode, siteName }).then(
+      getConfig({ site, thread, miniCode, siteName, hidePart }).then(
         config => {
           setConfig(config);
         }
@@ -39,14 +40,23 @@ const Index = ({
         }
       )
     }
-  }, [miniCode])
+  }, [miniCode, hidePart])
   const [config, setConfig] = useState('')
   const [shareImage, setShareImage] = useState('')
   const {siteName} = site.webConfig?.setSite || ''
+
+
   return (
     <View className={styles.container}>
-      <Card config={config} setShareImage={setShareImage} miniCode={miniCode}></Card>
-      <View className={`${styles.shareBtn}`}>
+      <Card hidePart = {hidePart} config={config} setShareImage={setShareImage} miniCode={miniCode}></Card>
+      <View className={`${styles.shareBtn} ${( comment || thread ) && styles.hasHidePart}`}>
+        {
+          ( comment || thread )&& (
+            <View className={styles.checkbox}>
+            <Checkbox onChange={()=>setHidePart(!hidePart)} checked={hidePart}> 隐藏部分内容 </ Checkbox>
+          </View>
+          )
+        }
         <Button className={styles.btn} onClick={throttle(saveToAlbum(shareImage), 500)}>保存到相册</Button>
       </View>
     </View>)
