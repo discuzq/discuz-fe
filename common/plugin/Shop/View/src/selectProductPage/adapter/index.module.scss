@@ -83,6 +83,9 @@
 }
 
 .shopPageWrapper {
+  // 防止横向滚动
+  overflow-x: hidden;
+
   .shopDialogBody {
     max-height: 600px;
   }

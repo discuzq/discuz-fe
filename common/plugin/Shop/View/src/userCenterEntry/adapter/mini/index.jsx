@@ -1,6 +1,6 @@
 import React from 'react';
 import { View } from '@tarojs/components';
-import { Icon } from '@discuzq/design';
+import { Icon, Toast } from '@discuzq/design';
 import styles from '../index.module.scss';
 import { navigateToMiniProgram } from '@tarojs/taro';
 export default class UserCenterEntry extends React.Component {
@@ -36,7 +36,17 @@ export default class UserCenterEntry extends React.Component {
     if (!appId) {
       return;
     }
-    navigateToMiniProgram({ appId });
+    navigateToMiniProgram({ 
+      appId,
+      fail: (error) => {
+        if (error && error.errMsg && error.errMsg === 'navigateToMiniProgram:fail cancel') {
+          // 用户点击了取消
+        } else {
+          Toast.info({ content: '跳转失败' });
+        }
+        
+      },
+    });
   };
 
   render() {

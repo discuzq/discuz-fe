@@ -130,6 +130,7 @@ export default class ShopCreateDisplay extends React.Component {
 
   render() {
     const { renderData } = this.props;
+    console.log(renderData);
     if (!renderData) return null;
 
     const { body = { products: [] } } = renderData;

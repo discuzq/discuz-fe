@@ -34,6 +34,9 @@
         cursor: pointer;
 
         .productInfoWrapper {
+            max-width: 120px;
+            overflow: hidden;
+            box-sizing: border-box;
 
             .productInfoId {
                 background-color: $text-bg-color2;

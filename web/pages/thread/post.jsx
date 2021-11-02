@@ -77,7 +77,10 @@ class PostPage extends React.Component {
     this.fetchPermissions();
     const { fetchEmoji, emojis } = this.props.threadPost;
     if (emojis.length === 0) fetchEmoji();
-    this.fetchDetail();
+
+    if (!this.isHaveContent()) {
+      this.fetchDetail();
+    }
   }
 
   componentWillUnmount() {
