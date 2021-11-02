@@ -31,7 +31,14 @@ export default class ShopPostEntry extends React.Component {
     const { pluginConfig } = siteData;
     if (!pluginConfig) return false;
     const [act] = (pluginConfig || []).filter(item => item.app_id === _pluginInfo.options.tomId);
+
+    const { webConfig: { other: { threadOptimize } } } = siteData;
+
+    // 如果开启了小程序不显示商品贴，则做隐藏
+    if (!threadOptimize) return false;
+
     if (act?.authority?.canUsePlugin) return true;
+    
     return false;
   };
 
