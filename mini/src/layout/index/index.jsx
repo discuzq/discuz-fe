@@ -1,6 +1,6 @@
 import React, { createRef } from 'react';
 import { inject, observer } from 'mobx-react';
-import { View } from '@tarojs/components'
+import { View } from '@tarojs/components';
 import ThreadContent from '../../components/thread';
 import HomeHeader from '../../components/home-header';
 import FilterView from './components/filter-view';
@@ -10,10 +10,13 @@ import { getSelectedCategoryIds } from '@common/utils/handleCategory';
 import Taro from '@tarojs/taro';
 import { debounce } from '@common/utils/throttle-debounce.js';
 import styles from './index.module.scss';
-import IndexTabs from './components/tabs'
-import ThreadList from '@components/virtual-list'
+import IndexTabs from './components/tabs';
+import ThreadList from '@components/virtual-list';
 import PacketOpen from '@components/red-packet-animation';
 
+import IndexHeaderHooks from '@common/plugin-hooks/plugin_index@header';
+import IndexToppingHooks from '@common/plugin-hooks/plugin_index@topping';
+import IndexTabsHook from '@common/plugin-hooks/plugin_index@tabs';
 
 @inject('site')
 @inject('user')
@@ -34,15 +37,15 @@ class IndexH5Page extends React.Component {
     };
     this.tabsRef = createRef(null);
     this.headerRef = createRef(null);
-    this.isNormal = false
+    this.isNormal = false;
   }
 
   setNavigationBarStyle = () => {
     Taro.setNavigationBarColor({
       frontColor: '#ffffff',
-      backgroundColor: '#000000'
-    })
-  }
+      backgroundColor: '#000000',
+    });
+  };
   componentDidMount() {
     // 是否有推荐
     const isDefault = this.props.site.checkSiteIsOpenDefautlThreadListData();
@@ -51,59 +54,60 @@ class IndexH5Page extends React.Component {
 
   // 点击更多弹出筛选
   searchClick = () => {
-    this.props.index.setHiddenTabBar(true)
+    this.props.index.setHiddenTabBar(true);
 
     this.setState({ visible: true });
   };
   // 关闭筛选框
   onClose = () => {
-    this.props.index.setHiddenTabBar(false)
+    this.props.index.setHiddenTabBar(false);
 
     this.setState({ visible: false });
   };
 
   onClickTab = (id = '') => {
-    this.changeFilter({ categoryids: [id], sequence: id === 'default' ? 1 : 0 })
+    this.changeFilter({ categoryids: [id], sequence: id === 'default' ? 1 : 0 });
   };
 
   handleClickTabBar = (item, idx) => {
-    if(item?.router === "/indexPages/home/index") { // 点击首页刷新
-      this.changeFilter()
+    if (item?.router === '/indexPages/home/index') {
+      // 点击首页刷新
+      this.changeFilter();
     }
-  }
+  };
   changeFilter = (params) => {
-    this.props.index.resetErrorInfo()
-    this.setState({ isClickTab: true })
+    this.props.index.resetErrorInfo();
+    this.setState({ isClickTab: true });
 
     this.props.baselayout.setJumpingToTop();
-    this.props.index.setHiddenTabBar(false)
+    this.props.index.setHiddenTabBar(false);
 
-    const { index, dispatch = () => {} } = this.props
+    const { index, dispatch = () => {} } = this.props;
 
     if (params) {
-      const { categoryids } = params
+      const { categoryids } = params;
       const categories = index.categories || [];
 
       // 获取处理之后的分类id
-      const id = categoryids[0]
-      const newCategoryIds = getSelectedCategoryIds(categories, id)
+      const id = categoryids[0];
+      const newCategoryIds = getSelectedCategoryIds(categories, id);
 
       const newFilter = { ...index.filter, ...params, categoryids: newCategoryIds };
 
       index.setFilter(newFilter);
     }
 
-    this.debounceDispatch()
+    this.debounceDispatch();
 
-    this.setState({ visible: false })
-  }
+    this.setState({ visible: false });
+  };
 
   debounceDispatch = debounce(() => {
-    const { dispatch = () => {} } = this.props
+    const { dispatch = () => {} } = this.props;
     dispatch('click-filter').then(() => {
       this.setState({ isClickTab: false });
     });
-  }, 200)
+  }, 200);
 
   // 上拉加载更多
   onRefresh = () => {
@@ -112,13 +116,13 @@ class IndexH5Page extends React.Component {
   };
 
   handleScrollToUpper = () => {
-    this.tabsRef?.current?.changeFixedTab()
-  }
+    this.tabsRef?.current?.changeFixedTab();
+  };
 
   renderHeaderContent = () => {
     const { sticks = [] } = this.props.index || {};
 
-    return (
+    const component = (
       <>
         {sticks && sticks.length > 0 && (
           <View className={styles.homeContentTop}>
@@ -127,55 +131,61 @@ class IndexH5Page extends React.Component {
         )}
       </>
     );
+
+    return <IndexToppingHooks component={component} site={this.props.site}></IndexToppingHooks>;
   };
 
   render() {
-    const { index, user, thread} = this.props;
+    const { index, user, thread } = this.props;
     const { hasRedPacket } = thread;
 
     const { isFinished, isClickTab } = this.state;
     const { threads = {}, TwoDThreads, currentCategories, filter, threadError } = index;
     const { currentPage = 1, totalPage, pageData } = threads || {};
+
+    hasRedPacket && index.setHiddenTabBar(true);
+
     return (
       <BaseLayout
         showHeader={false}
-        showTabBar={!hasRedPacket}
+        showTabBar
         onRefresh={this.onRefresh}
         noMore={!isClickTab && currentPage >= totalPage}
         isFinished={isFinished}
         onScroll={this.handleScroll}
         onScrollToUpper={this.handleScrollToUpper}
-        curr='home'
-        pageName='home'
+        curr="home"
+        pageName="home"
         preload={3000}
         requestError={threadError.isError}
         errorText={threadError.errorText}
         onClickTabBar={this.handleClickTabBar}
       >
-        <HomeHeader />
+        {/* 顶部插件hooks */}
+        <IndexHeaderHooks site={this.props.site} component={<HomeHeader />}></IndexHeaderHooks>
 
-        <IndexTabs onClickTab={this.onClickTab} searchClick={this.searchClick} ref={this.tabsRef} />
+        <IndexTabsHook
+          component={<IndexTabs onClickTab={this.onClickTab} searchClick={this.searchClick} ref={this.tabsRef} />}
+          site={this.props.site}
+        ></IndexTabsHook>
 
-        <View style={{display: isClickTab ? 'none' : 'block'}}>
+        <View style={{ display: isClickTab ? 'none' : 'block' }}>
           {this.renderHeaderContent()}
 
-          {
-            !this.isNormal ? (
-              <ThreadList data={TwoDThreads} isClickTab={isClickTab} wholePageIndex={currentPage - 1}/>
-            ) : (
-              pageData?.map((item, index) => (
-                <ThreadContent
-                  key={`${item.threadId}-${item.updatedAt}-${item._time}`}
-                  showBottomStyle={index !== pageData.length - 1}
-                  data={item}
-                  className={styles.listItem}
-                  enableCommentList={true}
-                />
-              ))
-            )
-          }
+          {!this.isNormal ? (
+            <ThreadList data={TwoDThreads} isClickTab={isClickTab} wholePageIndex={currentPage - 1} />
+          ) : (
+            pageData?.map((item, index) => (
+              <ThreadContent
+                key={`${item.threadId}-${item.updatedAt}-${item._time}`}
+                showBottomStyle={index !== pageData.length - 1}
+                data={item}
+                className={styles.listItem}
+                enableCommentList={true}
+              />
+            ))
+          )}
         </View>
-
         <FilterView
           data={currentCategories}
           current={filter}
@@ -184,9 +194,11 @@ class IndexH5Page extends React.Component {
           onSubmit={this.changeFilter}
           permissions={user.threadExtendPermissions}
         />
-        {
-          hasRedPacket > 0 && <PacketOpen onClose={() => thread.setRedPacket(0)} money={hasRedPacket} />
-        }
+        { hasRedPacket > 0 && <PacketOpen money={hasRedPacket} onClose={() => {
+              thread.setRedPacket(0)
+              index.setHiddenTabBar(false)
+            }}
+          />}
       </BaseLayout>
     );
   }

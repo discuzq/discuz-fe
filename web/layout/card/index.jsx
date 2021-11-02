@@ -1,7 +1,7 @@
 import { generateImageUrlByHtml, savePic } from './util.js';
 import React, { useState, useRef, useEffect } from 'react';
 import styles from './index.module.scss';
-import { Button, Toast } from '@discuzq/design';
+import { Button, Toast, Checkbox} from '@discuzq/design';
 import Footer from './footer';
 import Header from '@components/header';
 import isWeiXin from '@common/utils/is-weixin';
@@ -12,6 +12,8 @@ import CommentCard from './commentCard';
 
 const Index = ({ card, threadId, commentId}) => {
   const [url, setUrl] = useState('');
+  const [hidePart, setHidePart] = useState(false);
+
   const [ready, setReady] = useState(false);
   const post = useRef(null);
   const { imgReady } = card;
@@ -25,6 +27,17 @@ const Index = ({ card, threadId, commentId}) => {
       });
     }
   }, [ready, imgReady]);
+
+  useEffect(() => {
+    if (ready && imgReady) {
+      setTimeout(()=>{
+        generateImageUrlByHtml(post.current).then((res) => {
+          setUrl(res);
+        });
+      }, 0);
+    }
+  }, [hidePart]);
+
   const saveImg = () => {
     savePic(url);
   };
@@ -39,10 +52,10 @@ const Index = ({ card, threadId, commentId}) => {
       <div className={styles.poster} ref={post}>
         {/* {!threadId ? <SiteCard></SiteCard> : <ThreadCard threadId={threadId}></ThreadCard>} */}
         {
-          commentId && <CommentCard commentId={commentId}></CommentCard>
+          commentId && <CommentCard hidePart={hidePart} commentId={commentId}></CommentCard>
         }
         {
-          threadId && !commentId &&  <ThreadCard threadId={threadId}></ThreadCard>
+          threadId && !commentId &&  <ThreadCard hidePart={hidePart} threadId={threadId}></ThreadCard>
         }
         {
           !threadId && !commentId && <SiteCard></SiteCard>
@@ -57,7 +70,14 @@ const Index = ({ card, threadId, commentId}) => {
         <div className={styles.imgbox}></div>
       )}
       <div className={styles.emptyHeight}></div>
-      <div className={styles.shareBtn}>
+      <div className={`${styles.shareBtn} ${(commentId || threadId) && styles.hasHidePart}`}>
+        {
+          (commentId || threadId) && (
+            <div className={styles.checkbox}>
+            <Checkbox onChange={()=>setHidePart(!hidePart)} checked={hidePart} >隐藏部分内容</Checkbox>
+          </div>
+          )
+        }
         {!isWeiXin() ? (
           <Button className={styles.btn} onClick={isWeiXin() ? '' : saveImg}>
             保存到相册

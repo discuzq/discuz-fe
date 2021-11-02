@@ -5,6 +5,8 @@ import ImageDisplay from '@components/thread/image-display';
 import PostContent from '@components/thread/post-content';
 import UserInfo from '@components/thread/user-info';
 import styles from './index.module.scss';
+import { cutText, hideImage} from '../util';
+
 
 const ThreadCard = inject('user', 'card')(observer((props) => {
   const { card: threadStore } = props;
@@ -25,12 +27,19 @@ const ThreadCard = inject('user', 'card')(observer((props) => {
   const isAnonymous = threadStore?.threadData?.isAnonymous;
   const priceImg = '/dzq-img/admin-logo-pc.jpg';
   const content = useRef(null);
+  const cardContent = useRef(null);
   const [overMaxHeight, setOverMaxHeight] = useState(false);
+  const contentMaxHeight = window.innerHeight - 171 - 20;
+  const cardContentHeight = cardContent?.current?.scrollHeight;
+  const posthandle = str => (str.length > 6 ? `${str.slice(0, 6)}...` : str);
+
   // 内容是否为空
   let isEmpty = false;
   if (!text && !title && !parseContent.IMAGE) {
     isEmpty = true;
   }
+
+
   useEffect(() => {
     if (!parseContent?.IMAGE) {
       threadStore.setImgReady();
@@ -59,12 +68,16 @@ const ThreadCard = inject('user', 'card')(observer((props) => {
   }
 
   const filterIframe = /<iframe(([\s\S])*?)<\/iframe>/g; // iframe标签不支持生成h5海报
-
-  const posthandle = str => (str.length > 6 ? `${str.slice(0, 6)}...` : str);
-
-
+  text = text.replace(filterIframe, '');
+  // 隐藏部分内容
+  if (props.hidePart && cardContentHeight < contentMaxHeight) {
+    text = cutText(text);
+  }
   return (
-    <div>
+    <div ref={cardContent} className={props.hidePart ? styles.hidePart : ''} style={{ maxHeight: props.hidePart ? contentMaxHeight : 'none' }}>
+      {
+        props.hidePart && cardContentHeight > contentMaxHeight && <img className={styles.hideImage} src={hideImage} />
+      }
       {isReady && (
       <div className={`${styles.container}`}>
         <div className={styles.header}>
@@ -90,11 +103,13 @@ const ThreadCard = inject('user', 'card')(observer((props) => {
           {title && <div className={styles.title}>{title}</div>}
 
           {/* 文字 */}
-          {text && <PostContent needShowMore={false} content={text.replace(filterIframe, '') || ''} className={styles.content}/>}
+          {text && !(props.hidePart && cardContentHeight < contentMaxHeight) && <PostContent needShowMore={false} content={text || ''} className={styles.content}/>}
+
+          { props.hidePart && cardContentHeight < contentMaxHeight && <div className={styles.cutText}>{text} </div> }
 
 
           {/* 图片 */}
-          {parseContent.IMAGE && (
+          {!(props.hidePart && cardContentHeight < contentMaxHeight) && parseContent.IMAGE && (
             <ImageDisplay
               flat
               platform="h5"

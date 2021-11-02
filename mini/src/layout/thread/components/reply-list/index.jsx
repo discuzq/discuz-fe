@@ -141,7 +141,7 @@ export default class ReplyList extends React.Component {
           ></Avatar>
         </View>
         <View className={styles.replyListContent}>
-          <View className={`${styles.replyListContentText} ${this.props.active && styles.active}`}>
+          <View onClick={() => this.toCommentDetail()} className={`${styles.replyListContentText} ${this.props.active && styles.active}`}>
             <View className={styles.replyListName}>
               <View className={styles.userInfo}>
                 <View
@@ -167,7 +167,6 @@ export default class ReplyList extends React.Component {
               {/* 回复内容 */}
               <View className={classNames(styles.content)}>
                 <PostContent
-                  onRedirectToDetail={() => this.toCommentDetail()}
                   useShowMore={!!this.props.isShowOne}
                   content={this.props?.data?.content}
                   customHoverBg={true}

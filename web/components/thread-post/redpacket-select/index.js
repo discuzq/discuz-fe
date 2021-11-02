@@ -129,7 +129,7 @@ const Index = ({ data, confirm, cancel, pc, visible }) => {
       <div className={styles['line-box']}>
         <div className={styles.label}>红包个数</div>
         <div className={styles.item}>
-          <Input mode="number" htmlType="number" value={number} placeholder="个数" onChange={e => onNumberChang(e.target.value)} />个
+          <Input mode="number" value={number} placeholder="个数" onChange={e => onNumberChang(e.target.value)} />个
         </div>
       </div>
       {/* 获利条件 */}

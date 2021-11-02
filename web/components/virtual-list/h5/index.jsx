@@ -2,6 +2,7 @@ import React, { useRef, forwardRef, useState, useEffect } from 'react';
 import './index.scss';
 import Item from './item';
 import BottomView from '../BottomView';
+import ObserveItem from './observe-item';
 
 import { getImmutableTypeHeight, getSticksHeight } from '../utils';
 
@@ -100,10 +101,10 @@ function VList(props, ref) {
       return 0;
     }
 
-    // 头部
-    if (data.type === 'header') {
-      return 165 + 54 + 10 + getSticksHeight(props.sticks);
-    }
+    // // 头部
+    // if (data.type === 'header') {
+    //   return 165 + 54 + 10 + getSticksHeight(props.sticks);
+    // }
 
     // 底部
     if (data.type === 'footer') {
@@ -118,7 +119,16 @@ function VList(props, ref) {
   const renderListItem = (type, data, measure, { index, key, parent, style }) => {
     switch (type) {
       case 'header':
-        return props.children;
+        return (
+          <ObserveItem
+            key={key}
+            measure={() => {
+              measure();
+            }}
+          >
+            {props.children}
+          </ObserveItem>
+        );
       case 'footer':
         return (
           <BottomView

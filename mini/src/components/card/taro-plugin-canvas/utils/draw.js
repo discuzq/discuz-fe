@@ -171,6 +171,7 @@ export function drawImage(data, drawOptions) {
     }
     ctx.restore();
 }
+
 export function drawLine(drawData, drawOptions) {
     const { startX, startY, endX, endY, color, width } = drawData;
     const { ctx, toPx } = drawOptions;
