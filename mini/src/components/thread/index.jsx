@@ -184,7 +184,6 @@ class Index extends React.Component {
 
   onUser = (e) => {
     e && e.stopPropagation();
-
     const { user = {}, isAnonymous } = this.props.data || {};
     if (!!isAnonymous) {
       this.onClick()

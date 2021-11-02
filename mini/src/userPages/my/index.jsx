@@ -24,7 +24,7 @@ class Index extends React.Component {
     const { site } = this.props;
     const id = this.props.user?.id;
     const defalutTitle = `${this.props.user.nickname || this.props.user.username}的主页`;
-    const defalutPath = `/userPages/user/index?id=${id}`;
+    const defalutPath = `/userPages/user/index?id=${id}&share=true`;
     if (data.from === 'menu') {
       return {
         title: defalutTitle,
