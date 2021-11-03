@@ -33,7 +33,11 @@
   border-radius: rem($border-radius-small);
   padding: 0 rem($padding-6n);
   margin-bottom: rem($margin-10);
-  overflow: hidden;
+  // overflow: hidden;
+}
+
+.display{
+  display: none;
 }
 
 .rightSide {
