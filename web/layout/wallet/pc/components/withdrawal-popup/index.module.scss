@@ -94,5 +94,6 @@
   margin-top: rem($margin-2n);
   font-size: rem($font-size-base);
   color: $text-color-regular;
-  line-height: $font-line-height-base
+  line-height: $font-line-height-base;
+  word-break: break-all;
 }

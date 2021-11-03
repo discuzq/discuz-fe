@@ -75,12 +75,14 @@ class Withdrawal extends React.Component {
         Toast.success({
           content: '申请提现成功',
           hasMask: false,
-          duration: 2000,
+          duration: 1000,
         });
-        const { getUserWalletInfo } = this.props.wallet;
-        await getUserWalletInfo();
-        Taro.navigateBack();
-        this.initState();
+        setTimeout(async () => {
+          const { getUserWalletInfo } = this.props.wallet;
+          await getUserWalletInfo();
+          Taro.navigateBack();
+          this.initState();
+        }, 1000);
       })
       .catch((err) => {
         console.error(err);
@@ -151,7 +153,12 @@ class Withdrawal extends React.Component {
           <View className={styles.main}>
             {/* 自定义顶部返回 */}
             {this.renderTitleContent()}
-            <View className={styles.totalAmount} style={{backgroundImage: `url(${IMG_SRC_HOST}/assets/walletbackground.d038c3fcc736f8c7bb086e90c5abe4df9b946fc0.png)`}}>
+            <View
+              className={styles.totalAmount}
+              style={{
+                backgroundImage: `url(${IMG_SRC_HOST}/assets/walletbackground.d038c3fcc736f8c7bb086e90c5abe4df9b946fc0.png)`,
+              }}
+            >
               <View className={styles.moneyTitle}>可提现金额</View>
               <View className={styles.moneyNum}>{this.props.walletData?.availableAmount}</View>
             </View>

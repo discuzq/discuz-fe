@@ -42,12 +42,15 @@
 
   .input {
     flex: 1;
+    display: flex;
+    align-items: center;
     :global {
       .dzq-input__inner {
         color: $text-color-regular;
         border: none;
         height: 30px;
         padding: 0;
+        line-height: 1;
       }
     }
   }

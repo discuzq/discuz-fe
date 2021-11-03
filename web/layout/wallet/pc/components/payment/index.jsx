@@ -64,6 +64,7 @@ const Payment = (props, ref) => {
             value={wxValue}
             className={styles.input}
             onChange={(e) => setWxValue(e.target.value)}
+            maxLength={25}
           />
           <Radio name="wx" className={styles.check}></Radio>
         </div>
@@ -78,6 +79,7 @@ const Payment = (props, ref) => {
             value={telValue}
             className={styles.input}
             onChange={(e) => setTelValue(e.target.value)}
+            maxLength={15}
           />
           <Radio name="tel" className={styles.check}></Radio>
         </div>
@@ -93,6 +95,7 @@ const Payment = (props, ref) => {
             placeholder="输入银行名称，姓名"
             className={styles.input}
             onChange={(e) => setName(e.target.value)}
+            maxLength={50}
           />
         </div>
 
@@ -103,6 +106,7 @@ const Payment = (props, ref) => {
             placeholder="输入银行卡号"
             className={styles.input}
             onChange={(e) => setNo(e.target.value)}
+            maxLength={50}
           />
         </div>
       </Radio.Group>

@@ -74,12 +74,14 @@ class Withdrawal extends React.Component {
         Toast.success({
           content: '申请提现成功',
           hasMask: false,
-          duration: 2000,
+          duration: 1000,
         });
-        const { getUserWalletInfo } = this.props.wallet;
-        await getUserWalletInfo();
-        this.initState();
-        Router.back();
+        setTimeout(async ()=>{
+          const { getUserWalletInfo } = this.props.wallet;
+          await getUserWalletInfo();
+          this.initState();
+          Router.back();
+        }, 1000);
       })
       .catch((err) => {
         console.error(err);
