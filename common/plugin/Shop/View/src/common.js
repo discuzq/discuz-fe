@@ -13,7 +13,7 @@ export const isShowMiniShopTab = (props) => {
 
   const { setting } = shopPluginConfig;
 
-  if (setting.publicValue.wxAppId) {
+  if (setting?.publicValue?.wxAppId) {
     return true;
   }
 

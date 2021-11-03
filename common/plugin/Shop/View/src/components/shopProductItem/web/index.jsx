@@ -13,7 +13,7 @@ export default class ShopProductItemWebInstance extends React.Component {
   };
 
   render() {
-    const { isSelected, isMini } = this.props;
+    const { isSelected = false, isMini } = this.props;
     const { productId, imagePath, price, title } = this.props.productInfo;
     return (
       <div

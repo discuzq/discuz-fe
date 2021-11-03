@@ -14,7 +14,7 @@ export default class ShopProductItemWebInstance extends React.Component {
   };
 
   render() {
-    const { isSelected } = this.props;
+    const { isSelected = false } = this.props;
     const { productId, imagePath, price, title } = this.props.productInfo;
     return (
       <View className={classnames(styles.productItem, styles.productItemMini)} onClick={this.onChange}>
