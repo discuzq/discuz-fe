@@ -84,13 +84,16 @@
 
 .shopPageWrapper {
   // 防止横向滚动
-  overflow-x: hidden;
+
+  width: 100%;
+  box-sizing: border-box;
 
   .shopDialogBody {
     max-height: 600px;
   }
 
   .productItemWrapper {
+
     padding: 16px;
     display: flex;
     flex-wrap: wrap;
@@ -163,6 +166,8 @@
       margin-left: 16px;
       margin-top: 0;
       margin-bottom: 0;
+      width: calc(100% - 32px);
+      overflow: hidden;
     }
   }
 }
