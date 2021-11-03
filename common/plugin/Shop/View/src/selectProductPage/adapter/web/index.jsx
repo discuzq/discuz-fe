@@ -5,6 +5,7 @@ import styles from '../index.module.scss';
 import Header from '@components/header';
 import ShopProductItem from '../../../components/shopProductItem';
 import { isShowMiniShopTab } from '../../../common';
+import classnames from 'classnames';
 
 const MINI_SHOP_TYPE = 11;
 const PLATFORM_SHOP_TYPE = 10;
@@ -91,20 +92,6 @@ export default class SelectProduct extends React.PureComponent {
   componentDidMount() {
     this.fetchMiniShopProductList();
     this.init();
-
-    if (typeof window !== 'undefined') {
-      window.addEventListener('scroll', this.handleReachBottom);
-    }
-
-    this.props.pluginAction.set('shop', {
-      onReachBottom: this.onReachBottom,
-    });
-  }
-
-  componentWillUnmount() {
-    if (typeof window !== 'undefined') {
-      window.removeEventListener('scroll', this.handleReachBottom);
-    }
   }
 
   // 处理触底加载
@@ -184,18 +171,6 @@ export default class SelectProduct extends React.PureComponent {
     Toast.error({ content: msg });
   };
 
-  /**
-   * 触底逻辑
-   */
-  onReachBottom = () => {
-    if (this.state.currentPage < this.state.totalPage) {
-      this.fetchMiniShopProductList(this.state.currentPage + 1);
-
-      this.setState({
-        currentPage: this.state.currentPage + 1,
-      });
-    }
-  };
 
   /**
    * 处理点击行为
@@ -292,13 +267,23 @@ export default class SelectProduct extends React.PureComponent {
     return formatedMiniShopProducts;
   };
 
+  handleListScroll = (e) => {
+    const { scrollTop } = e.target;
+    const { scrollHeight } = e.target;
+    const offsetHeight = Math.ceil(e.target.getBoundingClientRect().height);
+    const currentHeight = scrollTop + offsetHeight;
+    if (currentHeight >= scrollHeight) {
+      this.handleReachBottom();
+    }
+  };
+
   /**
    * 渲染小商店 tab
    */
   renderMiniShopTab = () => (
       <Tabs.TabPanel key={'miniShop'} id={'miniShop'} label={'添加微信小店商品'}>
         <Divider />
-        <div className={styles.productItemWrapper} ref={this.miniShopListRef} onScroll={this.handleListScroll}>
+        <div className={styles.productItemWrapperH5} ref={this.miniShopListRef} onScroll={this.handleListScroll}>
           {this.miniShopProductsAdapter().map(productInfo => (
             <ShopProductItem
               isMini
@@ -372,7 +357,7 @@ export default class SelectProduct extends React.PureComponent {
 
   render() {
     return (
-      <div className={styles.shopPageWrapper}>
+      <div className={classnames(styles.shopPageWrapper, styles.shopPageWrapperH5)}>
         <Header />
         <Tabs
           scrollable={false}

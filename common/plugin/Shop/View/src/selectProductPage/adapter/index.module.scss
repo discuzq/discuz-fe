@@ -82,9 +82,28 @@
   }
 }
 
+.shopPageWrapperMini {
+  .productItemWrapper {
+    padding-top: 56px !important;
+  }
+
+  .parse-goods-box {
+    padding-top: 56px !important;
+  }
+
+  :global {
+    .dzq-tabs__bar {
+      width: 100%;
+      position: fixed;
+      background: $white;
+      z-index: 1;
+    }
+  }
+}
+
 .shopPageWrapper {
   // 防止横向滚动
-
+  position: relative;
   width: 100%;
   box-sizing: border-box;
 
@@ -100,6 +119,26 @@
     padding-bottom: calc(constant(safe-area-inset-bottom) + 50px); ///兼容 IOS<11.2/
     padding-bottom: calc(env(safe-area-inset-bottom) + 50px); ///兼容 IOS>11.2/
 
+
+    .spinner {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+
+      margin-top: 4px;
+      margin-bottom: 4px;
+    }
+  }
+
+  .productItemWrapperH5 {
+    position: relative;
+    padding: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    height: calc(100vh - constant(safe-area-inset-bottom) - 50px - 40px - 86px);
+    height: calc(100vh - env(safe-area-inset-bottom) - 50px - 40px - 86px);
+    overflow: scroll;
 
     .spinner {
       display: flex;
