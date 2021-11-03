@@ -44,6 +44,7 @@
   .time {
     text-align: left;
     color: $text-color-secondary;
+    word-break: break-all;
   }
   .withdrawalStatus1 {
     color: $primary-color;
