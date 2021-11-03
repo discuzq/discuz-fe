@@ -114,7 +114,8 @@ export default class ShopCreateDisplay extends React.Component {
           <span className={styles['content-price']}>￥{good.price}</span>
           <div
             className={styles['delete-icon']}
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               this.deleteProductItem({
                 type: PLATFORM_SHOP_TYPE,
                 productId: good.id,
