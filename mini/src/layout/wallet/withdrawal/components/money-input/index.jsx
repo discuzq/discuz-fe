@@ -50,6 +50,7 @@ const MoneyInput = (props) => {
           onChange={(e) => handleChange(e.target.value)}
           mode="number"
           placeholder-style="color:#c5c6ca;"
+          maxLength={8}
         />
       </View>
       <View>

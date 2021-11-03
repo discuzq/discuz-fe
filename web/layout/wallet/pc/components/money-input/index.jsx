@@ -40,6 +40,7 @@ const MoneyInput = (props) => {
           placeholder="0.00"
           onChange={e => handleChange(e.target.value)}
           mode="number"
+          maxLength={8}
         />
       </div>
       {moneyInputType === 'withdrawal' ? (
