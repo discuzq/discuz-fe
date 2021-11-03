@@ -290,16 +290,16 @@ export default class ShopPostEntry extends React.Component {
   handleProductSelected = (checkedStatus, productInfo) => {
     const { productId } = productInfo;
 
-    if (Object.keys(this.state.selectedMiniShopProducts).length > 10) {
-      Toast.error({
-        content: '最多只能同时选择十条小商店商品'
-      })
-      return;
-    }
-
     const nextSelectedStatus = Object.assign({}, this.state.selectedMiniShopProducts);
 
     if (checkedStatus) {
+      if (Object.keys(this.state.selectedMiniShopProducts).length >= 10) {
+        Toast.error({
+          content: '最多只能同时选择十条小商店商品'
+        })
+        return;
+      }
+      
       nextSelectedStatus[productId] = productInfo;
     } else {
       delete nextSelectedStatus[productId];
