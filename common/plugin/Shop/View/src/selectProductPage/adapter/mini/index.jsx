@@ -1,11 +1,12 @@
 import React from 'react';
 import Taro, { eventCenter, getCurrentInstance } from '@tarojs/taro';
 import { Icon, Button, Input, Tabs, Toast, Spin, Divider } from '@discuzq/design';
-import { View, Image } from '@tarojs/components';
+import { View, Image, CoverView } from '@tarojs/components';
 import { goodImages } from '@common/constants/const';
 import styles from '../index.module.scss';
 import ShopProductItem from '../../../components/shopProductItem';
 import { isShowMiniShopTab } from '../../../common';
+import classnames from 'classnames';
 
 const MINI_SHOP_TYPE = 11;
 const PLATFORM_SHOP_TYPE = 10;
@@ -359,19 +360,19 @@ export default class SelectProduct extends React.PureComponent {
 
   render() {
     return (
-      <View className={styles.shopPageWrapper}>
-        <Tabs
-          scrollable={false}
-          type={'primary'}
-          activeId={this.state.activeTab}
-          onActive={(activeId) => {
-            this.setState({
-              activeTab: activeId,
-            });
-          }}
-        >
-          {this.renderTabs()}
-        </Tabs>
+      <View className={classnames(styles.shopPageWrapper, styles.shopPageWrapperMini)}>
+          <Tabs
+            scrollable={false}
+            type={'primary'}
+            activeId={this.state.activeTab}
+            onActive={(activeId) => {
+              this.setState({
+                activeTab: activeId,
+              });
+            }}
+          >
+            {this.renderTabs()}
+          </Tabs>
         <View className={styles.footer}>
           <Button type="primary" full onClick={this.handleConfirm}>
             确定
