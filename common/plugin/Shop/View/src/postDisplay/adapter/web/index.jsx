@@ -52,6 +52,11 @@ export default class ShopCreateDisplay extends React.Component {
       }
     });
 
+    if (nextProducts.length === 0) {
+      this.props.deletePlugin();
+      return;
+    }
+
     this.props.updatePlugin({
       postData: {
         tomId: '61540fef8f4de8',

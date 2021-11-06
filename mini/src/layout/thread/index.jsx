@@ -532,7 +532,7 @@ class ThreadH5Page extends React.Component {
       Toast.success({
         content: '删除成功，即将跳转至上一页',
       });
-
+      this.props.index.deleteThreadsData({ id }, this.props.site);
       setTimeout(() => {
         Taro.navigateBack({
           delta: 1,

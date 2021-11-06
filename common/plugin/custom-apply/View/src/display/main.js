@@ -1,10 +1,12 @@
 import Component from './adapter';
 import config from '../../../config.json';
 
-export default class CustomIfram {
+export default class CustomApplyDisplay {
   static pluginName = config.name_en // 插件名称
   static version = config.version // 插件版本
-  static author = config.author
+  static type = config.type; // 插件类型
+  static appid = config.app_id; // appid
+  static author = config.author; // 作者
   static platform = config.view.display.platform;
   static target = config.view.display.target // 插件使用目标
   static hookName = config.view.display.hookName // 钩子名称

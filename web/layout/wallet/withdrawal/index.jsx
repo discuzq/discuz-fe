@@ -47,7 +47,7 @@ class Withdrawal extends React.Component {
       withdrawalAmount: 0,
       inputValue: '',
       showConfirm: false,
-      receiveAccount: '',
+      // receiveAccount: '',
     });
   };
 

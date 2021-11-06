@@ -22,6 +22,12 @@
     .dzq-tabs__content {
       padding: 0;
     }
+
+    // fix: oppor9s 等手机页面无法滚动问题
+    .dzq-tabs__panel {
+      height: calc(100vh - 96px) !important;
+      overflow-y: auto;
+    }
   }
 }
 
@@ -39,6 +45,13 @@
 
     .dzq-tabs__item.is-active .dzq-tabs__label {
       padding-bottom: 0;
+    }
+
+    .dzq-tabs__panel{
+      max-height: calc(100vh - 216px) !important;
+      overflow-y: auto;
+      overflow-y: overlay;
+      @include scrollbar();
     }
   }
 }
@@ -244,11 +257,6 @@
   }
 }
 
-// fix: oppor9s 等手机页面无法滚动问题
-.tabPanelContent {
-  height: calc(100vh - 106px);
-  overflow-y: overlay;
-  overflow-y: auto;
-}
+
 
 

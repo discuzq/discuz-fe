@@ -58,6 +58,13 @@ const Payment = (props, ref) => {
     return str;
   };
 
+  const onFilterNumber = (e, setValue) => {
+    const value = e.target.value.replace(/\D/g, '');
+    setValue(value);
+
+    return value;
+  };
+
   return (
     <div className={styles.pay}>
       <div className={`${styles.payItem} ${styles.title}`}>收款账号</div>
@@ -84,7 +91,7 @@ const Payment = (props, ref) => {
             mode="number"
             value={telValue}
             className={styles.input}
-            onChange={(e) => setTelValue(e.target.value)}
+            onChange={(e) => onFilterNumber(e, setTelValue)}
             maxLength={15}
           />
           <Radio name="tel" className={styles.check}></Radio>
@@ -107,11 +114,10 @@ const Payment = (props, ref) => {
 
         <div className={styles.payItem}>
           <Input
-            mode="number"
             value={no}
             placeholder="输入银行卡号"
             className={styles.input}
-            onChange={(e) => setNo(e.target.value)}
+            onChange={(e) => onFilterNumber(e, setNo)}
             maxLength={50}
           />
         </div>

@@ -41,7 +41,7 @@ class WithdrawalPop extends Component {
       visible: true,
       inputValue: '',
       showConfirm: false,
-      receiveAccount: '',
+      // receiveAccount: '',
     });
     this.props.onClose && this.props.onClose();
   };

@@ -18,7 +18,7 @@ import browser from '@common/utils/browser';
 import Toast from '@discuzq/design/dist/components/toast';
 import { STORAGE_KEY, STORAGE_TYPE } from '@common/utils/viewcount-in-storage';
 import DZQPluginCenter from '@discuzq/plugin-center';
-// import PluginDevelopTools from '../utils/PluginDevelopTools';
+import PluginDevelopTools from '../utils/PluginDevelopTools';
 
 // if (!isServer()) {
 //   process.env.NODE_ENV === 'production' && sentry();
@@ -173,7 +173,7 @@ class DzqApp extends App {
             />
           </Head>
           <CustomHead />
-         {false && <PluginDevelopTools/>}
+         <PluginDevelopTools/>
           <PayBoxProvider>
             <Component {...pageProps} />
           </PayBoxProvider>

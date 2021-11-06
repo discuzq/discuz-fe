@@ -90,7 +90,9 @@ export default class SelectProduct extends React.PureComponent {
   };
 
   componentDidMount() {
-    this.fetchMiniShopProductList();
+    if (isShowMiniShopTab(this.props)) {
+      this.fetchMiniShopProductList();
+    }
     this.init();
   }
 

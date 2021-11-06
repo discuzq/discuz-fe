@@ -27,6 +27,13 @@ const Payment = (props, ref) => {
     onChange(getInfoStr());
   }, [wxValue, telValue, name, no, defaultValue]);
 
+  const onFilterNumber = (e, setValue) => {
+    const value = e.target.value.replace(/\D/g, '');
+    setValue(value);
+
+    return value;
+  };
+
   useImperativeHandle(ref, () => ({
     getData: () => {
       const data = {
@@ -84,7 +91,7 @@ const Payment = (props, ref) => {
             mode="number"
             value={telValue}
             className={styles.input}
-            onChange={(e) => setTelValue(e.target.value)}
+            onChange={(e) => onFilterNumber(e, setTelValue)}
             maxLength={15}
           />
           <Radio name="tel" className={styles.check}></Radio>
@@ -107,11 +114,10 @@ const Payment = (props, ref) => {
 
         <div className={styles.payItem}>
           <Input
-            mode="number"
             value={no}
             placeholder="输入银行卡号"
             className={styles.input}
-            onChange={(e) => setNo(e.target.value)}
+            onChange={(e) => onFilterNumber(e, setNo)}
             maxLength={50}
           />
         </div>

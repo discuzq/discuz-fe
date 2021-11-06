@@ -174,7 +174,7 @@ class IndexAction extends IndexStore {
   @action
   async deleteThreadsData({ id } = {}, SiteStore) {
     if (id) {
-      this.deleteAssignThreadInLists({ threadId: id });
+      this.threadList?.deleteAssignThreadInLists({ threadId: id });
     }
 
     if (id && this.threads) {

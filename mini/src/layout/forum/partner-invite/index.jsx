@@ -70,8 +70,8 @@ class PartnerInviteH5Page extends React.Component {
 
   async initInviteCode() {
     const { invite } = this.props;
-    const { params } = getCurrentInstance().router;
-    const { inviteCode } = params;
+    let { inviteCode } = getCurrentInstance().router.params;
+    inviteCode = inviteCode || this.props.invite.getInviteCode()
 
     if (inviteCode) {
       invite.setInviteCode(inviteCode);

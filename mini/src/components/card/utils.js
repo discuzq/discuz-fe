@@ -26,10 +26,12 @@ export const cutText = (content, contentWidth, maxLine) => {
   const replaceTextSign = `${date.getTime()}`;
   let contentArr = content.replace(/[\n]/g, replaceTextSign).split(replaceTextSign);
   let textLineNumber = 0;
+
+  console.log(contentArr);
   // 将文本分段判断文本行数，每段文本末尾会有一个换行符被统计视为一行，所以每段文本最后一行不记录统计行数
   for (let i = 0; i < contentArr.length; i++) {
     if(contentArr[i]) {
-      const partLine = Math.floor((getByteLen(contentArr[i]) * 16) / contentWidth);
+      const partLine = Math.ceil((getByteLen(contentArr[i]) * 16) / contentWidth);
       if(textLineNumber + partLine >= maxLine){
         contentArr[i] = contentArr[i].slice(0, everyLineNum*( maxLine - textLineNumber) );
         contentArr = contentArr.slice(0,i+1);

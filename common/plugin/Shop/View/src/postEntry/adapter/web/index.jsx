@@ -113,7 +113,13 @@ export default class ShopPostEntry extends React.Component {
     if (isPc) {
       this.setState({ visible: true });
 
-      await this.fetchMiniShopProductList();
+      if (
+        isShowMiniShopTab(this.props) && 
+        Object.keys(this.state.miniShopProducts).length === 0 // 没有加载过，才会在刚进来就加载
+      ) {
+        await this.fetchMiniShopProductList();
+      }
+
     } else {
       const { dzqRouter } = this.props;
       const { router } = dzqRouter;
@@ -350,12 +356,12 @@ export default class ShopPostEntry extends React.Component {
               productInfo={productInfo}
             />
           ))}
-          {this.state.loading && (
+        </div>
+        {this.state.loading && (
             <div className={styles.spinner}>
               <Spin type="spinner">加载中...</Spin>
             </div>
           )}
-        </div>
       </Tabs.TabPanel>
     );
   };

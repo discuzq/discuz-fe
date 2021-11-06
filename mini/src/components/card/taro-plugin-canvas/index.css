@@ -5,8 +5,8 @@
 .canvas.pro {
   position: absolute;
   bottom: 0;
-  left: 9999px;
-  /* transform: translate3d(-9999rpx, 0, 0); */
+  /* left: 9999px; */
+  transform: translate3d(-9999rpx, 0, 0);
 }
 .canvas.debug {
   position: absolute;

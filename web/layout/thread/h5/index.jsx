@@ -401,7 +401,7 @@ class ThreadH5Page extends React.Component {
       Toast.success({
         content: '删除成功，即将跳转至首页',
       });
-
+      this.props.index.deleteThreadsData({ id }, this.props.site);
       setTimeout(() => {
         Router.push({ url: '/' });
       }, 1000);

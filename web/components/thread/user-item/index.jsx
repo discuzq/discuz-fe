@@ -55,7 +55,7 @@ const Index = ({
   return (
     <div className={classNames(classString.trim(), {
       [styles.additional]: isHaveAdditionalInfo,
-    })} key={index} style={itemStyle}>
+    })} key={index} style={itemStyle} onClick={handleClick}>
       {isHaveAdditionalInfo && index === 0 && (
         <div className={styles['additional-wrapper']}>
           <div className={styles['additional-user']}>
