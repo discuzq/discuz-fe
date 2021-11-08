@@ -122,6 +122,7 @@ class Index extends React.Component {
     const isShowRecommend = site.checkSiteIsOpenDefautlThreadListData();
 
     const result = getRouterCategory(router, site);
+    console.log('handleRouterCategory-------->', result);
     const { categoryids, sequence, attention, essence } = result;
     // pc端topmenu的选中
     if (sequence === '1') index.topMenuIndex = `${sequence}`;
