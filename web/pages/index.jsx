@@ -82,7 +82,7 @@ class Index extends React.Component {
   }
 
   componentDidMount() {
-
+    console.log('componentdidmount----------->');
     const { index } = this.props;
     const { essence = 0, sequence = 0, attention = 0, sort = 1 } = index.filter;
 
@@ -123,13 +123,14 @@ class Index extends React.Component {
     const isShowRecommend = site.checkSiteIsOpenDefautlThreadListData();
 
     const result = getRouterCategory(router, site);
+    console.log('handleRouterCategory----------->', result);
     const { categoryids, sequence, attention, essence } = result;
     // pc端topmenu的选中
     if (sequence === '1') index.topMenuIndex = `${sequence}`;
     else if (essence === 1) index.topMenuIndex = isShowRecommend ? '2' : '1';
     else if (attention === 1) index.topMenuIndex = isShowRecommend ? '3' : '2';
     index.setFilter(result);
-
+    console.log('handleRouterCategory----------->', isServer());
     !isServer() && this.setUrl(categoryids, sequence);
 
   }
@@ -139,6 +140,7 @@ class Index extends React.Component {
     const url = ((categoryIds?.length && categoryIds.join('') !== 'all')
       || sequence !== 0)
       ? `/cate/${categoryIds.join('_')}/seq/${sequence}` : '/';
+    console.log('setUrl----------->', url);
     this.props.router.replace(url);
   }
 
