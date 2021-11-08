@@ -68,7 +68,7 @@ const Index = ({ categories = [], totalThreads = 0, onNavigationClick = noop, de
 
   const renderMenuTitle = ({ pid, name, threadCount }) => (
     <div className={styles.subMenuBox}>
-      <SiteMapLink href={`/?categoryId=${pid === 'all' ? '' : pid}&sequence=0`} text={`分类_${name}`} />
+      <SiteMapLink href={pid ? `/cate=${pid}/seq/0` : '/'} text={`分类_${name}`} />
       <span className={styles.ellipsis}>{name}</span>
       <span className={styles.span}>{name === '全部' ? totalThreads : threadCount}</span>
     </div>
@@ -76,7 +76,7 @@ const Index = ({ categories = [], totalThreads = 0, onNavigationClick = noop, de
 
   const renderSubMenuTitle = ({ pid, name, threadCount }) => (
     <div>
-      <SiteMapLink url={`/?categoryId=${pid === 'all' ? '' : pid}&sequence=0`} text={`分类_${name}`} />
+      <SiteMapLink href={pid ? `/cate=${pid}/seq/0` : '/'} text={`分类_${name}`} />
       <span className={styles.ellipsis}>{name}</span>
       <span className={styles.subSpan}>{threadCount}</span>
     </div>
