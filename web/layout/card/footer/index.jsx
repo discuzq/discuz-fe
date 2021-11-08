@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { inject, observer } from 'mobx-react';
 import { getMiniCode } from '@server';
+import setUrlParam from '@utils/set-url-param';
 import styles from './index.module.scss';
 import QRCode from 'qrcode.react';
 
-const Index = ({ site, setReady, threadId = '', commentId = '' }) => {
+const Index = ({ site, setReady, threadId = '', commentId = '', inviteCode = '' }) => {
   const [miniCode, setMiniCode] = useState('');
   const [miniConfig, setMiniConfig] = useState(true);
   const defaultLogo = '/dzq-img/default-logo.png';
@@ -32,7 +33,7 @@ const Index = ({ site, setReady, threadId = '', commentId = '' }) => {
       } else {
         path = '/indexPages/index/index';
       }
-      const paramPath = `/pages/index/index?path=${encodeURIComponent(path)}`;
+      const paramPath = `/pages/index/index?path=${encodeURIComponent(setUrlParam(path, { inviteCode }) || '')}`;
       const res = await getMiniCode({ params: { path: paramPath } });
       if (res?.code === 0) {
         setMiniCode(res?.data.base64Img);
@@ -46,10 +47,11 @@ const Index = ({ site, setReady, threadId = '', commentId = '' }) => {
     }
     setReady(true);
   }, []);
+  const pathName = href.join('/');
   return (
         <div className={styles.footerBox}>
             {!miniConfig
-              ? <QRCode value={href.join('/')} size={96}></QRCode>
+              ? <QRCode value={setUrlParam(pathName, { inviteCode }) || ''} size={96}></QRCode>
               : <img alt="图片" src={miniCode} className={styles.footerImg}/>}
             <span className={styles.desc}>
                 {`长按识别${miniConfig ? '小程序' : '二维码'}查看详情`}

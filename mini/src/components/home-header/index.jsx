@@ -163,6 +163,7 @@ class HomeHeader extends React.Component {
       title: site.webConfig?.setSite?.siteName || '',
       path: 'pages/index/index',
     };
+    const inviteCode = this.props.user?.userInfo?.id;
     index.setHiddenTabBar(this.state.show)
     return (
         <View
@@ -228,7 +229,7 @@ class HomeHeader extends React.Component {
               </View>
             </View>
           )}
-          {this.state.show && <SiteShare show={this.state.show} onShareClose={this.onShareClose} site={site}></SiteShare>}
+          {this.state.show && <SiteShare show={this.state.show} inviteCode={inviteCode} onShareClose={this.onShareClose} site={site}></SiteShare>}
           {mode === 'join' && (
             <view className={`${styles.siteInfo} ${styles.joinInfo}`}>
               <view className={styles.item}>
