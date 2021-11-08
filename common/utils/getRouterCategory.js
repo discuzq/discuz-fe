@@ -1,3 +1,5 @@
+import isServer from './is-server';
+
 // web 端使用的首页链接参数
 export default function getRouterCategory(router, site) {
   const defaultData = {
@@ -9,10 +11,14 @@ export default function getRouterCategory(router, site) {
     essence: 0,
   };
   try {
-    const { slug } = router.query;
-    if (!slug) return defaultData;
+    let { slug } = router.query;
+    if (!slug) {
+      if (isServer()) return defaultData;
+      slug = window?.location?.pathname?.split('/').splice(0, 1);
+    }
     // eslint-disable-next-line prefer-const
     let [, categoryId, , sequence] = slug;
+    if (!categoryId) return defaultData;
     const { webConfig } = site || {};
     const { other } = webConfig || {};
     const { threadTab } = other || {}; // 所有:0,1 推荐:2 精华:3 已关注:4

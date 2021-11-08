@@ -63,7 +63,6 @@ class DzqApp extends App {
 
     this.initOretation();
     window.addEventListener('resize', this.updateSize);
-    console.log('app mount----------');
     csrRouterRedirect();
     this.listenRouterChangeAndClean();
 

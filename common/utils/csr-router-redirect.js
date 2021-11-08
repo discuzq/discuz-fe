@@ -12,7 +12,6 @@ export default function csrRouterRedirect() {
         // // 当CSR出现末尾是index，会导致不能正确跳转的问题；
         let { pathname } = window.location;
         const isIndex = pathname === '/' || pathname.indexOf('/cate/') > -1;
-      console.log('csrRouterRedirect-------->', pathname, isIndex);
         if (pathname !== '' && !isIndex) {
           const pathnameArr = pathname.split('/');
           if (pathnameArr[pathnameArr.length - 1] === 'index') {
