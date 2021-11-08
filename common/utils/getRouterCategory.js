@@ -13,7 +13,7 @@ export default function getRouterCategory(router, site) {
   try {
     let { slug } = router.query;
     if (!slug) {
-      slug = router?.asPath?.split('/').splice(0, 1);
+      slug = router?.asPath?.split('/');
       slug.splice(0, 1);
       console.log(slug, '-------slug');
     }
