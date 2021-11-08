@@ -44,6 +44,7 @@ class RenderCommentList extends React.Component {
 
     this.operate = new Operate({
       list: this.props.commentList,
+      threadData: this.props.thread?.threadData,
     });
   }
 

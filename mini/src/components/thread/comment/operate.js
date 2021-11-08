@@ -5,6 +5,7 @@ import { plus } from '@common/utils/calculate';
 class CommentAction {
   constructor(props) {
     this.list = props.list;
+    this.threadData = props.threadData;
   }
 
   updateList(list) {
@@ -348,6 +349,11 @@ class CommentAction {
           comment.rewards = plus(Number(comment.rewards), Number(rewards));
         }
       });
+      
+      if (this.threadData?.content?.indexes[107]?.body) {
+        const remainMoney =  this.threadData.content.indexes[107].body.remainMoney ;
+        this.threadData.content.indexes[107].body.remainMoney = Number(remainMoney - rewards).toFixed(2) ;
+      }
 
       return {
         msg: '操作成功',
