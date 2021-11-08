@@ -14,43 +14,29 @@ import { substr } from '@common/utils/substr';
 
 const { Col, Row } = Flex;
 
-const Index = ({ permissions = {}, visible, data: tmpData = [], current, onSubmit = noop, onCancel = noop, router, site }) => {
-  const { webConfig: { other: { threadOptimize } } } = site;
+const Index = ({ permissions = {}, visible, data: tmpData = [], typelist, current, onSubmit = noop, onCancel = noop, router, site }) => {
+  // const { webConfig: { other: { threadOptimize } } } = site;
   const [first, setFirst] = useState('all');
   const [firstChildren, setFirstChildren] = useState();
   const [second, setSecond] = useState('');
   const [third, setThird] = useState('0');
 
-  // 二级分类数据
+  const [data, setData] = useState(tmpData);
+  // 二级分类原始数据，用于展示
   const [subData, setSubData] = useState([])
 
-  const data = useMemo(() => {
+  useEffect(() => {
     const newData = filterData;
     newData[0].data = tmpData;
-
-    const defautlFilter = newData[1];
-    const newDefaultFiler = [];
-    for ( let i = 0; i < defautlFilter.data.length; i++ ) {
-      if ( permissions[defautlFilter.data[i].pid] !== undefined && permissions[defautlFilter.data[i].pid] !== null ) {
-        if ( !permissions[defautlFilter.data[i].pid] ) {
-          continue;
-        }
-      }
-      // 红包特殊处理
-      if ( !permissions['redpacket'] && defautlFilter.data[i].pid === '106' ) {
-        continue;
-      }
-
-      if (['104', '106', '107'].includes(defautlFilter.data[i].pid)) {
-        if (!threadOptimize) continue;
-      }
-
-
-      newDefaultFiler.push(defautlFilter.data[i]);
-    }
-    newData[1].data = newDefaultFiler;
-    return newData;
-  }, [permissions, tmpData]);
+    newData[1].data = [
+      {
+        name: '全部',
+        pid: 'all',
+      },
+      ...typelist?.slice(),
+    ];
+    setData(newData);
+  }, [typelist?.length, tmpData?.length]);
 
   useEffect(() => {
     const { categoryids = [], types = 'all', essence, attention } = current || {};

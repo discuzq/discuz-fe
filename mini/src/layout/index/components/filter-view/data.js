@@ -7,44 +7,7 @@ export default [
   {
     title: '类型',
     type: 2,
-    data: [
-      {
-        name: '全部',
-        pid: 'all',
-      },
-      {
-        name: '视频',
-        pid: '103',
-      },
-      {
-        name: '图片',
-        pid: '101',
-      },
-      {
-        name: '语音',
-        pid: '102',
-      },
-      // {
-      //   name: '问答',
-      //   pid: '105',
-      // },
-      {
-        name: '商品',
-        pid: '61540fef8f4de8',
-      },
-      {
-        name: '红包',
-        pid: '106',
-      },
-      {
-        name: '悬赏问答',
-        pid: '107',
-      },
-      {
-        name: '文件附件',
-        pid: '108',
-      },
-    ],
+    data: [],
   },
   {
     title: '筛选',
