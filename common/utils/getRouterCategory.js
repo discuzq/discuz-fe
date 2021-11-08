@@ -13,8 +13,8 @@ export default function getRouterCategory(router, site) {
   try {
     let { slug } = router.query;
     if (!slug) {
-      if (isServer()) return defaultData;
-      slug = window?.location?.pathname?.split('/').splice(0, 1);
+      slug = router?.asPath?.split('/').splice(0, 1);
+      slug.splice(0, 1);
     }
     // eslint-disable-next-line prefer-const
     let [, categoryId, , sequence] = slug;
