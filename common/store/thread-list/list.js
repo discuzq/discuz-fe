@@ -172,6 +172,15 @@ export default class ListStore {
   };
 
   /**
+   * 删除指定列表中的item
+   * @param {*} param0
+   */
+   @action
+   deleteTargetListItem = ({ namespace, item }) => {
+     this.deleteAssignThreadInTargetList({ namespace, threadId: item.threadId });
+   };
+
+  /**
    * 初始化指定列表
    * @param {*} param0
    */
@@ -363,6 +372,21 @@ export default class ListStore {
     });
 
     this.lists = { ...this.lists };
+  };
+
+  /**
+   * 在指定列表删除帖子
+   * @param {*} param0
+   */
+  @action
+  deleteAssignThreadInTargetList = ({ namespace, threadId }) => {
+    const targetThreads = this.findAssignThreadInTargetList({ namespace, threadId});
+    if (targetThreads) {
+      const { page, index } = targetThreads
+      this.lists[namespace].data[page].splice(index, 1);
+      this.lists[namespace].attribs.totalCount -= 1;
+      this.lists = { ...this.lists };
+    }
   };
 
   /**

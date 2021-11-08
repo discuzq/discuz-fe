@@ -110,12 +110,13 @@ class Index extends React.Component {
       goToLoginPage({ url: '/userPages/user/wx-auth/index' });
       return;
     }
-    const { data = {}, user } = this.props;
+    const { data = {}, user, onPraise } = this.props;
     const { threadId = '', isLike, postId } = data;
     this.setState({ isSendingLike: true });
     this.props.index.updateThreadInfo({ pid: postId, id: threadId, data: { attributes: { isLiked: !isLike } } }).then((result) => {
       if (result.code === 0 && result.data) {
         updateThreadAssignInfoInLists(threadId, { updateType: 'like', updatedInfo: result.data, user: user.userInfo });
+        typeof onPraise === 'function' && onPraise({isLiked: result.data.isLiked})
       }
       this.setState({ isSendingLike: false, minHeight: 0 }, () => {
         // 点赞更新完数据后，重新修正帖子高度

@@ -35,7 +35,20 @@ class Index extends React.Component {
         errorText={requestError.errorText}
       >
         {likeThreadList?.map((item, index) => (
-          <ThreadContent key={index} data={item} />
+          <ThreadContent
+            key={item.threadId}
+            data={item}
+            onPraise={({ isLiked }) => {
+              if (!isLiked) {
+                setTimeout(() => {
+                  threadList.deleteTargetListItem({
+                    namespace: 'like',
+                    item: {...item, isLiked}
+                  })
+                }, 100)
+              }
+            }}
+          />
         ))}
       </BaseLayout>
     );
