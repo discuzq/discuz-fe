@@ -24,7 +24,11 @@ export default class CustomApplyAttach extends React.Component {
     const { key } = ATTACH_INFO_NAME[item?.toString()] || {};
     if (!key) return;
     const { additionalInfo } = this.state;
-    additionalInfo[key] = e.target.value;
+    let val = e.target.value;
+    if (item === ATTACH_INFO_TYPE.mobile) {
+      val = val.match(/\d{0,11}/g)[0] || "";
+    }
+    additionalInfo[key] = val;
     this.setState({ additionalInfo }, () => {
       this.props.onChange(this.state.additionalInfo);
     });
@@ -48,7 +52,7 @@ export default class CustomApplyAttach extends React.Component {
           placeholder={`请输入${ATTACH_INFO_NAME[item?.toString()]?.value}`}
           maxLength={50}
           value={additionalInfo[ATTACH_INFO_NAME[item?.toString()]?.key] || ''}
-          onChange={debounce(e => this.handleAttachInfoChange(e, item?.toString()), 400)}
+          onChange={e => this.handleAttachInfoChange(e, item)}
         />
       </View>
     </View>));

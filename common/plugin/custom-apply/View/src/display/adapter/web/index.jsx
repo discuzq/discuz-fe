@@ -215,7 +215,11 @@ class CustomApplyDisplay extends React.Component {
     const { key } = ATTACH_INFO_NAME[item?.toString()] || {};
     if (!key) return;
     const { additionalInfo } = this.state;
-    additionalInfo[key] = e.target.value;
+    let val = e.target.value;
+    if (item === ATTACH_INFO_TYPE.mobile) {
+      val = val.match(/\d{0,11}/g)[0] || "";
+    }
+    additionalInfo[key] = val;
     this.setState({ additionalInfo });
   };
 
@@ -361,21 +365,21 @@ class CustomApplyDisplay extends React.Component {
               siteData.platform === 'h5' ? actEntryStyles.h5 : actEntryStyles.pc)}
           >
             {(additionalInfoType || []).map(item => (<div className={actEntryStyles['dzqp-act--item']}>
-                <div className={actEntryStyles['dzqp-act--item_title']} key={item}>
-                  {ATTACH_INFO_NAME[item?.toString()]?.value}
-                </div>
-                <div className={actEntryStyles['dzqp-act--item_right']}>
-                  <Input
-                    className={actEntryStyles['dzqp-act--item_right']}
-                    htmlType={item === ATTACH_INFO_TYPE.mobile ? 'number' : 'text'}
-                    mode={item === ATTACH_INFO_TYPE.mobile ? 'number' : 'text'}
-                    placeholder={`请输入${ATTACH_INFO_NAME[item?.toString()]?.value}`}
-                    maxLength={50}
-                    value={additionalInfo[ATTACH_INFO_NAME[item?.toString()]?.key] || ''}
-                    onChange={e => this.handleAttachInfoChange(e, item?.toString())}
-                  />
-                </div>
-              </div>))}
+              <div className={actEntryStyles['dzqp-act--item_title']} key={item}>
+                {ATTACH_INFO_NAME[item?.toString()]?.value}
+              </div>
+              <div className={actEntryStyles['dzqp-act--item_right']}>
+                <Input
+                  className={actEntryStyles['dzqp-act--item_right']}
+                  htmlType={item === ATTACH_INFO_TYPE.mobile ? 'number' : 'text'}
+                  mode={item === ATTACH_INFO_TYPE.mobile ? 'number' : 'text'}
+                  placeholder={`请输入${ATTACH_INFO_NAME[item?.toString()]?.value}`}
+                  maxLength={50}
+                  value={additionalInfo[ATTACH_INFO_NAME[item?.toString()]?.key] || ''}
+                  onChange={e => this.handleAttachInfoChange(e, item)}
+                />
+              </div>
+            </div>))}
           </Dialog>
         )}
       </>
