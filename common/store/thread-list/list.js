@@ -289,7 +289,7 @@ export default class ListStore {
         updater(this.lists[namespace].data[1]);
       } else {
         if (namespace === 'my') {
-          if (this.lists[namespace].data[1][0] && this.lists[namespace].data[1][0].userStickStatus === 1) {
+          if (this.lists[namespace].data[1][0] && this.lists[namespace].data[1][0].userStickStatus) {
             this.lists['my'].data[1].splice(1, 0, threadInfo);
           } else {
             this.lists['my'].data[1].unshift(threadInfo);
