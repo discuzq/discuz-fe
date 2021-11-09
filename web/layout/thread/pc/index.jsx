@@ -690,7 +690,7 @@ class ThreadPCPage extends React.Component {
     if (categoryId || typeof categoryId === 'number') {
       this.props.index.refreshHomeData({ categoryIds: [categoryId] });
     }
-    this.props.router.push(`/?categoryId=${categoryId}&sequence=0`);
+    this.props.router.push(`/cate/${categoryId}/seq/0`);
   }
 
   // 点击发送私信

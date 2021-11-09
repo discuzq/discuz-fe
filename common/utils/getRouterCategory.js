@@ -15,11 +15,9 @@ export default function getRouterCategory(router, site) {
     if (!slug) {
       slug = router?.asPath?.split('/');
       slug.splice(0, 1);
-      console.log(slug, '-------slug');
     }
     // eslint-disable-next-line prefer-const
     let [, categoryId, , sequence] = slug;
-    console.log(categoryId, sequence, '------categoryId-sequence');
     if (!categoryId) return defaultData;
     const { webConfig } = site || {};
     const { other } = webConfig || {};

@@ -82,7 +82,7 @@ const BottomNavBar = ({
       LoginHelper.clear();
 
       if(categoryids?.length || sequence !== 0) {
-        url = `/?categoryId=${categoryids.join('_')}&sequence=${sequence}` ;
+        url = `/cate/${categoryids.join('_')}/seq/${sequence}` ;
       }
     }
 
