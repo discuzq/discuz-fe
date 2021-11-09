@@ -19,7 +19,7 @@ import styles from './index.module.scss';
 const USER_SHIELDING = -4001;
 
 const Index = (props) => {
-  const { site: { isPC, webConfig }, dialogId, username, nickname, message, threadPost, user } = props;
+  const { site: { isPC, webConfig }, dialogId, userId, nickname, message, threadPost, user } = props;
   const { supportImgExt, supportMaxSize } = webConfig?.setAttach;
   const { clearMessage, readDialogMsgList, createDialogMsg, createDialog, readDialogIdByUsername, dialogMsgList, updateDialog } = message;
 
@@ -56,7 +56,7 @@ const Index = (props) => {
 
   // 获取dialogid后把其放到url中
   const replaceRouteWidthDialogId = (dialogId) => {
-    Router.replace({ url: `/message?page=chat&nickname=${nickname}&username=${username}&dialogId=${dialogId}` });
+    Router.replace({ url: `/message?page=chat&nickname=${nickname}&userId=${userId}&dialogId=${dialogId}` });
   };
 
   // 消息发送
@@ -78,10 +78,10 @@ const Index = (props) => {
       }
     }
 
-    if (!dialogId && username) {
+    if (!dialogId && userId) {
       setIsSubmiting(true);
       ret = await createDialog({
-        recipientUsername: username,
+        recipientUserId: userId,
         ...data,
       });
       setIsSubmiting(false);
@@ -148,7 +148,7 @@ const Index = (props) => {
     let localDialogId = 0;
     if (!dialogId) {
       const ret = await createDialog({
-        recipientUsername: username,
+        recipientUserId: userId,
         isImage: true,
       });
       const { code, data } = ret;
@@ -298,14 +298,14 @@ const Index = (props) => {
 
   useEffect(async () => {
     clearMessage();
-    if (username && !dialogId) {
-      const res = await readDialogIdByUsername(username);
+    if (userId && !dialogId) {
+      const res = await readDialogIdByUsername(userId);
       const { code, data: { dialogId } } = res;
       if (code === 0 && dialogId) {
         replaceRouteWidthDialogId(dialogId);
       }
     }
-  }, [username, dialogId]);
+  }, [userId, dialogId]);
 
   useEffect(() => {
     document.body.className = '';
@@ -325,7 +325,7 @@ const Index = (props) => {
     listDataLengthRef.current = 0;
     setTypingValue('');
     clearPolling();
-  }, [username]);
+  }, [userId]);
 
   // 有dialogId开始执行轮询更新消息机制
   useEffect(() => {

@@ -5,7 +5,7 @@ import MessageThread from '@components/message/message-thread';
 import MessageFinancial from '@components/message/message-financial';
 import MessageChat from '@components/message/message-chat';
 
-const Index = ({ page, subPage, dialogId, username, nickname }) => {
+const Index = ({ page, subPage, dialogId, userId, nickname }) => {
   switch (page) {
     case 'index':
       return <MessageIndex />;
@@ -16,7 +16,7 @@ const Index = ({ page, subPage, dialogId, username, nickname }) => {
     case 'financial':
       return <MessageFinancial />;
     case 'chat':
-      return <MessageChat dialogId={dialogId} username={username} nickname={nickname} />;
+      return <MessageChat dialogId={dialogId} userId={userId} nickname={nickname} />;
   }
 };
 
