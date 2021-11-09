@@ -315,6 +315,7 @@ class IndexH5Page extends React.Component {
 
         <FilterView
           data={currentCategories}
+          typelist={this.props.index.threadTypelist}
           current={filter}
           onCancel={this.onClose}
           visible={this.state.visible}

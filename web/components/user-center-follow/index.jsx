@@ -339,7 +339,7 @@ class UserCenterFollows extends React.Component {
                         onClick={(e) => {
                           e.stopPropagation();
                           Router.replace({
-                            url: `/message?page=chat&username=${user.userName}&nickname=${user.nickName}`,
+                            url: `/message?page=chat&userId=${user.id}&nickname=${user.nickName}`,
                           });
                         }}
                       >

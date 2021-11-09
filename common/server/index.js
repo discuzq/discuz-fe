@@ -129,3 +129,6 @@ export { default as createVote } from './thread/create-vote';
 
 // 插件配置信息列表
 export { default as readPluginList } from './read-plugin-list-config';
+
+// 首页读取帖子类型
+export { default as readTypelist } from './thread/read-typelist';

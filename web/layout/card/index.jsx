@@ -10,7 +10,7 @@ import SiteCard from './siteCard';
 import ThreadCard from './threadCard';
 import CommentCard from './commentCard';
 
-const Index = ({ card, threadId, commentId}) => {
+const Index = ({ card, threadId, user, commentId}) => {
   const [url, setUrl] = useState('');
   const [hidePart, setHidePart] = useState(false);
 
@@ -60,7 +60,7 @@ const Index = ({ card, threadId, commentId}) => {
         {
           !threadId && !commentId && <SiteCard></SiteCard>
         }
-        <Footer setReady={setReady} threadId={threadId} commentId={commentId}></Footer>
+        <Footer setReady={setReady} threadId={threadId} inviteCode={user?.userInfo?.id} commentId={commentId}></Footer>
       </div>
       {ready && imgReady ? (
         <div className={styles.imgbox}>
@@ -91,4 +91,4 @@ const Index = ({ card, threadId, commentId}) => {
   );
 };
 
-export default inject('card')(observer(Index));
+export default inject('card', 'user')(observer(Index));

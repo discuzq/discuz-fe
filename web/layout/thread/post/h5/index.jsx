@@ -248,7 +248,6 @@ class ThreadCreate extends React.Component {
     const { threadExtendPermissions, permissions } = user;
     const { postData, setPostData } = threadPost;
     const { plugin } = postData;
-
     const { webConfig = {}, attachmentLimit = 9 } = site;
     const { setAttach, qcloud } = webConfig;
     const { supportImgExt, supportMaxSize } = setAttach;

@@ -14,58 +14,11 @@ export default [
   }, {
     label: '类型',
     type: 'types',
-    children: [
-      {
-        label: '不限',
-        value: '',
-        isActive: true,
-      },
-      {
-        label: '视频',
-        value: '103',
-        isActive: false,
-      },
-      {
-        label: '图片',
-        value: '101',
-        isActive: false,
-      },
-      {
-        label: '语音',
-        value: '102',
-        isActive: false,
-      },
-      // {
-      //   label: '问答',
-      //   value: '105',
-      //   isActive: false,
-      // },
-      {
-        label: '商品',
-        value: '61540fef8f4de8',
-        isActive: false,
-      },
-      {
-        label: '红包',
-        value: '106',
-        isActive: false,
-      },
-      {
-        label: '投票',
-        value: '109',
-        isActive: false,
-      },
-      {
-        label: '悬赏问答',
-        value: '107',
-        isActive: false,
-      },
-      {
-        label: '文件附件',
-        value: '108',
-        isActive: false,
-      },
-    ],
+    children: [{
+      label: '不限',
+      value: '',
+      isActive: true,
+    }],
   }, {
     label: '排序', // 类型
     type: 'sort',

@@ -24,8 +24,20 @@ const Index = ({ index: indexStore, onSubmit = noop, isShowDefault = false }) =>
       isActive: false,
     });
   }
-  
+
   const [dataSource, setDataSource] = useState(deepClone(newFilterData));
+
+  useEffect(() => {
+    newFilterData[newFilterData.length - 2].children = [
+      {
+        label: '不限',
+        value: '',
+        isActive: true,
+      },
+      ...indexStore?.threadTypelist?.slice(),
+    ];
+    setDataSource(deepClone(newFilterData));
+  }, [indexStore?.threadTypelist?.length]);
 
   // 点击筛选项，获取目标值
   const onClick = (subIndex, index) => {
@@ -129,10 +141,10 @@ const Index = ({ index: indexStore, onSubmit = noop, isShowDefault = false }) =>
         {
           dataSource?.map((item, index) => (
             item.children ? (
-                <Menu.SubMenu 
-                  key={index} 
-                  index={`${index}`} 
-                  title={title(item.label)} 
+                <Menu.SubMenu
+                  key={index}
+                  index={`${index}`}
+                  title={title(item.label)}
                   style={{ padding: '3px 10px', height: '55px' }}
                   onClick={onClick}
                 >

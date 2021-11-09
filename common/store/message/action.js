@@ -5,8 +5,8 @@ import { readDialogList, readMsgList, createDialog, deleteMsg, deleteDialog, rea
 class MessageAction extends MessageStore {
   // 根据username获取dialogId
   @action.bound
-  async readDialogIdByUsername(username) {
-    return readDialogIdByUsername({ params: { username } });
+  async readDialogIdByUsername(userId) {
+    return readDialogIdByUsername({ params: { userId } });
   }
 
   // 把对话消息设置为已读

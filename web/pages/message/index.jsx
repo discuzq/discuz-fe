@@ -11,7 +11,7 @@ const Index = () => {
   /**
    * 消息页面当前显示的消息模块
    *
-   * 从url query参数中取值page、subPage、dialogId, username, nickname
+   * 从url query参数中取值page、subPage、dialogId, userId, nickname
    * page=index: 消息首页
    * page=thread: 帖子通知，subPage=at/reply/like为贴子通知下@我的、回复我的、点赞我的3个子页面
    * page=financial: 财务通知
@@ -21,7 +21,7 @@ const Index = () => {
    */
   const router = useRouter();
   // 参数过滤
-  const params = (({ page, subPage, dialogId, username, nickname }) => {
+  const params = (({ page, subPage, dialogId, userId, nickname }) => {
     if (!['index', 'thread', 'financial', 'account', 'chat'].includes(page)) {
       page = 'index';
     }
@@ -30,7 +30,7 @@ const Index = () => {
       subPage = '';
     }
 
-    return { page, subPage, dialogId, username, nickname };
+    return { page, subPage, dialogId, userId, nickname };
   })(router.query);
 
 

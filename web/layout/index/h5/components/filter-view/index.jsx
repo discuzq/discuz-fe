@@ -9,7 +9,7 @@ import styles from './index.module.scss';
 
 const { Col, Row } = Flex
 
-const Index = ({ visible, data: tmpData = [], current, onSubmit = noop, onCancel = noop, router }) => {
+const Index = ({ visible, data: tmpData = [], typelist, current, onSubmit = noop, onCancel = noop, router }) => {
   // 被选中的一级分类
   const [first, setFirst] = useState('all');
   // 被选中的二级分类
@@ -18,15 +18,22 @@ const Index = ({ visible, data: tmpData = [], current, onSubmit = noop, onCancel
   const [second, setSecond] = useState('');
   // 筛选
   const [third, setThird] = useState('0');
-
+  const [data, setData] = useState(tmpData);
   // 二级分类原始数据，用于展示
   const [subData, setSubData] = useState([])
 
-  const data = useMemo(() => {
+  useEffect(() => {
     const newData = filterData;
     newData[0].data = tmpData;
-    return newData;
-  }, [tmpData]);
+    newData[1].data = [
+      {
+        name: '全部',
+        pid: 'all',
+      },
+      ...typelist?.slice(),
+    ];
+    setData(newData);
+  }, [typelist?.length, tmpData?.length]);
 
   useEffect(() => {
     const { categoryids = [], types = 'all', essence, attention } = current || {};

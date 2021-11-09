@@ -2,7 +2,7 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import IndexH5Page from '@layout/index/h5';
 import IndexPCPage from '@layout/index/pc';
-import { readCategories, readStickList, readThreadList, readRecommends } from '@server';
+import { readCategories, readStickList, readThreadList, readRecommends, readTypelist } from '@server';
 import { handleString2Arr } from '@common/utils/handleCategory';
 import HOCFetchSiteData from '../middleware/HOCFetchSiteData';
 import ViewAdapter from '@components/view-adapter';
@@ -35,6 +35,7 @@ class Index extends React.Component {
     const categoryIds = handleString2Arr(result, 'categoryids');
 
     const categories = await readCategories({}, ctx);
+    const threadTypelist = await readTypelist();
     const sticks = await readStickList({ params: { categoryIds } }, ctx);
     const threads = await readThreadList({
       params: {
@@ -59,6 +60,7 @@ class Index extends React.Component {
         sticks: sticks && sticks.code === 0 ? sticks.data : null,
         threads: threads && threads.code === 0 ? threads.data : null,
         recommend: recommend && recommend.code === 0 ? recommend.data : null,
+        threadTypelit: threadTypelist && threadTypelist.code === 0 ? threadTypelist.data : [],
       },
     };
   }
@@ -76,6 +78,7 @@ class Index extends React.Component {
     serverIndex && serverIndex.sticks && index.setSticks(serverIndex.sticks);
     serverIndex && serverIndex.threads && index.setThreads(serverIndex.threads);
     serverIndex && serverIndex.threads && index.setRecommends(serverIndex.recommend);
+    serverIndex && serverIndex.threadTypelist && index.setThreadTypelist(serverIndex.threadTypelist);
   }
 
   componentDidMount() {
@@ -93,6 +96,7 @@ class Index extends React.Component {
     if (!hasCategoriesData) {
       this.props.index.getReadCategories();
     }
+    this.props.index.fetchThreadTypelist();
 
     if (!hasSticksData) {
       this.props.index.getRreadStickList(categoryIds);

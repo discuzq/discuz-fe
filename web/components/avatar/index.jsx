@@ -130,9 +130,9 @@ function avatar(props) {
       return;
     }
 
-    const { username, nickname } = userInfo;
-    if (username) {
-      props.router.push(`/message?page=chat&username=${username}&nickname=${nickname}`);
+    const { id, nickname } = userInfo;
+    if (id) {
+      props.router.push(`/message?page=chat&userId=${id}&nickname=${nickname}`);
     } else {
       console.error('用户名错误');
     }

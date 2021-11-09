@@ -12,7 +12,7 @@ import Stepper from '../../search/pc/components/stepper';
 import { sidebarData as sidebarDataOriginal } from '@common/constants/message';
 import UserCenterFollowsPc from '@components/user-center/follows-pc';
 
-const Index = ({ page, subPage, dialogId, username, message, user, nickname }) => {
+const Index = ({ page, subPage, dialogId, userId, message, user, nickname }) => {
   const router = useRouter();
 
   const { threadUnread, financialUnread, accountUnread, dialogMessageUnread } = message;
@@ -59,9 +59,9 @@ const Index = ({ page, subPage, dialogId, username, message, user, nickname }) =
       case 'financial':
         return <MessageFinancial rightContent={rightContent} />;
       case 'chat':
-        return <MessageChat dialogId={dialogId} username={username} nickname={nickname} rightContent={rightContent} />;
+        return <MessageChat dialogId={dialogId} userId={userId} nickname={nickname} rightContent={rightContent} />;
     }
-  }, [page, subPage, dialogId, username, sidebarIndex, sidebarData]);
+  }, [page, subPage, dialogId, userId, sidebarIndex, sidebarData]);
 
   // 更新未读消息到视图中
   useEffect(() => {

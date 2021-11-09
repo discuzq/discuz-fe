@@ -19,8 +19,7 @@ class UserCenterPost extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isPostDisabled: false, // 表示是否禁用发布按钮
-      value: '',
+      isPostDisabled: false // 表示是否禁用发布按钮
     };
   }
 
@@ -28,10 +27,13 @@ class UserCenterPost extends React.Component {
     this.handleThreadPostData();
   }
 
+  handleChange = (e) => {
+    this.props.threadPost?.setPostData({ contentText: e.target.value });
+  };
+
   initState = () => {
     this.setState({
-      isPostDisabled: false,
-      value: '',
+      isPostDisabled: false
     });
   };
 
@@ -56,11 +58,12 @@ class UserCenterPost extends React.Component {
 
   handleClick = throttle(async () => {
     if (this.state.isPostDisabled) return;
-    if (!this.state.value) return Toast.info({ content: '请输入发帖内容' });
+    const { createThread, setPostData, postData } = this.props.threadPost;
+
+    if (!postData.contentText) return Toast.info({ content: '请输入发帖内容' });
     Toast.loading({
       content: '发布中...',
     });
-    const { createThread, setPostData, postData } = this.props.threadPost;
 
     // 如果开始没有获取到发帖分类的数据--尝试重新获取
     if (!postData.categoryId) {
@@ -70,7 +73,7 @@ class UserCenterPost extends React.Component {
     this.setState({
       isPostDisabled: true,
     });
-    setPostData({ contentText: xss(this.state.value) });
+    setPostData({ contentText: xss(postData.contentText) });
     const result = await createThread();
     if (result.code === 0) {
       Toast.success({
@@ -101,12 +104,8 @@ class UserCenterPost extends React.Component {
               <View className={styles.userCenterPostInput}>
                 <Input style={{ width: '100%' }}
                   placeholder='分享新鲜事'
-                  value={this.state.value}
-                  onChange={debounce((e) => {
-                    this.setState({
-                      value: e.target.value
-                    })
-                  }, 300)}
+                  value={this.props.threadPost?.postData?.contentText}
+                  onChange={this.handleChange}
                 />
               </View>
             </View>

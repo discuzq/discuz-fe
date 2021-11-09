@@ -99,6 +99,7 @@ class Index extends React.Component {
     // 重置错误信息
     this.props.index.resetErrorInfo()
     this.props.index.getReadCategories();
+    this.props.index.fetchThreadTypelist();
     this.props.index.getRreadStickList(categoryIds);
     this.props.index.getReadThreadList({
         sequence,

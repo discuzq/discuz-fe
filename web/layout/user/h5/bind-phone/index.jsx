@@ -170,7 +170,7 @@ class BindPhoneH5Page extends React.Component {
               : <div className={platform === 'h5' ? layout.functionalRegion : layout.pc_functionalRegion}>
                   <span className={layout.clickBtn} onClick={() => {
                     clearLoginStatus(); // 清除登录态
-                    window.location.replace('/');
+                    loginHelper.gotoIndex();
                   }} >退出登录</span>
                 </div>
           }

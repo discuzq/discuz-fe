@@ -141,6 +141,9 @@ class IndexStore {
   @observable recommendsStatus = 'none'
 
   @observable topMenuIndex = '0'
+
+  // 首页列表筛选帖子类型数据
+  @observable threadTypelist = [];
 }
 
 export default IndexStore;

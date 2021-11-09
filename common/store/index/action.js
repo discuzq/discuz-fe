@@ -7,6 +7,7 @@ import {
   createThreadShare,
   readRecommends,
   readCommentList,
+  readTypelist,
 } from '@server';
 import typeofFn from '@common/utils/typeof';
 import threadReducer from '../thread/reducer';
@@ -583,6 +584,28 @@ class IndexAction extends IndexStore {
       pageData: newpageData,
       ...others
     };
+  }
+
+  @action
+  async fetchThreadTypelist() {
+    if (this.threadTypelist?.length > 0) return this.threadTypelist;
+    const res = await readTypelist();
+    const { code, data } = res || {};
+    if (code === 0) this.setThreadTypelist(data);
+    return data;
+  }
+
+  @action setThreadTypelist(data = []) {
+    this.threadTypelist = (data || []).map(item => {
+      const { name, type } = item;
+      return {
+        name,
+        pid: type,
+        label: name,
+        value: type,
+        isActive: false,
+      };
+    });
   }
 }
 
