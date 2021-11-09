@@ -41,10 +41,10 @@ const miniConfig = require('./src/app.config');
             return console.log(err);
           }
           if (stats.isFile()) {
-            if (path.extname(p) === ext) {
+            if (path.posix.extname(p) === ext) {
               if (p !== `./dist/${package}/common.wxss`) {
                 const data = fs.readFileSync(p, 'utf8').split(/\r\n|\n|\r/gm);
-                const relativePath = path.relative(p, `./dist/${package}/common.wxss`).replace(/\\/g, '/');
+                const relativePath = path.posix.relative(p, `./dist/${package}/common.wxss`).replace(/\\/g, '/');
                 data.push(`@import '${relativePath.replace('../', '')}';`);
                 fs.writeFileSync(p, data.join('\r\n'))
               }
@@ -69,7 +69,7 @@ const miniConfig = require('./src/app.config');
   copy('./dist/indexPages/common.js', './dist/userPages/common.js');
   copy('./dist/indexPages/common.wxss', './dist/userPages/common.wxss');
 
-  if (fs.existsSync(path.resolve('./dist/pluginPages'))) {
+  if (fs.existsSync(path.posix.resolve('./dist/pluginPages'))) {
     copy('./dist/indexPages/common.js', './dist/pluginPages/common.js');
     copy('./dist/indexPages/common.wxss', './dist/pluginPages/common.wxss');
   }

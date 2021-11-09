@@ -8,10 +8,12 @@ import UserCenterPost from '@components/user-center-post';
 import UserCenterAction from '@components/user-center-action';
 import UserCenterThreads from '@components/user-center-threads';
 import BaseLayout from '@components/base-layout';
+import PacketOpen from '@components/red-packet-animation/h5';
 import { withRouter } from 'next/router';
 
 @inject('site')
 @inject('user')
+@inject('thread')
 @inject('threadList')
 @observer
 class H5MyPage extends React.Component {
@@ -129,10 +131,11 @@ class H5MyPage extends React.Component {
 
   render() {
     const { isLoading } = this.state;
-    const { site } = this.props;
+    const { site, thread, threadList  } = this.props;
     const { platform } = site;
-    const { threadList } = this.props;
     const { lists } = threadList;
+    const { hasRedPacket } = thread;
+
 
     const myThreadsList = threadList.getList({
       namespace: 'my',
@@ -160,7 +163,7 @@ class H5MyPage extends React.Component {
         curr={'my'}
         pageName="my"
         showHeader={false}
-        showTabBar={true}
+        showTabBar={!hasRedPacket}
         onRefresh={this.onRefresh}
         noMore={!isLoading && currentPage >= totalPage}
         requestError={requestError.isError}
@@ -204,6 +207,7 @@ class H5MyPage extends React.Component {
             onError={() => this.props.user?.backGroundUrl || ''}
           />
         )}
+        {hasRedPacket > 0 && <PacketOpen onClose={() => thread.setRedPacket(0)} money={hasRedPacket} />}
       </BaseLayout>
     );
   }

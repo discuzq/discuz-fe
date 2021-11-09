@@ -45,9 +45,9 @@ class IncomeList extends React.Component {
   }
 
   render() {
-    const { itemKey, dataLength } = this.props
+    const { key, itemKey, dataLength } = this.props
     return (
-      <div className={styles.container}>
+      <div className={styles.container} key={key}>
         <div className={styles.content}>
           <RichText content={this.parseHTML(this.props.payVal.title || this.props.payVal.changeDesc)} onClick={this.handleContentClick} />
           <div className={styles.money}>{this.props.payVal.amount}</div>

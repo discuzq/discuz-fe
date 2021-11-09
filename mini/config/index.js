@@ -1,13 +1,10 @@
 const path = require('path');
-const getCompileInClude = require('@discuzq/cli/config/taro/getCompileInClude');
 
 const include = [
-  path.resolve(__dirname, '../../common')
+  path.resolve(__dirname, '../../common'),
+  path.resolve(__dirname, '../node_modules/.plugin')
 ];
-const pluginDir = getCompileInClude();
-if (pluginDir) {
-  include.push(pluginDir)
-}
+
 
 const config = {
   projectName: 'discuz-app-mini',

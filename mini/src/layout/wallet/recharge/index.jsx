@@ -48,7 +48,7 @@ class Recharge extends React.Component {
     const inputValue = this.state.inputValue;
     const { rechargeMoney } = this.props.wallet;
     const { success, msg } = await rechargeMoney(inputValue);
-    
+
     if (success) {
       Taro.showToast({
         title: msg,
@@ -58,7 +58,8 @@ class Recharge extends React.Component {
       setTimeout(() => {
         Taro.hideToast();
       }, 2000)
-      const { getUserWalletInfo, getIncomeDetail} = this.props.wallet;
+      const { setTabsType, getUserWalletInfo, getIncomeDetail } = this.props.wallet;
+      setTabsType('income');
       await getIncomeDetail();
       await getUserWalletInfo();
       this.initState();
@@ -133,7 +134,7 @@ class Recharge extends React.Component {
           <View className={styles.main}>
             {/* 自定义顶部返回 */}
             {this.renderTitleContent()}
-            <View className={styles.totalAmount} style={{backgroundImage: `url(${IMG_SRC_HOST}/assets/walletbackground.d038c3fcc736f8c7bb086e90c5abe4df9b946fc0.png)`}}>
+            <View className={styles.totalAmount} style={{ backgroundImage: `url(${IMG_SRC_HOST}/assets/walletbackground.d038c3fcc736f8c7bb086e90c5abe4df9b946fc0.png)` }}>
               <View className={styles.moneyTitle}>充值</View>
             </View>
             <View className={styles.moneyInput}>

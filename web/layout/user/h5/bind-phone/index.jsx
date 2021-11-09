@@ -14,6 +14,7 @@ import HOCTencentCaptcha from '@middleware/HOCTencentCaptcha';
 import { isExtFieldsOpen } from '@common/store/login/util';
 import { MOBILE_LOGIN_STORE_ERRORS } from '@common/store/login/mobile-login-store';
 import loginHelper from '@common/utils/login-helper';
+import Router from '@discuzq/sdk/dist/router';
 
 
 @inject('site')
@@ -54,7 +55,7 @@ class BindPhoneH5Page extends React.Component {
         duration: 1000,
         onClose: () => {
           commonLogin.loginLoading = true;
-          loginHelper.restore();
+          Router.back();
         }
       });
     } catch (e) {
