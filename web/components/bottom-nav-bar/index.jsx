@@ -102,7 +102,7 @@ const BottomNavBar = ({
       <div className={styles.footer} style={{ position: fixed ? 'fixed' : '' }}>
         {tabs.map((i, idx) =>
           i.text ? (
-            <>
+            <React.Fragment key={idx}>
               <SiteMapLink href={i.router} text={i.text} />
               <div
                 key={idx}
@@ -118,16 +118,16 @@ const BottomNavBar = ({
                 )}
                 <div className={styles.text}>{i.text}</div>
               </div>
-            </>
+            </React.Fragment>
           ) : (
-            <>
+            <React.Fragment key={idx}>
               <SiteMapLink href={i.router} text="发帖" />
               <div key={idx} className={styles.addIconWrapper} onClick={(e) => handleClick(e, i, idx)}>
                 <div className={styles.addIcon}>
                   <Icon name={i.icon} size={28} color="#fff" />
                 </div>
               </div>
-            </>
+            </React.Fragment>
           ),
         )}
       </div>

@@ -120,7 +120,6 @@ const InputPop = (props) => {
   const onEmojiIconClick = async () => {
     setShowEmojis(!showEmojis);
     setShowAt(false);
-    setShowPicture(false);
 
     textareaRef.current.blur();
     // setFocus(false);
@@ -141,7 +140,6 @@ const InputPop = (props) => {
       url: '/indexPages/thread/selectAt/index?type=thread',
     });
     setShowEmojis(false);
-    setShowPicture(false);
   };
 
   const onPcitureIconClick = () => {

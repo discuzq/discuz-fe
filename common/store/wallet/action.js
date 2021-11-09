@@ -56,6 +56,11 @@ const getTypeStr = (code) => {
 
 class WalletAction extends WalletStore {
     @action
+    setTabsType = (type = 'income') => {
+      this.tabsType = type;
+    }
+
+    @action
     resetInfo = () => {
       // 收入明细
       this.incomeDetail = {}

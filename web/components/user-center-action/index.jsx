@@ -110,6 +110,7 @@ class UserCenterAction extends React.Component {
           this.handleActionItem(item);
         }}
         className={styles.userCenterActionItem}
+        key={item.cid}
       >
         <div className={styles.userCenterActionItemIcon}>
           {item.cid === 'message' ? (

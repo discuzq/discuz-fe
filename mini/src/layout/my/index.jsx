@@ -9,6 +9,7 @@ import Thread from '@components/thread';
 import BaseLayout from '@components/base-layout';
 import UserCenterPost from '../../components/user-center-post';
 import SectionTitle from '@components/section-title';
+import PacketOpen from '@components/red-packet-animation';
 import Taro, { getCurrentInstance, eventCenter } from '@tarojs/taro';
 import ImagePreviewer from '@discuzq/design/dist/components/image-previewer/index';
 import classnames from 'classnames';
@@ -17,6 +18,8 @@ import UserCenterThreads from '@components/user-center-threads';
 import checkImgExists from '@common/utils/check-image-exists';
 
 @inject('user')
+@inject('index')
+@inject('thread')
 @inject('threadList')
 @observer
 export default class index extends Component {
@@ -44,7 +47,7 @@ export default class index extends Component {
     this.setNavigationBarStyle();
     const { previewBackgroundUrl } = this.state;
     const { user } = this.props;
-    if(previewBackgroundUrl === user.backgroundUrl) {
+    if (previewBackgroundUrl === user.backgroundUrl) {
       return;
     }
     const imgUrl = await checkImgExists(user.originalBackGroundUrl, user.backgroundUrl);
@@ -196,9 +199,9 @@ export default class index extends Component {
 
   render() {
     const { isLoading } = this.state;
-    const { user } = this.props;
+    const { user, index, thread, threadList } = this.props;
 
-    const { threadList } = this.props;
+    const { hasRedPacket } = thread;
     const { lists } = threadList;
 
     const myThreadsList = threadList.getList({
@@ -221,6 +224,8 @@ export default class index extends Component {
     });
 
     const requestError = threadList.getListRequestError({ namespace: 'my' });
+
+    hasRedPacket && index.setHiddenTabBar(true);
 
     return (
       <BaseLayout
@@ -267,7 +272,7 @@ export default class index extends Component {
               />
             </View>
 
-            {!isLoading && <UserCenterThreads showBottomStyle={false} data={myThreadsList}/>}
+            {!isLoading && <UserCenterThreads showBottomStyle={false} data={myThreadsList} />}
           </View>
         </View>
         {this.getBackgroundUrl() && (
@@ -275,6 +280,15 @@ export default class index extends Component {
             ref={this.previewerRef}
             imgUrls={[this.getBackgroundUrl()]}
             currentUrl={this.getBackgroundUrl()}
+          />
+        )}
+        {hasRedPacket > 0 && (
+          <PacketOpen
+            money={hasRedPacket}
+            onClose={() => {
+              thread.setRedPacket(0);
+              index.setHiddenTabBar(false);
+            }}
           />
         )}
       </BaseLayout>

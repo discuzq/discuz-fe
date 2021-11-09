@@ -52,7 +52,8 @@ class Recharge extends React.Component {
         content: msg,
         duration: 2000,
       });
-      const { getUserWalletInfo, getIncomeDetail } = this.props.wallet;
+      const { setTabsType, getUserWalletInfo, getIncomeDetail } = this.props.wallet;
+      setTabsType('income');
       await getIncomeDetail();
       await getUserWalletInfo();
       this.initState();

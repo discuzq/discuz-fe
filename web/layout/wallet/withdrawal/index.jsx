@@ -77,7 +77,8 @@ class Withdrawal extends React.Component {
           duration: 1000,
         });
         setTimeout(async ()=>{
-          const { getUserWalletInfo } = this.props.wallet;
+          const { setTabsType, getUserWalletInfo } = this.props.wallet;
+          setTabsType('withdrawal');
           await getUserWalletInfo();
           this.initState();
           Router.back();

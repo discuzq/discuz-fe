@@ -30,10 +30,10 @@ class IncomeList extends React.Component {
     return t;
   }
 
-  render() {    
-    const { itemKey, dataLength } = this.props
+  render() {
+    const { key, itemKey, dataLength } = this.props
     return (
-        <div className={styles.container}>
+        <div className={styles.container} key={key}>
             <div className={styles.content}>
                 <div className={styles.text}>
                     {

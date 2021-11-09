@@ -27,10 +27,10 @@ class IncomeList extends React.Component {
   }
 
   render() {
-    const { itemKey, dataLength } = this.props;
+    const { key, itemKey, dataLength } = this.props;
     const { cashApplyAmount, tradeTime, cashStatus, tradeNo, receiveAccount } = this.props.withdrawalVal;
     return (
-      <div className={styles.container}>
+      <div className={styles.container} key={key}>
         <div className={styles.content}>
           <div className={styles.text}>提现</div>
           <div className={styles.money}>{cashApplyAmount}</div>
