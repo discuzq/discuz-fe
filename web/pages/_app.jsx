@@ -155,9 +155,15 @@ class DzqApp extends App {
   }
 
   updateSize() {
-    this.appStore.site.setPlatform(getPlatform(window.navigator.userAgent));
-
+    const oldPlatform = this.appStore.site.platform;
+    const newPlatform = getPlatform(window.navigator.userAgent);
+    this.appStore.site.setPlatform(newPlatform);
     this.initOretation();
+
+    if (oldPlatform !== newPlatform) {
+      console.log('重新注册插件');
+      DZQPluginCenter.refreshRegister();
+    }
   }
 
   render() {

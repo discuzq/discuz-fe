@@ -59,7 +59,7 @@
 .groupName {
   color: $text-color-secondary;
   font-size: rem($font-size-label);
-  max-width: 50%;
+  max-width: 100px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

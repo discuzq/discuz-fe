@@ -193,7 +193,7 @@ class index extends Component {
               </div>
               <div className={styles.userCenterEditItem}>
                 <div className={styles.userCenterEditLabel}>
-                  <label>支付密码</label>
+                  <label className={styles.userLabelName}>支付密码</label>
                 </div>
                 <div className={styles.userCenterEditValue} onClick={this.handleGoToEditPayPwd}>
                   <div className={styles.ucText}>{this.props.user?.canWalletPay ? '修改' : '设置'}</div>

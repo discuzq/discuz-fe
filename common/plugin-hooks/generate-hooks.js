@@ -6,12 +6,9 @@ export default ({ target, hookNames }) => {
   if (!target || !hookNames) return;
 
   const { before: beofroHookName, replace: replaceHookName, after: afterHookName } = hookNames;
-
-  const replacePlugin = DZQPluginCenter.replaceInjection(target, replaceHookName);
-
-
   return (props) => {
     const { className = '', style = {}, component, ...others } = props;
+    const replacePlugin = DZQPluginCenter.replaceInjection(target, replaceHookName);
 
     return (
       <>
