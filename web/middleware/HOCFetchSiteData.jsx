@@ -43,6 +43,7 @@ export default function HOCFetchSiteData(Component, _isPass) {
   @inject('emotion')
   @inject('commonLogin')
   @inject('plugin')
+  @inject('invite')
   @observer
   class FetchSiteData extends React.Component {
     // 应用初始化
@@ -153,9 +154,15 @@ export default function HOCFetchSiteData(Component, _isPass) {
       let siteConfig;
       let loginStatus = false;
 
+      // 设置邀请码
+      const sikpPath = decodeURIComponent(this.props.router.asPath);
+      const reg = new RegExp('(^|[&|?])inviteCode=([^&]*)(&|$)');
+      const r = sikpPath.match(reg);
+      r && this.props.invite.setInviteCode(r[2])
+
       // 请求并保持表情数据
       if (!emotion.emojis?.length) {
-        emotion.fetchEmoji()
+        emotion.fetchEmoji();
       }
 
       // 设置平台标识
@@ -296,7 +303,7 @@ export default function HOCFetchSiteData(Component, _isPass) {
       }
 
       // 设置分享
-      setWxShare(title, desc, link, img);
+      setWxShare(title, desc, link, img, id);
     }
 
     setAppCommonStatus(result) {

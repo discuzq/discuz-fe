@@ -33,6 +33,7 @@ const CLOSE_URL = '/subPage/close/index';
 
 @inject('site')
 @inject('user')
+@inject('invite')
 @inject('emotion')
 @observer
 class Index extends React.Component {
@@ -166,11 +167,19 @@ class Index extends React.Component {
       !loginStatus && clearLoginStatus();
 
       user.updateLoginStatus(loginStatus);
+      const { router} = this.$instance;
+
+      // 取出邀请码进行存储
+      if(router.params && router.params.path) {
+        const sikpPath = decodeURIComponent(router.params.path);
+        const reg = new RegExp(`(^|[&|?])inviteCode=([^&]*)(&|$)`);
+        const r = sikpPath.match(reg);
+        r && this.props.invite.setInviteCode(r[2])
+      }
 
       const isGoToHome = await this.isPass();
       if (isGoToHome ) {
         // 带有指定的路径，将不去首页。
-        const {router} = this.$instance;
         const { path } = router;
         // 如果扫码进来，参数path需要兼容，当前的路由会变为参数的path地址
         if (path.indexOf('pages/index/index') === -1) {

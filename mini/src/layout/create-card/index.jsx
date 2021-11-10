@@ -3,6 +3,7 @@ import React from 'react'
 import Taro, { getCurrentInstance, EventChannel } from '@tarojs/taro';
 import { inject, observer } from 'mobx-react';
 import {getMiniCode} from '@server'
+import setUrlParam from '@common/utils/set-url-param';
 import defaultLogo from '../../public/dzq-img/default-logo.png'
 
 @inject('index')
@@ -14,6 +15,7 @@ class Index extends React.Component {
         super(props)
         Taro.eventCenter.once('message:detail', (data) => this.data = data)
         Taro.eventCenter.once('message:comment', (data) => this.commentData = data)
+        Taro.eventCenter.once('message:invite', (data) => this.inviteData = data)
         Taro.eventCenter.trigger('page:init')
         this.state = {
             miniCode: null
@@ -22,16 +24,20 @@ class Index extends React.Component {
     async componentDidMount(){
         const threadId = this.data?.threadId;
         const commentId = this.commentData?.id;
+        const invitePath = this.inviteData?.path;
+        const inviteCode = this.props.user?.userInfo?.id;
         let path = 'indexPages/home/index'
         if(commentId){
             path =  `/indexPages/thread/comment/index?id=${commentId}&threadId=${threadId}&fromMessage=true`
         }else if( threadId ){
             path =  `/indexPages/thread/index?id=${threadId}`
         }
-      
-    
+        else if(invitePath) {
+            path =  invitePath;
+        }
+
         try {
-            const paramPath = `/pages/index/index?path=${encodeURIComponent(path)}`;
+            const paramPath = `/pages/index/index?path=${encodeURIComponent(setUrlParam(path, { inviteCode }))}`;
             const res = await getMiniCode({ params: { path: paramPath } });
             if(res?.code === 0) {
                 this.setState({miniCode: res?.data});
