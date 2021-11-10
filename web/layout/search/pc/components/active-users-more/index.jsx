@@ -1,6 +1,8 @@
 import React, { useCallback, useMemo } from 'react';
 import Avatar from '@components/avatar';
 import { Button, Icon } from '@discuzq/design';
+import MemberBadge from '@components/member-badge';
+import classnames from 'classnames';
 
 import styles from './index.module.scss';
 
@@ -64,9 +66,17 @@ const User = ({ data, onClick, onFollow, userId, noOperation }) => {
         <Avatar image={data.avatar} name={data.nickname} isShowUserInfo userId={data.userId} />
       </div>
       <div className={styles.content}>
-        <div className={styles.top}>
+        <div className={classnames(styles.top, data.level && styles.memberUser)}>
           <span className={styles.name}>{data.nickname}</span>
-          <span className={styles.group}>{data.groupName}</span>
+          {
+            data.level ? 
+              <MemberBadge
+                groupLevel={data.level}
+                groupName={data.groupName}
+              />
+            :
+            <span className={styles.group}>{data.groupName}</span>
+          }
         </div>
         <div className={styles.num}>
           <div className={styles.numItem}>

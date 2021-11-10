@@ -10,6 +10,7 @@ import styles from './index.module.scss';
 import { inject, observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 import List from '@components/list';
+import MemberBadge from '@components/member-badge';
 
 import stringToColor from '@common/utils/string-to-color';
 
@@ -114,8 +115,9 @@ class AtSelect extends Component {
     const username = isFollow ? item?.user?.userName : item.username;
     const nickname = isFollow ? item?.user?.nickname : item.nickname;
     const groupName = isFollow ? item?.group?.groupName : item.groupName;
+    const level = isFollow ? item?.group?.level : item.level;
     const userId = isFollow ? item.user?.userId : item.userId;
-    return { avatar, username, groupName, userId, nickname };
+    return { avatar, username, groupName, level, userId, nickname };
   }
 
   renderItem() {
@@ -125,7 +127,7 @@ class AtSelect extends Component {
 
     if (data.length === 0) return null;
     return data.map((item) => {
-      const { avatar, nickname, groupName, userId } = this.formatData(item);
+      const { avatar, nickname, groupName, userId, level } = this.formatData(item);
 
       return (
         <div className={styles['at-item']} key={userId}>
@@ -144,7 +146,17 @@ class AtSelect extends Component {
               </div>
               <div className={styles.info}>
                 <div className={styles.username}>{nickname}</div>
-                <div className={styles.group}>{groupName}</div>
+                {/* <div className={styles.group}>{groupName}</div> */}
+                {
+                  level ?
+                  <MemberBadge
+                    groupLevel={level}
+                    groupName={groupName}
+                    memberBadgeStyle={{position: 'relative', right: '-4px'}}
+                  />
+                  :
+                  <div className={styles.group}>{groupName}</div>
+                }
               </div>
             </Checkbox>
           </div>

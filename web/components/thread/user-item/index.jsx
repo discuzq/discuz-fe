@@ -5,6 +5,7 @@ import { noop } from '../utils';
 import styles from './index.module.scss';
 import { ThreadCommonContext } from '../utils'
 import classNames from 'classnames';
+import MemberBadge from '@components/member-badge';
 
 const attachInfo = {
   name: '姓名',
@@ -31,6 +32,7 @@ const Index = ({
   type = 0,
   subTitle,
   label,
+  groupLevel,
   index,
   onClick = noop,
   userId,
@@ -110,7 +112,15 @@ const Index = ({
       {
         label || label === '' ? (
           <div className={styles.footer}>
-            <span className={styles.label}>{label}</span>
+            {
+              groupLevel ? 
+              <MemberBadge
+                groupLevel={groupLevel}
+                groupName={label}
+              />
+              :
+              <span className={styles.label}>{label}</span>
+            }
             <Icon className={styles.rightIcon} name="RightOutlined" size={12} />
           </div>
         ) : (

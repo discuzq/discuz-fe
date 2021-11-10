@@ -261,6 +261,7 @@ class UserCenterFans extends React.Component {
                     onContainerClick={this.props.onContainerClick}
                     nickName={user.nickName}
                     userGroup={user.groupName}
+                    groupLevel={user.level}
                     followHandler={this.followUser}
                     itemStyle={this.props.itemStyle}
                     unFollowHandler={this.unFollowUser}

@@ -48,6 +48,11 @@
               color: $white;
             }
           }
+          .groupsBox {
+            display: flex;
+            align-items: center;
+            padding-left: $padding-2n;
+          }
           .groups {
             color: $text-color-secondary;
             font-size: $font-size-label;
@@ -55,7 +60,6 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            padding-left: $padding-2n;
             line-height: 20px;
           }
         }

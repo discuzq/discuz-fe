@@ -10,6 +10,7 @@ import { withRouter } from 'next/router';
 import { fixImageOrientation } from '@common/utils/exif';
 import throttle from '@common/utils/thottle.js';
 import { updateMyThreadAvatar } from '@common/store/thread-list/list-business';
+import MemberBadge from '@components/member-badge';
 
 @inject('user')
 @inject('threadList')
@@ -295,7 +296,17 @@ class index extends Component {
             {/* 用户昵称和他所在的用户组名称 */}
             <div className={styles.userNameOrTeam}>
               <div className={styles.username}>{user.nickname}</div>
-              <div className={styles.groupName}>{user.group?.groupName}</div>
+              { user.group?.level > 0 ? (
+                <div className={styles.memberBadge}>
+                  <MemberBadge
+                    hasBg
+                    groupLevel={user.group?.level}
+                    groupName={user.group?.groupName}
+                  />
+                </div>
+              ) : (
+                <div className={styles.groupName}>{user.group?.groupName}</div>
+              )}
               <p
                 title={user.signature || '这个人很懒，什么也没留下~'}
                 className={`${styles.text} ${this.props.router.query?.id && styles.otherText}`}

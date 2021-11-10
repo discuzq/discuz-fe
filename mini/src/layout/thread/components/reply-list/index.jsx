@@ -14,6 +14,7 @@ import Router from '@discuzq/sdk/dist/router';
 import { debounce } from '@common/utils/throttle-debounce';
 import { urlToLink } from '@common/utils/replace-url-to-a';
 import PostContent from '@components/thread/post-content';
+import MemberBadge from '@components/member-badge';
 
 @observer
 export default class ReplyList extends React.Component {
@@ -158,7 +159,18 @@ export default class ReplyList extends React.Component {
                     </View>
                   )}
                 {!!groups?.isDisplay  && (
-                  <View className={styles.groups}>{groups?.name || groups?.groupName}</View>
+                  <View className={styles.groupsBox}>
+                    {
+                      groups?.level ?
+                      <MemberBadge
+                        groupLevel={groups?.level}
+                        groupName={groups?.name || groups?.groupName}
+                        groupNameStyle={{maxWidth: '100px'}}
+                      />
+                      :
+                      <View className={styles.groups}>{groups?.name || groups?.groupName}</View>
+                    }
+                  </View>
                 )}
               </View>
               {!isApproved ? <View className={styles.isApproved}>审核中</View> : <View></View>}

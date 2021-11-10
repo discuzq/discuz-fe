@@ -50,10 +50,15 @@
   }
 }
 
+.groupNameBox {
+  display: flex;
+  align-items: center;
+  margin-left: $margin-2n;
+}
+
 .groupName {
   color: $text-color-secondary;
   font-size: rem($font-size-label);
-  margin-left: rem($margin-2n);
   max-width: 50%;
   white-space: nowrap;
   overflow: hidden;

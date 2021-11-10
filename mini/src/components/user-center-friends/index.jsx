@@ -7,6 +7,7 @@ import { inject, observer } from 'mobx-react';
 import Avatar from '@components/avatar';
 import styles from './index.module.scss';
 import throttle from '@common/utils/thottle.js';
+import MemberBadge from '@components/member-badge';
 
 @inject('user')
 @observer
@@ -18,6 +19,7 @@ class UserCenterFriends extends React.Component {
     withHeaderUserInfo: false,
     nickName: null,
     userGroup: null,
+    groupLevel: null,
     itemStyle: {},
     itemWrapperStyle: {},
     followHandler: async () => {},
@@ -97,7 +99,15 @@ class UserCenterFriends extends React.Component {
             </View>
             <View className={styles.friendTextInfo}>
               <View className={styles.friendName}>{this.props.nickName}</View>
-              <View className={styles.friendGroup}>{this.props.userGroup}</View>
+              {
+                this.props.groupLevel ?
+                <MemberBadge
+                  groupLevel={this.props.groupLevel}
+                  groupName={this.props.userGroup}
+                />
+                :
+                <View className={styles.friendGroup}>{this.props.userGroup}</View>
+              }
             </View>
           </View>
 

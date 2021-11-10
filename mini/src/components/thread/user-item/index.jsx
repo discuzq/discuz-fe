@@ -7,6 +7,7 @@ import styles from './index.module.scss';
 import { ThreadCommonContext } from '../utils'
 import { View, Text } from '@tarojs/components'
 import classNames from 'classnames';
+import MemberBadge from '@components/member-badge';
 
 const attachInfo = {
   name: '姓名',
@@ -33,6 +34,7 @@ const Index = ({
   type = 0,
   subTitle,
   label,
+  groupLevel,
   index,
   onClick = noop,
   userId,
@@ -120,7 +122,15 @@ const Index = ({
       {
         label || label === '' ? (
           <View className={styles.footer}>
-            <Text className={styles.label}>{label}</Text>
+            {
+              groupLevel ? 
+              <MemberBadge
+                groupLevel={groupLevel}
+                groupName={label}
+              />
+              :
+              <Text className={styles.label}>{label}</Text>
+            }
             <Icon className={styles.rightIcon} name="RightOutlined" size={12} />
           </View>
         ) : (

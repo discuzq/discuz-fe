@@ -17,6 +17,7 @@ import styles from './index.module.scss';
 // import redPacketMini from '../../../../../../web/public/dzq-img/redpacket-mini.png';
 // import coin from '../../../../../../web/public/dzq-img/coin.png';
 import ReplyList from '../reply-list/index';
+import MemberBadge from '@components/member-badge';
 
 const coin = `${IMG_SRC_HOST}/assets/coin.e66d1d9205f2d6a18b38fe29b733eb109e168504.png`;
 const redPacketMini = `${IMG_SRC_HOST}/assets/redpacket-mini.10b46eefd630a5d5d322d6bbc07690ac4536ee2d.png`;
@@ -194,7 +195,18 @@ class CommentList extends React.Component {
                     </View>
                   )}
                   {!!groups?.isDisplay && (
-                    <View className={styles.groups}>{groups?.name || groups?.groupName}</View>
+                    <View className={styles.groupsBox}>
+                      {
+                        groups?.level ?
+                        <MemberBadge
+                          groupLevel={groups?.level}
+                          groupName={groups?.name || groups?.groupName}
+                          groupNameStyle={{maxWidth: '100px'}}
+                        />
+                        :
+                        <View className={styles.groups}>{groups?.name || groups?.groupName}</View>
+                      }
+                    </View>
                   )}
                 </View>
                 {!isApproved ? <View className={styles.isApproved}>审核中</View> : <View></View>}

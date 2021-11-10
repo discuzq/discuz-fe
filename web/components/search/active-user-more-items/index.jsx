@@ -3,6 +3,8 @@ import Avatar from '@components/avatar';
 import { Button, Icon } from '@discuzq/design';
 import SiteMapLink from '@components/site-map-link';
 import styles from './index.module.scss';
+import MemberBadge from '@components/member-badge';
+import classnames from 'classnames';
 
 /**
  * 活跃用户
@@ -65,9 +67,18 @@ const User = ({ data, onClick, onFollow, userId, noOperation }) => {
         <Avatar image={data.avatar} name={data.nickname} isShowUserInfo userId={data.userId} />
       </div>
       <div className={styles.content}>
-        <div className={styles.top}>
+        <div className={classnames(styles.top, data.level && styles.memberUser)}>
           <span className={styles.name}>{data.nickname}</span>
-          <span className={styles.group}>{data.groupName}</span>
+          {
+            data.level ? 
+              <MemberBadge
+                groupLevel={data.level}
+                groupName={data.groupName}
+              />
+            :
+              <span className={styles.group}>{data.groupName}</span>
+          }
+          
         </div>
         <div className={styles.num}>
           <div className={styles.numItem}>

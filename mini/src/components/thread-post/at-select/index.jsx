@@ -8,6 +8,7 @@ import Icon from '@discuzq/design/dist/components/icon/index';
 import Checkbox from '@discuzq/design/dist/components/checkbox/index';
 import Button from '@discuzq/design/dist/components/button/index';
 import styles from './index.module.scss';
+import MemberBadge from '@components/member-badge';
 
 import List from '@components/list';
 
@@ -150,8 +151,9 @@ class AtSelect extends Component {
     const username = isFollow ? item?.user?.userName : item.username;
     const nickname = isFollow ? item?.user?.nickname : item.nickname;
     const groupName = isFollow ? item?.group?.groupName : item.groupName;
+    const level = isFollow ? item?.group?.level : item.level;
     const userId = isFollow ? item.user?.userId : item.userId;
-    return { avatar, username, groupName, userId, nickname };
+    return { avatar, username, groupName, level, userId, nickname };
   }
 
   // 渲染列表内容
@@ -161,7 +163,7 @@ class AtSelect extends Component {
 
     if (data.length === 0) return null;
     return data.map(item => {
-      const { avatar, nickname, groupName, userId } = this.formatData(item);
+      const { avatar, nickname, groupName, userId, level } = this.formatData(item);
       return (
         <View className={styles['at-item']} key={userId}>
           <View className={styles['at-item__inner']} >
@@ -179,7 +181,17 @@ class AtSelect extends Component {
               </View>
               <View className={styles.info}>
                 <View className={styles.username}>{nickname}</View>
-                <View className={styles.group}>{groupName}</View>
+                {
+                  level ?
+                  <MemberBadge
+                    groupLevel={level}
+                    groupName={groupName}
+                    memberBadgeStyle={{position: 'relative', right: '-4px'}}
+                  />
+                  :
+                  <View className={styles.group}>{groupName}</View>
+                }
+                
               </View>
             </Checkbox>
           </View>

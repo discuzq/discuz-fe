@@ -26,6 +26,11 @@
       margin-bottom: rem($margin-2n);
       max-width: rem(480);
       @include lamp-clamp(1);
+      
+      &.memberUser {
+        display: flex;
+        align-items: center;
+      }
       .name {
         font-weight: 700;
         font-size: rem($font-size-middle);

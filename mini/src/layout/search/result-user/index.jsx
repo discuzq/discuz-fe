@@ -71,6 +71,7 @@ class SearchResultUserH5Page extends React.Component {
               title={item.nickname}
               imgSrc={item.avatar}
               label={item.groupName}
+              groupLevel={item.level}
               onClick={this.onUserClick}
               className={styles.userItem}
               userId={item.userId}

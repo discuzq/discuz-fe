@@ -215,6 +215,7 @@ class UserCenterUsers extends React.Component {
                 onContainerClick={this.props.onContainerClick}
                 nickName={user.nickname}
                 userGroup={user.groupName}
+                groupLevel={user.level}
                 followHandler={this.followUser}
                 itemStyle={this.props.itemStyle}
                 unFollowHandler={this.unFollowUser}

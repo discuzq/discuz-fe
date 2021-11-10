@@ -6,12 +6,13 @@ import Avatar from '@components/avatar';
 import { diffDate } from '@common/utils/diff-date';
 import classNames from 'classnames';
 import SiteMapLink from '@components/site-map-link';
-
+import MemberBadge from '@components/member-badge';
 
 UserInfo.propTypes = {
   name: PropTypes.string.isRequired, // 用户名称
   avatar: PropTypes.string.isRequired, // 用户头像
   groupName: PropTypes.string, // 用户组
+  groupLevel: PropTypes.number, // 会员等级
   time: PropTypes.string, // 发帖时间
   location: PropTypes.string, // 地址
   view: PropTypes.string, // 浏览量
@@ -63,6 +64,21 @@ export default function UserInfo(props) {
           <div className={styles.info}>
             <div className={classNames(styles.name, props.platform === 'pc' && styles.pc, styles.cursor)} onClick={e => props.onClick(e)}>{props.name}</div>
             {!props.isAnonymous && props.groupName && <div className={`${styles.groupName} ${tagsNumber > 3 ? styles.groupNameText : ''}`}>{props.groupName}</div>}
+            {
+            !props.isAnonymous && props.groupName && 
+            <div className={styles.groupNameBox}>
+              {
+                props.groupLevel ?
+                <MemberBadge
+                  groupLevel={props.groupLevel}
+                  groupName={props.groupName}
+                  groupNameStyle={tagsNumber < 3 ? {maxWidth: '82.5px'} : {maxWidth: '58px'}}
+                />
+                :
+                <div className={`${styles.groupName} ${tagsNumber > 3 ? styles.groupNameText : ''}`}>{props.groupName}</div>
+              }
+            </div>
+          }
             {props.extraInfo && props.extraInfo}
           </div>
 

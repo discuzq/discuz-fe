@@ -24,6 +24,10 @@
     }
     .top {
       margin-bottom: rem($margin-2n);
+      &.memberUser {
+        display: flex;
+        align-items: center;
+      }
       .name {
         font-weight: 700;
         font-size: rem($font-size-middle);

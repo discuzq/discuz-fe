@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react';
 import Avatar from '@components/avatar';
 import styles from './index.module.scss';
 import throttle from '@common/utils/thottle.js';
-
+import MemberBadge from '@components/member-badge';
 @inject('site')
 @inject('user')
 @observer
@@ -164,7 +164,15 @@ class UserCenterFriends extends React.Component {
                 <span title={this.props.nickName}>{this.props.nickName}</span>
               </div>
               <div className={styles.friendGroup}>
-                <span title={this.props.userGroup}>{this.props.userGroup}</span>
+                {
+                  this.props.groupLevel ?
+                  <MemberBadge
+                    groupLevel={this.props.groupLevel}
+                    groupName={this.props.userGroup}
+                  />
+                  :
+                  <span title={this.props.userGroup}>{this.props.userGroup}</span>
+                }
               </div>
             </div>
           </div>

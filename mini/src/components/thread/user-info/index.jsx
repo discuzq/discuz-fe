@@ -7,11 +7,13 @@ import React from 'react';
 import { diffDate } from '@common/utils/diff-date';
 import classNames from 'classnames';
 import { View, Text } from '@tarojs/components'
+import MemberBadge from '@components/member-badge';
 
 UserInfo.propTypes = {
   name: PropTypes.string.isRequired, // 用户名称
   avatar: PropTypes.string.isRequired, // 用户头像
   groupName: PropTypes.string, // 用户组
+  groupLevel: PropTypes.number, // 会员等级
   time: PropTypes.string, // 发帖时间
   location: PropTypes.string, // 地址
   view: PropTypes.string, // 浏览量
@@ -54,7 +56,21 @@ export default function UserInfo(props) {
       <View className={styles.right}>
         <View className={styles.info}>
           <View className={styles.name} onClick={(e) => props.onClick(e)}>{props.name}</View>
-          {!props.isAnonymous && props.groupName && <View className={`${styles.groupName} ${tagsNumber < 3 ? styles.groupName2 : styles.groupName3}`}>{props.groupName}</View>}
+          {
+            !props.isAnonymous && props.groupName && 
+            <View className={styles.groupNameBox}>
+              {
+                props.groupLevel ?
+                <MemberBadge
+                  groupLevel={props.groupLevel}
+                  groupName={props.groupName}
+                  groupNameStyle={tagsNumber < 3 ? {maxWidth: '82.5px'} : {maxWidth: '58px'}}
+                />
+                :
+                <View className={`${styles.groupName} ${tagsNumber < 3 ? styles.groupName2 : styles.groupName3}`}>{props.groupName}</View>
+              }
+            </View>
+          }
         </View>
 
         <View className={styles.meta}>

@@ -51,13 +51,18 @@
               color: $white;
             }
           }
+          .groupsBox {
+            display: flex;
+            align-items: center;
+            padding-top: rem(5);
+          }
           .groups {
             color: $text-color-secondary;
             font-size: $font-size-label;
             max-width: rem(100);
             white-space: nowrap;
             overflow: hidden;
-            padding-top: rem($padding-2n);
+            padding-top: rem(3);
             line-height: rem(20);
             text-overflow: ellipsis;
           }

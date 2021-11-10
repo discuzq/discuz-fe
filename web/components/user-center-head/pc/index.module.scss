@@ -89,6 +89,9 @@
       color: $white;
       @include text-ellipsis();
     }
+    .memberBadge {
+      margin-top: rem(10);
+    }
     .groupName {
       font-size: rem($font-size-base);
       line-height: rem($font-line-height-small);

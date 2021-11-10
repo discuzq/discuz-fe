@@ -137,6 +137,7 @@ const RenderThreadContent = (inject('index', 'site', 'user', 'thread', 'plugin')
             avatar={threadStore?.threadData?.user?.avatar || ''}
             location={threadStore?.threadData?.position.location || ''}
             groupName={threadStore?.threadData?.group?.groupName || ''}
+            groupLevel={threadStore?.threadData?.group?.level || 0}
             view={`${threadStore?.threadData?.viewCount}` || ''}
             time={`${threadStore?.threadData?.diffTime}` || ''}
             isEssence={isEssence}

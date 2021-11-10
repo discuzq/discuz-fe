@@ -10,6 +10,7 @@ import ImageDisplay from '@components/thread/image-display';
 import { debounce } from '@common/utils/throttle-debounce';
 import { urlToLink } from '@common/utils/replace-url-to-a';
 import PostContent from '@components/thread/post-content';
+import MemberBadge from '@components/member-badge';
 
 @observer
 export default class ReplyList extends React.Component {
@@ -132,8 +133,19 @@ export default class ReplyList extends React.Component {
                       <span className={styles.masterText}>作者</span>
                     </div>
                   )}
-                {!!groups?.isDisplay && (
-                  <div className={styles.groups}>{groups?.name || groups?.groupName}</div>
+                {!!groups?.isDisplay  && (
+                  <div className={styles.groupsBox}>
+                    {
+                      groups?.level ?
+                      <MemberBadge
+                        groupLevel={groups?.level}
+                        groupName={groups?.name || groups?.groupName}
+                        groupNameStyle={{maxWidth: '100px'}}
+                      />
+                      :
+                      <div className={styles.groups}>{groups?.name || groups?.groupName}</div>
+                    }
+                  </div>
                 )}
               </div>
               {!isApproved ? <div className={styles.isApproved}>审核中</div> : <div></div>}
