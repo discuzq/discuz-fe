@@ -84,7 +84,6 @@ export const getSelectedCategoryIds = (categories, id) => {
     if (newId === '') {
         return [id]
     }
-
     let newCategoryIds = [id];
     const tmp = categories.filter(item => `${item.categoryId}` === `${id}`);
     if (tmp?.length && tmp[0]?.children?.length) {
@@ -92,7 +91,6 @@ export const getSelectedCategoryIds = (categories, id) => {
         newCategoryIds.push(item.categoryId);
       });
     }
-    if (!tmp?.length) newCategoryIds = ['all'];
     return newCategoryIds
 }
 
