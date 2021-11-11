@@ -1,0 +1,108 @@
+@import '@common/styles/index.scss';
+
+@mixin header_wrap {
+  flex: 1;
+  text-align: center;
+}
+@mixin header_number {
+  line-height: 33px;
+  padding-bottom: $padding-2n;
+  font-size: 24px;
+}
+@mixin header_text {
+  line-height: 20px;
+  font-size: 14px;
+  color: $text-color-secondary;
+}
+
+.wrap {
+  background-color: $body-bg-color;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.header {
+  display: flex;
+  padding: $padding-4n;
+  box-sizing: border-box;
+  background-color: $white;
+  border-top: 10px solid $body-bg-color;
+  border-bottom: 10px solid $body-bg-color;
+}
+.totalRevenue {
+  @include header_wrap;
+  .totalRevenue__money {
+    @include header_number;
+    color: $error-color;
+  }
+  .totalRevenue__text {
+    @include header_text;
+  }
+}
+.totalShare {
+  @include header_wrap;
+  .totalRevenue__number {
+    @include header_number;
+    color: #f66524;
+  }
+  .totalRevenue__text {
+    @include header_text;
+  }
+}
+.rankingList {
+  background-color: $white;
+  flex: 1;
+}
+.rankingList__header {
+  padding: 0 $padding-4n;
+  display: flex;
+  box-sizing: border-box;
+  justify-content: space-between;
+  border-bottom: $border-solid-1;
+  .rankingList__navigation {
+    font-size: 16px;
+    line-height: 22px;
+    text-align: center;
+    color: #0b0b37;
+    position: relative;
+    padding: $padding-4n 0;
+    .rankingList__select {
+      position: absolute;
+      width: 100%;
+      height: 2px;
+      background-color: #2469F6;
+      bottom: 2px;
+      left: 0;
+    }
+  }
+}
+.refreshView {
+  min-height: rem(40);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: rem($font-size-primary);
+  color: $text-color-placeholder;
+  padding: rem(11) 0 $padding-5;
+  line-height: rem($font-line-height-small);
+  width: 100%;
+  .lineSty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .noMoreLeft{
+    background-color: #e5e5e5;
+    width: rem(79);
+    height: rem(1);
+    float: left;
+    margin-right: rem($margin-4n);
+  }
+  .noMoreRight{
+    background-color: #e5e5e5;
+    width: rem(79);
+    height: rem(1);
+    float: right;
+    margin-left: rem($margin-4n);
+  }
+}

@@ -1,0 +1,70 @@
+@import '@common/styles/index.scss';
+
+.wrap {
+  padding: $padding-4n
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  span {
+    font-size: 14px;
+    line-height: 20px;
+    text-align: left;
+    color: #0b0b37;
+    white-space: nowrap;
+  }
+}
+
+@mixin listItem {
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+  color: #0b0b37;
+  white-space: nowrap;
+}
+
+.ranking {
+  @include listItem;
+  width: 8%;
+}
+.nickname {
+  @include listItem;
+  width: 23%;
+  text-align: left;
+  display: flex;
+  overflow: hidden;
+  .avatar {
+    width: 20px;
+    height: 20px;
+    padding-right: 2px;
+  }
+}
+.user__amount {
+  @include listItem;
+  width: 20%;
+}
+.money {
+  @include listItem;
+  width: 28%;
+}
+
+
+.list {
+  border-bottom: $border-solid-1;
+  .list__item {
+    display: flex;
+    justify-content: space-between;
+    padding: $padding-4n 0;
+  }
+  .nickname {
+    text-align: left;
+  }
+  span {
+    @include text-ellipsis;
+    font-size: 12px;
+  }
+  .money {
+    font-size: 12px;
+    color: #f50026;
+  }
+}
