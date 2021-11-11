@@ -176,7 +176,6 @@ class index extends Component {
             onChange={this.handleSetPwd}
             mode="password"
             placeholder="请设置密码"
-            value={this.props.user?.newPassword}
             trim
           />
         </View>
@@ -187,7 +186,6 @@ class index extends Component {
             className={styles.input}
             mode="password"
             placeholder="请确认密码"
-            value={this.props.user?.newPasswordRepeat}
             onChange={this.hadleNewPasswordRepeat}
             trim
           />
@@ -204,7 +202,6 @@ class index extends Component {
         <View className={styles.labelValue}>
           <Input
             className={styles.input}
-            value={this.props.user?.oldPassword}
             onChange={this.handleSetOldPwd}
             mode="password"
             placeholder="请输入旧密码"
@@ -216,7 +213,6 @@ class index extends Component {
         <View className={styles.labelValue}>
           <Input
             className={styles.input}
-            value={this.props.user?.newPassword}
             onChange={this.handleSetPwd}
             mode="password"
             placeholder="请输入新密码"
@@ -230,7 +226,6 @@ class index extends Component {
             className={styles.input}
             onChange={this.hadleNewPasswordRepeat}
             mode="password"
-            value={this.props.user?.newPasswordRepeat}
             placeholder="请重复输入新密码"
             trim
           />
