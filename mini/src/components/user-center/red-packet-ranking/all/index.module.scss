@@ -1,74 +1,71 @@
 @import '@common/styles/index.scss';
 
+
 @mixin listItem {
   font-size: 14px;
   text-align: center;
   white-space: nowrap;
 }
 .wrap {
-  padding: $padding-6n;
+  padding: $padding-4n
 }
 .header {
-  padding: $padding-2n $padding-4n;
+  padding: $padding-2n $padding-2n;
   box-sizing: border-box;
+  background-color: #F5F7F8;
   display: flex;
   justify-content: space-between;
-  background-color: #F5F7F8;
   line-height: 20px;
-  span {
-    @include listItem;
-    color: #4f5a70;
+  .header__item {
+    color: #4F5A70;
+    white-space: nowrap;
   }
 }
 
 .ranking {
   @include listItem;
-  width: 28px;
+  width: 9%;
 }
 .nickname {
   @include listItem;
-  width: 144px;
+  width: 27%;
+  overflow: hidden;
   .avatar {
-    width: 38px;
-    height: 38px;
-  }
-  span {
-    margin-left: $margin-2n;
+    width: 18px;
+    height: 18px;
   }
 }
 .user__amount {
   @include listItem;
-  width: 70px;
+  width: 17%;
 }
 .money {
   @include listItem;
-  width: 98px;
+  width: 30%;
 }
 
 
 .list {
   border-bottom: $border-solid-1;
-  &:last-child {
-    border-bottom: none;
-  }
   .list__item {
-    padding: $padding-2n $padding-4n;
     display: flex;
     justify-content: space-between;
-    line-height: 38px;
+    padding: $padding-4n $padding-2n;
+    box-sizing: border-box;
+    line-height: 22px;
+    color: #0B0B37;
   }
   .nickname {
     display: flex;
-  }
-  span {
-    @include text-ellipsis;
-    color: #0b0b37;
+    align-items: center;
+    .nickname__text {
+      @include text-ellipsis;
+      margin-left: $margin-2n;
+    }
   }
   .money {
-    font-weight: 600;
     font-size: 16px;
     color: #E02433;
-  }
-  .user__amount {
+    font-weight: 600;
   }
 }

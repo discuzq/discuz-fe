@@ -23,10 +23,10 @@ export default class AllList extends Component {
     return (
       <div className={styles.wrap}>
         <div className={styles.header}>
-          <div className={styles.ranking}>排名</div>
-          <div className={styles.nickname}>用户昵称</div>
-          <div className={styles.user__amount}>邀请用户数</div>
-          <div className={styles.money}>获得赏金（元）</div>
+          <span className={styles.ranking}>排名</span>
+          <span className={styles.nickname}>用户昵称</span>
+          <span className={styles.user__amount}>邀请用户</span>
+          <span className={styles.money}>获得赏金（元）</span>
         </div>
         <div className={styles.list}>
           <div className={styles.list__item}>
