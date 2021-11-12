@@ -1,0 +1,12 @@
+.positionSticky {
+  top: 0;
+}
+:global {
+  .is-userinfo-show {
+    top: -255px !important;
+
+    &.is-operate-show {
+      top: -316px !important;
+    }
+  }
+}

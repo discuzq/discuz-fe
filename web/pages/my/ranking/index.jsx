@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import RedPacketRanking from '@components/user-center/red-packet-ranking';
-import RedPacketRankingPC from '@components/user-center/red-packet-ranking-pc';
+import RankingH5 from '@layout/my/ranking/h5';
+import RankingPc from '@layout/my/ranking/pc/index';
 import ViewAdapter from '@components/view-adapter';
-import { useRouter } from 'next/router';
+import { useRouter, withRouter } from 'next/router';
+import HOCFetchSiteData from '../../../middleware/HOCFetchSiteData';
 
-export default function index() {
+function Index() {
   const [title, setTitle] = useState('');
   const router = useRouter();
   const params = (({ page }) => {
@@ -30,9 +31,11 @@ export default function index() {
 
   return (
     <ViewAdapter
-      h5={<RedPacketRanking {...params}/>}
-      pc={<RedPacketRankingPC {...params} />}
+      h5={<RankingH5 {...params}/>}
+      pc={<RankingPc {...params} />}
       title={title}
     />
   );
 }
+
+export default withRouter(HOCFetchSiteData(Index));
