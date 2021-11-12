@@ -11,6 +11,7 @@ import { formatDate } from '@common/utils/format-date';
 import { getPostData, formatPostData, ATTACH_INFO_TYPE } from '@common/plugin/custom-apply/View/src/common';
 import { ONE_DAY } from '@common/constants/thread-post';
 import styles from '../index.module.scss';
+import browser from '@utils/browser';
 registerLocale('zh-CN', zhCN);
 
 const TimeType = {
@@ -271,6 +272,13 @@ export default class CustomApplyEntry extends React.Component {
     return false;
   };
 
+  /**
+   * 判断是否是 ios 上的 chrome 浏览器，如果是，给一个固定的高度
+   */
+  isIosChrome = () => {
+    return browser.env('chrome') && browser.env('ios');
+  }
+
   handleCheckAll = (val) => {
     const additionalInfoType = val ? Object.values(ATTACH_INFO_TYPE) : [];
     this.setState({ body: { ...this.state.body, additionalInfoType } });
@@ -306,7 +314,9 @@ export default class CustomApplyEntry extends React.Component {
           isNew={true}
           type="confirm"
           title="创建活动报名"
-          className={classNames(styles['dzqp-act'], platform)}
+          className={classNames(styles['dzqp-act'], platform, {
+            [styles.isIosChrome]: this.isIosChrome()
+          })}
         >
           <div className={styles['dzqp-act--item']}>
             <div className={styles['dzqp-act--item_title']}>开始时间</div>

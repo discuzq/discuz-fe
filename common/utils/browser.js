@@ -14,7 +14,26 @@ export const constants = {
   QQ: 'qq',
   UC: 'uc',
   SAFARI: 'safari',
+  CHROME: 'chrome'
 };
+
+export const isChrome = () => {
+  const isChromium = window.chrome
+  const winNav = window.navigator
+  const vendorName = winNav.vendor
+  const isOpera = typeof window.opr !== 'undefined'
+  const isIEedge = winNav.userAgent.indexOf('Edge') > -1
+  const isIOSChrome = winNav.userAgent.match('CriOS')
+
+  return (
+    isIOSChrome ||
+    (isChromium !== null &&
+      typeof isChromium !== 'undefined' &&
+      vendorName === 'Google Inc.' &&
+      isOpera === false &&
+      isIEedge === false)
+  )
+}
 
 const browser = {
   env: (t, u = null) => {
@@ -37,6 +56,7 @@ const browser = {
       case constants.QQ : return ua.match(/\sQQ/i) == ' qq'; // 是否QQ
       case constants.UC: return ua.indexOf('UCBrowser') > -1; // uc浏览器
       case constants.SAFARI: return /Safari/.test(ua) && !/Chrome/.test(ua); // 是否为 safari 浏览器
+      case constants.CHROME: return isChrome();
       default: return false;
     }
   },

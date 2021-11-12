@@ -191,6 +191,15 @@
     }
   }
 }
+
+.isIosChrome {
+  :global {
+    .dzq-modal__body {
+      height: calc(100% - 80px) !important;
+    }
+  }
+}
+
 .dzqp-act.h5 {
   :global {
     .dzq-modal__overlay {
