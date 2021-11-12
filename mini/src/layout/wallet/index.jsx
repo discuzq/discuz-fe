@@ -374,6 +374,7 @@ class WalletH5Page extends React.Component {
     const { siteCharge } = webConfig.setSite || {};
     const { threadOptimize } = webConfig.other || {};
     const isShowRecharge = isWechatPayOpen && siteCharge === 1 && threadOptimize;
+    const { tabsType, walletInfo } = this.props.wallet;
     const tabList = [
       [
         'income',

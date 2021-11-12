@@ -81,6 +81,7 @@
               padding-left: rem($padding-2n);
               display: flex;
               align-items: center;
+              flex: none;
               .masterText {
                 border-radius: 2px;
                 background: $primary-color;

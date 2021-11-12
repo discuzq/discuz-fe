@@ -23,7 +23,11 @@ export default class UserCenterEntry extends React.Component {
     const { webConfig: { other: { threadOptimize } } } = siteData;
 
     // 后台开启了商店并且配置了商城相关配置，才显示商城
-    if (threadOptimize && miniShopConfig?.setting?.publicValue?.wxAppId) {
+    if (
+      threadOptimize &&
+      miniShopConfig?.setting?.publicValue?.wxAppId &&
+      miniShopConfig?.setting?.publicValue?.wxshopOpen
+    ) {
       this.setState({
         visible: true,
         miniShopConfig,
@@ -36,7 +40,7 @@ export default class UserCenterEntry extends React.Component {
     if (!appId) {
       return;
     }
-    navigateToMiniProgram({ 
+    navigateToMiniProgram({
       appId,
       fail: (error) => {
         if (error && error.errMsg && error.errMsg === 'navigateToMiniProgram:fail cancel') {
@@ -44,7 +48,7 @@ export default class UserCenterEntry extends React.Component {
         } else {
           Toast.info({ content: '跳转失败' });
         }
-        
+
       },
     });
   };

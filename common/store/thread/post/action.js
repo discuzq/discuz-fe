@@ -1,4 +1,4 @@
-import { action } from 'mobx';
+import { action, observable } from 'mobx';
 import ThreadPostStore from './store';
 import { readEmoji, readFollow, readProcutAnalysis, readTopics, createThread, updateThread, createThreadVideoAudio, readPostCategories } from '@common/server';
 import { LOADING_TOTAL_TYPE, THREAD_TYPE, THREAD_STATUS } from '@common/constants/thread-post';
@@ -271,7 +271,7 @@ class ThreadPostAction extends ThreadPostStore {
     }
     // 插件扩展
     if (plugin) {
-      for (let key in plugin) {
+      for (const key in plugin) {
         contentIndexes[plugin[key].tomId] = {
           ...plugin[key],
         };
@@ -369,30 +369,25 @@ class ThreadPostAction extends ThreadPostStore {
         imageBody.forEach((item) => {
           images[item.id] = { ...item, type: item.fileType, name: item.fileName };
         });
-      }
-      else if (tomId === THREAD_TYPE.file.toString()) {
+      } else if (tomId === THREAD_TYPE.file.toString()) {
         const fileBody = contentindexes[index].body || [];
         fileBody.forEach((item) => {
           files[item.id] = { ...item, type: item.fileType, name: item.fileName };
         });
-      }
-      else if (tomId === THREAD_TYPE.voice.toString()) {
+      } else if (tomId === THREAD_TYPE.voice.toString()) {
         audio = contentindexes[index].body || {};
         const audioId = audio.id || audio.threadVideoId;
         audio.id = audioId;
-      }
-      else if (tomId === THREAD_TYPE.vote.toString()) {
+      } else if (tomId === THREAD_TYPE.vote.toString()) {
         vote = contentindexes[index].body[0] || {};
-      }
-      else if (tomId === THREAD_TYPE.goods.toString()) product = contentindexes[index].body;
+      } else if (tomId === THREAD_TYPE.goods.toString()) product = contentindexes[index].body;
       else if (tomId === THREAD_TYPE.video.toString()) {
         video = contentindexes[index].body || {};
         video.thumbUrl = video.mediaUrl;
         const videoId = video.id || video.threadVideoId;
         video.id = videoId;
-      }
-      else if (tomId === THREAD_TYPE.redPacket.toString()) {
-        const redBody = contentindexes[index]?.body || {}
+      } else if (tomId === THREAD_TYPE.redPacket.toString()) {
+        const redBody = contentindexes[index]?.body || {};
         const { money = 0, number = 0, rule = 1 } = redBody;
         const price = rule === 0 ? money / number : money;
         redpacket = { ...redBody, price };
@@ -410,8 +405,7 @@ class ThreadPostAction extends ThreadPostStore {
         };
       } else if (tomId === THREAD_TYPE.iframe.toString()) {
         iframe = contentindexes[index].body || { };
-      }
-      else {
+      } else {
         const { body = {}, _plugin } = contentindexes[index];
         // const { _plugin } = body;
         if (!_plugin) return;
@@ -420,11 +414,11 @@ class ThreadPostAction extends ThreadPostStore {
           tomId,
           body,
           _plugin,
-        }
+        };
       }
     });
     const anonymous = isAnonymous ? 1 : 0;
-    this.setPostData({
+    this.setPostData(observable({
       // 标题去掉富文本
       title: title.replace(/<[^<>]+>/g, ''),
       categoryId,
@@ -446,8 +440,8 @@ class ThreadPostAction extends ThreadPostStore {
       orderInfo,
       threadId,
       iframe,
-      plugin
-    });
+      plugin,
+    }));
   }
 
   @action
@@ -585,18 +579,18 @@ class ThreadPostAction extends ThreadPostStore {
       body: {
         ...body,
         _plugin: {
-          name: pluginName
-        }
+          name: pluginName,
+        },
       },
       isShow,
-    }
+    };
     this.postData = { ...this.postData };
   }
 
   @action.bound
   deletePluginPostData(data) {
     const {
-      _pluginInfo
+      _pluginInfo,
     } = data;
     const { pluginName } = _pluginInfo;
     if (this.postData.plugin[pluginName]) {

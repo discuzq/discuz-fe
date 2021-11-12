@@ -117,6 +117,7 @@ const Index = ({
               <MemberBadge
                 groupLevel={groupLevel}
                 groupName={label}
+                memberBadgeStyle={{marginRight: '7px'}}
               />
               :
               <span className={styles.label}>{label}</span>

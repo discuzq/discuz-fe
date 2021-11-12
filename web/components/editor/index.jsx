@@ -396,6 +396,9 @@ function DVditor(props) {
             {
               key: '@',
               hintCustom: (key, textareaPosition, lastindex) => {
+                if (key.indexOf(' ') !== -1) {
+                  return;
+                }
                 props.threadPost.setEditorHintAtKey(key);
                 const position = getLineHeight(editor, textareaPosition, '@');
                 hintCustom('@', key, position, lastindex, editor.vditor);

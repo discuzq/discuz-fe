@@ -15,14 +15,13 @@ import styles from './index.module.scss';
 
 import PropTypes from 'prop-types';
 
-const Index = ({ value, show, placeholder, onChange, onBlur, onFocus }) => {
-  return (
+const Index = ({ value, show, placeholder, onChange, onBlur, onFocus }) => (
     <View
       className={`${styles.container} ${show ? '' : styles['is-display']}`}
       onClick={e => e.stopPropagation()}
     >
       <Input
-        value={debounce(() => value, 0)}
+        value={value}
         mode='text'
         placeholder={placeholder}
         onChange={e => onChange(e.target.value)}
@@ -32,7 +31,6 @@ const Index = ({ value, show, placeholder, onChange, onBlur, onFocus }) => {
       />
     </View>
   );
-};
 
 Index.propTypes = {
   value: PropTypes.string,

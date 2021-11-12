@@ -186,7 +186,6 @@ class AtSelect extends Component {
                   <MemberBadge
                     groupLevel={level}
                     groupName={groupName}
-                    memberBadgeStyle={{position: 'relative', right: '-4px'}}
                   />
                   :
                   <View className={styles.group}>{groupName}</View>

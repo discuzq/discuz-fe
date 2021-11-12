@@ -15,9 +15,8 @@
     display: flex;
     align-items: center;
 
-    .memberBadgeNameScale {
-      font-size: 12px;
-      transform: scale(0.83, 0.83);
+    .memberBadgeNameText {
+      font-size: 10px;
       max-width: rem(120);
       height: 12px;
       line-height: 12px;
@@ -38,15 +37,18 @@
     &_4 {
       color: #683b41;
     }
-    &_5 {
-      color: #ffe6d1;
-    }
   }
 
   &.default {
     .memberBadgeIcon {
       width: rem(16);
       height: rem(16);
+    }
+    .memberBadgeName {
+      padding-left: rem(3);
+      &_5 {
+        color: #2A2B35;
+      }
     }
   }
 
@@ -56,11 +58,11 @@
       height: rem(24);
     }
     .memberBadgeName {
-      left: rem(-12);
+      left: rem(-9);
       height: rem(20);
       padding-left: rem(10);
       line-height: rem(20);
-      padding-right: rem(6);
+      padding-right: rem(7);
       border-radius: 0 rem(10) rem(10) 0;
       border-width: 0.4px;
       border-style: solid;
@@ -82,9 +84,17 @@
         background: linear-gradient(45deg, #fff 0%, #d7bbbe 100%);
       }
       &_5 {
+        color: #ffe6d1;
         border-color: #fce3cd;
         background: linear-gradient(45deg, #3f4551 0%, #181924 100%);
       }
     }
+  }
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  .memberBadgeName{
+    font-size: 12px;
+    zoom: 0.83;
   }
 }

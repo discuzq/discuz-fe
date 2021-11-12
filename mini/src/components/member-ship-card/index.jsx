@@ -64,7 +64,7 @@ const MemberShipCard = ({ site, user, onRenewalFeeClick, shipCardClassName }) =>
             <Text className={styles.feeDay} style={{color: theme.otherColor}}>{remainTime}</Text>
             <Text style={{color: theme.desAndDateColor}}>{typeMap[typeTime]}</Text>
           </View>
-          <Text>{time.formatDate(expirationTime, getDateFormat())}到期</Text>
+          <Text style={{color: theme.desAndDateColor}}>{time.formatDate(expirationTime, getDateFormat())}到期</Text>
         </>
       );
     }
@@ -85,7 +85,7 @@ const MemberShipCard = ({ site, user, onRenewalFeeClick, shipCardClassName }) =>
             <View className={styles.feeDayContainer}>
               <Text className={styles.feeDay}>{expiredDays}</Text>天
             </View>
-            <Text>{time.formatDate(expiredAt, getDateFormat())}到期</Text>
+            <Text style={{color: theme.desAndDateColor}}>{time.formatDate(expiredAt, getDateFormat())}到期</Text>
           </>
         );
       }

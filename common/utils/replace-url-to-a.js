@@ -1,6 +1,6 @@
 export function urlToLink(str) {
   // 匹配 https|http|ftp|rtsp|mms 协议以及非空格和中文以外的任意字符
-  const urlReg = /(((https|http|ftp|rtsp|mms)?:\/\/)[^\s\u4e00-\u9fa5/<>]+\.[^，,。；、？\s\u4e00-\u9fa5<>]+)/ig;
+  const urlReg = /(((https|http|ftp|rtsp|mms)?:\/\/)[^\s\u4e00-\u9fa5/<>]+\.[^)，,。；;、？\s\u4e00-\u9fa5<>]+)/ig;
   // 匹配 code，没有在正则里面带上 code 标签，是因为 code 标签有可能存在不确定的 class 类，不容易匹配，
   // 因此分开处理。而且 code 有两种存在形式：<pre><code></code></pre> 和 < code ></code >
   const preReg = /(<pre[^>]*><code[^>]*>)([^<]*)<\/code><\/pre>/ig;

@@ -8,7 +8,7 @@ import Progress from '@discuzq/design/dist/components/progress/index';
 import Toast from '@discuzq/design/dist/components/toast/index';
 import { View, Text } from '@tarojs/components'
 import CountDown from '@common/utils/count-down';
-import { debounce } from '@common/utils/throttle-debounce';
+import { throttle } from '@common/utils/throttle-debounce';
 import LoginHelper from '@common/utils/login-helper';
 import Router from '@discuzq/sdk/dist/router';
 import styles from './index.module.scss';
@@ -58,7 +58,7 @@ const VoteDisplay = (props = {}) => {
     }
   }, [expiredAt]);
 
-  const handleVote = debounce(async () => {
+  const handleVote = throttle(async () => {
     const { thread, user, index } = props;
     if (!user.isLogin()) {
       LoginHelper.saveAndLogin();
