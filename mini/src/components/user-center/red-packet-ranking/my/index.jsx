@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
-import { inject, observer } from 'mobx-react';
+import React from 'react';
 import ThreadList from '../components/thread-list'
 import styles from './index.module.scss';
 
-function MyList() {
+function MyList(props) {
   return (
-    <ThreadList/>
+    <ThreadList {...props}/>
   );
 }
 
-export default inject('user')(observer(MyList))
+export default MyList;

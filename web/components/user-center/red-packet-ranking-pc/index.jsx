@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Fragment } from 'react';
 import styles from './index.module.scss';
 import { inject, observer } from 'mobx-react';
 import BaseLayout from '@components/base-layout';
@@ -12,24 +12,25 @@ import HotList from './hot';
 import AllList from './all';
 import MyList from './my';
 
-function RedPacketRankingPC({ type = '', user }) {
+function RedPacketRankingPC(props) {
+  const { pageText = '', invite, user } = props;
   const [nav, setNav] = useState('hot');
 
   const ReadPacketList = () => {
     switch (nav) {
       case 'hot':
-        return <HotList/>;
+        return <HotList {...props}/>;
       case 'all':
-        return <AllList/>;
+        return <AllList {...props}/>;
       case 'my':
-        return <MyList/>;
+        return <MyList {...props}/>;
     }
-    return <></>;
+    return <Fragment></Fragment>;
   };
 
   const SelectNav  = ({ currentNav }) => {
     if (currentNav !== nav) {
-      return <></>;
+      return <Fragment></Fragment>;
     }
     return <span className={styles.rankingList__select}></span>;
   };
@@ -40,13 +41,11 @@ function RedPacketRankingPC({ type = '', user }) {
 
   // 加载更多函数
   const loadMore = async () => {
-    const { invite } = this.props;
     if (!this.checkLoadCondition()) return;
     return await invite.getInviteUsersList(invite.currentPage + 1);
   };
 
   const renderRight = () => {
-    console.log(user);
     return (
       <>
         <div className={styles.authorInfo}>
@@ -79,7 +78,7 @@ function RedPacketRankingPC({ type = '', user }) {
     >
       <div className={styles.wrap}>
         <div className={styles.header}>
-          <div className={styles.title}>分享领红包</div>
+          <div className={styles.title}>{pageText}领红包</div>
           <div className={styles.statistics}>
             <div className={styles.totalRevenue}>
               <div className={styles.totalRevenue__money}>0.00</div>
@@ -87,15 +86,15 @@ function RedPacketRankingPC({ type = '', user }) {
             </div>
             <div className={styles.totalShare}>
               <div className={styles.totalRevenue__number}>123</div>
-              <div className={styles.totalRevenue__text}>总分享（篇）</div>
+              <div className={styles.totalRevenue__text}>总{pageText}（篇）</div>
             </div>
           </div>
         </div>
         <div className={styles.rankingList}>
           <div className={styles.rankingList__header}>
-            <div onClick={() => handleClickNav('my')} className={styles.rankingList__navigation}>我的分享<SelectNav currentNav='my'/></div>
-            <div onClick={() => handleClickNav('hot')} className={styles.rankingList__navigation}>热门分享<SelectNav currentNav='hot'/></div>
-            <div onClick={() => handleClickNav('all')} className={styles.rankingList__navigation}>分享总排行<SelectNav currentNav='all'/></div>
+            <div onClick={() => handleClickNav('my')} className={styles.rankingList__navigation}>我的{pageText}<SelectNav currentNav='my'/></div>
+            <div onClick={() => handleClickNav('hot')} className={styles.rankingList__navigation}>热门{pageText}<SelectNav currentNav='hot'/></div>
+            <div onClick={() => handleClickNav('all')} className={styles.rankingList__navigation}>{pageText}总排行<SelectNav currentNav='all'/></div>
           </div>
         <ReadPacketList/>
       </div>
@@ -105,4 +104,4 @@ function RedPacketRankingPC({ type = '', user }) {
   );
 }
 
-export default inject('user')(observer(RedPacketRankingPC));
+export default inject('user', 'invite')(observer(RedPacketRankingPC));

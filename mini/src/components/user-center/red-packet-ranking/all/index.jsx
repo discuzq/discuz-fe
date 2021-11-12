@@ -1,19 +1,25 @@
-import React, { useState } from 'react';
-import { inject, observer } from 'mobx-react';
+import React, { Fragment } from 'react';
 import Avatar from '@components/avatar';
-import Taro from '@tarojs/taro';
 import { View, Text } from '@tarojs/components';
-import styles from './index.module.scss';
 import classnames from 'classnames';
+import styles from './index.module.scss';
 
-function AllList() {
+export default function AllList({ page }) {
   return (
     <View className={styles.wrap}>
       <View className={styles.header}>
         <View className={classnames(styles.header__item, styles.ranking)}>排名</View>
         <View className={classnames(styles.header__item, styles.nickname)}>用户昵称</View>
-        <View className={classnames(styles.header__item, styles.user__amount)}>邀请用户</View>
-        <View className={classnames(styles.header__item, styles.money)}>获得赏金（元）</View>
+        {
+          page === 'share'
+            ? (
+            <Fragment>
+              <View className={classnames(styles.header__item, styles.user__amount)}>邀请用户</View>
+              <View className={classnames(styles.header__item, styles.money)}>获得赏金（元）</View>
+            </Fragment>
+            )
+            : (<View className={classnames(styles.header__item, styles.money)}>获得赏金（元）</View>)
+        }
       </View>
       <View className={styles.list}>
         <View className={styles.list__item}>
@@ -28,12 +34,18 @@ function AllList() {
             />
             <Text className={styles.nickname__text}>用户昵称</Text>
           </View>
-          <View className={styles.user__amount}>8</View>
-          <View className={styles.money}>50.00</View>
+          {
+            page === 'share'
+              ? (
+              <React.Fragment>
+                <View className={styles.user__amount}>8</View>
+                <View className={styles.money}>50.00</View>
+              </React.Fragment>
+              )
+              : (<View className={styles.money}>50.00</View>)
+          }
         </View>
       </View>
     </View>
   );
 }
-
-export default inject('user')(observer(AllList))

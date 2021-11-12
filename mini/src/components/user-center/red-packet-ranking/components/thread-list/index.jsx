@@ -7,7 +7,7 @@ import styles from './index.module.scss';
 
 const redPacketIcon = `${IMG_SRC_HOST}/assets/redpacket-mini.10b46eefd630a5d5d322d6bbc07690ac4536ee2d.png`;
 
-export default function ThreadList() {
+export default function ThreadList({ pageText }) {
   return (
     <View className={styles.wrap}>
       <View className={styles.list}>
@@ -19,7 +19,7 @@ export default function ThreadList() {
           <View className={styles.list__hint}>已奖励0.00元，你领取0.00元</View>
         </View>
         <View className={styles.list__right}>
-          <Button className={styles.list__button} type='primary'>分享</Button>
+          <Button className={styles.list__button} type='primary'>{ pageText }</Button>
         </View>
       </View>
     </View>

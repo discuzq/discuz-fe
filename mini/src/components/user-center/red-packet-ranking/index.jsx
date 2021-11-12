@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Taro from '@tarojs/taro';
 import { View } from '@tarojs/components';
 import { inject, observer } from 'mobx-react';
 import BaseLayout from '@components/base-layout';
@@ -8,17 +7,18 @@ import styles from './index.module.scss';
 import AllList from './all';
 import MyList from './my';
 
-function RedPacketRanking({ type = '' }) {
+function RedPacketRanking(props) {
+  const { pageText = '', invite } = props;
   const [nav, setNav] = useState('hot');
 
   const ReadPacketList = () => {
     switch (nav) {
       case 'hot':
-        return <HotList/>;
+        return <HotList {...props}/>;
       case 'all':
-        return <AllList/>;
+        return <AllList {...props}/>;
       case 'my':
-        return <MyList/>;
+        return <MyList {...props}/>;
     }
     return <></>;
   };
@@ -36,7 +36,6 @@ function RedPacketRanking({ type = '' }) {
 
   // 加载更多函数
   const loadMore = async () => {
-    const { invite } = this.props;
     if (!this.checkLoadCondition()) return;
     return await invite.getInviteUsersList(invite.currentPage + 1);
   };
@@ -57,14 +56,14 @@ function RedPacketRanking({ type = '' }) {
           </View>
           <View className={styles.totalShare}>
             <View className={styles.totalRevenue__number}>123</View>
-            <View className={styles.totalRevenue__text}>总分享（篇）</View>
+            <View className={styles.totalRevenue__text}>总{pageText}（篇）</View>
           </View>
         </View>
         <View className={styles.rankingList}>
           <View className={styles.rankingList__header}>
-            <View onClick={() => handleClickNav('my')} className={styles.rankingList__navigation}>我的分享<SelectNav currentNav='my'/></View>
-            <View onClick={() => handleClickNav('hot')} className={styles.rankingList__navigation}>热门分享<SelectNav currentNav='hot'/></View>
-            <View onClick={() => handleClickNav('all')} className={styles.rankingList__navigation}>分享总排行<SelectNav currentNav='all'/></View>
+            <View onClick={() => handleClickNav('my')} className={styles.rankingList__navigation}>我的{pageText}<SelectNav currentNav='my'/></View>
+            <View onClick={() => handleClickNav('hot')} className={styles.rankingList__navigation}>热门{pageText}<SelectNav currentNav='hot'/></View>
+            <View onClick={() => handleClickNav('all')} className={styles.rankingList__navigation}>{pageText}总排行<SelectNav currentNav='all'/></View>
           </View>
         <ReadPacketList/>
         <View className={`${styles.refreshView}`}>
@@ -80,4 +79,4 @@ function RedPacketRanking({ type = '' }) {
   );
 }
 
-export default inject('user')(observer(RedPacketRanking));
+export default inject('user', 'invite')(observer(RedPacketRanking));
