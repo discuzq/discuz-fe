@@ -1,0 +1,37 @@
+@import '@common/styles/index.scss';
+
+.mobileLayout {
+  background: $white;
+}
+
+.unit {
+  &::before {
+    content: '';
+    display: block;
+    height: 10px;
+    background: $spacer-bg-color;
+  }
+}
+
+.threadHeader {
+  padding: 0 $padding-4n;
+  background-color: $white;
+}
+
+.dividerContainer {
+  padding-left: $padding-4n;
+  padding-right: $padding-4n;
+  padding-bottom: rem(18);
+}
+.sectionTitle {
+  font-weight: 600;
+  font-size: rem(16);
+  line-height: rem(22);
+  color: #4f5a70;
+  padding: rem(16) 0;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+.dataSourceContainer {
+  margin-top: rem(10);
+}

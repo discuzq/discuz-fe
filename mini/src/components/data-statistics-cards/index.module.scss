@@ -1,0 +1,28 @@
+@import '@common/styles/index.scss';
+
+.cardsBox {
+  display: flex;
+  flex-wrap: wrap;
+  .cardItemBox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: $padding-3n 0;
+  }
+  .cardValue {
+    color: $text-color-primary;
+    font-size: rem(20);
+    margin-bottom: $margin-2n;
+  }
+  .cardLabel {
+    font-size: rem(14);
+    color: $text-color-regular;
+    width: 100%;
+    text-align: center;
+    line-height: rem(20);
+    &.cardLabelBorder {
+      border-right: 1px solid #eeee;
+    }
+  }
+}

@@ -91,6 +91,7 @@ const config = {
         'my/follows/index',
         'my/block/index',
         'my/renew/index',
+        'my/thread-data/index',
       ],
     },
     ...mergedConfig

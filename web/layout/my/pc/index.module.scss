@@ -113,3 +113,23 @@
   height: rem(169);
   padding: rem($padding-6n) rem($padding-4n);
 }
+
+.tabs {
+  :global(.dzq-tabs__bar.is-card) {
+    box-shadow: none;
+  }
+  :global {
+    .dzq-tabs__list {
+      border-bottom: 1px solid #eee;
+      // display: flex;
+      // justify-content: space-between;
+      margin: 0 rem(24);
+      .dzq-tabs__item:first-child {
+        padding-left: 0;
+      }
+    }
+  }
+}
+.userCenterCreateStyle {
+  padding: 0 $padding-3n;
+}

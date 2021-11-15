@@ -82,3 +82,23 @@
   box-sizing: border-box;
   text-align: center;
 }
+
+.tabs {
+  :global(.dzq-tabs__bar.is-card) {
+    box-shadow: none;
+  }
+  :global {
+    .dzq-tabs__list {
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 $padding-4n;
+    }
+    .dzq-tabs__item:first-child {
+      padding-left: 0
+    }
+    .dzq-tabs__item:last-child {
+      padding-right: 0
+    }
+  }
+}

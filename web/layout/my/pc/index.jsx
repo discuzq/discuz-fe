@@ -13,13 +13,15 @@ import Router from '@discuzq/sdk/dist/router';
 import UserCenterFansPc from '@components/user-center/fans-pc';
 import UserCenterFollowsPc from '../../../components/user-center/follows-pc';
 import BaseLayout from '@components/base-layout';
-import { Toast } from '@discuzq/design';
+import { Toast, Tabs } from '@discuzq/design';
 import { withRouter } from 'next/router';
 import UserCenterHeaderPc from '@components/user-center/header-pc';
 import MemberShipCard from '@components/member-ship-card';
 import RenewalFee from '@components/user-center/renewal-fee';
 import UserCenterThreads from '@components/user-center-threads';
 import PacketOpen from '@components/red-packet-animation/web';
+import UserCenterShare from '@components/user-center-share'
+import UserCenterCreate from '@components/user-center-create'
 
 // 插件引入
 /**DZQ->plugin->register<plugin_user@user_extension_left_layout_hook>**/
@@ -43,6 +45,7 @@ class PCMyPage extends React.Component {
       showFollowPopup: false, // 是否弹出关注框
       isLoading: false,
       isRenewalFeeVisible: false, // 是否弹出续费弹窗
+      tabsType: 'creatorCenter'
     };
 
     if (myThreadsList.length === 0) {
@@ -195,6 +198,78 @@ class PCMyPage extends React.Component {
     );
   };
 
+  // TODO 分享中心 & 创作中心 - start
+  // 切换选项卡
+  onTabActive = (val) => {
+    this.setState({
+      tabsType: val
+    })
+  }
+
+  renderPublishThreds = () => {
+    const { threadList } = this.props;
+
+    const myThreadsList = threadList.getList({
+      namespace: 'my',
+    });
+
+    return (
+      <UserCenterThreads data={myThreadsList} threadClassName={styles.threadStyle}/>
+    )
+  }
+
+  renderSharerCenter = () => {
+    return <UserCenterShare/>
+  }
+
+  renderCreatorCenter = () => {
+    return <UserCenterCreate userCreateClassName={styles.userCenterCreateStyle}/>
+  }
+
+  renderTabs = () => {
+    const { tabsType } = this.state;
+    const tabList = [
+      [ 'publishThreads','我的发布' ],
+      [ 'sharerCenter', '分享中心' ],
+      [ 'creatorCenter', '创作中心' ]
+    ]
+    return (
+      <div>
+        <Tabs
+          activeId={tabsType}
+          scrollable={true}
+          onActive={this.onTabActive}
+          className={styles.tabs}
+        >
+          {tabList.map(([id, label]) => (
+            <Tabs.TabPanel key={id} id={id} label={label}></Tabs.TabPanel>
+          ))}
+        </Tabs>
+        {tabsType === 'publishThreads' && this.renderPublishThreds()}
+        {tabsType === 'sharerCenter' && this.renderSharerCenter()}
+        {tabsType === 'creatorCenter' && this.renderCreatorCenter()}
+      </div>
+    )
+  }
+
+  getPageConfig = () => {
+    const { threadList } = this.props;
+    const totalPage = threadList.getAttribute({
+      namespace: 'my',
+      key: 'totalPage',
+    });
+
+    const currentPage = threadList.getAttribute({
+      namespace: 'my',
+      key: 'currentPage',
+    });
+    const requestError = threadList.getListRequestError({ namespace: 'my' });
+    return { totalPage, currentPage, requestError }
+
+  }
+
+  // TODO 分享中心 & 创作中心 - end
+
   renderContent = () => {
     const { isLoading } = this.state;
     const { user, threadList } = this.props;
@@ -215,6 +290,9 @@ class PCMyPage extends React.Component {
       showUserThreadsTotalCount = false;
     }
 
+    // TODO faye
+    const hasTab = true
+
     return (
       <div className={styles.userContent}>
         <div className={styles.section}>
@@ -224,18 +302,23 @@ class PCMyPage extends React.Component {
           <UserCenterAction />
         </div>
 
-        <div id="my-thread"></div>
-        <SidebarPanel
-          title="主题"
-          type="normal"
-          isShowMore={false}
-          noData={!myThreadsList?.length}
-          isLoading={isLoading}
-          leftNum={showUserThreadsTotalCount ? `${totalCount}个主题` : ''}
-          mold="plane"
-        >
-          <UserCenterThreads data={myThreadsList} threadClassName={styles.threadStyle}/>
-        </SidebarPanel>
+        <div className={styles.section}>
+          <div id="my-thread"></div>
+          <SidebarPanel
+            title="主题"
+            type="normal"
+            isShowMore={false}
+            noData={!myThreadsList?.length}
+            isLoading={isLoading}
+            leftNum={showUserThreadsTotalCount ? `${totalCount}个主题` : ''}
+            mold="plane"
+            titleStyle={hasTab && {borderBottom: 'none', paddingBottom: 0}}
+          >
+            
+            {hasTab && this.renderTabs()}
+            {!hasTab && this.renderPublishThreds()}
+          </SidebarPanel>
+        </div>
       </div>
     );
   };
@@ -250,17 +333,7 @@ class PCMyPage extends React.Component {
       namespace: 'my',
     });
 
-    const totalPage = threadList.getAttribute({
-      namespace: 'my',
-      key: 'totalPage',
-    });
-
-    const currentPage = threadList.getAttribute({
-      namespace: 'my',
-      key: 'currentPage',
-    });
-
-    const requestError = threadList.getListRequestError({ namespace: 'my' });
+    const { totalPage, currentPage, totalCount, requestError} = this.getPageConfig()
 
     // 判断用户信息loading状态
     const IS_USER_INFO_LOADING = !this.props.user?.username;
