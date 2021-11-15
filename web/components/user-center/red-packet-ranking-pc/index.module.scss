@@ -1,0 +1,106 @@
+@import '@common/styles/index.scss';
+
+@mixin header_wrap {
+  flex: 1;
+  text-align: center;
+}
+@mixin header_number {
+  font-weight: 600;
+  font-size: 20px;
+  color: #0b0b37;
+  line-height: 28px;
+  padding-bottom: $padding-2n;
+}
+@mixin header_text {
+  line-height: 20px;
+  font-size: 14px;
+  color: $text-color-secondary;
+}
+
+.wrap {
+  background-color: $white;
+  display: flex;
+  flex-direction: column;
+  padding: 0 $padding-6n;
+  box-sizing: border-box;
+}
+.header {
+  box-sizing: border-box;
+  border-bottom: $border-solid-1;
+  border-radius: $border-radius-small;
+}
+.title {
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 24px;
+  text-align: left;
+  color: #000;
+  padding: $padding-4n 0;
+  border-bottom: $border-solid-1;
+}
+.statistics {
+  padding: $padding-6n 0;
+  display: flex;
+}
+.totalRevenue {
+  @include header_wrap;
+  .totalRevenue__money {
+    @include header_number;
+  }
+  .totalRevenue__text {
+    @include header_text;
+  }
+  position: relative;
+  &::before{
+    content: '';
+    width: 1px;
+    height: 20px;
+    position: absolute;
+    right: 0;
+    top: calc(50% - 10px);
+    background-color: #EEEEEE;
+  }
+}
+.totalShare {
+  @include header_wrap;
+  .totalRevenue__number {
+    @include header_number;
+  }
+  .totalRevenue__text {
+    @include header_text;
+  }
+}
+.rankingList {
+  background-color: $white;
+  flex: 1;
+  border-radius: $border-radius-small;
+}
+.rankingList__header {
+  padding-left: $padding-1n;
+  display: flex;
+  box-sizing: border-box;
+  justify-content: left;
+  border-bottom: $border-solid-1;
+  .rankingList__navigation {
+    font-size: 14px;
+    line-height: 20px;
+    text-align: center;
+    color: #4f5a70;
+    position: relative;
+    padding: $padding-4n 0;
+    margin-right: 32px;
+    cursor: pointer;
+    .rankingList__underline {
+      position: absolute;
+      width: 100%;
+      height: 2px;
+      background-color: #2469F6;
+      bottom: 0;
+      left: 0;
+    }
+  }
+  .rankingList__select {
+    font-weight: $font-weight-regular;
+    color: #2469f6;
+  }
+}

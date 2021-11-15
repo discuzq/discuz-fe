@@ -142,6 +142,9 @@ class PCMyPage extends React.Component {
   renderRight = () => {
     // 条件都满足时才显示微信
     const IS_WECHAT_ACCESSABLE = this.props.site.wechatEnv !== 'none' && !!this.props.user.wxNickname;
+    console.log('user: ', this.props.user);
+    console.log('userInfo', JSON.stringify(this.props.user))
+    console.log('userInfo: ', this.props.user.userInfo);
     return (
       <>
         {this.whetherIsShowRenewalCard() && (

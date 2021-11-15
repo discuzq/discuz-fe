@@ -198,7 +198,8 @@ class index extends Component {
   // 点击发送私信
   handleMessage = () => {
     const { id, nickname } = this.targetUser;
-    Router.push({ url: `/subPages/message/index?page=chat&userId=${id}&nickname=${nickname}` });
+    // Router.push({ url: `/subPages/message/index?page=chat&userId=${id}&nickname=${nickname}` });
+    Router.push({ url: `/userPages/my/ranking/index?page=praise` });
   };
 
   // 点击我的点赞

@@ -1,0 +1,52 @@
+@import '@common/styles/index.scss';
+
+.wrap {
+}
+.list {
+  border-bottom: $border-solid-1;
+  padding: $padding-6n 0;
+  display: flex;
+  justify-content: space-between;
+  &:last-child {
+    border-bottom: none;
+  }
+}
+.list__left {
+  flex: 1;
+  overflow: hidden;
+  .list__title {
+    @include text-ellipsis;
+    font-size: 16px;
+    line-height: 22px;
+    color: #0b0b37;
+    display: flex;
+    align-items: center;
+  }
+  .list__icon {
+    width: 14px;
+    height: 18px;
+  }
+  .list__hint {
+    @include text-ellipsis;
+    padding-top: $padding-3n;
+    font-size: 12px;
+    line-height: 26px;
+    text-align: left;
+    color: #8490a8;
+  }
+}
+
+.list__right {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .list__button {
+    width: 76px;
+    height: 36px;
+    border-radius: 5px;
+    border: 1px solid #f50026;
+    background-color: $white;
+    color: #f50026;
+    box-sizing: border-box;
+  }
+}

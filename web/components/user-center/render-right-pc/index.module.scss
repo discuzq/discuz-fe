@@ -1,0 +1,50 @@
+@import '@common/styles/index.scss';
+
+.borderRadius {
+  border-radius: $border-radius-small;
+}
+
+.userInfoWrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-bottom: rem($padding-4n);
+  justify-content: space-between;
+  border-bottom: 1px solid $body-bg-color;
+  height: rem(20);
+  line-height: rem(20);
+  &:last-child {
+    border-bottom: none;
+  }
+  .userInfoKey {
+    color: $text-color-regular;
+    font-size: rem($font-size-primary);
+    flex-shrink: 0;
+  }
+
+  .userInfoValue {
+    color: $text-color-primary;
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
+    font-size: rem($font-size-primary);
+    margin-left: rem($margin-1n);
+    @include text-ellipsis();
+  }
+
+  .wxContent {
+    display: flex;
+    align-items: center;
+  }
+
+  .wecahtNickname {
+    margin-left: rem(8);
+    @include text-ellipsis();
+  }
+}
+
+.MemberShipCardWrapperPc {
+  margin: 0 0 rem($margin-10);
+  height: rem(169);
+  padding: rem($padding-6n) rem($padding-4n);
+}

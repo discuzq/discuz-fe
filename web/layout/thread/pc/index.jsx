@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 import { withRouter } from 'next/router';
 import Router from '@discuzq/sdk/dist/router';
 
-import AuthorInfo from './components/author-info/index';
+import AuthorInfo from '@components/author-info/index';
 import CommentInput from './components/comment-input/index';
 import LoadingTips from '@components/thread-detail-pc/loading-tips';
 import { Icon, Toast, Popup } from '@discuzq/design';
