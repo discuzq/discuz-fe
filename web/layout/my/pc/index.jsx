@@ -312,7 +312,7 @@ class PCMyPage extends React.Component {
             isLoading={isLoading}
             leftNum={showUserThreadsTotalCount ? `${totalCount}个主题` : ''}
             mold="plane"
-            titleStyle={hasTab && {borderBottom: 'none', paddingBottom: 0}}
+            titleStyle={hasTab ? {borderBottom: 'none', paddingBottom: 0} : {}}
           >
             
             {hasTab && this.renderTabs()}

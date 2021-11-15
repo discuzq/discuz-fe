@@ -332,7 +332,7 @@ export default class index extends Component {
                 title="主题"
                 isShowMore={false}
                 leftNum={`${totalCount || myThreadsList.length}个主题`}
-                titleStyle={hasTab && {borderBottom: 'none', paddingBottom: 0}}
+                titleStyle={hasTab ? {borderBottom: 'none', paddingBottom: 0} : {}}
               />
             </View>
             {hasTab && !isLoading && this.renderTabs()}
