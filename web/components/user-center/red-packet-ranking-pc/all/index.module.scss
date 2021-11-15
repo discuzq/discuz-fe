@@ -24,6 +24,7 @@
 .ranking {
   @include listItem;
   width: 28px;
+  color: #8590a6;
 }
 .nickname {
   @include listItem;
@@ -56,6 +57,35 @@
     display: flex;
     justify-content: space-between;
     line-height: 38px;
+    border-bottom: 1px solid rgba(#eee, 0.75);
+    &:nth-child(1) {
+      .ranking {
+        color: #E02433;
+      }
+    }
+    &:nth-child(2) {
+      .ranking {
+        color: #E02433;
+        opacity: 0.8;
+      }
+    }
+    &:nth-child(3) {
+      .ranking {
+        color: #E02433;
+        opacity: 0.6;
+      }
+    }
+    &:nth-child(4) {
+      .ranking {
+        color: #E02433;
+        opacity: 0.5;
+      }
+    }
+    &:nth-child(5) {
+      .ranking {
+        color: #FFC300;
+      }
+    }
   }
   .nickname {
     display: flex;
