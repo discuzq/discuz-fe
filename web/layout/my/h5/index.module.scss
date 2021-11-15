@@ -29,22 +29,45 @@
 }
 
 .threadUnit {
-  padding: rem($padding-4n);
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  height: rem(52);
-  box-sizing: border-box;
+  padding: 0 $padding-4n;
+  background-color: $white;
 
-  .threadTitle {
-    font-weight: 600;
-    font-size: rem($font-size-middle);
-    color: $text-color-primary;
-    margin-right: rem($margin-3n);
+  // padding: rem($padding-4n);
+  // display: flex;
+  // align-items: center;
+  // flex-wrap: wrap;
+  // height: rem(52);
+  // box-sizing: border-box;
+
+  // .threadTitle {
+  //   font-weight: 600;
+  //   font-size: rem($font-size-middle);
+  //   color: $text-color-primary;
+  //   margin-right: rem($margin-3n);
+  // }
+
+  // .threadCount {
+  //   font-size: rem($font-size-small);
+  //   color: $text-color-secondary;
+  // }
+}
+
+.tabs {
+  :global(.dzq-tabs__bar.is-card) {
+    box-shadow: none;
   }
-
-  .threadCount {
-    font-size: rem($font-size-small);
-    color: $text-color-secondary;
+  :global {
+    .dzq-tabs__list {
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 $padding-4n;
+    }
+    .dzq-tabs__item:first-child {
+      padding-left: 0
+    }
+    .dzq-tabs__item:last-child {
+      padding-right: 0
+    }
   }
 }

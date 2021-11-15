@@ -1,0 +1,56 @@
+@import '@common/styles/index.scss';
+
+.popoverBox {
+  position: relative;
+}
+.popoverView {
+  position: absolute;
+  top: rem(8);
+  z-index: 10001;
+  background-color: white;
+  box-shadow: 0px 0px 8px #c5c9d5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: rem(10) rem(12);
+  box-shadow: 0 0 8px #c5c9d5;
+  border-radius: rem(5);
+  min-width: rem(100);
+}
+/* 实现三角形 */
+// .popoverView::before {
+//   position: absolute;
+//   display: inline-block;
+//   width: 0;
+//   height: 0px;
+//   content: '';
+//   border-style: solid;
+//   border-width: 20px;
+//   border-color: #fff #fff transparent transparent;
+//   box-shadow: 2px -2px 2px #ddd;
+// }
+/* 上 */
+// .popoverView.top::before {
+//   bottom: -12px;
+//   transform: rotate(135deg);
+// }
+/* 下 */
+// .popoverView.bottom::before {
+//   top: -12px;
+//   transform: rotate(-45deg);
+// }
+/* 左 */
+// .popoverView.left::before {
+//   right: 40px;
+// }
+/* 中 */
+// .popoverView.center::before {
+//   left: 94px;
+// }
+/* 右 */
+// .popoverView.right::before {
+//   left: 40px;
+// }
+.buttonPopver {
+  display: inline-block;
+}

@@ -13,9 +13,12 @@ import PacketOpen from '@components/red-packet-animation';
 import Taro, { getCurrentInstance, eventCenter } from '@tarojs/taro';
 import ImagePreviewer from '@discuzq/design/dist/components/image-previewer/index';
 import classnames from 'classnames';
-import Toast from '@discuzq/design/dist/components/toast';
+// import Toast from '@discuzq/design/dist/components/toast';
+import { Toast, Tabs } from '@discuzq/design';
 import UserCenterThreads from '@components/user-center-threads';
 import checkImgExists from '@common/utils/check-image-exists';
+import UserCenterShare from '@components/user-center-share'
+import UserCenterCreate from '@components/user-center-create'
 
 @inject('user')
 @inject('index')
@@ -30,6 +33,7 @@ export default class index extends Component {
       isPreviewBgVisible: false, // 是否预览背景图片
       isNormalTitle: false, // 是否显示不透明 title
       previewBackgroundUrl: null, // 预览背景图片链接
+      tabsType: 'creatorCenter'
     };
   }
 
@@ -196,26 +200,63 @@ export default class index extends Component {
     if (!backgroundUrl) return false;
     return backgroundUrl;
   };
+  
+  // TODO faye
+  // 切换选项卡
+  onTabActive = (val) => {
+    this.setState({
+      tabsType: val
+    })
+  }
 
-  render() {
-    const { isLoading } = this.state;
-    const { user, index, thread, threadList } = this.props;
-
-    const { hasRedPacket } = thread;
-    const { lists } = threadList;
+  renderPublishThreds = () => {
+    const { threadList } = this.props;
 
     const myThreadsList = threadList.getList({
       namespace: 'my',
     });
+    return <UserCenterThreads showBottomStyle={false} data={myThreadsList} />
+  }
 
+  renderSharerCenter = () => {
+    return <UserCenterShare/>
+  }
+
+  renderCreatorCenter = () => {
+    return <UserCenterCreate/>
+  }
+
+  renderTabs = () => {
+    const { tabsType } = this.state;
+    const tabList = [
+      [ 'publishThreads','我的发布' ],
+      [ 'sharerCenter', '分享中心' ],
+      [ 'creatorCenter', '创作中心' ]
+    ]
+    return (
+      <View>
+        <Tabs
+          activeId={tabsType}
+          scrollable={true}
+          onActive={this.onTabActive}
+          className={styles.tabs}
+        >
+          {tabList.map(([id, label]) => (
+            <Tabs.TabPanel key={id} id={id} label={label}></Tabs.TabPanel>
+          ))}
+        </Tabs>
+        {tabsType === 'publishThreads' && this.renderPublishThreds()}
+        {tabsType === 'sharerCenter' && this.renderSharerCenter()}
+        {tabsType === 'creatorCenter' && this.renderCreatorCenter()}
+      </View>
+    )
+  }
+
+  getPageConfig = () => {
+    const { threadList } = this.props;
     const totalPage = threadList.getAttribute({
       namespace: 'my',
       key: 'totalPage',
-    });
-
-    const totalCount = threadList.getAttribute({
-      namespace: 'my',
-      key: 'totalCount',
     });
 
     const currentPage = threadList.getAttribute({
@@ -224,8 +265,31 @@ export default class index extends Component {
     });
 
     const requestError = threadList.getListRequestError({ namespace: 'my' });
+    return { totalPage, currentPage, requestError }
+
+  }
+
+  render() {
+    const { isLoading } = this.state;
+    const {index, thread, threadList } = this.props;
+
+    const { hasRedPacket } = thread;
+
+    const myThreadsList = threadList.getList({
+      namespace: 'my',
+    });
+
+    const totalCount = threadList.getAttribute({
+      namespace: 'my',
+      key: 'totalCount',
+    });
+
+    const { totalPage, currentPage, requestError} = this.getPageConfig()
 
     hasRedPacket && index.setHiddenTabBar(true);
+
+    // TODO faye
+    const hasTab = true
 
     return (
       <BaseLayout
@@ -262,17 +326,17 @@ export default class index extends Component {
           <View className={styles.unit}>
             <UserCenterPost />
           </View>
-
-          <View className={`${styles.unit} ${styles.threadBackgroundColor}`}>
+          <View className={classnames(styles.unit, !hasTab && styles.threadBackgroundColor )}>
             <View className={styles.threadHeader}>
               <SectionTitle
                 title="主题"
                 isShowMore={false}
                 leftNum={`${totalCount || myThreadsList.length}个主题`}
+                titleStyle={hasTab ? {borderBottom: 'none', paddingBottom: 0} : {}}
               />
             </View>
-
-            {!isLoading && <UserCenterThreads showBottomStyle={false} data={myThreadsList} />}
+            {hasTab && !isLoading && this.renderTabs()}
+            {!hasTab && !isLoading && this.renderPublishThreds()}
           </View>
         </View>
         {this.getBackgroundUrl() && (

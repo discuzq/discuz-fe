@@ -1,0 +1,43 @@
+@import '@common/styles/index.scss';
+
+.canvasWrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding-top: rem(18);
+}
+
+.canvasBox {
+  overflow: hidden;
+  margin-bottom: $margin-2n;
+}
+
+.canvasTitle {
+  margin-bottom: rem(20);
+  color: $text-color-primary;
+  font-size: $font-size-base;
+}
+
+.canvasLegend {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+
+  .canvasLegendItem {
+    display: flex;
+    align-items: center;
+    .square {
+      width: rem(14);
+      height: rem(14);
+      border-radius: rem(3);
+    }
+    .value,
+    .name {
+      color: $text-color-secondary;
+      margin-left: rem(4);
+      font-size: $font-size-small;
+    }
+  }
+}
