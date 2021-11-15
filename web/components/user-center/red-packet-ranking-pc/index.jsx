@@ -1,6 +1,7 @@
 import React, { useState, Fragment } from 'react';
-import styles from './index.module.scss';
 import NoData from '@components/no-data';
+import classnames from 'classnames';
+import styles from './index.module.scss';
 import HotList from './hot';
 import AllList from './all';
 import MyList from './my';
@@ -25,7 +26,7 @@ function RedPacketRankingPC(props) {
     if (currentNav !== nav) {
       return <Fragment></Fragment>;
     }
-    return <span className={styles.rankingList__select}></span>;
+    return <span className={styles.rankingList__underline}></span>;
   };
 
   const handleClickNav = (nav) => {
@@ -39,7 +40,7 @@ function RedPacketRankingPC(props) {
         <div className={styles.statistics}>
           <div className={styles.totalRevenue}>
             <div className={styles.totalRevenue__money}>0.00</div>
-            <div className={styles.totalRevenue__text}>总收益</div>
+            <div className={styles.totalRevenue__text}>总收益（元）</div>
           </div>
           <div className={styles.totalShare}>
             <div className={styles.totalRevenue__number}>123</div>
@@ -49,9 +50,29 @@ function RedPacketRankingPC(props) {
       </div>
       <div className={styles.rankingList}>
         <div className={styles.rankingList__header}>
-          <div onClick={() => handleClickNav('my')} className={styles.rankingList__navigation}>我的{pageText}<SelectNav currentNav='my'/></div>
-          <div onClick={() => handleClickNav('hot')} className={styles.rankingList__navigation}>热门{pageText}<SelectNav currentNav='hot'/></div>
-          <div onClick={() => handleClickNav('all')} className={styles.rankingList__navigation}>{pageText}总排行<SelectNav currentNav='all'/></div>
+          <div className={styles.rankingList__header}>
+            <div
+              onClick={() => handleClickNav('my')}
+              className={classnames(styles.rankingList__navigation, {[styles.rankingList__select]: nav === 'my'})}
+            >
+              我的{pageText}
+              <SelectNav currentNav='my'/>
+            </div>
+            <div
+              onClick={() => handleClickNav('hot')}
+              className={classnames(styles.rankingList__navigation, {[styles.rankingList__select]: nav === 'hot'})}
+            >
+              热门{pageText}
+              <SelectNav currentNav='hot'/>
+            </div>
+            <div
+              onClick={() => handleClickNav('all')}
+              className={classnames(styles.rankingList__navigation, {[styles.rankingList__select]: nav === 'all'})}
+            >
+              {pageText}总排行
+              <SelectNav currentNav='all'/>
+            </div>
+          </div>
         </div>
         <ReadPacketList/>
       </div>

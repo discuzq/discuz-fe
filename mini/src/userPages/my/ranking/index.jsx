@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import Page from '@components/page';
 import { getCurrentInstance } from '@tarojs/taro';
-import RedPacketRanking from '@components/user-center/red-packet-ranking';
+import Ranking from '@layout/my/ranking';
 import setTitle from '@common/utils/setTitle';
 
 export default function Index() {
@@ -31,7 +31,7 @@ export default function Index() {
 
   return (
     <Page>
-      <RedPacketRanking {...params} />
+      <Ranking {...params} />
     </Page>
   );
 }

@@ -3,13 +3,22 @@
 @mixin header_wrap {
   flex: 1;
   text-align: center;
+  display: flex;
+  justify-content: space-around;
+  box-sizing: border-box;
 }
 @mixin header_number {
-  line-height: 33px;
+  flex: 1;
+  text-align: center;
+  line-height: 28px;
   padding-bottom: $padding-2n;
-  font-size: 24px;
+  font-size: $font-size-large;
+  font-weight: $font-weight-regular;
+  color: $text-color-primary;
 }
 @mixin header_text {
+  flex: 1;
+  text-align: center;
   line-height: 20px;
   font-size: 14px;
   color: $text-color-secondary;
@@ -22,8 +31,7 @@
   flex-direction: column;
 }
 .header {
-  display: flex;
-  padding: $padding-4n;
+  padding: $padding-6n 0;
   box-sizing: border-box;
   background-color: $white;
   border-top: $border-solid-1;
@@ -33,20 +41,15 @@
   @include header_wrap;
   .totalRevenue__money {
     @include header_number;
-    color: $error-color;
-  }
-  .totalRevenue__text {
-    @include header_text;
   }
 }
 .totalShare {
   @include header_wrap;
-  .totalRevenue__number {
-    @include header_number;
-    color: #f66524;
-  }
   .totalRevenue__text {
     @include header_text;
+    &:first-child {
+      border-right: $border-solid-1;
+    }
   }
 }
 .rankingList {
@@ -60,13 +63,13 @@
   justify-content: space-between;
   border-bottom: $border-solid-1;
   .rankingList__navigation {
-    font-size: 16px;
-    line-height: 22px;
+    font-size: 14px;
+    line-height: 20px;
     text-align: center;
-    color: #0b0b37;
+    color: #4f5a70;
     position: relative;
     padding: $padding-4n 0;
-    .rankingList__select {
+    .rankingList__underline {
       position: absolute;
       width: 100%;
       height: 2px;
@@ -74,6 +77,10 @@
       bottom: 0;
       left: 0;
     }
+  }
+  .rankingList__select {
+    font-weight: $font-weight-regular;
+    color: #2469f6;
   }
 }
 .refreshView {
