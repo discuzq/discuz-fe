@@ -1,0 +1,87 @@
+.root{
+    background-color: #fff;
+    width: 100%;
+    .top{
+        padding:20px;
+        border-bottom: 10px solid #f4f6f7;
+        .guafen{
+            height: 60px;
+            border-radius: 5px;
+            background: #fff9e5;
+            font-size: 16px;
+            line-height: 24px;
+            text-align: left;
+            color: #0b0b37;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            >span{
+                font-weight: 600;
+                font-size: 20px;
+                line-height: 16.8px;
+                text-align: left;
+                color: #e02433;
+                margin:0 8px;
+            }
+        }
+        .yiqiang{
+            font-size: 14px;
+            line-height: 24px;
+            text-align: left;
+            color: #0b0b37;
+            margin: 10px 0;
+            text-align: center;
+            >span{
+                color:#E02433;
+                margin:0 5px;
+            }
+        }
+        .avatar{
+            display:block;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin: 10px auto;
+        }
+        .yifen{
+            font-size: 14px;
+            line-height: 24px;
+            color: #0b0b37;
+            text-align: center;
+        }
+        .zaiyao{
+            font-size: 14px;
+            line-height: 24px;
+            text-align: center;
+            color: #e02433;
+        }
+        .shareBtn{
+            text-align: center;
+            margin-top: 20px;
+            >button{
+                width:114px;
+            }
+        }
+    }
+
+    .bottom{
+        padding: 0 20px 20px;
+        :global{
+            .dzq-tabs__bar.is-card{
+                box-shadow: none;
+            }
+            .dzq-tabs__list{
+                justify-content: space-around;
+            }
+        }
+
+        .rule{
+            font-size: 14px;
+            line-height: 24px;
+            text-align: left;
+            color: #0b0b37;
+            text-align: center;
+            margin: 20px 0;
+        }
+    }
+}

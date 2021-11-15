@@ -1,5 +1,5 @@
-import React, { useMemo, useCallback } from 'react';
-import { Button, Icon } from '@discuzq/design';
+import React, { useMemo, useCallback, useState } from 'react';
+import { Button, Icon, Popup } from '@discuzq/design';
 import AudioPlay from './audio-play';
 import PostContent from './post-content';
 import ProductItem from './product-item';
@@ -8,6 +8,7 @@ import { handleAttachmentData } from './utils';
 import AttachmentView from './attachment-view';
 import ImageDisplay from './image-display';
 import VoteDisplay from './vote-display';
+import SharePacket from './share-packet';
 import IframeVideoDisplay from '@components/thread-post/iframe-video-display';
 import Packet from './packet';
 import styles from './index.module.scss';
@@ -15,7 +16,7 @@ import SiteMapLink from '@components/site-map-link';
 import DZQPluginCenterInjectionPolyfill from '../../utils/DZQPluginCenterInjectionPolyfill';
 
 // 插件引入
-/**DZQ->plugin->register<plugin_index@thread_extension_display_hook>**/
+/** DZQ->plugin->register<plugin_index@thread_extension_display_hook>**/
 
 /**
  * 帖子内容组件
@@ -44,13 +45,13 @@ const Index = (props) => {
     onClose,
     platform,
     updateViewCount,
-    onTextItemClick
-  } = props
+    onTextItemClick,
+  } = props;
 
   const {
     canDownloadAttachment,
     canViewAttachment,
-    canViewVideo
+    canViewVideo,
   } = props?.data?.ability || {};
 
   // 标题显示37个字符
@@ -60,6 +61,21 @@ const Index = (props) => {
     }
     return title;
   }, [title]);
+
+  const [showShareDetail, setShowShareDetail] = useState(false);
+
+  const packetClick = () => {
+    const isSharePacket = true;
+    if (isSharePacket) {
+      console.log(props.platform);
+      if (props.platform === 'pc') {
+        setShowShareDetail(true);
+      }
+    } else {
+      onClick();
+    }
+  };
+
 
   // 帖子属性内容
   const renderThreadContent = ({ content: data, attachmentPrice, payType, paid, site } = {}) => {
@@ -75,7 +91,7 @@ const Index = (props) => {
       voteData,
       threadId,
       iframeData,
-      plugin
+      plugin,
     } = handleAttachmentData(data);
 
     return (
@@ -129,14 +145,25 @@ const Index = (props) => {
         }
         {rewardData && <Packet
           type={1}
-          // money={rewardData.money}
           onClick={onClick}
         />}
         {redPacketData && <Packet
-          // money={redPacketData.money || 0}
-          onClick={onClick}
+          // onClick={onClick}
+          onClick={packetClick}
           condition={redPacketData.condition}
         />}
+
+        
+        {
+          redPacketData && (
+            <Popup position={'center'} visible={showShareDetail} onClose={()=>setShowShareDetail(false)}>
+              <div>
+                <SharePacket></SharePacket>
+              </div>
+            </Popup>
+          )
+        }
+
         {goodsData && <ProductItem
           image={goodsData.imagePath}
           amount={goodsData.price}
@@ -157,20 +184,20 @@ const Index = (props) => {
         {/* 投票帖子展示 */}
         {voteData && <VoteDisplay recomputeRowHeights={props.recomputeRowHeights} voteData={voteData} threadId={threadId} />}
         <DZQPluginCenterInjectionPolyfill
-          target='plugin_index' 
-          hookName='thread_extension_display_hook' 
+          target='plugin_index'
+          hookName='thread_extension_display_hook'
           pluginProps={{
             renderData: plugin,
             threadData: props.data,
             updateListThreadIndexes: props.updateListThreadIndexes,
             updateThread: props.updateThread,
-            recomputeRowHeights: props.recomputeRowHeights
-        }}/>
-        
+            recomputeRowHeights: props.recomputeRowHeights,
+          }}/>
+
       </>
     );
   };
- 
+
   return (
     <>
       <SiteMapLink href={`/thread/${threadId}`} text={newTitle && newTitle !== '' ? newTitle : props.data?.content?.text}/>
