@@ -31,6 +31,9 @@ dist/
 mini/dist
 
 sls.config.yaml
+test-serverless.yml
 .pluginConfig.js
 pluginPages/
+
+test-serverless.yml
 

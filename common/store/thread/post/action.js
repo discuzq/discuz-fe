@@ -308,17 +308,18 @@ class ThreadPostAction extends ThreadPostStore {
         text,
       },
     };
-    if (position.address) params.position = position;
-    else {
-      // 主要是编辑时删除位置的情况，暂时区别开编辑和发帖，因为后台没有更新接口避免影响发帖
-      if (isUpdate) params.position = {
-        longitude: 0,
-        latitude: 0,
-        cityname: '',
-        address: '',
-        location: '',
-      };
-    }
+    // if (position.address) params.position = position;
+    // else {
+    //   // 主要是编辑时删除位置的情况，暂时区别开编辑和发帖，因为后台没有更新接口避免影响发帖
+    //   if (isUpdate) params.position = {
+    //     longitude: 0,
+    //     latitude: 0,
+    //     cityname: '',
+    //     address: '',
+    //     location: '',
+    //   };
+    // }
+    params.position = position.address ? position : {};
     params.price = price || 0;
     params.freeWords = freeWords || 0;
     params.attachmentPrice = attachmentPrice || 0;
@@ -380,6 +381,10 @@ class ThreadPostAction extends ThreadPostStore {
         audio.id = audioId;
       } else if (tomId === THREAD_TYPE.vote.toString()) {
         vote = contentindexes[index].body[0] || {};
+        if (vote.expiredAt) {
+          // 兼容IOS时间字符串格式
+          vote.expiredAt = vote.expiredAt.replace(/-/g, '/');
+        }
       } else if (tomId === THREAD_TYPE.goods.toString()) product = contentindexes[index].body;
       else if (tomId === THREAD_TYPE.video.toString()) {
         video = contentindexes[index].body || {};

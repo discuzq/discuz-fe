@@ -16,7 +16,7 @@ import { Audio, AudioRecord, Icon, Toast } from '@discuzq/design';
 import ClassifyPopup from '@components/thread-post/classify-popup';
 import ProductSelect from '@components/thread-post/product-select';
 import Product from '@components/thread-post/product';
-import ForTheForm from '@components/thread/for-the-form';
+import RewardQa from '@components/thread-post/reward-qa';
 import styles from './index.module.scss';
 import Title from '@components/thread-post/title';
 import Position from '@components/thread-post/position';
@@ -24,7 +24,7 @@ import AtSelect from '@components/thread-post/at-select';
 import TopicSelect from '@components/thread-post/topic-select';
 import RedpacketSelect from '@components/thread-post/redpacket-select';
 import PostPopup from '@components/thread-post/post-popup';
-import AllPostPaid from '@components/thread/all-post-paid';
+import Payment from '@components/thread-post/payment';
 import { withRouter } from 'next/router';
 import { getVisualViewpost, getClientHeight } from '@common/utils/get-client-height';
 import throttle from '@common/utils/thottle';
@@ -530,7 +530,7 @@ class ThreadCreate extends React.Component {
         )}
         {/* 悬赏问答 */}
         {currentAttachOperation === THREAD_TYPE.reward && (
-          <ForTheForm
+          <RewardQa
             confirm={(data) => {
               this.props.setPostData({ rewardQa: data });
               this.props.handleSetState({ currentAttachOperation: false });
@@ -582,7 +582,7 @@ class ThreadCreate extends React.Component {
         )}
         {/* 付费设置 */}
         {this.props.curPaySelect && (
-          <AllPostPaid
+          <Payment
             paidType={this.props.curPaySelect}
             cancel={() => {
               this.props.handleSetState({ curPaySelect: '', currentDefaultOperation: '' });

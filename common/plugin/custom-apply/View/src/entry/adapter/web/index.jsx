@@ -235,8 +235,13 @@ export default class CustomApplyEntry extends React.Component {
   };
 
   handleLimitPeopleChange = (e) => {
+    const val = Math.floor(e.target.value);
+    if (val > 10000) {
+      Toast.info({ content: '报名人数不能大于10000'} );
+      return;
+    }
     const { body } = this.state;
-    this.setState({ body: { ...body, totalNumber: e.target.value } });
+    this.setState({ body: { ...body, totalNumber: val || "" } });
   };
 
   handleTimeClick = (curClickTime) => {

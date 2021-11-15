@@ -44,7 +44,6 @@ class Index extends React.Component {
 
     threadList.registerList({ namespace: 'search' });
 
-    search.currentKeyword = keyword;
     serverSearch && serverSearch.indexTopics && search.setIndexTopics(serverSearch.indexTopics);
     serverSearch && serverSearch.indexUsers && search.setIndexUsers(serverSearch.indexUsers);
     serverSearch && serverSearch.indexThreads && search.setIndexThreads(serverSearch.indexThreads);
@@ -64,13 +63,13 @@ class Index extends React.Component {
       search.searchNoData = false;
       await search.getSearchData({ hasTopics: false, hasUsers: false, hasThreads: false, search: keyword });
       this.requestAgain()
-      search.currentKeyword = keyword;
     } else {
       const hasIndexTopics = !!search.indexTopics;
       const hasIndexUsers = !!search.indexUsers;
       const hasIndexThreads = !!search.indexThreads?.pageData?.length;
       search.getSearchData({ hasTopics: hasIndexTopics, hasUsers: hasIndexUsers, hasThreads: hasIndexThreads, search: keyword });
     }
+    search.currentKeyword = keyword;
     baselayout.resetSearchResultScrolltop();
     // topic.resetTopicsData();
     search.resetResultData();
@@ -137,7 +136,7 @@ class Index extends React.Component {
         title='发现'
       />
     );
-    
+
   }
 }
 

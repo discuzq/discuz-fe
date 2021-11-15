@@ -97,12 +97,34 @@
       @include text-ellipsis();
     }
   }
-  &-item {
-    @include lamp-clamp(1);
-    display: inline-block;
+  &-right {
+    flex: 1;
+    align-self: stretch;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    overflow-x: hidden;
+  }
+  &-scrollX {
+    overflow-x: auto;
+    overflow-x: overlay;
+    @include verticalScrollbar();
+  }
+  &-name {
     width: 25%;
+    @include lamp-clamp(1);
     font-size: $font-size-base;
     color: $text-color-primary;
+  }
+  &-item {
+    flex: 1 0 22%;
+    margin-right: 3%;
+    font-size: $font-size-base;
+    color: $text-color-primary;
+    &:last-child{
+      flex-basis: 25%;
+      margin-right: 0;
+    }
   }
   .button {
     display: inline-flex !important;

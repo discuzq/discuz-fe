@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './index.module.scss';
-import { Divider, Spin, Toast, ImagePreviewer } from '@discuzq/design';
+import { Divider, Spin, Toast, ImagePreviewer, Tabs } from '@discuzq/design';
 import UserCenterHeaderImage from '@components/user-center-header-images';
 import UserCenterHead from '@components/user-center-head';
 import { inject, observer } from 'mobx-react';
@@ -10,6 +10,9 @@ import UserCenterThreads from '@components/user-center-threads';
 import BaseLayout from '@components/base-layout';
 import PacketOpen from '@components/red-packet-animation/h5';
 import { withRouter } from 'next/router';
+import UserCenterShare from '@components/user-center-share'
+import UserCenterCreate from '@components/user-center-create'
+import SectionTitle from '@components/section-title';
 
 @inject('site')
 @inject('user')
@@ -23,6 +26,7 @@ class H5MyPage extends React.Component {
     this.state = {
       isLoading: true,
       isPreviewBgVisible: false, // 是否预览背景图片
+      tabsType: 'creatorCenter'
     };
   }
 
@@ -129,6 +133,82 @@ class H5MyPage extends React.Component {
     return backgroundUrl;
   };
 
+  // TODO 分享中心 & 创作中心 - start
+  // 切换选项卡
+  onTabActive = (val) => {
+    this.setState({
+      tabsType: val
+    })
+  }
+
+  renderPublishThreds = () => {
+    const { threadList } = this.props;
+
+    const myThreadsList = threadList.getList({
+      namespace: 'my',
+    });
+
+    return (
+      <div className={styles.threadItemContainer}>
+        {myThreadsList?.length > 0 && <UserCenterThreads data={myThreadsList} />}
+      </div>
+    )
+  }
+
+  renderSharerCenter = () => {
+    return <UserCenterShare/>
+  }
+
+  renderCreatorCenter = () => {
+    return <UserCenterCreate/>
+  }
+
+  renderTabs = () => {
+    const { tabsType } = this.state;
+    const tabList = [
+      [ 'publishThreads','我的发布' ],
+      [ 'sharerCenter', '分享中心' ],
+      [ 'creatorCenter', '创作中心' ]
+    ]
+    return (
+      <div>
+        <Tabs
+          activeId={tabsType}
+          scrollable={true}
+          onActive={this.onTabActive}
+          className={styles.tabs}
+        >
+          {tabList.map(([id, label]) => (
+            <Tabs.TabPanel key={id} id={id} label={label}></Tabs.TabPanel>
+          ))}
+        </Tabs>
+        {tabsType === 'publishThreads' && this.renderPublishThreds()}
+        {tabsType === 'sharerCenter' && this.renderSharerCenter()}
+        {tabsType === 'creatorCenter' && this.renderCreatorCenter()}
+      </div>
+    )
+  }
+
+  getPageConfig = () => {
+    const { threadList } = this.props;
+
+    const totalPage = threadList.getAttribute({
+      namespace: 'my',
+      key: 'totalPage',
+    });
+
+    const currentPage = threadList.getAttribute({
+      namespace: 'my',
+      key: 'currentPage',
+    });
+
+    const requestError = threadList.getListRequestError({ namespace: 'my' });
+    return { totalPage, currentPage, requestError }
+
+  }
+
+  // TODO 分享中心 & 创作中心 - end
+
   render() {
     const { isLoading } = this.state;
     const { site, thread, threadList  } = this.props;
@@ -140,23 +220,15 @@ class H5MyPage extends React.Component {
     const myThreadsList = threadList.getList({
       namespace: 'my',
     });
-
-    const totalPage = threadList.getAttribute({
-      namespace: 'my',
-      key: 'totalPage',
-    });
-
     const totalCount = threadList.getAttribute({
       namespace: 'my',
       key: 'totalCount',
     });
 
-    const currentPage = threadList.getAttribute({
-      namespace: 'my',
-      key: 'currentPage',
-    });
+    const { totalPage, currentPage, requestError} = this.getPageConfig()
 
-    const requestError = threadList.getListRequestError({ namespace: 'my' });
+    // TODO faye
+    const hasTab = true
 
     return (
       <BaseLayout
@@ -185,17 +257,26 @@ class H5MyPage extends React.Component {
           <div id="my-thread"></div>
           <div className={styles.unit}>
             <div className={styles.threadUnit}>
-              <div className={styles.threadTitle}>主题</div>
-              <div className={styles.threadCount}>{totalCount !== undefined ? `${totalCount}个主题` : ''}</div>
+              {/* <div className={styles.threadTitle}>主题</div>
+              <div className={styles.threadCount}>{totalCount !== undefined ? `${totalCount}个主题` : ''}</div> */}
+              <SectionTitle
+                title="主题"
+                isShowMore={false}
+                leftNum={`${totalCount || myThreadsList.length}个主题`}
+                titleStyle={hasTab ? {borderBottom: 'none', paddingBottom: 0} : {}}
+              />
             </div>
 
-            <div className={styles.dividerContainer}>
-              <Divider className={styles.divider} />
-            </div>
+            {
+              !hasTab &&
+              <div className={styles.dividerContainer}>
+                <Divider className={styles.divider} />
+              </div>
+            }
 
-            <div className={styles.threadItemContainer}>
-              {myThreadsList?.length > 0 && <UserCenterThreads data={myThreadsList} />}
-            </div>
+            {hasTab && this.renderTabs()}
+            {!hasTab && this.renderPublishThreds()}
+
           </div>
         </div>
         {this.getBackgroundUrl() && this.state.isPreviewBgVisible && (
