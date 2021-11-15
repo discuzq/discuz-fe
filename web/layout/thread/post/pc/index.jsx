@@ -18,12 +18,12 @@ import { THREAD_TYPE } from '@common/constants/thread-post';
 import Product from '@components/thread-post/product';
 import ProductSelect from '@components/thread-post/product-select';
 import VoteEditor from '@components/thread-post/vote-editor';
-import AllPostPaid from '@components/thread/all-post-paid';
+import Payment from '@components/thread-post/payment';
 import AtSelect from '@components/thread-post/at-select';
 import TopicSelect from '@components/thread-post/topic-select';
 import RedpacketSelect from '@components/thread-post/redpacket-select';
 import Copyright from '@components/copyright';
-import ForTheForm from '@components/thread/for-the-form';
+import RewardQa from '@components/thread-post/reward-qa';
 import VideoDisplay from '@components/thread-post/video-display';
 import MoneyDisplay from '@components/thread-post/money-display';
 import TagLocalData from '@components/thread-post/tag-localdata';
@@ -417,7 +417,7 @@ class ThreadPCPage extends React.Component {
           )}
           {/* 插入付费 */}
           {!!this.props.curPaySelect && (
-            <AllPostPaid
+            <Payment
               pc
               visible={!!this.props.curPaySelect}
               paidType={this.props.curPaySelect}
@@ -437,7 +437,7 @@ class ThreadPCPage extends React.Component {
             />
           )}
           {currentAttachOperation === THREAD_TYPE.reward && (
-            <ForTheForm
+            <RewardQa
               pc
               visible={currentAttachOperation === THREAD_TYPE.reward}
               confirm={(data) => {

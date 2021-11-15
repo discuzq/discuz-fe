@@ -35,6 +35,7 @@ export default class CustomApplyEntryContent extends React.Component {
         additionalInfoType: [], // 报名选项
       },
       curClickTime: TimeType.actStart,
+      forceUpdate: true,
     };
 
     this.timeRef = React.createRef();
@@ -156,8 +157,14 @@ export default class CustomApplyEntryContent extends React.Component {
   };
 
   handleLimitPeopleChange = (e) => {
+    const val = Math.floor(e.target.value);
+    if (val > 10000) {
+      this.setState({ forceUpdate: !this.state.forceUpdate });
+      Toast.info({ content: '报名人数不能大于10000'} );
+      return;
+    }
     const { body } = this.state;
-    this.setState({ body: { ...body, totalNumber: e.target.value } }, () => {
+    this.setState({ body: { ...body, totalNumber: val || "" } }, () => {
       this.props.onChange(this.state.body);
     });
   };
