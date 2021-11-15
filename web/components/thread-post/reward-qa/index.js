@@ -85,7 +85,7 @@ const ForTheForm = ({ confirm, cancel, data, pc, visible }) => {
             )
             : (
               <>
-                <div onClick={() => setShow(true)} > { times } </div>
+                <div onClick={() => setShow(true)} > {times} </div>
                 <Icon name="RightOutlined" />
               </>
             )}
@@ -94,6 +94,7 @@ const ForTheForm = ({ confirm, cancel, data, pc, visible }) => {
       {pc ? '' : (
         <>
           <DatePickers
+            time={new Date(times)}
             onSelects={(e) => {
               setTimes(e);
               setShow(false);

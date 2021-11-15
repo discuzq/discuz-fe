@@ -35,6 +35,21 @@ class CustomApplyDisplay extends React.Component {
 
   componentDidMount() {
     if (!countDownIns) countDownIns = new CountDown();
+    this.initCountDown();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    // fix: 付费报名帖付费后需要再次执行初始化倒计时
+    if (prevProps.renderData === null && this.props.renderData !== null) {
+      this.initCountDown();
+    }
+
+  }
+  componentWillUnmount() {
+    if (!countDownIns) countDownIns?.stop();
+  }
+
+  initCountDown() {
     const { renderData } = this.props;
     const { body } = renderData || {};
     if (body?.registerEndTime || body?.registerStartTime) {
@@ -55,10 +70,6 @@ class CustomApplyDisplay extends React.Component {
         this.applyStartCountDown(time);
       }
     }
-  }
-
-  componentWillUnmount() {
-    if (!countDownIns) countDownIns?.stop();
   }
 
   // 取消报名
@@ -307,7 +318,7 @@ class CustomApplyDisplay extends React.Component {
               <Icon name="PositionOutlined" size="12" />
               <div className={styles['wrapper-tip__content']}>
                 <span className={styles['wrapper-tip_title']}>活动地址</span>
-                <span className={styles['wrapper-tip_detail']}>{ body?.position?.location }</span>
+                <span className={styles['wrapper-tip_detail']}>{body?.position?.location}</span>
               </div>
             </div>)}
             {body?.totalNumber !== 0 && (

@@ -93,6 +93,7 @@
     padding: $padding-4n;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     text-align: left;
     border-bottom: $border-solid-1;
     white-space: nowrap;
@@ -109,32 +110,38 @@
   }
 
   &-user {
-    @include lamp-clamp(1);
-    display: inline-flex;
+    display: flex;
     width: 100px;
     align-items: center;
     font-size: $font-size-base;
     color: $text-color-primary;
 
     .img {
+      width: 38px;
       display: inline-block;
     }
 
     .title {
-      width: 56px;
+      width: 35px;
       margin-left: 4px;
       @include text-ellipsis();
     }
   }
 
   &-item {
-    @include lamp-clamp(1);
     display: inline-block;
     width: 25%;
     font-size: $font-size-base;
     color: $text-color-primary;
   }
-
+  .scroll {
+    flex: 1;
+    .additional-item {
+      min-width: 25%;
+      width: auto;
+      margin-right: 4px;
+    }
+  }
   .button {
     display: inline-flex !important;
   }

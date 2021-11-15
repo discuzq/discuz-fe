@@ -25,3 +25,27 @@
   }
 
 }
+
+@mixin verticalScrollbar($size: 4px)  {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  &:hover{
+    &::-webkit-scrollbar {
+      display: block;
+      width: $size;
+      height: $size;
+      border-radius: $size;
+    }
+    &::-webkit-scrollbar-track {
+      background: $border-color;
+    }
+    &::-webkit-scrollbar-corner {
+      background: $border-color;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: $border-shadow-color;
+      border-radius: $size;
+    }
+  }
+}

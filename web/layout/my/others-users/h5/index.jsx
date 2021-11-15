@@ -10,6 +10,7 @@ import UserCenterAction from '@components/user-center-action';
 import UserCenterThreads from '@components/user-center-threads';
 import BaseLayout from '@components/base-layout';
 import NoData from '@components/no-data';
+import PacketOpen from '@components/red-packet-animation/h5';
 import { withRouter } from 'next/router';
 import Router from '@discuzq/sdk/dist/router';
 import setWxShare from '@common/utils/set-wx-share';
@@ -19,6 +20,7 @@ import setWxShare from '@common/utils/set-wx-share';
 
 @inject('site')
 @inject('user')
+@inject('thread')
 @inject('threadList')
 @observer
 class H5OthersPage extends React.Component {
@@ -150,10 +152,10 @@ class H5OthersPage extends React.Component {
   };
 
   render() {
-    const { site, user } = this.props;
+    const { site, user, thread, threadList } = this.props;
     const { platform } = site;
-    const { threadList } = this.props;
     const { lists } = threadList;
+    const { hasRedPacket } = thread;
 
     const { query = {} } = this.props.router;
 
@@ -228,6 +230,7 @@ class H5OthersPage extends React.Component {
             onError={() => (id && this.props.user?.targetUsers[id] && this.props.user.targetUsers[id].backgroundUrl) || ''}
           />
         )}
+        {hasRedPacket > 0 && <PacketOpen money={hasRedPacket} onClose={() => thread.setRedPacket(0)}  />}
       </BaseLayout>
     );
   }

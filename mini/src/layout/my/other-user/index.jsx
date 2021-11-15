@@ -13,10 +13,12 @@ import { View, Text } from '@tarojs/components';
 
 import SectionTitle from '@components/section-title';
 import BottomView from '@components/list/BottomView';
+import PacketOpen from '@components/red-packet-animation';
 import ImagePreviewer from '@discuzq/design/dist/components/image-previewer/index';
 import LoginHelper from '@common/utils/login-helper';
 @inject('site')
 @inject('user')
+@inject('thread')
 @inject('threadList')
 @observer
 class H5OthersPage extends React.Component {
@@ -287,11 +289,11 @@ class H5OthersPage extends React.Component {
   };
 
   render() {
-    const { site, user } = this.props;
+    const { site, user, thread, threadList} = this.props;
     const { platform } = site;
     const { targetUserId } = this;
-    const { threadList } = this.props;
     const { lists } = threadList;
+    const { hasRedPacket } = thread;
     const { previewBackgroundUrl } = this.state;
 
     const userThreadsList = threadList.getList({
@@ -376,6 +378,7 @@ class H5OthersPage extends React.Component {
         {previewBackgroundUrl && (
           <ImagePreviewer ref={this.previewerRef} imgUrls={[previewBackgroundUrl]} currentUrl={previewBackgroundUrl} />
         )}
+        {hasRedPacket > 0 && <PacketOpen money={hasRedPacket} onClose={() => thread.setRedPacket(0)} />}
       </BaseLayout>
     );
   }

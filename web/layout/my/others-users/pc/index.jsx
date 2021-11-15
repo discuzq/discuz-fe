@@ -12,13 +12,15 @@ import UserCenterFollowsPc from '@components/user-center/follows-pc';
 import Router from '@discuzq/sdk/dist/router';
 import UserCenterThreads from '@components/user-center-threads';
 import UserCenterHeaderPc from '@components/user-center/header-pc';
+import PacketOpen from '@components/red-packet-animation/web';
 
 // 插件引入
 /**DZQ->plugin->register<plugin_user@user_extension_left_layout_hook>**/
 
 @inject('site')
-@inject('threadList')
 @inject('user')
+@inject('thread')
+@inject('threadList')
 @observer
 class PCMyPage extends React.Component {
   targetUserId = null;
@@ -194,8 +196,9 @@ class PCMyPage extends React.Component {
 
   render() {
     const { fetchUserInfoLoading } = this.state;
-    const { threadList } = this.props;
+    const { thread, threadList } = this.props;
     const { lists } = threadList;
+    const { hasRedPacket } = thread;
 
     const { query = {} } = this.props.router;
 
@@ -243,6 +246,8 @@ class PCMyPage extends React.Component {
               {this.renderRight()}
             </div>
           </div>
+
+          {hasRedPacket > 0 && <PacketOpen money={hasRedPacket} onClose={() => thread.setRedPacket(0)} />}
         </BaseLayout>
       </>
     );
