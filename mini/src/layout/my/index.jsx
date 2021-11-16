@@ -33,7 +33,7 @@ export default class index extends Component {
       isPreviewBgVisible: false, // 是否预览背景图片
       isNormalTitle: false, // 是否显示不透明 title
       previewBackgroundUrl: null, // 预览背景图片链接
-      tabsType: 'creatorCenter'
+      tabsType: 'shareCenter'
     };
   }
 
@@ -209,7 +209,7 @@ export default class index extends Component {
     })
   }
 
-  renderPublishThreds = () => {
+  renderPublishThreads = () => {
     const { threadList } = this.props;
 
     const myThreadsList = threadList.getList({
@@ -218,20 +218,30 @@ export default class index extends Component {
     return <UserCenterThreads showBottomStyle={false} data={myThreadsList} />
   }
 
-  renderSharerCenter = () => {
-    return <UserCenterShare/>
+  renderShareCenter = () => {
+    const { threadList } = this.props;
+
+    const myThreadsList = threadList.getList({
+      namespace: 'my',
+    });
+    return <UserCenterShare threads={myThreadsList}/>
   }
 
-  renderCreatorCenter = () => {
-    return <UserCenterCreate/>
+  renderCreateCenter = () => {
+    const { threadList } = this.props;
+
+    const myThreadsList = threadList.getList({
+      namespace: 'my',
+    });
+    return <UserCenterCreate threads={myThreadsList}/>
   }
 
   renderTabs = () => {
     const { tabsType } = this.state;
     const tabList = [
       [ 'publishThreads','我的发布' ],
-      [ 'sharerCenter', '分享中心' ],
-      [ 'creatorCenter', '创作中心' ]
+      [ 'shareCenter', '分享中心' ],
+      [ 'createCenter', '创作中心' ]
     ]
     return (
       <View>
@@ -245,9 +255,9 @@ export default class index extends Component {
             <Tabs.TabPanel key={id} id={id} label={label}></Tabs.TabPanel>
           ))}
         </Tabs>
-        {tabsType === 'publishThreads' && this.renderPublishThreds()}
-        {tabsType === 'sharerCenter' && this.renderSharerCenter()}
-        {tabsType === 'creatorCenter' && this.renderCreatorCenter()}
+        {tabsType === 'publishThreads' && this.renderPublishThreads()}
+        {tabsType === 'shareCenter' && this.renderShareCenter()}
+        {tabsType === 'createCenter' && this.renderCreateCenter()}
       </View>
     )
   }
@@ -336,7 +346,7 @@ export default class index extends Component {
               />
             </View>
             {hasTab && !isLoading && this.renderTabs()}
-            {!hasTab && !isLoading && this.renderPublishThreds()}
+            {!hasTab && !isLoading && this.renderPublishThreads()}
           </View>
         </View>
         {this.getBackgroundUrl() && (

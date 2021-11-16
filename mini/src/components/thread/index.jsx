@@ -17,6 +17,7 @@ import { updateThreadAssignInfoInLists, updatePayThreadInfo, getThreadCommentLis
 import canPublish from '@common/utils/can-publish';
 import Skeleton from './skeleton';
 import { updateViewCountInStorage } from '@common/utils/viewcount-in-storage';
+import ThreadFissionData from './fission-data'
 import Comment from './comment';
 @inject('site')
 @inject('index')
@@ -162,6 +163,10 @@ class Index extends React.Component {
   }, 1000);
 
   onClick = (e) => {
+    const { threadDetailUrl = '/indexPages/thread/index', stopViewPost = false } = this.props;
+    if (stopViewPost) {
+      return
+    }
     if (!this.allowEnter()) {
       return
     }
@@ -170,7 +175,7 @@ class Index extends React.Component {
 
     if (threadId !== '') {
       this.props.thread.isPositionToComment = false;
-      Router.push({ url: `/indexPages/thread/index?id=${threadId}` })
+      Router.push({ url: `${threadDetailUrl}?id=${threadId}` })
 
     } else {
       console.log('帖子不存在');
@@ -269,7 +274,7 @@ class Index extends React.Component {
   canPublish = () => canPublish(this.props.user, this.props.site)
 
   render() {
-    const { plugin, index, data, thread:threadStore, className = '', site = {}, showBottomStyle = true, isShowIcon = false, unifyOnClick = null, relativeToViewport = true, onTextItemClick = null,extraTag} = this.props;
+    const { plugin, index, data, thread:threadStore, className = '', site = {}, showBottomStyle = true, isShowIcon = false, unifyOnClick = null, relativeToViewport = true, onTextItemClick = null,extraTag, isHideBottomEvent = false, isShowFissionData = false } = this.props;
     const { platform = 'pc' } = site;
     if (!data) {
       return <NoData />;
@@ -328,6 +333,11 @@ class Index extends React.Component {
                 {isShowIcon && <View className={styles.headerIcon} onClick={unifyOnClick || this.onClickHeaderIcon}><Icon name='CollectOutlinedBig' className={styles.collectIcon}></Icon></View>}
               </View>
 
+              {
+                isShowFissionData &&
+                <ThreadFissionData thread={threadStore} onClick={unifyOnClick || this.onClick}/>
+              }
+
               <ThreadCenterView
                 site={site}
                 plugin={{
@@ -356,33 +366,35 @@ class Index extends React.Component {
                 onTextItemClick={onTextItemClick}
               />
 
-              <BottomEvent
-                userImgs={likeReward.users}
-                wholeNum={likeReward.likePayCount || 0}
-                comment={likeReward.postCount || 0}
-                sharing={likeReward.shareCount || 0}
-                onShare={this.onShare}
-                onComment={this.onComment}
-                onPraise={this.onPraise}
-                unifyOnClick={unifyOnClick}
-                isLiked={isLike}
-                isCommented={this.state.showCommentList}
-                isSendingLike={this.state.isSendingLike}
-                tipData={{ postId, threadId, platform, payType }}
-                platform={platform}
-                index={this.props.index}
-                shareNickname={shareNickname}
-                shareAvatar={shareAvatar}
-                shareThreadid={shareThreadid}
-                getShareData={getShareData}
-                shareContent={shareContent}
-                getShareContent={getShareContent}
-                data={data}
-                user={this.props.user}
-                updateViewCount={this.updateViewCount}
-                shareIconClick={() => this.setState({ shareClickRandom: Math.random() })}
-                hasCommentHongbao={hasCommentHongbao}
-              />
+              { !isHideBottomEvent &&
+                <BottomEvent
+                  userImgs={likeReward.users}
+                  wholeNum={likeReward.likePayCount || 0}
+                  comment={likeReward.postCount || 0}
+                  sharing={likeReward.shareCount || 0}
+                  onShare={this.onShare}
+                  onComment={this.onComment}
+                  onPraise={this.onPraise}
+                  unifyOnClick={unifyOnClick}
+                  isLiked={isLike}
+                  isCommented={this.state.showCommentList}
+                  isSendingLike={this.state.isSendingLike}
+                  tipData={{ postId, threadId, platform, payType }}
+                  platform={platform}
+                  index={this.props.index}
+                  shareNickname={shareNickname}
+                  shareAvatar={shareAvatar}
+                  shareThreadid={shareThreadid}
+                  getShareData={getShareData}
+                  shareContent={shareContent}
+                  getShareContent={getShareContent}
+                  data={data}
+                  user={this.props.user}
+                  updateViewCount={this.updateViewCount}
+                  shareIconClick={() => this.setState({ shareClickRandom: Math.random() })}
+                  hasCommentHongbao={hasCommentHongbao}
+                />
+              }
             </>
           ) : <Skeleton style={{ minHeight: `${minHeight}px` }} />
         }

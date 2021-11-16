@@ -1,0 +1,21 @@
+@import '@common/styles/index.scss';
+
+.threadFirstItem {
+  position: relative;
+
+  &::before {
+    content: '';
+    display: none;
+  }
+}
+
+.threadItem {
+  position: relative;
+
+  &::before {
+    content: '';
+    display: block;
+    height: 10px;
+    background: $spacer-bg-color;
+  }
+}

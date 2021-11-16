@@ -45,7 +45,7 @@ class PCMyPage extends React.Component {
       showFollowPopup: false, // 是否弹出关注框
       isLoading: false,
       isRenewalFeeVisible: false, // 是否弹出续费弹窗
-      tabsType: 'creatorCenter'
+      tabsType: 'createCenter'
     };
 
     if (myThreadsList.length === 0) {
@@ -209,7 +209,7 @@ class PCMyPage extends React.Component {
     })
   }
 
-  renderPublishThreds = () => {
+  renderPublishThreads = () => {
     const { threadList } = this.props;
 
     const myThreadsList = threadList.getList({
@@ -221,20 +221,30 @@ class PCMyPage extends React.Component {
     )
   }
 
-  renderSharerCenter = () => {
-    return <UserCenterShare/>
+  renderShareCenter = () => {
+    const { threadList } = this.props;
+
+    const myThreadsList = threadList.getList({
+      namespace: 'my',
+    });
+    return <UserCenterShare threads={myThreadsList}/>
   }
 
-  renderCreatorCenter = () => {
-    return <UserCenterCreate userCreateClassName={styles.userCenterCreateStyle}/>
+  renderCreateCenter = () => {
+    const { threadList } = this.props;
+
+    const myThreadsList = threadList.getList({
+      namespace: 'my',
+    });
+    return <UserCenterCreate userCreateClassName={styles.userCenterCreateStyle} threads={myThreadsList}/>
   }
 
   renderTabs = () => {
     const { tabsType } = this.state;
     const tabList = [
       [ 'publishThreads','我的发布' ],
-      [ 'sharerCenter', '分享中心' ],
-      [ 'creatorCenter', '创作中心' ]
+      [ 'shareCenter', '分享中心' ],
+      [ 'createCenter', '创作中心' ]
     ]
     return (
       <div>
@@ -248,9 +258,9 @@ class PCMyPage extends React.Component {
             <Tabs.TabPanel key={id} id={id} label={label}></Tabs.TabPanel>
           ))}
         </Tabs>
-        {tabsType === 'publishThreads' && this.renderPublishThreds()}
-        {tabsType === 'sharerCenter' && this.renderSharerCenter()}
-        {tabsType === 'creatorCenter' && this.renderCreatorCenter()}
+        {tabsType === 'publishThreads' && this.renderPublishThreads()}
+        {tabsType === 'shareCenter' && this.renderShareCenter()}
+        {tabsType === 'createCenter' && this.renderCreateCenter()}
       </div>
     )
   }
@@ -319,7 +329,7 @@ class PCMyPage extends React.Component {
           >
             
             {hasTab && this.renderTabs()}
-            {!hasTab && this.renderPublishThreds()}
+            {!hasTab && this.renderPublishThreads()}
           </SidebarPanel>
         </div>
       </div>

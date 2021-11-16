@@ -1,0 +1,18 @@
+@import '@common/styles/index.scss';
+
+.statisticsWrap{
+  display: flex;
+  align-items: center;
+  margin-bottom: rem(10);
+  .itemContent {
+    margin-right: $margin-4n;
+    display: flex;
+    align-items: center;
+
+    .value {
+      color: $text-color-secondary;
+      padding-left: $padding-5;
+      font-size: $font-size-small;
+    }
+  }
+}

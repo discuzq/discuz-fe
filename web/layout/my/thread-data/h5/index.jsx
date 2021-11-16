@@ -6,7 +6,10 @@ import styles from './index.module.scss';
 import ThreadReadSource from '@components/thread-read-source';
 import BaseLayout from '@components/base-layout';
 import Header from '@components/header';
+import Thread from '@components/thread';
 
+@inject('thread')
+@observer
 class ThreadData extends React.Component {
   constructor(props) {
     super(props);
@@ -48,13 +51,21 @@ class ThreadData extends React.Component {
 
   render() {
     const { dataStatistics } = this.state;
+    const { thread: threadStore } = this.props;
+    const { threadData } = threadStore || {}
+    console.log('>>> this.props.thread', this.props.thread)
 
     return (
       <BaseLayout>
         {/* <Header /> */}
         <div className={styles.mobileLayout}>
           <div className={styles.dividerContainer}>
-            <SectionTitle title="帖子详情" isShowMore={false} />
+            <Thread
+              data={threadData}
+              isHideBottomEvent
+              isShowFissionData
+              stopViewPost
+            />
           </div>
           <div className={styles.unit}>
             <div className={styles.dividerContainer}>

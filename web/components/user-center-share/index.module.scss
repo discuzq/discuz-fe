@@ -1,5 +1,97 @@
 @import '@common/styles/index.scss';
 
-.layout-page {
-  // color: red;
+.dividerContainer {
+  margin-left: $margin-4n;
+  margin-right: $margin-4n;
+  padding-bottom: rem(18);
+}
+
+.dividerBottom {
+  border-bottom: 1px solid $border-color;
+}
+
+.dividerContainerMoney {
+  padding-bottom: 0;
+}
+
+.popoverBox {
+  margin-bottom: rem(12);
+  .popoverContent {
+    line-height: rem(19);
+    text-align: left;
+    color: $text-color-regular;
+    font-size: $font-size-small;
+  }
+  .popoverText {
+    color: #8490a8;
+    padding-right: rem(4);
+    font-size: $font-size-small;
+    .active {
+      color: #2469f6;
+    }
+  }
+}
+
+.threadFirstItem {
+  position: relative;
+
+  &::before {
+    content: '';
+    display: none;
+  }
+}
+
+.threadItem {
+  position: relative;
+
+  &::before {
+    content: '';
+    display: block;
+    height: 10px;
+    background: $spacer-bg-color;
+  }
+}
+
+.makeMoneyItem {
+  border-bottom: 1px solid $border-color;
+  padding: $padding-4n 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  .iconBox {
+    display: flex;
+    align-items: center;
+    flex: none;
+    color: '#4F5A70';
+  }
+  .makeMoneyContent {
+    display: flex;
+    flex-direction: row;
+    flex-direction: column;
+    flex: auto;
+    margin-left: $margin-3n;
+
+    .makeMoneyTitle {
+      color: $text-color-primary;
+      font-size: $font-size-base;
+      margin-bottom: $margin-1n;
+    }
+    .makeMoneyExplain {
+      color: #8490a8;
+      font-size: $font-size-small;
+    }
+  }
+  .makeMoneyBtn {
+    height: rem(36);
+    padding: 0 $padding-5n;
+    border-color: $error-color;
+    color: $text-color-error;
+    font-size: $font-size-base;
+    flex: none;
+  }
+}
+
+.threadHeader {
+  padding: 0 $padding-4n;
+  background-color: $white;
 }
