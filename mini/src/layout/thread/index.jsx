@@ -961,6 +961,15 @@ class ThreadH5Page extends React.Component {
     this.loadCommentList()
   }
 
+  onPacketClick = () => {
+    const isSharePacket = true;
+    if (isSharePacket) {
+      Router.push({ url: `/indexPages/thread/shareDetail/index` });
+    }else{
+      this.onClick();
+    }
+  };
+
   render() {
     const { thread: threadStore } = this.props;
     const { isReady, isCommentReady, isNoMore, totalCount, isCommentListError } = threadStore;
@@ -1044,6 +1053,7 @@ class ThreadH5Page extends React.Component {
                 onReportClick={() => this.onReportClick()}
                 onContentClick={debounce(() => this.onContentClick(), 500)}
                 onRewardClick={() => this.onRewardClick()}
+                onPacketClick={()=>this.onPacketClick()}
                 onTagClick={() => this.onTagClick()}
                 onPayClick={() => this.onPayClick()}
               ></RenderThreadContent>

@@ -242,6 +242,7 @@ const RenderThreadContent = inject('index', 'site', 'user', 'plugin', 'thread', 
                     number={parseContent.RED_PACKET.number}
                     remainNumber={parseContent.RED_PACKET.remainNumber}
                     condition={parseContent.RED_PACKET.condition}
+                    onClick={props.onPacketClick}
                   />
                   {!!parseContent.RED_PACKET.condition && (
                     <View className={styles.redPacketLikeNum}>评论集{parseContent.RED_PACKET.likenum}赞领红包</View>

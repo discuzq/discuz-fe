@@ -17,13 +17,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            >span{
+            .red{
                 font-weight: 600;
                 font-size: 20px;
                 line-height: 16.8px;
                 text-align: left;
                 color: $error-color;
                 margin:0 8px;
+                display: inline-block;
             }
         }
         .yiqiang{
@@ -33,9 +34,10 @@
             color: $text-color-primary;
             margin: 10px 0;
             text-align: center;
-            >span{
+            .red{
                 color:$error-color;
                 margin:0 5px;
+                display: inline-block;
             }
         }
         .avatar{

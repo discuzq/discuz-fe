@@ -268,6 +268,16 @@ class Index extends React.Component {
   };
   canPublish = () => canPublish(this.props.user, this.props.site)
 
+
+  onPacketClick = () => {
+    const isSharePacket = true;
+    if (isSharePacket) {
+      Router.push({ url: `/indexPages/thread/shareDetail/index` });
+    }else{
+      this.onClick();
+    }
+  };
+
   render() {
     const { plugin, index, data, thread:threadStore, className = '', site = {}, showBottomStyle = true, isShowIcon = false, unifyOnClick = null, relativeToViewport = true, onTextItemClick = null,extraTag} = this.props;
     const { platform = 'pc' } = site;
@@ -354,6 +364,7 @@ class Index extends React.Component {
                 videoH={videoH}
                 updateViewCount={this.updateViewCount}
                 onTextItemClick={onTextItemClick}
+                onPacketClick={this.onPacketClick}
               />
 
               <BottomEvent

@@ -27,6 +27,7 @@ const config = {
         'thread/selectRedpacket/index',
         'thread/selectReward/index',
         'thread/selectPayment/index',
+        'thread/shareDetail/index',
         'thread/voteEditor/index',
       ],
     },

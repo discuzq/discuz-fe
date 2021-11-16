@@ -18,6 +18,8 @@ import ShowTop from './components/show-top';
 import IsApproved from './components/isApproved';
 import DeletePopup from '@components/thread-detail-pc/delete-popup';
 
+import SharePacket from '@components/thread/share-packet';
+
 import h5Share from '@discuzq/sdk/dist/common_modules/share/h5';
 import Copyright from '@components/copyright';
 import threadPay from '@common/pay-bussiness/thread-pay';
@@ -52,6 +54,7 @@ class ThreadPCPage extends React.Component {
       setTop: false, // 置顶
       inputValue: '', // 评论内容,
       isBaseLayoutReady: false,
+      showShareDetail: false, // 分享详情弹窗
     };
 
     this.likedLoading = false;
@@ -658,6 +661,21 @@ class ThreadPCPage extends React.Component {
     this.setState({ showRewardPopup: true });
   }
 
+  onPacketClick = () => {
+    const isSharePacket = true;
+    if (isSharePacket) {
+      // const platform = this.props.site?.platform;
+      // if (platform === 'pc') {
+      this.setState({
+        showShareDetail: true,
+      });
+      // }
+      // if (platform === 'h5') {
+      //   props.router.push(`/thread/sharedetail`);
+      // }
+    }
+  };
+
   // 确认打赏
   async onRewardSubmit(value) {
     if (!isNaN(Number(value)) && this.props.thread?.threadData?.threadId && this.props.thread?.threadData?.userId) {
@@ -701,7 +719,7 @@ class ThreadPCPage extends React.Component {
       return;
     }
 
-    const { id:userId, nickname } = this.props.thread?.authorInfo;
+    const { id: userId, nickname } = this.props.thread?.authorInfo;
     if (!userId) return;
     Router.push({ url: `/message?page=chat&userId=${userId}&nickname=${nickname}` });
   }
@@ -768,6 +786,7 @@ class ThreadPCPage extends React.Component {
             onCollectionClick={() => this.onCollectionClick()}
             onShareClick={() => this.onShareClick()}
             onRewardClick={() => this.onRewardClick()}
+            onPacketClick={() => this.onPacketClick()}
             onTagClick={() => this.onTagClick()}
             onPayClick={() => this.onPayClick()}
             onUserClick={() => this.onUserClick(this.props.thread?.threadData?.user?.userId)}
@@ -959,6 +978,16 @@ class ThreadPCPage extends React.Component {
           onCancel={() => this.setState({ showRewardPopup: false })}
           onOkClick={value => this.onRewardSubmit(value)}
         ></RewardPopup>
+
+        {
+           this.state.showShareDetail && (
+            <Popup position={'center'} visible onClose={() => this.setState({ showShareDetail: false })}>
+              <div>
+                <SharePacket></SharePacket>
+              </div>
+            </Popup>
+           )
+        }
       </div>
     );
   }

@@ -40,6 +40,7 @@ const Index = (props) => {
     setUseCloseMore = noop,
     updateViewCount = noop,
     onTextItemClick,
+    onPacketClick,
     unifyOnClick = null,
   } = props;
 
@@ -141,7 +142,7 @@ const Index = (props) => {
         {redPacketData && (
           <Packet
             // money={redPacketData.money || 0}
-            onClick={onClick}
+            onClick={onPacketClick}
             condition={redPacketData.condition}
           />
         )}

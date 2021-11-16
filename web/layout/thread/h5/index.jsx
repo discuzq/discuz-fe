@@ -667,6 +667,14 @@ class ThreadH5Page extends React.Component {
     }
   }
 
+
+  onPacketClick = () => {
+    const isSharePacket = true;
+    if (isSharePacket) {
+      Router.push({ url: '/thread/sharedetail' });
+    }
+  };
+
   // 点击打赏
   onRewardClick() {
     if (!this.props.user.isLogin()) {
@@ -845,6 +853,7 @@ class ThreadH5Page extends React.Component {
               onCollectionClick={() => this.onCollectionClick()}
               onReportClick={() => this.onReportClick()}
               onRewardClick={() => this.onRewardClick()}
+              onPacketClick={() => this.onPacketClick()}
               onTagClick={() => this.onTagClick()}
               onPayClick={() => this.onPayClick()}
               // onPayClick={() => this.onPayClick()}

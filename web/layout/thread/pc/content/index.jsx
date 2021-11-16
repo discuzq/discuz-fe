@@ -137,6 +137,7 @@ const RenderThreadContent = (inject('index', 'site', 'user', 'thread', 'plugin')
 
   const { tipList } = threadStore?.threadData || {};
 
+
   return (
     <div className={`${topic.container}`}>
       <div className={topic.header}>
@@ -276,6 +277,7 @@ const RenderThreadContent = (inject('index', 'site', 'user', 'thread', 'plugin')
                   condition={parseContent.RED_PACKET.condition}
                 /> */}
                 <Packet
+                  onClick={props.onPacketClick}
                   number={parseContent.RED_PACKET.number}
                   remainNumber={parseContent.RED_PACKET.remainNumber}
                   condition={parseContent.RED_PACKET.condition}

@@ -12,8 +12,9 @@
             border-bottom: 1px solid var(--border-line-color) ;
             line-height: 60px;
             .left{
-                >span{
+                .red{
                     color: $error-color;
+                    display: inline-block;
                 }
             }
         }

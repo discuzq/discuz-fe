@@ -1,4 +1,5 @@
 import React, { useMemo, useCallback, useState } from 'react';
+import { withRouter } from 'next/router';
 import { Button, Icon, Popup } from '@discuzq/design';
 import AudioPlay from './audio-play';
 import PostContent from './post-content';
@@ -70,6 +71,9 @@ const Index = (props) => {
       console.log(props.platform);
       if (props.platform === 'pc') {
         setShowShareDetail(true);
+      }
+      if (props.platform === 'h5') {
+        props.router.push(`/thread/sharedetail`);
       }
     } else {
       onClick();
@@ -153,10 +157,10 @@ const Index = (props) => {
           condition={redPacketData.condition}
         />}
 
-        
+
         {
-          redPacketData && (
-            <Popup position={'center'} visible={showShareDetail} onClose={()=>setShowShareDetail(false)}>
+          redPacketData && showShareDetail && (
+            <Popup position={'center'} visible onClose={() => setShowShareDetail(false)}>
               <div>
                 <SharePacket></SharePacket>
               </div>
@@ -220,7 +224,7 @@ const Index = (props) => {
   );
 };
 
-export default React.memo(Index);
+export default withRouter(React.memo(Index));
 
 // 处理
 const WrapperView = ({ children, onClick }) => (
