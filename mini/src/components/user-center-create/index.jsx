@@ -68,7 +68,7 @@ class UserCenterCreate extends React.Component {
           }
         >
           <Text className={styles.popoverText}>数据统计</Text>
-          <Icon name="HelpOutlined" color="#8490A8"></Icon>
+          <Icon name="EyeOutlined" color="#8490A8"></Icon>
         </Popover>
       </View>
     );
@@ -82,7 +82,6 @@ class UserCenterCreate extends React.Component {
           {this.renderPopver()}
           <DataStatisticsCards dataSource={dataStatistics} rowCardCount={3} />
         </View>
-        <View></View>
         <View>
           <View className={styles.threadHeader}>
             <SectionTitle title="我的创作" isShowMore={false} />

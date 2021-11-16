@@ -84,7 +84,7 @@ class UserCenterShare extends React.Component {
           }
         >
           <Text className={styles.popoverText}>收益说明</Text>
-          <Icon name="HelpOutlined" color="#8490A8"></Icon>
+          <Icon name="EyeOutlined" color="#8490A8"></Icon>
         </Popover>
       </View>
     );

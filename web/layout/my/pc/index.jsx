@@ -236,7 +236,7 @@ class PCMyPage extends React.Component {
     const myThreadsList = threadList.getList({
       namespace: 'my',
     });
-    return <UserCenterCreate userCreateClassName={styles.userCenterCreateStyle} threads={myThreadsList}/>
+    return <UserCenterCreate threads={myThreadsList}/>
   }
 
   renderTabs = () => {

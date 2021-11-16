@@ -77,7 +77,7 @@ class UserCenterCreate extends React.Component {
           }
         >
           <span className={styles.popoverText}>数据统计</span>
-          <Icon name="HelpOutlined" color="#8490A8"></Icon>
+          <Icon name="EyeOutlined" color="#8490A8"></Icon>
         </Popover>
       </div>
     );
@@ -85,14 +85,15 @@ class UserCenterCreate extends React.Component {
 
   render() {
     const { dataStatistics } = this.state;
+    const { site } = this.props;
+    const { platform } = site || {};
     return (
-      <div className={classnames(styles.layout, this.props.userCreateClassName || null)}>
+      <div className={classNames(platform === 'pc' ? styles.pc : styles.h5)}>
         <div className={classNames(styles.dividerContainer, styles.dividerBottom)}>
           {this.renderPopver()}
-          <DataStatisticsCards dataSource={dataStatistics} rowCardCount={this.props.site.platform === 'pc' ? 5 : 3} />
+          <DataStatisticsCards dataSource={dataStatistics} rowCardCount={platform === 'pc' ? 5 : 3} />
         </div>
-        <div></div>
-        <div className={styles.dividerContainer}>
+        <div className={styles.createList}>
           <div className={styles.threadHeader}>
             <SectionTitle title="我的创作" isShowMore={false} />
           </div>

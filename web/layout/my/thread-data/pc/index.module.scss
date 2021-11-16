@@ -16,11 +16,14 @@
 .dividerContainer {
   background: $white;
   border-radius: rem($border-radius-small);
-
   padding-bottom: rem(18);
   .sectionContainer {
     padding-left: $padding-6n;
     padding-right: $padding-6n;
+  }
+  .threadContainer {
+    padding-left: $padding-2n;
+    padding-right: $padding-2n;
   }
 }
 
@@ -39,6 +42,8 @@
   align-items: center;
   margin-top: $margin-6n;
   text-decoration: none;
+  padding-left: $padding-4n;
+  padding-right: $padding-4n;
   
   .backText {
     color: $text-color-secondary;

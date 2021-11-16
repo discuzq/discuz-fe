@@ -1,12 +1,6 @@
 @import '@common/styles/index.scss';
 
-.layout {
-  background-color: white;
-}
-
 .dividerContainer {
-  margin-left: $margin-4n;
-  margin-right: $margin-4n;
   padding-bottom: rem(18);
 }
 
@@ -33,7 +27,23 @@
   }
 }
 
-.threadHeader {
-  padding: 0 $padding-4n;
-  background-color: $white;
+
+
+.pc {
+  .dividerContainer {
+    margin-left: $margin-6n;
+    margin-right: $margin-6n;
+  }
+  .threadHeader {
+    padding: 0 $padding-6n;
+  }
+}
+.h5 {
+  .dividerContainer {
+    margin-left: $margin-4n;
+    margin-right: $margin-4n;
+  }
+  .threadHeader {
+    padding: 0 $padding-4n;
+  }
 }

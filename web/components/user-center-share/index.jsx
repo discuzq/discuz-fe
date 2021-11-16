@@ -8,7 +8,8 @@ import Thread from '@components/thread';
 import IncomeDetails from './income-details'
 import classNames from 'classnames';
 import styles from './index.module.scss';
-
+@inject('site')
+@observer
 class UserCenterShare extends React.Component {
   constructor(props) {
     super(props);
@@ -82,7 +83,7 @@ class UserCenterShare extends React.Component {
           }
         >
           <span className={styles.popoverText}>收益说明</span>
-          <Icon name="HelpOutlined" color="#8490A8"></Icon>
+          <Icon name="EyeOutlined" color="#8490A8"></Icon>
         </Popover>
       </div>
     );
@@ -146,8 +147,10 @@ class UserCenterShare extends React.Component {
 
   render() {
     const { dataStatistics } = this.state;
+    const { site } = this.props;
+    const { platform } = site || {};
     return (
-      <div>
+      <div className={classNames(platform === 'pc' ? styles.pc : styles.h5)}>
         <div className={classNames(styles.dividerContainer, styles.dividerBottom)}>
           {this.renderPopver()}
           <DataStatisticsCards dataSource={dataStatistics} rowCardCount={3} />

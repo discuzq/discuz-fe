@@ -76,7 +76,7 @@ class ThreadData extends React.Component {
         right={this.renderRight()}
       >
         <div className={classnames(styles.dividerContainer)}>
-          <div className={styles.sectionContainer}>
+          <div className={styles.threadContainer}>
             <a className={styles.backBox} onClick={this.HandleGoBack} href="javascript:void(0)">
               <Icon name='ReturnOutlined' color="#8490A8"></Icon><span className={styles.backText}>返回</span>
             </a>

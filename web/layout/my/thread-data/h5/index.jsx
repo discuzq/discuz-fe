@@ -59,7 +59,7 @@ class ThreadData extends React.Component {
       <BaseLayout>
         {/* <Header /> */}
         <div className={styles.mobileLayout}>
-          <div className={styles.dividerContainer}>
+          <div>
             <Thread
               data={threadData}
               isHideBottomEvent
