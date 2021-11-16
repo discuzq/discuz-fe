@@ -5,17 +5,19 @@ import Icon from '@discuzq/design/dist/components/icon/index';
 import Taro from '@tarojs/taro'
 import classNames from 'classnames';
 import Popup from '@discuzq/design/dist/components/popup/index';
+import setUrlParam from '@common/utils/set-url-param';
 
-const Index = ({ show, onShareClose, site }) => {
+const Index = ({ show, onShareClose, site, customShareData, inviteCode = '', type }) => {
     const shareData = {
-        title: site.webConfig?.setSite?.siteName || '',
-        path: 'pages/index/index',
+        title: customShareData?.title || site.webConfig?.setSite?.siteName || '',
+        path: setUrlParam(customShareData?.path  || 'pages/index/index', { inviteCode }),
     };
     const CreateCard = () => {
         const data = {...site, }
         onShareClose()
         Taro.eventCenter.once('page:init', () => {
             Taro.eventCenter.trigger('message:detail', data)
+            type === 'invite' && Taro.eventCenter.trigger('message:invite', customShareData);
         })
         Taro.navigateTo({
             url: `/subPages/create-card/index`,

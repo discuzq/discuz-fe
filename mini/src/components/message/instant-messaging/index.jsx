@@ -14,6 +14,7 @@ import calcCosImageQuality from '@common/utils/calc-cos-image-quality';
 
 // 用户已被屏蔽
 const USER_SHIELDING = -4001;
+const MSG_FORBIDDEN = -11000;
 
 const Index = ({ message, user, site: { webConfig, envConfig }, dialogId: _dialogId, userId, nickname, threadPost }) => {
 
@@ -191,7 +192,7 @@ const Index = ({ message, user, site: { webConfig, envConfig }, dialogId: _dialo
     }));
 
     Promise.all(files.map(() => submitEmptyImage(dialogId || localDialogId))).then((results) => {
-      if (results[0]?.code === USER_SHIELDING) {
+      if (results[0]?.code === USER_SHIELDING || results[0]?.code === MSG_FORBIDDEN) {
         Toast.error({ content: results[0].msg });
         return;
       }

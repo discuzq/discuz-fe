@@ -1,18 +1,12 @@
 import loginHelper from './login-helper';
+import setUrlParam from './set-url-param';
+
 const WEB_THREAD_PAGE = '/thread/post';
 const MINI_THREAD_PAGE = '/indexPages/thread/post/index';
 const MINI_BIND_PHONE_PAGE = '/userPages/user/bind-phone/index';
 // web环境判断
 function isWeb() {
   return process.env.DISCUZ_ENV === 'web';
-}
-function setUrlParam(url = '', params = {}) {
-  const isCarryParam = url.includes('?');
-  let newUrl = url;
-  Object.keys(params).forEach((v, i) => {
-    newUrl += `${!isCarryParam && i === 0 ? '?' : '&'}${v}=${params[v]}`;
-  });
-  return newUrl;
 }
 /**
  * 判断是否可以发布内容

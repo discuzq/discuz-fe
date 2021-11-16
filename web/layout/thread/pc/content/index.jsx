@@ -28,7 +28,7 @@ import DZQPluginCenterInjectionPolyfill from '../../../../utils/DZQPluginCenterI
 import isServer from '@common/utils/is-server';
 
 // 插件引入
-/**DZQ->plugin->register<plugin_detail@thread_extension_display_hook>**/
+/** DZQ->plugin->register<plugin_detail@thread_extension_display_hook>**/
 
 // 帖子内容
 const RenderThreadContent = (inject('index', 'site', 'user', 'thread', 'plugin')(observer((props) => {
@@ -132,10 +132,10 @@ const RenderThreadContent = (inject('index', 'site', 'user', 'thread', 'plugin')
   const {
     canDownloadAttachment,
     canViewAttachment,
-    canViewVideo
+    canViewVideo,
   } = threadStore?.threadData?.ability || {};
 
-  const { tipList } = threadStore?.threadData || {};
+  const { tipList, isAnonymous } = threadStore?.threadData || {};
 
   return (
     <div className={`${topic.container}`}>
@@ -144,7 +144,7 @@ const RenderThreadContent = (inject('index', 'site', 'user', 'thread', 'plugin')
           <UserInfo
             name={threadStore?.threadData?.user?.nickname || ''}
             avatar={threadStore?.threadData?.user?.avatar || ''}
-            groupName={threadStore?.threadData?.group?.groupName || ''}
+            groupName={isAnonymous ? '' : (threadStore?.threadData?.group?.groupName || '')}
             groupLevel={threadStore?.threadData?.group?.level || 0}
             location={threadStore?.threadData?.position.location || ''}
             view={`${threadStore?.threadData?.viewCount}` || ''}
@@ -328,14 +328,14 @@ const RenderThreadContent = (inject('index', 'site', 'user', 'thread', 'plugin')
           && <VoteDisplay voteData={parseContent.VOTE_THREAD} threadId={threadStore?.threadData?.threadId} page="detail" />}
 
         <DZQPluginCenterInjectionPolyfill
-          target='plugin_detail' 
-          hookName='thread_extension_display_hook' 
+          target='plugin_detail'
+          hookName='thread_extension_display_hook'
           pluginProps={{
             threadData: threadStore?.threadData,
             renderData: parseContent.plugin,
             updateListThreadIndexes: index.updateListThreadIndexes.bind(index),
             updateThread: thread.updateThread.bind(thread),
-        }}/>
+          }}/>
 
         {/* 付费附件：不能免费查看付费帖 && 需要付费 && 不是作者 && 没有付费 */}
         {needAttachmentPay && (
@@ -382,8 +382,8 @@ const RenderThreadContent = (inject('index', 'site', 'user', 'thread', 'plugin')
             <div className={topic.moneyList}>
               <div className={topic.top}>{tipList.length}人打赏</div>
               <div className={topic.itemList}>
-                  {tipList.map(i=>(
-                    <div key={i.userId} onClick={()=>Router.push({ url: `/user/${i.userId}` })} className={topic.itemAvatar}>
+                  {tipList.map(i => (
+                    <div key={i.userId} onClick={() => Router.push({ url: `/user/${i.userId}` })} className={topic.itemAvatar}>
                       <Avatar
                         image={i.avatar}
                         name={i.nickname}

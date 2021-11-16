@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text } from '@tarojs/components';
+import { View, Text, CustomWrapper } from '@tarojs/components';
 import { Input } from '@discuzq/design';
 import actEntryStyles from '../../../entry/adapter/index.module.scss';
 import { ATTACH_INFO_TYPE, ATTACH_INFO_NAME } from '@common/plugin/custom-apply/View/src/common';
@@ -44,16 +44,18 @@ export default class CustomApplyAttach extends React.Component {
         {ATTACH_INFO_NAME[item?.toString()]?.value}
       </View>
       <View className={actEntryStyles['dzqp-act--item_right']}>
-        <Input
-          key={item}
-          className={actEntryStyles['dzqp-act--item_right']}
-          miniType={item === ATTACH_INFO_TYPE.mobile ? 'number' : 'text'}
-          mode={item === ATTACH_INFO_TYPE.mobile ? 'number' : 'text'}
-          placeholder={`请输入${ATTACH_INFO_NAME[item?.toString()]?.value}`}
-          maxLength={50}
-          value={additionalInfo[ATTACH_INFO_NAME[item?.toString()]?.key] || ''}
-          onChange={e => this.handleAttachInfoChange(e, item)}
-        />
+        <CustomWrapper>
+          <Input
+            key={item}
+            className={actEntryStyles['dzqp-act--item_right']}
+            miniType={item === ATTACH_INFO_TYPE.mobile ? 'number' : 'text'}
+            mode={item === ATTACH_INFO_TYPE.mobile ? 'number' : 'text'}
+            placeholder={`请输入${ATTACH_INFO_NAME[item?.toString()]?.value}`}
+            maxLength={50}
+            value={additionalInfo[ATTACH_INFO_NAME[item?.toString()]?.key] || ''}
+            onChange={e => this.handleAttachInfoChange(e, item)}
+          />
+        </CustomWrapper>
       </View>
     </View>));
   }

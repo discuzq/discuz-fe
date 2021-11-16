@@ -51,6 +51,8 @@
     justify-content: center;
     font-size: $font-size-primary;
     .title {
+      max-width: 100px;
+      @include lamp-clamp(2);
       color: $text-color-primary;
       line-height: 20px;
     }
@@ -128,18 +130,29 @@
     }
   }
 
-  &-item {
-    display: inline-block;
+  &-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    overflow-x: hidden;
+  }
+
+  &-name {
     width: 25%;
+    @include lamp-clamp(1);
     font-size: $font-size-base;
     color: $text-color-primary;
   }
-  .scroll {
-    flex: 1;
-    .additional-item {
+
+  &-item {
+    display: inline-block;
+    min-width: 22%;
+    margin-right: 3%;
+    font-size: $font-size-base;
+    color: $text-color-primary;
+    &:last-child{
       min-width: 25%;
-      width: auto;
-      margin-right: 4px;
+      margin-right: 0;
     }
   }
   .button {

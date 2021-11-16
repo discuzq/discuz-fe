@@ -5,6 +5,7 @@ import { inject, observer } from 'mobx-react';
 import Router from '@discuzq/sdk/dist/router';
 import SharePopup from '../thread/share-popup';
 import isWeiXin from '@common/utils/is-weixin';
+import setUrlParam from '@common/utils/set-url-param';
 import { get } from '@common/utils/get';
 import h5Share from '@discuzq/sdk/dist/common_modules/share/h5';
 import goToLoginPage from '@common/utils/go-to-login-page';
@@ -89,10 +90,11 @@ class HomeHeader extends React.Component {
     this.setState({ show: false });
   }
   handleH5Share = () => {
+    const { user } = this.props;
     const title = document?.title || '';
     h5Share({
       title,
-      path: `/${location.search}`
+      path: setUrlParam(`/${location.search}`, { inviteCode: user?.userInfo?.id || ''})
     });
     Toast.info({ content: '复制链接成功' });
     this.onCancel();

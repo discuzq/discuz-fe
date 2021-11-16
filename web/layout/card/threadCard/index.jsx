@@ -86,7 +86,7 @@ const ThreadCard = inject('user', 'card')(observer((props) => {
               name={ posthandle(nickname || '')}
               avatar={avatar || ''}
               location={threadStore?.threadData?.position?.location || ''}
-              groupName={threadStore?.threadData?.group?.groupName || ''}
+              groupName={isAnonymous ? '' : (threadStore?.threadData?.group?.groupName || '') }
               view={`${threadStore?.threadData?.viewCount}` || ''}
               time={`${threadStore?.threadData?.diffTime}` || ''}
               userId={threadStore?.threadData?.user?.userId}
