@@ -1,5 +1,5 @@
 import React, { useEffect, useState, createRef, Fragment } from 'react';
-import { View } from '@tarojs/components';
+import { View, CustomWrapper } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import Popup from '@discuzq/design/dist/components/popup/index';
 import Textarea from '@discuzq/design/dist/components/textarea/index';
@@ -280,28 +280,30 @@ const InputPop = (props) => {
           <View className={styles.container}>
             <View className={styles.main}>
               {/* <ScrollView scrollY className={styles.valueScroll}> */}
-              <Textarea
-                className={styles.input}
-                maxLength={5000}
-                rows={4}
-                showLimit={false}
-                value={value}
-                onBlur={(e) => {
-                  onChange(e);
-                }}
-                onChange={debounce((e) => {
-                  handleChange(e)
-                }, 100)}
-                onClick={() => { setShowEmojis(false), textareaRef.current.focus(); }}
-                placeholder={inputText}
-                disabled={loading}
-                placeholderClass={styles.placeholder}
-                forwardedRef={textareaRef}
-                focus={focus}
-                fixed
-                adjustPosition={false}
-              // autoHeight={false}
-              ></Textarea>
+              <CustomWrapper>
+                <Textarea
+                  className={styles.input}
+                  maxLength={5000}
+                  rows={4}
+                  showLimit={false}
+                  value={value}
+                  onBlur={(e) => {
+                    onChange(e);
+                  }}
+                  onChange={debounce((e) => {
+                    handleChange(e)
+                  }, 100)}
+                  onClick={() => { setShowEmojis(false), textareaRef.current.focus(); }}
+                  placeholder={inputText}
+                  disabled={loading}
+                  placeholderClass={styles.placeholder}
+                  forwardedRef={textareaRef}
+                  focus={focus}
+                  fixed
+                  adjustPosition={false}
+                // autoHeight={false}
+                ></Textarea>
+              </CustomWrapper>
               {/* </ScrollView> */}
 
               {showPicture && (

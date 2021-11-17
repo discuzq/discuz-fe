@@ -5,8 +5,11 @@ import { Icon } from '@discuzq/design';
 import { Popover } from '@discuzq/design';
 import SectionTitle from '@components/section-title';
 import Router from '@discuzq/sdk/dist/router';
+import ThreadList from '@components/user-center-create/thread-list';
 import classnames from 'classnames';
 import styles from './index.module.scss';
+import { priceFormat } from '@common/utils/price-format';
+import classNames from 'classnames';
 @inject('site')
 @observer
 class UserCenterCreate extends React.Component {
@@ -35,7 +38,7 @@ class UserCenterCreate extends React.Component {
         {
           id: 'fissionRate',
           label: '发出红包（元）',
-          value: 266,
+          value: priceFormat(266),
           visible: true,
         },
         {
@@ -46,11 +49,6 @@ class UserCenterCreate extends React.Component {
         },
       ],
     };
-  }
-
-  toCreatorThreatData() {
-    console.log('进入帖子详情数据');
-    Router.push({ url: 'my/thread-data' });
   }
 
   renderPopver() {
@@ -87,21 +85,19 @@ class UserCenterCreate extends React.Component {
 
   render() {
     const { dataStatistics } = this.state;
+    const { site } = this.props;
+    const { platform } = site || {};
     return (
-      <div className={classnames(styles.layout, this.props.userCreateClassName || null)}>
-        <div className={styles.dividerContainer}>
+      <div className={classNames(platform === 'pc' ? styles.pc : styles.h5)}>
+        <div className={classNames(styles.dividerContainer, styles.dividerBottom)}>
           {this.renderPopver()}
-          <DataStatisticsCards dataSource={dataStatistics} rowCardCount={this.props.site.platform === 'pc' ? 5 : 3} />
+          <DataStatisticsCards dataSource={dataStatistics} rowCardCount={platform === 'pc' ? 5 : 3} />
         </div>
-        <div></div>
-        <div className={styles.dividerContainer}>
-          <div className={styles.sectionTitle}>
-            <span>我的创作</span>
+        <div className={styles.createList}>
+          <div className={styles.threadHeader}>
+            <SectionTitle title="我的创作" isShowMore={false} />
           </div>
-          <div onClick={this.toCreatorThreatData}>
-            <span>进入帖子详情</span>
-          </div>
-          {/* <SectionTitle title="我的创作" isShowMore={false} /> */}
+          <ThreadList dataSource={this.props.threads}/>
         </div>
       </div>
     );

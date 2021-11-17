@@ -92,6 +92,7 @@ const config = {
         'my/block/index',
         'my/renew/index',
         'my/thread-data/index',
+        'my/ranking/index'
       ],
     },
     ...mergedConfig

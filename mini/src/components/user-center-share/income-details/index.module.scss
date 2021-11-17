@@ -1,0 +1,67 @@
+@import '@common/styles/index.scss';
+
+.container {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+
+  .hideCover {
+    position: relative;
+    overflow: hidden;
+
+    &:after {
+      position: absolute;
+      display: block;
+      left: 0;
+      bottom: 0;
+      content: '';
+      width: 100%;
+      height: rem(38);
+      background: linear-gradient(rgba(255, 255, 255, 0.53) 0%, #fff 100%);
+    }
+  }
+
+  .showMore {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-weight: normal;
+    font-size: $font-size-primary;
+    line-height: $font-line-height-primary;
+    color: $primary-color;
+    .icon {
+      margin-left: 9px;
+      transform: rotateZ(90deg);
+    }
+    .icon_d {
+      margin-left: 9px;
+      transform: rotateZ(-90deg);
+    }
+  }
+}
+
+.incomeItem {
+  display: flex;
+  align-items: center;
+  margin-top: $margin-4n;
+  .incomeItemIcon {
+    flex: none;
+    background-color: $primary-color;
+    width: rem(8);
+    height: rem(8);
+    border-radius: rem(4);
+  }
+  .incomeItemText {
+    color: $text-color-primary;
+    font-size: $font-size-base;
+    margin: 0 $margin-2n;
+    line-height: rem(22);
+    flex: auto;
+  }
+  .incomeItemMoney {
+    color: $text-color-error;
+    font-size: $font-size-base;
+    flex: none;
+  }
+}

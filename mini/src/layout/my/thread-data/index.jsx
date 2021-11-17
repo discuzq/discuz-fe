@@ -3,9 +3,12 @@ import { inject, observer } from 'mobx-react';
 import { View, Text } from '@tarojs/components';
 import DataStatisticsCards from '@components/data-statistics-cards';
 import SectionTitle from '@components/section-title';
+import ThreadReadSource from '@components/thread-read-source';
+import Thread from '@components/thread';
 import styles from './index.module.scss';
-import ReadSourceDistrict from '@components/thread-read-source';
-
+import { priceFormat } from '@common/utils/price-format';
+@inject('thread')
+@observer
 class ThreadData extends React.Component {
   constructor(props) {
     super(props);
@@ -32,7 +35,7 @@ class ThreadData extends React.Component {
         {
           id: 'fissionRate',
           label: '发出红包（元）',
-          value: 266,
+          value: priceFormat(266),
           visible: true,
         },
         {
@@ -47,21 +50,19 @@ class ThreadData extends React.Component {
 
   render() {
     const { dataStatistics } = this.state;
-
-    const data1 = [
-      { y: 63.4, x: '10-01' },
-      { y: 62.7, x: '10-02' },
-      { y: 72.2, x: '10-03' },
-      { y: 58, x: '10-04' },
-      { y: 59.9, x: '10-05' },
-      { y: 67.7, x: '10-06' },
-      { y: 53.3, x: '10-07' },
-    ];
+    const { thread: threadStore } = this.props;
+    const { threadData } = threadStore || {}
+ 
     return (
       <View className={styles.mobileLayout}>
         <View>
-          <View className={styles.dividerContainer}>
-            <SectionTitle title="帖子详情" isShowMore={false} />
+          <View>
+            <Thread
+              data={threadData}
+              isHideBottomEvent
+              isShowFissionData
+              stopViewPost
+            />
           </View>
         </View>
 
@@ -71,7 +72,7 @@ class ThreadData extends React.Component {
             <View className={styles.dataSourceContainer}>
               <DataStatisticsCards dataSource={dataStatistics} rowCardCount={3} />
             </View>
-            <ReadSourceDistrict xData={data1.map((it) => it.x)} yData={data1.map((it) => it.y)} />
+            <ThreadReadSource/>
           </View>
         </View>
 

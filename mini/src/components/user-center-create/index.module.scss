@@ -1,13 +1,15 @@
 @import '@common/styles/index.scss';
 
-.introInfoBox {
-}
-
 .dividerContainer {
-  padding-left: $padding-4n;
-  padding-right: $padding-4n;
+  margin-left: $margin-4n;
+  margin-right: $margin-4n;
   padding-bottom: rem(18);
 }
+
+.dividerBottom {
+  border-bottom: 1px solid $border-color;
+}
+
 .popoverBox {
   margin-bottom: rem(12);
   .popoverContent {
@@ -25,12 +27,8 @@
     }
   }
 }
-.sectionTitle {
-  font-weight: 600;
-  font-size: rem(16);
-  line-height: rem(22);
-  color: #4f5a70;
-  padding: rem(16) 0;
-  border-top: 1px solid #eee;
-  border-bottom: 1px solid #eee;
+
+.threadHeader {
+  padding: 0 $padding-4n;
+  background-color: $white;
 }

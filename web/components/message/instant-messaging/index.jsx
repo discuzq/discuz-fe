@@ -17,6 +17,8 @@ import styles from './index.module.scss';
 
 // 用户已被屏蔽
 const USER_SHIELDING = -4001;
+// 私信禁用
+const MSG_FORBIDDEN = -11000;
 
 const Index = (props) => {
   const { site: { isPC, webConfig }, dialogId, userId, nickname, message, threadPost, user } = props;
@@ -186,7 +188,7 @@ const Index = (props) => {
     )));
 
     Promise.all(fileList.map(() => submitEmptyImage(dialogId || localDialogId))).then((results) => {
-      if (results[0]?.code === USER_SHIELDING) {
+      if (results[0]?.code === USER_SHIELDING || results[0]?.code === MSG_FORBIDDEN) {
         clearToast();
         Toast.error({ content: results[0].msg });
         return;

@@ -9,7 +9,12 @@ import SectionTitle from '@components/section-title';
 import styles from './index.module.scss';
 import classnames from 'classnames';
 import ThreadReadSource from '@components/thread-read-source';
-
+import RenderRightPC from '@components/user-center/render-right-pc';
+import Thread from '@components/thread';
+@inject('user')
+@inject('site')
+@inject('thread')
+@observer
 class ThreadData extends React.Component {
   constructor(props) {
     super(props);
@@ -53,17 +58,34 @@ class ThreadData extends React.Component {
     Router.push({url: '/my'})
   }
 
+  renderRight() {
+    const { user, site } = this.props;
+    console.log('>> user', user)
+    console.log('>> site', site)
+    return <RenderRightPC user={user} site={site}/>
+  }  
+
   render() {
     const { dataStatistics } = this.state;
+    const { thread: threadStore } = this.props;
+    const { threadData } = threadStore || {}
     
     return (
-      <BaseLayout showRefresh={false}>
+      <BaseLayout
+        showRefresh={false}
+        right={this.renderRight()}
+      >
         <div className={classnames(styles.dividerContainer)}>
-          <div className={styles.sectionContainer}>
+          <div className={styles.threadContainer}>
             <a className={styles.backBox} onClick={this.HandleGoBack} href="javascript:void(0)">
               <Icon name='ReturnOutlined' color="#8490A8"></Icon><span className={styles.backText}>返回</span>
             </a>
-            <SectionTitle title="帖子详情" isShowMore={false} />
+            <Thread
+              data={threadData}
+              isHideBottomEvent
+              isShowFissionData
+              stopViewPost
+            />
           </div>
         </div>
 

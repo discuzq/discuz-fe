@@ -1,5 +1,5 @@
 import React, { createRef, useEffect, useState, useCallback, useMemo } from 'react';
-import { View } from '@tarojs/components'
+import { View, CustomWrapper } from '@tarojs/components'
 import Input from '@discuzq/design/dist/components/input';
 import Button from '@discuzq/design/dist/components/button';
 import Icon from '@discuzq/design/dist/components/icon';
@@ -103,19 +103,22 @@ const CommentInput = inject('site')(inject('user')((props) => {
           unifyOnClick={props.unifyOnClick}
           platform={props.platform}>
         </Avatar>
-
-        <Input
-          className={`${styles.input}`}
-          maxLength={5000}
-          showLimit={false}
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          placeholder={placeholderState}
-          disabled={loading}
-          ref={textareaRef}
-          onFocus={onFocus}
-          onBlur={onBlur}
-        ></Input>
+        <View className={styles.customWrapper}>
+          <CustomWrapper >
+            <Input
+              className={`${styles.input}`}
+              maxLength={5000}
+              showLimit={false}
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              placeholder={placeholderState}
+              disabled={loading}
+              ref={textareaRef}
+              onFocus={onFocus}
+              onBlur={onBlur}
+            ></Input>
+          </CustomWrapper>
+          </View>
       </View>
 
 

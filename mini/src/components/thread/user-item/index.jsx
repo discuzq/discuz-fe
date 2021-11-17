@@ -66,11 +66,13 @@ const Index = ({
           <View className={styles['additional-user']}>
             用户
           </View>
-          {Object.keys(additionalInfo || {}).map((item, ind) => (
-            <View className={styles['additional-item']} key={ind}>
-              {attachInfo[item]}
-            </View>
-          ))}
+          <View className={styles['additional-right']}>
+            {Object.keys(additionalInfo || {}).map((item, ind) => (
+              <View className={styles['additional-name']} key={ind}>
+                {attachInfo[item]}
+              </View>
+            ))}
+          </View>
         </View>
       )}
       {isHaveAdditionalInfo && (
@@ -87,13 +89,15 @@ const Index = ({
             />
             <View className={styles.title}>{title}</View>
           </View>
-          <ScrollView scrollX className={styles.scroll}>
-            {Object.keys(additionalInfo || {}).map((item, key) => (
-              <View className={styles['additional-item']} key={key}>
-                {additionalInfo[item]}
-              </View>
-            ))}
-          </ScrollView>
+          <View className={styles['additional-right']}>
+            <ScrollView scrollX>
+              {Object.keys(additionalInfo || {}).map((item, key) => (
+                <View className={styles['additional-item']} key={key}>
+                  {additionalInfo[item]}
+                </View>
+              ))}
+            </ScrollView>
+          </View>
         </View>
       )}
       {!isHaveAdditionalInfo && <>

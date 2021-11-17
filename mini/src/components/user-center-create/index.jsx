@@ -1,13 +1,14 @@
 import React from 'react';
-import Taro from '@tarojs/taro';
 import { inject, observer } from 'mobx-react';
 import { View, Text } from '@tarojs/components';
 import DataStatisticsCards from '@components/data-statistics-cards';
 import { Icon } from '@discuzq/design';
 import Popover from '@components/popover';
 import SectionTitle from '@components/section-title';
-
+import ThreadList from '@components/user-center-create/thread-list';
+import classNames from 'classnames';
 import styles from './index.module.scss';
+import { priceFormat } from '@common/utils/price-format';
 
 class UserCenterCreate extends React.Component {
   constructor(props) {
@@ -35,7 +36,7 @@ class UserCenterCreate extends React.Component {
         {
           id: 'fissionRate',
           label: '发出红包（元）',
-          value: 266,
+          value: priceFormat(266),
           visible: true,
         },
         {
@@ -46,13 +47,6 @@ class UserCenterCreate extends React.Component {
         },
       ],
     };
-  }
-
-  toCreatorThreatData() {
-    console.log('进入帖子详情数据');
-    Taro.navigateTo({
-      url: `/userPages/my/thread-data/index`,
-    });
   }
 
   renderPopver() {
@@ -84,19 +78,15 @@ class UserCenterCreate extends React.Component {
     const { dataStatistics } = this.state;
     return (
       <View>
-        <View className={styles.dividerContainer}>
+        <View className={classNames(styles.dividerContainer, styles.dividerBottom)}>
           {this.renderPopver()}
           <DataStatisticsCards dataSource={dataStatistics} rowCardCount={3} />
         </View>
-        <View></View>
-        <View className={styles.dividerContainer}>
-          <View className={styles.sectionTitle}>
-            <Text>我的创作</Text>
+        <View>
+          <View className={styles.threadHeader}>
+            <SectionTitle title="我的创作" isShowMore={false} />
           </View>
-          <View onClick={this.toCreatorThreatData}>
-            <Text>进入帖子详情</Text>
-          </View>
-          {/* <SectionTitle title="我的创作" isShowMore={false} /> */}
+          <ThreadList dataSource={this.props.threads}/>
         </View>
       </View>
     );

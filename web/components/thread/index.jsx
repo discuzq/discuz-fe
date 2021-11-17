@@ -18,6 +18,7 @@ import canPublish from '@common/utils/can-publish';
 import Comment from './comment';
 import HOCFetchSiteData from '@middleware/HOCFetchSiteData';
 import { updateThreadAssignInfoInLists, updatePayThreadInfo, getThreadCommentList } from '@common/store/thread-list/list-business';
+import ThreadFissionData from './fission-data'
 
 @inject('site')
 @inject('index')
@@ -158,6 +159,12 @@ class Index extends React.Component {
   }
 
   onClick = throttle(() => {
+    const { threadDetailUrl = '/thread', stopViewPost = false } = this.props;
+
+    if (stopViewPost) {
+      return
+    }
+
     // 判断是否可以进入详情页
     if (!this.allowEnter()) {
       return;
@@ -167,7 +174,7 @@ class Index extends React.Component {
 
     if (threadId !== '') {
       this.props.thread.isPositionToComment = false;
-      this.props.router.push(`/thread/${threadId}`);
+      this.props.router.push(`${threadDetailUrl}/${threadId}`);
     } else {
       console.log('帖子不存在');
     }
@@ -288,7 +295,7 @@ class Index extends React.Component {
   }
 
   render() {
-    const { plugin, index, thread, data, card, className = '', site = {}, showBottomStyle = true, collect = '', unifyOnClick = null, isShowIcon = false, user: users, onTextItemClick = null, extraTag, extraInfo } = this.props;
+    const { plugin, index, thread, data, card, className = '', site = {}, showBottomStyle = true, collect = '', unifyOnClick = null, isShowIcon = false, user: users, onTextItemClick = null, extraTag, extraInfo, isHideBottomEvent = false, isShowFissionData = false } = this.props;
     const { platform = 'pc' } = site;
     const threadStore = this.props.thread;
     const { onContentHeightChange = noop, onImageReady = noop, onVideoReady = noop } = this.props;
@@ -345,6 +352,11 @@ class Index extends React.Component {
           {isShowIcon && <div className={styles.headerIcon} onClick={unifyOnClick || this.onClickHeaderIcon}><Icon name='CollectOutlinedBig' size={20}></Icon></div>}
         </div>
 
+        {
+          isShowFissionData &&
+          <ThreadFissionData thread={threadStore} onClick={unifyOnClick || this.onClick}/>
+        }
+
         <ThreadCenterView
           site={site}
           plugin={{
@@ -377,26 +389,28 @@ class Index extends React.Component {
           onTextItemClick={onTextItemClick}
         />
 
-        <BottomEvent
-          data={data}
-          card={card}
-          user={users}
-          userImgs={likeReward.users}
-          wholeNum={likeReward.likePayCount || 0}
-          comment={likeReward.postCount || 0}
-          sharing={likeReward.shareCount || 0}
-          onShare={unifyOnClick || this.onShare}
-          handleShare={unifyOnClick || this.handleShare}
-          onComment={unifyOnClick || this.onComment}
-          onPraise={unifyOnClick || this.onPraise}
-          isLiked={isLike}
-          isCommented={this.state.showCommentList}
-          isSendingLike={this.state.isSendingLike}
-          tipData={{ postId, threadId, platform, payType }}
-          platform={platform}
-          updateViewCount={this.updateViewCount}
-          hasCommentHongbao={hasCommentHongbao}
-        />
+        { !isHideBottomEvent &&
+          <BottomEvent
+            data={data}
+            card={card}
+            user={users}
+            userImgs={likeReward.users}
+            wholeNum={likeReward.likePayCount || 0}
+            comment={likeReward.postCount || 0}
+            sharing={likeReward.shareCount || 0}
+            onShare={unifyOnClick || this.onShare}
+            handleShare={unifyOnClick || this.handleShare}
+            onComment={unifyOnClick || this.onComment}
+            onPraise={unifyOnClick || this.onPraise}
+            isLiked={isLike}
+            isCommented={this.state.showCommentList}
+            isSendingLike={this.state.isSendingLike}
+            tipData={{ postId, threadId, platform, payType }}
+            platform={platform}
+            updateViewCount={this.updateViewCount}
+            hasCommentHongbao={hasCommentHongbao}
+          />
+        }
 
 
         {/* 评论列表 */}
