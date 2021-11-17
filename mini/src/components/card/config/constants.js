@@ -49,6 +49,9 @@ export const eyeIconWidth = 28;
 // 帖子头部高度
 export const userInfoHeight = 140;
 
+// 裂变海报头部高度
+export const shareHeadHeight =  posterWidth/5 ;
+
 // 元素之间最小间距
 export const minGap = 4;
 

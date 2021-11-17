@@ -1,16 +1,20 @@
 import { getByteLen } from '../utils'
 import eyeImg from '../card-img/eye.png'
 import position from '../card-img/position.png'
-import { posterFrameWidth, posterWidth, descriptionY, positionIconWidth, eyeIconWidth, nameAndTagsY, posterPadding, avatarWidth, userInfoHeight, descriptionStartsX, baseX, minGap } from './constants';
+import shareImg from '../card-img/share.jpeg'
+import { posterFrameWidth, posterWidth, descriptionY, positionIconWidth, eyeIconWidth, nameAndTagsY, posterPadding, avatarWidth, userInfoHeight,shareHeadHeight, descriptionStartsX, baseX, minGap } from './constants';
 import browser from '../../../../../common/utils/browser'
 
+
+
+const isShareSpread = false; // 是否是分享裂变海报
 export const getHeaderConfig = ({ thread }) => {
     const {avatarBlock, avatarImage} = handleAvatar(thread);
     const tags = handleTags(thread)
     const {descTexts, descImages} = handleDesc(thread)
     const nicknameText = handleNickname(thread)
     const headerConfig = {
-      height: userInfoHeight,
+      height: userInfoHeight + (isShareSpread?shareHeadHeight:0) ,
       config: {
           texts: [
             // 昵称
@@ -27,8 +31,23 @@ export const getHeaderConfig = ({ thread }) => {
       headerConfig.config.images.push(avatarImage);
     }
 
+    if(isShareSpread){
+      headerConfig.config.images.push(handleShareImg())
+    }
+
+
+    console.log(headerConfig);
     return headerConfig;
 }
+
+const handleShareImg = ()=>({
+    url: shareImg,
+    x: 0,
+    y: 0,
+    width: posterWidth,
+    height: shareHeadHeight,
+    zIndex: 10,
+  })
 
 // 处理头像
 const handleAvatar = (thread) => {
@@ -55,7 +74,7 @@ const getAvatarBlock = (thread) => {
   const name = nickname.charAt(0)
   return {
     x: baseX,
-    y: nameAndTagsY,
+    y: nameAndTagsY + (isShareSpread?shareHeadHeight:0),
     width: avatarWidth,
     height: 76,
     borderRadius: 76,
@@ -82,7 +101,7 @@ const getAvatarImage = (thread) => {
     return {
         url: avatar,
         x: baseX,
-        y: nameAndTagsY,
+        y: nameAndTagsY + (isShareSpread?shareHeadHeight:0),
         width: avatarWidth,
         height: avatarWidth,
         borderRadius: 76,
@@ -98,10 +117,10 @@ const handleNickname = (thread) => {
     nickname = '匿名用户'
   }
   return {
-    text: nickname,
+    text: nickname.length>6 ? `${nickname.slice(0,6)  }...`:nickname,
     color: '#0B0B37',
     x: descriptionStartsX,
-    y: nameAndTagsY,
+    y: nameAndTagsY + (isShareSpread?shareHeadHeight:0),
     width: 600,
     lineHeight: 40,
     fontSize: 28,
@@ -148,7 +167,7 @@ const handleDesc = (thread) => {
             text: thread.diffTime.substr(0, 10),
             color: '#8590A6',
             x: descriptionStartsX,
-            y: descriptionY,
+            y: descriptionY + (isShareSpread?shareHeadHeight:0),
             width: diffTimeLength + minGap * 4,
             lineHeight: 34,
             fontSize: 24,
@@ -161,7 +180,7 @@ const handleDesc = (thread) => {
             text: `${thread.viewCount}`,
             color: '#8590A6',
             x: viewIconStartsX + minGap * 2 + eyeIconWidth,
-            y: descriptionY,
+            y: descriptionY + (isShareSpread?shareHeadHeight:0),
             width: 100,
             lineHeight: 34,
             fontSize: 24,
@@ -175,7 +194,7 @@ const handleDesc = (thread) => {
         {
             url: eyeImg,
             x: viewIconStartsX,
-            y: descriptionY + 6 + offset,
+            y: descriptionY  + offset + (isShareSpread?shareHeadHeight:0),
             height: 20 + 2,
             width: eyeIconWidth + 4,
             zIndex: 10,
@@ -189,7 +208,7 @@ const handleDesc = (thread) => {
                 text: thread.position.location,
                 color: '#8590A6',
                 x: positionIconStartsX + minGap * 2 + positionIconWidth,
-                y: descriptionY,
+                y: descriptionY + (isShareSpread?shareHeadHeight:0),
                 width: positionLength,
                 lineHeight: 34,
                 fontSize: 24,
@@ -203,7 +222,7 @@ const handleDesc = (thread) => {
             {
                 url: position,
                 x: positionIconStartsX,
-                y: descriptionY + parseInt(minGap / 2), // 增加2个像素来对齐安卓位置图标
+                y: descriptionY + parseInt(minGap / 2) + (isShareSpread?shareHeadHeight:0), // 增加2个像素来对齐安卓位置图标
                 height: 26,
                 width: positionIconWidth,
                 zIndex: 10,
@@ -272,7 +291,7 @@ const handleTags = (threads) => {
     const blockWidth = tagsSize > 2 ? 40 : 80;
     const tagBlock = { // 帖子标签的边框
       x: 580,
-      y: nameAndTagsY - 8,
+      y: nameAndTagsY - 8 + (isShareSpread?shareHeadHeight:0),
       width: blockWidth,
       height: 40,
       backgroundColor: "",

@@ -6,6 +6,7 @@ import PostContent from '@components/thread/post-content';
 import UserInfo from '@components/thread/user-info';
 import styles from './index.module.scss';
 import { cutText, hideImage} from '../util';
+import shareImage from './shareImage';
 
 
 const ThreadCard = inject('user', 'card')(observer((props) => {
@@ -77,6 +78,11 @@ const ThreadCard = inject('user', 'card')(observer((props) => {
     <div ref={cardContent} className={props.hidePart ? styles.hidePart : ''} style={{ maxHeight: props.hidePart ? contentMaxHeight : 'none' }}>
       {
         props.hidePart && cardContentHeight > contentMaxHeight && <img className={styles.hideImage} src={hideImage} />
+      }
+      {
+        true && (
+          <img className={styles.shareImage} src={shareImage}></img>
+        )
       }
       {isReady && (
       <div className={`${styles.container}`}>

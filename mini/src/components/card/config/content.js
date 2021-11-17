@@ -24,7 +24,7 @@ import {
 export const getContentConfig = async ({ site, thread, baseHeight ,hidePart}) => {
   const {setSite} = site.webConfig || ''
   const texts = handleTexts(thread, baseHeight, hidePart);
-  const images = await handlePrice(thread, setSite) || handleImagesArea(thread, baseHeight, texts.height, hidePart); // texts.height是：{ originalTextHeight, renderedTextHeight }
+  const images = await handlePrice(thread, baseHeight, setSite ) || handleImagesArea(thread, baseHeight, texts.height, hidePart); // texts.height是：{ originalTextHeight, renderedTextHeight }
   const lookMore = handleLookMore(baseHeight, texts.height, images.height); // images.height是：{ originalImageHeight, renderedImgHeight }
   const categories = handleCategories(thread, baseHeight, texts.height, images.height, lookMore.height);
   const totalContentHeight =
@@ -39,7 +39,7 @@ export const getContentConfig = async ({ site, thread, baseHeight ,hidePart}) =>
   };
 };
 // 处理匿名或无内容时的情况
-const handlePrice = async (thread, setSite) => {
+const handlePrice = async (thread, baseHeight, setSite) => {
   const { content } = handleContent(thread)
   if(thread.displayTag.isPrice || (!content && !thread.content?.indexes[101]?.body && !thread.content?.indexes.$0?.body)) {
     let logoUrl =  priceShare;
@@ -64,7 +64,7 @@ const handlePrice = async (thread, setSite) => {
         {
           url: logoUrl,
           x: 355 - imgWidth / 2,
-          y: 228,
+          y: baseHeight + 120,
           height: 70,
           width: imgWidth,
           zIndex: 20,
