@@ -425,7 +425,6 @@ class WalletH5Page extends React.Component {
           listClassName={classNames(layout.walletWrapper, {
             [layout.walletWrapperRecharge]: isShowRecharge,
           })}
-          immediateCheck
           showHeader={false}
           showLoadingInCenter={!this.getWalletList().length}
         >

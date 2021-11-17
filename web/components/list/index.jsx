@@ -16,7 +16,7 @@ import Copyright from '@components/copyright';
  * @prop {boolean} showRefresh 是否展示loading视图
  * @prop {function} onError 当onRefresh返回reject时，触发回调
  * @prop {boolean} enableError 是否启用reject捕获
- * @prop {boolean} immediateCheck 初始化的时候，是否立即请求一次
+ * @prop {boolean} immediateCheck 初始化的时候，是否立即请求一次，默认false不请求
  * @prop {function} resetList 初始化list状态
  */
 
@@ -32,7 +32,7 @@ const List = forwardRef(({
   preload = 1000,
   onError = noop,
   enableError = false,
-  immediateCheck = true,
+  immediateCheck = false,
   requestError = false,
   errorText = '加载失败',
   platform = '',

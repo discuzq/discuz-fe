@@ -275,8 +275,6 @@ class PCMyPage extends React.Component {
         <BaseLayout
           showRefresh={false}
           onSearch={this.onSearch}
-          // right={this.renderRight}
-          immediateCheck={false}
           curr={'my'}
           pageName="my"
           noMore={totalPage <= currentPage}

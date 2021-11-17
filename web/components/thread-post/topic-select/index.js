@@ -135,7 +135,6 @@ class TopicSelect extends Component {
           height={pc ? 'auto' : 'calc(100vh - 50px)'}
           noMore={finish}
           onRefresh={() => this.fetchTopics()}
-          immediateCheck={false}
           platform={platform}
         >
           {showNewTopic && this.renderItem({ content: searchWord, newTopic: '新话题' })}

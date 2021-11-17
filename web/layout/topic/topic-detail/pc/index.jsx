@@ -86,20 +86,17 @@ class IndexPCPage extends React.Component {
   render() {
     const { pageData = [], currentPage, totalPage } = this.props.topic?.topicDetail || {};
     return (
-    // <List className={styles.topicWrap}>
-
-        <BaseLayout
-          noMore={currentPage >= totalPage}
-          onRefresh={this.fetchMoreData}
-          onSearch={this.onSearch}
-          right={ this.renderRight }
-          showRefresh={false}
-          className="topic-detail-page"
-          pageName="topicDetail"
-        >
-          {this.renderItem(pageData[0] || {})}
-        </BaseLayout>
-    // </List>
+      <BaseLayout
+        noMore={currentPage >= totalPage}
+        onRefresh={this.fetchMoreData}
+        onSearch={this.onSearch}
+        right={ this.renderRight }
+        showRefresh={false}
+        className="topic-detail-page"
+        pageName="topicDetail"
+      >
+        {this.renderItem(pageData[0] || {})}
+      </BaseLayout>
     );
   }
 }

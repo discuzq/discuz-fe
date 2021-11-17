@@ -207,7 +207,6 @@ class AtSelect extends Component {
             height={pc ? 'auto' : 'calc(100vh - 120px)'}
             noMore={finish}
             onRefresh={this.onScrollBottom}
-            immediateCheck={false}
             platform={platform}
           >
             {this.renderItem()}

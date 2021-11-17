@@ -168,7 +168,7 @@ class H5MyPage extends React.Component {
         noMore={!isLoading && currentPage >= totalPage}
         requestError={requestError.isError}
         errorText={requestError.errorText}
-        immediateCheck
+        immediateCheck={true}
       >
         <div className={styles.mobileLayout}>
           <div onClick={this.handlePreviewBgImage}>

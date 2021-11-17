@@ -73,7 +73,6 @@ class BlockPcPage extends React.Component {
       <BaseLayout
         name={'block'}
         right={this.renderRight}
-        immediateCheck={false}
         onRefresh={this.loadMore}
         showRefresh={false}
         noMore={userShieldTotalPage < userShieldPage}

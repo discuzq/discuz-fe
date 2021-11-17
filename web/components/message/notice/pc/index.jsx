@@ -22,7 +22,6 @@ const Index = ({ rightContent, infoIdx, totalCount, list, noMore, topCard = null
       right={rightContent}
       onRefresh={onScrollBottom}
       showRefresh={false}
-      immediateCheck={false}
       isShowLayoutRefresh={true}
     >
       <div ref={contentRef}>

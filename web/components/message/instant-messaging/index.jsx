@@ -386,7 +386,6 @@ const Index = (props) => {
         className={'mymessage-page'}
         right={props.rightContent}
         showRefresh={false}
-        immediateCheck={false}
         isShowLayoutRefresh={false}
       >
         {mainContent}

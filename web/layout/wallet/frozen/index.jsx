@@ -65,7 +65,7 @@ class FrozenAmount extends React.Component {
     return (
       <BaseLayout
         className={styles.container}
-        immediateCheck
+        immediateCheck={true}
         onRefresh={this.fetchFreezeDetail}
         noMore={this.state.page > this.state.totalPage}
       >

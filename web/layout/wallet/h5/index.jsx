@@ -386,7 +386,7 @@ class WalletH5Page extends React.Component {
         onRefresh={this.handleOnRefresh}
         className={layout.container}
         footer={this.renderFooter()}
-        immediateCheck
+        immediateCheck={true}
       >
         <div className={layout.header}>
           <WalletInfo
