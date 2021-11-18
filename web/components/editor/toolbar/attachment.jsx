@@ -194,6 +194,7 @@ function AttachmentToolbar(props) {
             className={clsName}
             name={item.name}
             size="20"
+            title={item.title || ''}
           />
         ) : null;
       }
@@ -205,7 +206,8 @@ function AttachmentToolbar(props) {
               trggerInput(item);
             }}
             name={item.name}
-            size="20" />
+            size="20"
+            title={item.title || ''}/>
           <input
             style={{ display: 'none' }}
             type="file"

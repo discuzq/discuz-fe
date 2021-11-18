@@ -301,6 +301,7 @@ export default class CustomApplyEntry extends React.Component {
           onClick={this.handleDialogOpen}
           name="ApplyOutlined"
           size="20"
+          title={'活动报名'}
         />
         <Dialog
           visible={visible}

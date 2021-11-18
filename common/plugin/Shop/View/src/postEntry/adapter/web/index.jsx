@@ -305,7 +305,7 @@ export default class ShopPostEntry extends React.Component {
         })
         return;
       }
-      
+
       nextSelectedStatus[productId] = productInfo;
     } else {
       delete nextSelectedStatus[productId];
@@ -433,7 +433,7 @@ export default class ShopPostEntry extends React.Component {
 
     return (
       <>
-        <Icon onClick={this.handleDialogOpen} name="ShoppingCartOutlined" size="20" />
+        <Icon onClick={this.handleDialogOpen} name="ShoppingCartOutlined" size="20" title={'添加商品'} />
         <Dialog
           visible={visible}
           onCancel={this.handleDialogClose}

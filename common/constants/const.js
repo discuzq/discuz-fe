@@ -55,35 +55,41 @@ export const defaultIcon = [
     // active: activeColor, // 这3个图标永远不需要上颜色
     id: defaultOperation.emoji,
     type: THREAD_TYPE.emoji,
+    title: '添加表情',
   },
   {
     name: 'AtOutlined', // @
     // active: activeColor,
     id: defaultOperation.at,
     type: THREAD_TYPE.at,
+    title: '@ 用户',
   },
   {
     name: 'SharpOutlined', // #
     // active: activeColor,
     id: defaultOperation.topic,
     type: THREAD_TYPE.topic,
+    title: '添加话题',
   },
   {
     name: 'PaperClipOutlined', // 附件
     active: activeColor,
     id: defaultOperation.attach,
     type: THREAD_TYPE.file,
+    title: '添加附件',
   },
   {
     name: 'RedPacketOutlined', // 红包
     active: activeColor,
     id: defaultOperation.redpacket,
     type: THREAD_TYPE.redPacket,
+    title: '添加红包',
   },
   {
     name: 'GoldCoinOutlined', // 付费
     active: activeColor,
     id: defaultOperation.pay,
+    title: '帖子付费',
     menu: [
       {
         id: 'threadpay',
@@ -103,11 +109,13 @@ export const attachIcon = [
     name: 'PictureOutlinedBig',
     active: activeColor,
     type: THREAD_TYPE.image,
+    title: '添加图片',
   },
   {
     name: 'VideoOutlined',
     active: activeColor,
     type: THREAD_TYPE.video,
+    title: '添加视频',
     isUpload: false,
     limit: 1,
     accept: ACCEPT_VIDEO_TYPES.join(','),
@@ -129,16 +137,19 @@ export const attachIcon = [
     name: 'QuestionOutlined',
     active: activeColor,
     type: THREAD_TYPE.reward,
+    title: '悬赏问答',
   },
   {
     name: 'VoteOutlined',
     active: activeColor,
     type: THREAD_TYPE.vote,
+    title: '添加投票',
   },
   {
     name: 'AnonymityOutlined',
     active: activeColor,
     type: THREAD_TYPE.anonymity,
+    title: '匿名发帖',
   },
 ];
 

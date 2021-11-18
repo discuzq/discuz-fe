@@ -66,7 +66,8 @@ export default function DefaultToolbar(props) {
             }}
             className={clsName}
             name={item.name}
-            size="20">
+            size="20"
+            title={item.title || ''}>
           </Icon>
         ) : null;
         if (pc && item.menu) {
