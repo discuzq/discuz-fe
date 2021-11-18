@@ -28,6 +28,7 @@ const config = {
         'thread/selectReward/index',
         'thread/selectPayment/index',
         'thread/voteEditor/index',
+        'webview/index'
       ],
     },
     {

@@ -18,6 +18,8 @@ import IndexHeaderHooks from '@common/plugin-hooks/plugin_index@header';
 import IndexToppingHooks from '@common/plugin-hooks/plugin_index@topping';
 import IndexTabsHook from '@common/plugin-hooks/plugin_index@tabs';
 
+import CarouselAds from '@common/plugin/CarouselAds/View/src/replace/adapter/mini/index';
+
 @inject('site')
 @inject('user')
 @inject('index')
@@ -34,6 +36,20 @@ class IndexH5Page extends React.Component {
       isFinished: true,
       isClickTab: false,
       windowHeight: 0,
+      data:[
+        {
+          src:'https://imgcache.qq.com/operation/dianshi/other/banner.184c37ee8e1b9d10d85ca74f8e7f3b573b959f83.png',
+          url:'https://developer.discuz.chat/#/',
+        },
+        {
+          src:'https://imgcache.qq.com/operation/dianshi/other/banner.184c37ee8e1b9d10d85ca74f8e7f3b573b959f83.png',
+          url:'https://developer.discuz.chat/#/',
+        },
+        {
+          src:'https://imgcache.qq.com/operation/dianshi/other/banner.184c37ee8e1b9d10d85ca74f8e7f3b573b959f83.png',
+          url:'https://developer.discuz.chat/#/',
+        }
+      ]
     };
     this.tabsRef = createRef(null);
     this.headerRef = createRef(null);
@@ -175,6 +191,10 @@ class IndexH5Page extends React.Component {
         <View style={{ display: isClickTab ? 'none' : 'block' }}>
           {this.renderHeaderContent()}
 
+          <View>
+            {this.state.data && <CarouselAds data={this.state.data}/>}
+          </View>
+
           {!this.isNormal ? (
             <ThreadList data={TwoDThreads} isClickTab={isClickTab} wholePageIndex={currentPage - 1} />
           ) : (
@@ -189,6 +209,9 @@ class IndexH5Page extends React.Component {
             ))
           )}
         </View>
+
+
+        
         <FilterView
           data={currentCategories}
           typelist={this.props.index.threadTypelist}

@@ -26,6 +26,8 @@ import IndexCopyrightHook from '@common/plugin-hooks/plugin_index@copyright';
 import IndexLeftHook from '@common/plugin-hooks/plugin_index@left';
 import IndexRightHook from '@common/plugin-hooks/plugin_index@right';
 
+import CarouselAds from '@common/plugin/CarouselAds/View/src/replace/adapter/web/index';
+
 const DynamicVListLoading = dynamic(() => import('./components/dynamic-vlist'), {
   loading: (res) => {
     return (
@@ -49,6 +51,20 @@ class IndexPCPage extends React.Component {
       conNum: 0,
       // visibility: 'hidden',
       isShowDefault: this.checkIsOpenDefaultTab(),
+      data:[
+        {
+          src:'https://imgcache.qq.com/operation/dianshi/other/banner.184c37ee8e1b9d10d85ca74f8e7f3b573b959f83.png',
+          url:'https://developer.discuz.chat/#/',
+        },
+        {
+          src:'https://imgcache.qq.com/operation/dianshi/other/banner.184c37ee8e1b9d10d85ca74f8e7f3b573b959f83.png',
+          url:'https://developer.discuz.chat/#/',
+        },
+        {
+          src:'https://imgcache.qq.com/operation/dianshi/other/banner.184c37ee8e1b9d10d85ca74f8e7f3b573b959f83.png',
+          url:'https://developer.discuz.chat/#/',
+        }
+      ]
     };
 
     // ssr情况下，不适用虚拟滚动，使用会默认滚动
@@ -239,6 +255,12 @@ class IndexPCPage extends React.Component {
           }
           renderData={{ url }}
         ></IndexQrcodeHook>
+
+        <div>
+          <h1 style={{padding: "0 0 1px 0"}}>广告插件开发</h1>
+          <CarouselAds data={this.state.data}/>
+        </div>
+            
         <IndexCopyrightHook component={<Copyright />}></IndexCopyrightHook>
       </div>
     );

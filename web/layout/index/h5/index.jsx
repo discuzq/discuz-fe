@@ -24,6 +24,8 @@ import IndexToppingHooks from '@common/plugin-hooks/plugin_index@topping';
 import IndexHeaderHooks from '@common/plugin-hooks/plugin_index@header';
 import IndexTabsHook from '@common/plugin-hooks/plugin_index@tabs';
 
+import CarouselAds from '@common/plugin/CarouselAds/View/src/replace/adapter/web/index';
+
 @inject('site')
 @inject('user')
 @inject('index')
@@ -37,6 +39,20 @@ class IndexH5Page extends React.Component {
       visible: false,
       isFinished: true,
       fixedTab: false,
+      data:[
+        {
+          src:'https://imgcache.qq.com/operation/dianshi/other/banner.184c37ee8e1b9d10d85ca74f8e7f3b573b959f83.png',
+          url:'https://developer.discuz.chat/#/',
+        },
+        {
+          src:'https://imgcache.qq.com/operation/dianshi/other/banner.184c37ee8e1b9d10d85ca74f8e7f3b573b959f83.png',
+          url:'https://developer.discuz.chat/#/',
+        },
+        {
+          src:'https://imgcache.qq.com/operation/dianshi/other/banner.184c37ee8e1b9d10d85ca74f8e7f3b573b959f83.png',
+          url:'https://developer.discuz.chat/#/',
+        }
+      ]
     };
     this.listRef = createRef();
     // 用于获取顶部视图的高度
@@ -293,6 +309,7 @@ class IndexH5Page extends React.Component {
             {this.renderTabs()}
           </div>
           {this.renderSSRContent(index.threads, index.sticks)}
+        
           <this.DynamicVListLoading
             pageData={pageData}
             sticks={sticks}
@@ -309,7 +326,13 @@ class IndexH5Page extends React.Component {
             </div>
 
             <Observer>{() => this.renderTabs()}</Observer>
-            <Observer>{() => this.renderHeaderContent()}</Observer>
+            <Observer>{() => this.renderHeaderContent()}</Observer>  
+
+            <div style={{padding: "30px 0"}}>
+              <h1 style={{padding: "0 0 5px 0"}}>广告插件开发</h1>
+              <CarouselAds data={this.state.data}/>
+            </div>
+            
           </this.DynamicVListLoading>
         </Fragment>
 

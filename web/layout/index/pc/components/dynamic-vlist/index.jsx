@@ -10,6 +10,8 @@ import styles from './index.module.scss';
 import IndexToppingHooks from '@common/plugin-hooks/plugin_index@topping';
 import IndexTabsHook from '@common/plugin-hooks/plugin_index@tabs';
 
+import CarouselAds from '@common/plugin/CarouselAds/View/src/replace/adapter/web/index';
+
 const TopFilterView = ({ onFilterClick, isShowDefault, onPostThread, ishide, site }) => {
   const component = (
     <div className={styles.topBox}>
@@ -41,8 +43,24 @@ const TopFilterView = ({ onFilterClick, isShowDefault, onPostThread, ishide, sit
 export default class DynamicVList extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      data:[
+        {
+          src:'https://imgcache.qq.com/operation/dianshi/other/banner.184c37ee8e1b9d10d85ca74f8e7f3b573b959f83.png',
+          url:'https://developer.discuz.chat/#/',
+        },
+        {
+          src:'https://imgcache.qq.com/operation/dianshi/other/banner.184c37ee8e1b9d10d85ca74f8e7f3b573b959f83.png',
+          url:'https://developer.discuz.chat/#/',
+        },
+        {
+          src:'https://imgcache.qq.com/operation/dianshi/other/banner.184c37ee8e1b9d10d85ca74f8e7f3b573b959f83.png',
+          url:'https://developer.discuz.chat/#/',
+        }
+      ]
+    }
   }
-
+  
   // 中间 -- 筛选 置顶信息 是否新内容发布 主题内容
   renderContent = (data) => {
     const {
@@ -181,6 +199,11 @@ export default class DynamicVList extends React.Component {
           />
 
           <IndexToppingHooks component={toppingComponent} renderData={{ sticks }}></IndexToppingHooks>
+
+          <div style={{padding: "30px 0"}}>
+            <h1 style={{padding: "0 0 5px 0"}}>广告插件开发</h1>
+            <CarouselAds data={this.state.data}/>
+          </div>
         </div>
       </WindowVList>
     );
