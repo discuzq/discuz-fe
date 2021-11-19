@@ -3,11 +3,13 @@ import Taro from '@tarojs/taro';
 import { View, Swiper, SwiperItem, Image } from '@tarojs/components';
 import './index.module.scss';
 
-const Carousel = (props) => {
-  const serviceClick = url => {
+const MiniCarousel = (props) => {
+
+  const toHref = url => {
     Taro.setStorageSync('webWiewUrl', url)
     Taro.navigateTo({ url: '/indexPages/webview/index',})
   }
+
   return (
     <View>
       <Swiper
@@ -19,18 +21,20 @@ const Carousel = (props) => {
         autoplay
       >
         {props?.data?.map((item)=>{
-          return (<SwiperItem>
-            <Image
-              onClick={() => serviceClick(item?.url)}
-              style={{ width: '100%', height: '100%' }}
-              src={item?.src}
-              mode="aspectFill"
-            ></Image>
-        </SwiperItem>)
+          return (
+            <SwiperItem>
+              <Image
+                onClick={() => toHref(item?.url)}
+                style={{ width: '100%', height: '100%' }}
+                src={item?.src}
+                mode="aspectFill"
+              ></Image>
+            </SwiperItem>
+          )
         })}
       </Swiper>
     </View>
   );
 };
 
-export default Carousel;
+export default MiniCarousel;

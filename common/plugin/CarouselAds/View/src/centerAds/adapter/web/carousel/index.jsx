@@ -13,7 +13,7 @@ export default class WebCarousel extends React.Component {
   };
 
   render() {
-    const { data, ...othersprops } = this.props || {};
+    let { data, ...othersprops } = this.props || {};
     return (
       <div className={styles.container}>
         <Carousel
