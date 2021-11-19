@@ -1,23 +1,37 @@
 {
-  "name_cn":"首页头部替换",
-  "name_en":"ReplaceCustomIndexHeader",
-  "description":"首页头部替换为搜索+banner广告",
-  "type":9,
-  "app_id":"asdasdasd",
+  "name_cn":"广告",
+  "name_en":"ads_qrcode_topping",
+  "description":"头部替换为广告，二维码替换为广告",
+  "type":"0",
+  "app_id":"15d7a9fbea98b",
   "version": "1.0.0",
   "status":1,
-  "icon":"https:\/\/discuz.chat\/dzq-img\/active.png",
   "filter_enable":false,
+  "icon":"https:\/\/discuz.chat\/dzq-img\/active.png",
   "author":{
       "name":"腾讯科技（深圳）有限公司",
       "email":"coralchu@tencent.com"
   },
   "view": {
-      "replace": {
+      "qrcodeAds": {
         "target": "plugin_index",
-        "hookName": "header_replace_hook",
-        "platform": ["h5", "mini"],
-        "disables": true
+        "hookName": "qrcode_replace_hook",
+        "platform": [
+          "pc",
+          "h5",
+          "mini"
+        ],
+        "disables": false
+      },
+      "centerAds": {
+        "target": "plugin_index",
+        "hookName": "topping_insert_after_hook",
+        "platform": [
+          "pc",
+          "h5",
+          "mini"
+        ],
+        "disables": false
       }
   }
 }

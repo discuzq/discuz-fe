@@ -3,7 +3,7 @@ import Carousel from 'nuka-carousel';
 import { Icon } from '@discuzq/design';
 import styles from './index.module.scss';
 
-export default class CarouselWeb extends React.Component {
+export default class WebCarousel extends React.Component {
   constructor(props) {
     super(props);
   }

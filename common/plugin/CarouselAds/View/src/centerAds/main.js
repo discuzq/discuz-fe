@@ -7,9 +7,9 @@ export default class CustomIfram {
   static type = config.type; // 插件类型
   static appid = config.app_id; // appid
   static author = config.author; // 作者
-  static platform = config.view.replace.platform;
-  static target = config.view.replace.target // 插件使用目标
-  static hookName = config.view.replace.hookName // 钩子名称
+  static platform = config.view.centerAds.platform;
+  static target = config.view.centerAds.target // 插件使用目标
+  static hookName = config.view.centerAds.hookName // 钩子名称
   static component = <Component/> // 需要渲染的组件
   static options = {} // 需要在注入时提供的额外数据
 }

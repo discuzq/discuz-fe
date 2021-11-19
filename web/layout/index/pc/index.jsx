@@ -26,8 +26,6 @@ import IndexCopyrightHook from '@common/plugin-hooks/plugin_index@copyright';
 import IndexLeftHook from '@common/plugin-hooks/plugin_index@left';
 import IndexRightHook from '@common/plugin-hooks/plugin_index@right';
 
-import CarouselAds from '@common/plugin/CarouselAds/View/src/replace/adapter/web/index';
-
 const DynamicVListLoading = dynamic(() => import('./components/dynamic-vlist'), {
   loading: (res) => {
     return (
@@ -257,7 +255,8 @@ class IndexPCPage extends React.Component {
         ></IndexQrcodeHook>
 
         <div style={{margin: "-10px 0 10px 0"}}>
-          <CarouselAds initialSlideHeight={100} data={this.state.data}/>
+          广告广告广告
+          <centerAds initialSlideHeight={100} data={this.state.data}/>
         </div>
             
         <IndexCopyrightHook component={<Copyright />}></IndexCopyrightHook>

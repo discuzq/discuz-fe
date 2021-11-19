@@ -24,8 +24,6 @@ import IndexToppingHooks from '@common/plugin-hooks/plugin_index@topping';
 import IndexHeaderHooks from '@common/plugin-hooks/plugin_index@header';
 import IndexTabsHook from '@common/plugin-hooks/plugin_index@tabs';
 
-import CarouselAds from '@common/plugin/CarouselAds/View/src/replace/adapter/web/index';
-
 @inject('site')
 @inject('user')
 @inject('index')
@@ -329,7 +327,7 @@ class IndexH5Page extends React.Component {
             <Observer>{() => this.renderHeaderContent()}</Observer>  
 
             <div style={{padding: "0 0 10px 0"}}>
-              <CarouselAds data={this.state.data}/>
+              <centerAds data={this.state.data}/>
             </div>
             
           </this.DynamicVListLoading>

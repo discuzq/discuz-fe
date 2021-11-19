@@ -10,8 +10,6 @@ import styles from './index.module.scss';
 import IndexToppingHooks from '@common/plugin-hooks/plugin_index@topping';
 import IndexTabsHook from '@common/plugin-hooks/plugin_index@tabs';
 
-import CarouselAds from '@common/plugin/CarouselAds/View/src/replace/adapter/web/index';
-
 const TopFilterView = ({ onFilterClick, isShowDefault, onPostThread, ishide, site }) => {
   const component = (
     <div className={styles.topBox}>
@@ -201,7 +199,8 @@ export default class DynamicVList extends React.Component {
           <IndexToppingHooks component={toppingComponent} renderData={{ sticks }}></IndexToppingHooks>
 
           <div style={{padding: "10px 0 0 0"}}>
-            <CarouselAds data={this.state.data}/>
+            广告广告广告
+            <centerAds data={this.state.data}/>
           </div>
 
         </div>

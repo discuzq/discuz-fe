@@ -3,7 +3,7 @@ import { View } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import styles from './index.module.scss';
 
-export default function (props) {
+export default function MiniCarousel (props) {
   const top = Taro.getSystemInfoSync().safeArea.top;
 
   console.log('ad give props...',props);
