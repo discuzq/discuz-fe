@@ -45,11 +45,11 @@ class IndexH5Page extends React.Component {
           url:'https://developer.discuz.chat/#/',
         },
         {
-          src:'https://imgcache.qq.com/operation/dianshi/other/banner.184c37ee8e1b9d10d85ca74f8e7f3b573b959f83.png',
+          src:'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fwallcoo.com%2Fnature%2FSZ_178_Water_Air_and_Greenery%2Fimages%2FHJ069_350A.jpg&refer=http%3A%2F%2Fwallcoo.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1639893616&t=448d509e80495516558a3835b2bfaa51',
           url:'https://developer.discuz.chat/#/',
         },
         {
-          src:'https://imgcache.qq.com/operation/dianshi/other/banner.184c37ee8e1b9d10d85ca74f8e7f3b573b959f83.png',
+          src:'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Ffile02.16sucai.com%2Fd%2Ffile%2F2014%2F0829%2Fb871e1addf5f8e96f3b390ece2b2da0d.jpg&refer=http%3A%2F%2Ffile02.16sucai.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1639893616&t=f24d430dc49007ff8801f6d32b8a3272',
           url:'https://developer.discuz.chat/#/',
         }
       ]
@@ -328,8 +328,7 @@ class IndexH5Page extends React.Component {
             <Observer>{() => this.renderTabs()}</Observer>
             <Observer>{() => this.renderHeaderContent()}</Observer>  
 
-            <div style={{padding: "30px 0"}}>
-              <h1 style={{padding: "0 0 5px 0"}}>广告插件开发</h1>
+            <div style={{padding: "0 0 10px 0"}}>
               <CarouselAds data={this.state.data}/>
             </div>
             
