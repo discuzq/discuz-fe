@@ -1,9 +1,0 @@
-/**
- * 根据username获取dialogId
- */
-import { readDialogRecord } from '@discuzq/sdk/dist/api/notice/read-dialog-record';
-
-export default async function _readDialogIdByUsername(opts, ctx = null) {
-  const res = await readDialogRecord({ ...opts, __context: ctx });
-  return res;
-}
