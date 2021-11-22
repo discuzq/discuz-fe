@@ -93,7 +93,8 @@ const getAvatarImage = (thread) => {
 
 // 处理昵称
 const handleNickname = (thread) => {
-  let nickname = thread.user.nickname || ''
+  let nickname = thread.user.nickname || '';
+  nickname = nickname.length > 6 ? (`${nickname.slice(0,6) }...`) : nickname;
   if(thread.isAnonymous) {
     nickname = '匿名用户'
   }

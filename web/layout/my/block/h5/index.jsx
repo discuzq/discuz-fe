@@ -72,7 +72,7 @@ class Index extends React.Component {
               }}
             >
               <div className={styles.haieldImgHead}>
-                <Avatar className={styles.img} image={item.avatar} name={item.username} userId={item.denyUserId} />
+                <Avatar className={styles.img} image={item.avatar} name={item.nickname} userId={item.denyUserId} />
                 <p className={styles.haieldName}>{item.nickname}</p>
               </div>
             </div>
