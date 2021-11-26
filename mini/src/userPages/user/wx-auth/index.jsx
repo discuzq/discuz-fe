@@ -46,7 +46,7 @@ class MiniAuth extends React.Component {
   }
 
   getUserProfileCallback = async (params) => {
-    let { ivc:inviteCode } = getCurrentInstance().router.params;
+    let { inviteCode } = getCurrentInstance().router.params;
     inviteCode = inviteCode || this.props.invite.getInviteCode()
     const avatarUrl = params?.userInfo?.avatarUrl;
     const nickName = params?.userInfo?.nickName;

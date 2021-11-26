@@ -172,7 +172,7 @@ class Index extends React.Component {
       // 取出邀请码进行存储
       if(router.params && router.params.path) {
         const sikpPath = decodeURIComponent(router.params.path);
-        const reg = new RegExp(`(^|[&|?])inviteCode=([^&]*)(&|$)`);
+        const reg = new RegExp(`(^|[&|?])ivc=([^&]*)(&|$)`);
         const r = sikpPath.match(reg);
         r && this.props.invite.setInviteCode(r[2])
       }
