@@ -37,7 +37,8 @@ class Index extends React.Component {
         }
 
         try {
-            const paramPath = `/pages/index/index?path=${encodeURIComponent(setUrlParam(path, { inviteCode }))}`;
+            // 因为字节数限制，故缩减变量名长度
+            const paramPath = `/pages/index/index?path=${encodeURIComponent(setUrlParam(path, { ivc:inviteCode }))}`;
             const res = await getMiniCode({ params: { path: paramPath } });
             if(res?.code === 0) {
                 this.setState({miniCode: res?.data});
