@@ -16,6 +16,7 @@ import browser, { constants } from '@common/utils/browser';
 import commonUpload from '@common/utils/common-upload';
 import { inject, observer } from 'mobx-react';
 import isServer from '@common/utils/is-server';
+import xss from 'xss';
 
 function DVditor(props) {
   const {
@@ -318,7 +319,7 @@ function DVditor(props) {
       minHeight: pc && !isHaveContent() ? 450 : 44,
       // 编辑器初始化值
       tab: '  ',
-      value,
+      value: xss(value),
       // 编辑器异步渲染完成后的回调方法
       after: () => {
         onInit(editor);
@@ -350,6 +351,10 @@ function DVditor(props) {
         setIsFocus(false);
         onInput(editor);
         onChange(editor);
+        const htmlString = editor.getHTML();
+        if (htmlString !== xss(htmlString)) {
+          editor.setValue(editor.html2md(xss(htmlString)));
+        }
       },
       blur: () => {
         // 防止粘贴数据时没有更新内容

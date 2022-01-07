@@ -29,6 +29,7 @@ import MoneyDisplay from '@components/thread-post/money-display';
 import TagLocalData from '@components/thread-post/tag-localdata';
 import VoteWidget from '@components/thread-post/vote-widget';
 import IframeVideo from '@components/thread-post/iframe-video';
+import xss from '@common/utils/xss';
 import IframeVideoDisplay from '@components/thread-post/iframe-video-display';
 import DZQPluginCenterInjectionPolyfill from '../../../../utils/DZQPluginCenterInjectionPolyfill';
 
@@ -136,8 +137,8 @@ class ThreadPCPage extends React.Component {
               }}>
                 <DVditor
                   pc
-                  value={postData.contentText}
-                  isResetContentText={postData.isResetContentText}
+                  value={xss(postData.contentText)}
+                  isResetContentText={xss(postData.isResetContentText)}
                   emoji={emoji}
                   atList={atList}
                   topic={topic}

@@ -20,6 +20,7 @@ import ViewAdapter from '@components/view-adapter';
 import commonUpload from '@common/utils/common-upload';
 import { formatDate } from '@common/utils/format-date';
 import typeofFn from '@common/utils/typeof';
+import xss from '@common/utils/xss';
 
 @inject('site')
 @inject('threadPost')
@@ -546,7 +547,7 @@ class PostPage extends React.Component {
   handleVditorChange = (vditor, event) => {
     if (vditor) {
       this.vditor = vditor;
-      const htmlString = vditor.getHTML();
+      const htmlString = xss(vditor.getHTML());
       this.setPostData({ contentText: htmlString, isResetContentText: false });
       if (!this.props.threadPost.postData.title) {
         if (!this.state.isTitleShow || this.props.site.platform === 'pc' || !event) return;
@@ -805,6 +806,7 @@ class PostPage extends React.Component {
           contentText = contentText.replace(images[index], images[index].replace('alt=\"\"', 'alt=\"uploadError\"'));
         }
       });
+      contentText = xss(contentText);
       threadPost.setPostData({ contentText });
       this.vditor.setValue(this.vditor.html2md(contentText));
       toastInstance.destroy();

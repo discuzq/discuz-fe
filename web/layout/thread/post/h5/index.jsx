@@ -38,6 +38,7 @@ import VoteWidget from '@components/thread-post/vote-widget';
 import VoteEditor from '@components/thread-post/vote-editor';
 import IframeVideo from '@components/thread-post/iframe-video';
 import IframeVideoDisplay from '@components/thread-post/iframe-video-display';
+import xss from '@common/utils/xss';
 import DZQPluginCenterInjectionPolyfill from '../../../../utils/DZQPluginCenterInjectionPolyfill';
 
 // 插件引入
@@ -270,8 +271,8 @@ class ThreadCreate extends React.Component {
           />
           {/* 编辑器 */}
           <DVditor
-            value={postData.contentText}
-            isResetContentText={postData.isResetContentText}
+            value={xss(postData.contentText)}
+            isResetContentText={xss(postData.isResetContentText)}
             emoji={emoji}
             atList={atList}
             topic={topic}
