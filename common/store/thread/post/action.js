@@ -510,7 +510,7 @@ class ThreadPostAction extends ThreadPostStore {
     const attachmentPrice = Number(detail.attachmentPrice);
     let position = {};
     if (detail.position && detail.position.address) position = detail.position;
-    let contentText = content && content.text;
+    let contentText = xss(content && content.text);
     // 目前只是简单的队小程序进行简单的处理
     if (isMini) contentText = contentText.replace(/<br \/>\n/g, '\n').replace(/<br \/>/g, '\n');
     // 解决web端行内换行编辑问题
